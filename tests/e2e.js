@@ -59,6 +59,11 @@
       if (s.t === 'gate') { $$('.sw')[0].click(); $$('.sw')[1].click(); $$('.sw')[0].click(); }
       if (s.t === 'order') { for (var k = 0; k < s.items.length; k++) $$('.ord-pool .chipb').find(function (x) { return +x.dataset.i === k; }).click(); $('.ord-check').click(); }
       if (s.t === 'timeline') { var ord = s.items.map(function (it, ii) { return { y: it.y, i: ii }; }).sort(function (x, z) { return x.y - z.y; }); ord.forEach(function (o) { var c = $$('.tl-chip').find(function (x) { return +x.dataset.i === o.i && !x.disabled; }); if (c) c.click(); }); }
+      if (s.t === 'decide') { var hb = $$('.rpg-opt').find(function (x) { return s.o[+x.dataset.i].hist; }); hb.click(); }
+      if (s.t === 'advise') { $$('.adv-opt').filter(function (x) { return s.o[+x.dataset.i].ok; }).forEach(function (x) { x.click(); }); }
+      if (s.t === 'fill') { var all = s.a.concat(s.extra || []); for (var fk = 0; fk < s.a.length; fk++) { var fc = $$('.fl-chip').find(function (x) { return !x.disabled && all[+x.dataset.i] === s.a[fk]; }); if (fc) fc.click(); } }
+      if (s.t === 'like') { $$('.lk-row').forEach(function (x) { x.click(); }); }
+      if (s.t === 'route') { for (var rk = 1; rk < s.stops.length; rk++) { var pin = $$('.rt-pin').find(function (g) { return g.dataset.p === s.stops[rk].p; }); pin.dispatchEvent(new MouseEvent('click', { bubbles: true })); await waitFor(function () { return $$('.rt-log li').length > rk; }, 3000); } }
       if (s.t === 'match') { for (var m = 0; m < s.pairs.length; m++) { $('.mt.l[data-i="' + m + '"]').click(); $('.mt.r[data-i="' + m + '"]').click(); } }
       if (s.t === 'num') { $('.num-in').value = String(s.answer); $('.num-check').click(); }
       if (s.t === 'steps') { var g = 0; while ($('.ex-more') && $('.ex-more').style.display !== 'none' && g++ < 30) $('.ex-more').click(); }

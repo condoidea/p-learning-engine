@@ -56,6 +56,7 @@
     var box = $('#roadmap'); if (!box) return;
     var all = allLessons(), done = all.filter(function (L) { return isDone(L.id); }).length;
     var nx = nextLesson();
+    stage(nx);
     $('#rmDone').textContent = done; $('#rmTotal').textContent = all.length;
     var C = 2 * Math.PI * 52, ring = $('#rmRing');
     ring.style.strokeDasharray = C;
@@ -216,12 +217,18 @@
   /* =========================================================
    * レッスンプレイヤー
    * ========================================================= */
-  var INTERACTIVE = { quiz: 1, bits: 1, gate: 1, order: 1, match: 1, num: 1, stack: 1, timeline: 1 };
+  var INTERACTIVE = { quiz: 1, bits: 1, gate: 1, order: 1, match: 1, num: 1, stack: 1, timeline: 1, decide: 1, advise: 1, route: 1, fill: 1 };
+  /* 背景が地図のコースでは、レッスンの舞台（L.place / ユニットの舞台）へ地図を動かす */
+  function stage(L) {
+    if (!L || !window.FX3D || !FX3D.focus) return;
+    if (L.place) FX3D.focus(L.place, L.zoom); else if (FX3D.focusUnit) FX3D.focusUnit(L.unit);
+  }
   var P = null;
   function start(id) {
     Sfx.unlock();
     var L = LE.lessonDefs[id];
     P = { L: L, i: 0, xp: 0, first: {}, combo: 0, ready: false, startAt: Date.now() };
+    stage(L);
     UI.go('lesson');
     setTimeout(function () { renderStep(true); }, 350);
   }
@@ -252,7 +259,7 @@
   }
   function centerOf(el) { var r = el.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }
   /* 体験・確認ステップの成否を記録して演出 */
-  function solved(el, firstTry, msg) {
+  function solved(el, firstTry, msg, title) {
     var c = el ? centerOf(el) : [window.innerWidth / 2, window.innerHeight / 2];
     if (P.first[P.i] === undefined) P.first[P.i] = firstTry;
     if (firstTry) {
@@ -271,7 +278,7 @@
       FX3D.pulse(0.6);
     }
     setMood('happy');
-    feedback('ok', '<b>' + (firstTry ? pick(['正解！', 'ばっちり！', 'その通り！', 'ナイス！']) : 'できた！') + '</b>' + (msg ? '<p>' + fmt(msg) + '</p>' : ''));
+    feedback('ok', '<b>' + (title || (firstTry ? pick(['正解！', 'ばっちり！', 'その通り！', 'ナイス！']) : 'できた！')) + '</b>' + (msg ? '<p>' + fmt(msg) + '</p>' : ''));
     setReady(true);
   }
   function zoneIn() {
@@ -306,11 +313,16 @@
     setReady(false);
     var html = '<div class="ls-step t-' + s.t + '">';
     var bubble = s.t === 'say' ? s.text : s.t === 'term' ? 'あたらしい用語だよ！' : s.t === 'recap' ? 'ここまでのまとめ！' : s.text || s.q;
-    if (s.t !== 'quiz') html += '<div class="ls-talk">' + pico(s.t === 'recap' ? 'happy' : '') + '<div class="bubble">' + fmt(bubble) + '</div></div>';
+    if (s.t !== 'quiz') html += '<div class="ls-talk">' + pico(s.t === 'recap' ? 'happy' : '') + '<div class="bubble' + (/^[*\s]*[0-9０-９]/.test(bubble || '') ? ' num-start' : '') + '">' + fmt(bubble) + '</div></div>';
     html += '<div class="ls-body"></div></div>';
     st.innerHTML = html;
     var body = $('.ls-body', st);
     (STEP[s.t] || STEP.say)(s, body);
+    if (s.art && LE.art && LE.art[s.art]) {
+      body.insertAdjacentHTML('afterbegin', '<figure class="ls-art">' + LE.art[s.art] + (s.cap ? '<figcaption>' + fmt(s.cap) + '</figcaption>' : '') + '</figure>');
+      inkDraw($('.ls-art svg', body));
+    }
+    if (s.place && window.FX3D && FX3D.focus) FX3D.focus(s.place, s.zoom);
     var stepEl = $('.ls-step', st);
     gsap.fromTo(stepEl, { opacity: 0, x: first ? 0 : 60 }, { opacity: 1, x: 0, duration: 0.45, ease: 'power3.out' });
     gsap.from($$('.bubble, .ls-body > *', st), { opacity: 0, y: 16, duration: 0.4, stagger: 0.08, delay: 0.1, ease: 'power3.out', clearProps: 'opacity,transform' });
@@ -510,6 +522,217 @@
       });
     });
   };
+  /* =========================================================
+   * 挿絵：線画を「ペンで描くように」表示する（ストロークのアニメーション）
+   * ========================================================= */
+  function inkDraw(svg) {
+    if (!svg || !window.gsap) return;
+    var els = $$('path, line, polyline, polygon, circle, ellipse, rect', svg);
+    els.forEach(function (el, i) {
+      var len = 0;
+      try { len = el.getTotalLength ? el.getTotalLength() : 0; } catch (e) { len = 0; }
+      if (!len) return;
+      el.style.strokeDasharray = len + ' ' + len;
+      el.style.strokeDashoffset = len;
+      el.style.fillOpacity = 0;
+      gsap.to(el, { strokeDashoffset: 0, duration: Math.min(1.1, 0.25 + len / 260), delay: 0.15 + i * 0.045, ease: 'power1.inOut' });
+      gsap.to(el, { fillOpacity: 1, duration: 0.5, delay: 0.6 + i * 0.045, clearProps: 'fillOpacity' });
+    });
+  }
+
+  /* =========================================================
+   * 決断（RPG）：その人物になって選ぶ → 選んだ道の結末 → 史実
+   *  {t:'decide', role, ico, text, q, o:[{t, r, hist:true}]}
+   *  「予想してから答え合わせ」は記憶に残りやすい（予測・生成効果）
+   * ========================================================= */
+  STEP.decide = function (s, body) {
+    var order = Core.shuffle(s.o.map(function (_, i) { return i; }));
+    var h = s.o.findIndex(function (o) { return o.hist; });
+    body.innerHTML = '<div class="rpg"><div class="rpg-head"><span class="rpg-ico">' + (s.ico || '👑') + '</span><div><small>あなたは</small><b>' + esc(s.role || '') + '</b></div></div>' +
+      '<p class="rpg-q">' + fmt(s.q || 'どうする？') + '</p>' +
+      '<div class="rpg-cmd">' + order.map(function (i) { return '<button class="rpg-opt" data-i="' + i + '"><i>▶</i><span>' + fmt(s.o[i].t) + '</span></button>'; }).join('') + '</div><div class="rpg-res"></div></div>';
+    var res = $('.rpg-res', body);
+    $$('.rpg-opt', body).forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (P.ready) return;
+        var i = +b.dataset.i, c = s.o[i];
+        $$('.rpg-opt', body).forEach(function (x) { x.disabled = true; if (+x.dataset.i === h) x.classList.add('hist'); });
+        b.classList.add('pick');
+        var html = '<div class="rpg-card you"><small>' + (c.hist ? '📜 あなたの選択＝史実' : 'あなたの選択の行方') + '</small><p>' + fmt(c.r) + '</p></div>';
+        if (!c.hist && h >= 0) html += '<div class="rpg-card hist"><small>📜 史実では</small><b>' + fmt(s.o[h].t) + '</b><p>' + fmt(s.o[h].r.replace(/^史実どおり。/, '')) + '</p></div>';
+        res.innerHTML = html;
+        gsap.from($$('.rpg-card', res), { y: 20, opacity: 0, duration: 0.45, stagger: 0.35, ease: 'back.out(2)', clearProps: 'opacity,transform' });
+        if (c.hist) solved(b, true, s.ok, pick(['史実どおり！', '名君の判断！', '歴史が動いた！']));
+        else { solved(b, false, s.ok, '史実は別の道へ'); setMood('think'); }
+      });
+    });
+  };
+
+  /* =========================================================
+   * 提言（臣下として説得）：正しい根拠のカードを need 枚選ぶと説得ゲージが満ちる
+   *  {t:'advise', to, ico, text, need, o:[{t, ok:true, r}]}
+   * ========================================================= */
+  STEP.advise = function (s, body) {
+    var need = s.need || s.o.filter(function (o) { return o.ok; }).length, got = 0, miss = 0;
+    var order = Core.shuffle(s.o.map(function (_, i) { return i; }));
+    var segs = ''; for (var k = 0; k < need; k++) segs += '<i></i>';
+    body.innerHTML = '<div class="adv"><div class="adv-head"><span class="adv-ico">' + (s.ico || '🏰') + '</span><div><small>提言する相手</small><b>' + esc(s.to || '') + '</b></div>' +
+      '<div class="adv-meter"><small>説得ゲージ</small><div class="adv-segs">' + segs + '</div></div></div>' +
+      '<p class="adv-goal">🎯 ' + fmt(s.goal || ('説得力のある根拠を ' + need + ' つ選ぼう')) + '</p>' +
+      '<div class="adv-cards">' + order.map(function (i) { return '<button class="adv-opt" data-i="' + i + '"><span>' + fmt(s.o[i].t) + '</span><em class="adv-r"></em></button>'; }).join('') + '</div></div>';
+    $$('.adv-opt', body).forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (P.ready || b.disabled) return;
+        var o = s.o[+b.dataset.i];
+        b.disabled = true;
+        if (o.r) $('.adv-r', b).innerHTML = fmt(o.r);
+        if (o.ok) {
+          b.classList.add('ok');
+          var seg = $$('.adv-segs i', body)[got]; got++;
+          if (seg) { seg.classList.add('on'); gsap.fromTo(seg, { scaleY: 0.2 }, { scaleY: 1, duration: 0.4, ease: 'back.out(3)' }); }
+          var c = centerOf(b); FX.burst(c[0], c[1], { n: 18, speed: 5 }); Sfx.correct(got);
+          if (got >= need) {
+            $$('.adv-opt', body).forEach(function (x) { x.disabled = true; });
+            var hd = $('.adv-head', body);
+            hd.insertAdjacentHTML('beforeend', '<span class="adv-stamp">' + esc(s.win || '採用') + '</span>');
+            gsap.fromTo($('.adv-stamp', hd), { scale: 3, opacity: 0, rotate: -30 }, { scale: 1, opacity: 1, rotate: -12, duration: 0.45, ease: 'back.out(3)' });
+            solved($('.adv-meter', body), miss === 0, s.ok, '説得成功！');
+          }
+        } else {
+          miss++;
+          b.classList.add('bad');
+          gsap.fromTo(b, { x: -8 }, { x: 0, duration: 0.4, ease: 'elastic.out(1.5,0.3)' });
+          missed(o.r || 'その理由では説得できないみたい。');
+        }
+      });
+    });
+  };
+
+  /* =========================================================
+   * 旅（地図の上で駒を進める）：次の目的地をタップすると駒が進み、記録が残る
+   *  {t:'route', piece:'♚', text, stops:[{p:'frankfurt', t:'…', hint}], decoys:['paris']}
+   * ========================================================= */
+  STEP.route = function (s, body) {
+    if (!window.LEMap) { body.innerHTML = '<p>（地図データがありません）</p>'; setReady(true); return; }
+    var ids = s.stops.map(function (x) { return x.p; }).concat(s.decoys || []);
+    var lls = ids.map(LEMap.place);
+    var lo = Math.min.apply(null, lls.map(function (l) { return l[0]; })), hi = Math.max.apply(null, lls.map(function (l) { return l[0]; }));
+    var la = Math.min.apply(null, lls.map(function (l) { return l[1]; })), lb = Math.max.apply(null, lls.map(function (l) { return l[1]; }));
+    var kx = Math.cos(47 * Math.PI / 180);
+    var span = s.span || Math.max(5, (hi - lo) * 1.4, (lb - la) * 1.5 / 0.75 / kx);
+    var center = s.center || [(lo + hi) / 2, (la + lb) / 2];
+    var w = span * 10 * kx, R = w * 0.017, FS = w * 0.038;
+    var pins = ids.map(function (id, n) {
+      var c = LEMap.P(LEMap.place(id));
+      return '<g class="rt-pin' + (n === 0 ? ' done start' : '') + '" data-p="' + id + '" transform="translate(' + c[0].toFixed(2) + ',' + c[1].toFixed(2) + ')"><circle class="rt-hit" r="' + (R * 2.8).toFixed(2) + '"/><circle class="rt-dot" r="' + R.toFixed(2) + '"/>' +
+        '<text x="' + (R * 1.6).toFixed(2) + '" y="' + (FS * 0.35).toFixed(2) + '" font-size="' + FS.toFixed(2) + '">' + esc(LEMap.name(id)) + '</text></g>';
+    }).join('');
+    var c0 = LEMap.P(LEMap.place(s.stops[0].p));
+    var extra = '<g class="rt-trail"></g>' + pins +
+      '<g class="rt-piece" transform="translate(' + c0[0].toFixed(2) + ',' + c0[1].toFixed(2) + ')"><circle r="' + (R * 2.3).toFixed(2) + '"/><text y="' + (R * 1.15).toFixed(2) + '" font-size="' + (R * 3.4).toFixed(2) + '">' + (s.piece || '♚') + '</text></g>';
+    body.innerHTML = '<div class="route"><div class="rt-map">' + LEMap.svg({ center: center, span: span, extra: extra }) + '</div>' +
+      '<ol class="rt-log"><li><b>' + esc(LEMap.name(s.stops[0].p)) + '</b>' + fmt(s.stops[0].t || '') + '</li></ol>' +
+      '<p class="bits-goal">🎯 ' + esc(s.goal || '次の目的地を地図でタップ') + '</p></div>';
+    var trail = $('.rt-trail', body), piece = $('.rt-piece', body), log = $('.rt-log', body);
+    var k = 1, miss = 0, pos = { x: c0[0], y: c0[1] }, moving = false;
+    $$('.rt-pin', body).forEach(function (g) {
+      g.addEventListener('click', function () {
+        if (P.ready || moving || g.classList.contains('done')) return;
+        var stop = s.stops[k];
+        if (g.dataset.p === stop.p) {
+          moving = true; g.classList.add('done');
+          var to = LEMap.P(LEMap.place(stop.p)), from = { x: pos.x, y: pos.y };
+          var mx = (from.x + to[0]) / 2, my = (from.y + to[1]) / 2 - Math.hypot(to[0] - from.x, to[1] - from.y) * 0.25;
+          var d = 'M' + from.x.toFixed(2) + ',' + from.y.toFixed(2) + ' Q' + mx.toFixed(2) + ',' + my.toFixed(2) + ' ' + to[0].toFixed(2) + ',' + to[1].toFixed(2);
+          trail.insertAdjacentHTML('beforeend', '<path d="' + d + '"/>');
+          var path = trail.lastChild, len = path.getTotalLength();
+          path.style.strokeDasharray = len; path.style.strokeDashoffset = len;
+          var tt = { t: 0 };
+          Sfx.tap();
+          gsap.to(tt, { t: 1, duration: 0.9, ease: 'power2.inOut', onUpdate: function () {
+            var t = tt.t, x = (1 - t) * (1 - t) * from.x + 2 * (1 - t) * t * mx + t * t * to[0], y = (1 - t) * (1 - t) * from.y + 2 * (1 - t) * t * my + t * t * to[1];
+            piece.setAttribute('transform', 'translate(' + x.toFixed(2) + ',' + y.toFixed(2) + ') scale(' + (1 + Math.sin(t * Math.PI) * 0.35).toFixed(3) + ')');
+            path.style.strokeDashoffset = (len * (1 - t)).toFixed(2);
+          }, onComplete: function () {
+            pos = { x: to[0], y: to[1] }; moving = false; k++;
+            var li = document.createElement('li');
+            li.innerHTML = '<b>' + esc(LEMap.name(stop.p)) + '</b>' + fmt(stop.t || '');
+            log.appendChild(li);
+            gsap.from(li, { x: -20, opacity: 0, duration: 0.4, ease: 'back.out(2)' });
+            var c = centerOf(g); FX.burst(c[0], c[1], { n: 16, speed: 5 }); Sfx.correct(k);
+            if (k >= s.stops.length) solved($('.rt-map', body), miss === 0, s.ok, pick(['到着！', '旅の完了！', '見事な道のり！']));
+          } });
+        } else {
+          miss++;
+          g.classList.add('bad'); setTimeout(function () { g.classList.remove('bad'); }, 600);
+          missed(stop.hint || s.hint || ('そこは「' + LEMap.name(g.dataset.p) + '」。次の目的地はちがうよ。'));
+        }
+      });
+    });
+  };
+
+  /* =========================================================
+   * 穴埋め図（家系図・勢力図など）：光る空欄に入る札をタップ
+   *  {t:'fill', text, viz:'…{{0}}…{{1}}…', a:['答え0','答え1'], extra:['ダミー'], hints:[…]}
+   * ========================================================= */
+  STEP.fill = function (s, body) {
+    var vz = s.viz.replace(/\{\{(\d+)\}\}/g, function (m, k) { return '<button class="fl-b" data-k="' + k + '"><span>？</span></button>'; });
+    var all = s.a.concat(s.extra || []);
+    var chips = Core.shuffle(all.map(function (v, i) { return { v: v, i: i }; }));
+    body.innerHTML = '<div class="vz fl-vz">' + vz + '</div><div class="fl-pool">' + chips.map(function (c) { return '<button class="chipb fl-chip" data-i="' + c.i + '">' + fmt(c.v) + '</button>'; }).join('') + '</div>' +
+      '<p class="bits-goal">🎯 ' + esc(s.goal || '光っている空欄に入る札をタップ（空欄をタップすると選び直せる）') + '</p>';
+    var filled = {}, miss = 0, act = 0, n = s.a.length;
+    function setAct(k) {
+      act = k;
+      $$('.fl-b', body).forEach(function (b) { b.classList.toggle('act', +b.dataset.k === k && !filled[k]); });
+    }
+    function nextOpen() { for (var k = 0; k < n; k++) if (!filled[k]) return k; return -1; }
+    $$('.fl-b', body).forEach(function (b) { b.addEventListener('click', function () { if (!filled[+b.dataset.k]) { setAct(+b.dataset.k); Sfx.tap(); } }); });
+    $$('.fl-chip', body).forEach(function (c) {
+      c.addEventListener('click', function () {
+        if (P.ready || c.disabled) return;
+        var v = all[+c.dataset.i];
+        if (v === s.a[act]) {
+          filled[act] = 1; c.disabled = true;
+          gsap.to(c, { scale: 0.6, opacity: 0, duration: 0.25, onComplete: function () { c.style.display = 'none'; } });
+          var b = $('.fl-b[data-k="' + act + '"]', body);
+          b.classList.remove('act'); b.classList.add('ok'); b.innerHTML = '<span>' + fmt(v) + '</span>';
+          gsap.fromTo(b, { scale: 1.4 }, { scale: 1, duration: 0.45, ease: 'back.out(3)' });
+          var cc = centerOf(b); FX.burst(cc[0], cc[1], { n: 14, speed: 4 }); Sfx.correct(Object.keys(filled).length);
+          var nx = nextOpen();
+          if (nx < 0) solved($('.fl-vz', body), miss === 0, s.ok); else setAct(nx);
+        } else {
+          miss++;
+          c.classList.add('bad'); setTimeout(function () { c.classList.remove('bad'); }, 500);
+          gsap.fromTo(c, { x: -8 }, { x: 0, duration: 0.4, ease: 'elastic.out(1.5,0.3)' });
+          missed((s.hints && s.hints[act]) || s.hint || 'その札はこの空欄には入らないよ。');
+        }
+      });
+    });
+    setAct(0);
+  };
+
+  /* =========================================================
+   * たとえ（歴史 ⇄ いまでいうと）：1行ずつめくって対応を確かめる
+   *  {t:'like', text, rows:[['選帝侯','社長を選ぶ大株主'], …], note}
+   * ========================================================= */
+  STEP.like = function (s, body) {
+    var left = s.rows.length;
+    body.innerHTML = '<div class="like"><div class="lk-head"><span>' + esc(s.ha || '📜 歴史') + '</span><span></span><span>' + esc(s.hb || '🏙 いまでいうと') + '</span></div>' +
+      s.rows.map(function (r, i) { return '<button class="lk-row" data-i="' + i + '"><span class="lk-a">' + fmt(r[0]) + '</span><span class="lk-ar">⇄</span><span class="lk-b"><i>タップ</i><em>' + fmt(r[1]) + '</em></span></button>'; }).join('') +
+      (s.note ? '<p class="lk-note">' + fmt(s.note) + '</p>' : '') + '</div>';
+    $$('.lk-row', body).forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (b.classList.contains('open')) return;
+        b.classList.add('open'); left--;
+        gsap.fromTo($('.lk-b', b), { rotateX: 90 }, { rotateX: 0, duration: 0.45, ease: 'back.out(2)' });
+        Sfx.coin();
+        if (!left) { var n = $('.lk-note', body); if (n) gsap.fromTo(n, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4 }); setReady(true); }
+      });
+    });
+    if (!left) setReady(true);
+  };
+
   STEP.match = function (s, body) {
     var L = Core.shuffle(s.pairs.map(function (p, i) { return i; })), R = Core.shuffle(s.pairs.map(function (p, i) { return i; }));
     var sel = null, left = s.pairs.length, miss = 0;
@@ -735,7 +958,7 @@
   }
 
   window.Lesson = {
-    renderMap: renderMap, start: start, next: nextLesson, isDone: isDone, all: allLessons, no: lessonNo, label: label, fmt: fmt, bind: bind,
+    renderMap: renderMap, start: start, stage: stage, next: nextLesson, isDone: isDone, all: allLessons, no: lessonNo, label: label, fmt: fmt, bind: bind,
     active: function () { return !!P; }
   };
 })();

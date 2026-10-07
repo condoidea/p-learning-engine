@@ -35,7 +35,7 @@ Core.load();
 
 const errors = [];
 const err = (m) => errors.push(m);
-const STEP_TYPES = ['say', 'term', 'quiz', 'bits', 'gate', 'order', 'match', 'num', 'steps', 'trace', 'stack', 'timeline', 'recap'];
+const STEP_TYPES = ['say', 'term', 'quiz', 'bits', 'gate', 'order', 'match', 'num', 'steps', 'trace', 'stack', 'timeline', 'decide', 'advise', 'route', 'fill', 'like', 'recap'];
 
 /* ---- 問題 ---- */
 const ids = new Set();
@@ -53,6 +53,7 @@ for (const q of LE.questions) {
 const mapped = {};
 let steps = 0;
 for (const [lid, L] of Object.entries(LE.lessonDefs)) {
+  if (L.place && LE.mapData && !LE.mapData.places[L.place]) err('レッスンの place が地図にない: ' + lid);
   if (!LE.units.find(u => u.id === L.unit)) err('ユニット未定義: ' + lid);
   for (const qid of L.q) { if (!ids.has(qid)) err('レッスンが存在しない問題を参照: ' + lid + ' → ' + qid); mapped[qid] = (mapped[qid] || 0) + 1; }
   if (!L.steps.length || L.steps[L.steps.length - 1].t !== 'recap') err('最後のステップがまとめ(recap)ではない: ' + lid);
@@ -69,6 +70,12 @@ for (const [lid, L] of Object.entries(LE.lessonDefs)) {
     if (s.t === 'match' && new Set(s.pairs.map(p => p[1])).size !== s.pairs.length) err('match の右側が重複: ' + at);
     if (s.t === 'trace') { const n = s.code.split('\n').length; s.rows.forEach(r => { if (r.l >= n) err('trace の行番号が範囲外: ' + at); }); }
     if (s.t === 'num' && typeof s.answer !== 'number') err('num の answer が数値でない: ' + at);
+    if (s.t === 'decide' && (!s.o || s.o.filter(o => o.hist).length !== 1)) err('decide は史実の選択肢（hist）がちょうど1つ必要: ' + at);
+    if (s.t === 'advise' && (!s.o || s.o.filter(o => o.ok).length < (s.need || 1))) err('advise の正しい根拠が need より少ない: ' + at);
+    if (s.t === 'fill') { const nb = (s.viz.match(/\{\{\d+\}\}/g) || []).length; if (nb !== s.a.length) err('fill の空欄数と答えの数が合わない: ' + at); }
+    if (s.t === 'route') { if (!LE.mapData) err('route には地図データ（LE.mapData）が必要: ' + at); else s.stops.concat((s.decoys || []).map(p => ({ p }))).forEach(x => { if (!LE.mapData.places[x.p]) err('route の地名が地図にない: ' + x.p + ' @' + at); }); }
+    if (s.art && !(LE.art && LE.art[s.art])) err('挿絵が見つからない: ' + s.art + ' @' + at);
+    if (s.place && LE.mapData && !LE.mapData.places[s.place]) err('place の地名が地図にない: ' + s.place + ' @' + at);
     if (s.t === 'timeline') { if (!s.items || s.items.length < 3) err('timeline の項目が3つ未満: ' + at); else s.items.forEach(it => { if (typeof it.y !== 'number') err('timeline の y が数値でない: ' + at); }); }
   });
 }

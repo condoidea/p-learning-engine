@@ -14,6 +14,6 @@ window.LE_COURSES = [
     id: 'habsburg', entry: 'habsburg.html', storageKey: 'le.habsburg.v1',
     title: 'ハプスブルク年代記', brand: 'CHRONICON HABSBURGICUM', icon: '🦅',
     desc: '鷹の城の伯爵家が皇帝の家になるまで。『ハプスブルク家の華麗なる受難』1〜3巻の範囲を時代順に。',
-    color: '#d8b45a', color2: '#a3262b', lessons: 22
+    color: '#d8b45a', color2: '#a3262b', lessons: 34
   }
 ];

@@ -109,7 +109,7 @@ body {
 .bubble code, .kc-sec code, .recap code { background: rgba(80, 50, 20, 0.12); color: var(--ink); }
 .gl { color: var(--rubric) !important; border-bottom-color: var(--rubric) !important; }
 /* 彩飾頭文字（説明の最初の1文字） */
-.t-say .bubble::first-letter {
+.t-say .bubble:not(.num-start)::first-letter {
   float: left; font-family: 'Shippori Mincho B1', serif; font-weight: 800; font-size: 2.7em; line-height: 1;
   margin: 2px 8px 0 0; padding: 2px 6px; color: var(--rubric);
   background: linear-gradient(160deg, #f6e3a1, #d8b45a); border: 1px solid #a87b25; border-radius: 2px;
@@ -255,3 +255,34 @@ body {
   .brand { font-size: 14px; letter-spacing: 0.04em; }
   .brand-rush { display: none; }
 }
+
+/* ---- 挿絵：写本の余白に描かれた線画（羊皮紙の上に褐色インク・金・朱） ---- */
+.ls-art { width: min(100%, 280px); padding: 10px 18px 8px; border-radius: 50% / 18%;
+  background: radial-gradient(ellipse at 50% 45%, #f6ecd2 0%, var(--parch) 55%, var(--parch-2) 85%, transparent 100%); }
+.ls-art svg { stroke: var(--ink); stroke-width: 1.5; }
+.ls-art .g { fill: #d3a640; }
+.ls-art .r { fill: var(--rubric); }
+.ls-art .w { fill: #fbf3df; }
+.ls-art figcaption { color: var(--ink-2); font-family: var(--f-display); }
+
+/* ---- 決断・提言・たとえ：宮廷の文書風 ---- */
+.rpg-head, .adv-head { background: linear-gradient(180deg, rgba(60, 36, 18, .9), rgba(30, 18, 10, .9)); border-color: var(--line); }
+.rpg-head b, .adv-head b { font-family: var(--f-display); }
+.rpg-cmd { background: rgba(18, 11, 6, .92); border-color: rgba(216, 180, 90, .55); }
+.rpg-opt, .adv-opt, .lk-row { font-family: var(--f-body); }
+.rpg-card, .adv-opt, .lk-row { background: linear-gradient(175deg, #f4e8cc 0%, var(--parch) 55%, var(--parch-2) 100%); color: var(--ink); border-color: var(--parch-edge); }
+.rpg-card p, .rpg-card b, .adv-opt span, .lk-row span { color: var(--ink); }
+.rpg-card small, .adv-opt .adv-r, .lk-note { color: var(--ink-2); }
+.rpg-card.hist { border-left-color: var(--rubric); }
+.rpg-card b { color: var(--rubric); }
+.adv-opt.ok { background: linear-gradient(175deg, #fff3cf, #f0d996); border-color: #b8892c; }
+.adv-opt.bad { background: linear-gradient(175deg, #f2d6c8, #e2b9a6); border-color: var(--rubric); }
+.adv-stamp { border-radius: 50%; width: 58px; height: 58px; display: grid; place-items: center; padding: 0; top: -18px; background: radial-gradient(circle at 40% 35%, #c2383b, #7a1416); color: #f6d58a; border: 2px solid #5c0f10; font-family: var(--f-display); font-size: 15px; box-shadow: 0 3px 8px rgba(0,0,0,.5); }
+.lk-ar { color: var(--rubric); }
+.lk-b i { border-color: var(--ink-2); color: var(--ink-2); }
+.lk-row.open { border-color: #b8892c; }
+.like .lk-note { color: var(--muted); }
+.fl-b { background: rgba(255, 248, 230, .6); color: var(--ink-2); border-color: var(--ink-2); font-family: var(--f-display); }
+.fl-b.act { color: var(--rubric); border-color: var(--rubric); }
+.fl-b.ok { background: #fff3cf; border-color: #b8892c; color: var(--ink); }
+.rt-log li b { font-family: var(--f-display); color: var(--gold) !important; background: none !important; }

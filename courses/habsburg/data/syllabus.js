@@ -5,7 +5,7 @@
  * ========================================================= */
 LE.cats = [
   { id: 'D', name: 'ハプスブルク家の人々', exam: 'H', weight: 60, color: '#d8b45a' },
-  { id: 'E', name: 'ヨーロッパの舞台',     exam: 'H', weight: 40, color: '#c4504a' }
+  { id: 'E', name: 'ヨーロッパの舞台と文化', exam: 'H', weight: 45, color: '#c4504a' }
 ];
 
 LE.fields = [
@@ -16,5 +16,6 @@ LE.fields = [
   { id: 'hre',    cat: 'E', name: '神聖ローマ帝国のしくみ', icon: '✠', weight: 12, desc: '皇帝・ローマ王・選帝侯・金印勅書' },
   { id: 'neighbors', cat: 'E', name: '周辺の国々',         icon: '🏰', weight: 10, desc: 'ボヘミア・スイス・ハンガリー・オスマン帝国' },
   { id: 'west',   cat: 'E', name: 'ブルゴーニュとフランス', icon: '⚜', weight: 10, desc: 'ブルゴーニュ公国・ルイ11世・シャルル8世' },
-  { id: 'italy',  cat: 'E', name: 'イタリアとルネサンス',   icon: '🏛', weight: 8,  desc: 'ミラノ・ルネサンス・イタリア戦争' }
+  { id: 'italy',  cat: 'E', name: 'イタリアとルネサンス',   icon: '🏛', weight: 8,  desc: 'ミラノ・ルネサンス・イタリア戦争' },
+  { id: 'culture', cat: 'E', name: '中世の社会と文化',     icon: '🎨', weight: 10, desc: '封建社会・教会・ゴシック・黒死病・印刷術・大航海時代' }
 ];

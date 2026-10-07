@@ -117,6 +117,7 @@
     $('#startSub').textContent = !learned ? 'レッスンをクリアすると解放' : S.items.boost > 0 ? '⚡ XPブースト×2 を使って開始' : due ? '忘れかけの復習 ' + due + '問を含むセット' : '学んだ範囲 ' + learned + '問から出題';
     $('#btnStart').classList.toggle('locked', !learned);
     var nx = Lesson.next();
+    Lesson.stage(nx);
     $('#learnSub').textContent = nx ? LE_T('lesson') + ' ' + Lesson.label(nx) + '：' + nx.title : '全レッスン制覇！' + LE_T('boss') + '戦と復習へ';
 
     renderQuests();

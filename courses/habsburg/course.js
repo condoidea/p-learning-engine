@@ -7,15 +7,15 @@
  * ========================================================= */
 window.COURSE = {
   id: 'habsburg',
-  version: '1',
+  version: '2.4',
   title: 'ハプスブルク年代記｜鷹の城から帝冠へ',
   appName: 'ハプスブルク年代記',
   brand: ['HABSBURG', 'CHRONICLE'],
   storageKey: 'le.habsburg.v1',
 
   files: [
-    'data/syllabus.js', 'data/curriculum.js',
-    'data/les_u1.js', 'data/les_u2.js', 'data/les_u3.js', 'data/les_u4.js', 'data/les_u5.js', 'data/les_u6.js',
+    'data/syllabus.js', 'data/curriculum.js', 'data/map.js', 'data/art.js',
+    'data/les_u1.js', 'data/les_u2.js', 'data/les_u3.js', 'data/les_u4.js', 'data/les_u5.js', 'data/les_u6.js', 'data/les_u7.js',
     'data/cards.js'
   ],
   css: ['theme.css'],
@@ -23,7 +23,7 @@ window.COURSE = {
   fonts: 'https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Cinzel+Decorative:wght@700;900&family=Shippori+Mincho+B1:wght@600;800&family=Zen+Old+Mincho:wght@400;700&family=UnifrakturMaguntia&display=swap',
 
   /* 世界観 */
-  scene: { preset: 'royal' },          // 金の塵と天球儀
+  scene: { preset: 'map' },            // ろうそくの灯りで見る古地図。物語の舞台へ地図が動く
   sound: 'royal',                      // 古楽器風の音色
   mascot: { ico: '🦅', name: '鷹のハビ' },   // ハプスブルク ≒「鷹の城（ハビヒツブルク）」
   unitNumeral: 'roman',                // LIBER Ⅰ, Ⅱ … ／ §Ⅱ-1
