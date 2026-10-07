@@ -112,3 +112,8 @@ span.t-holo { background: linear-gradient(90deg, #ff3fa4, #ffd84d, #5cff9d, #38e
   .kcard { height: min(64vh, 640px); }
   .kc-front { padding: 14px 14px 12px; }
 }
+
+/* 裏返し：iOS Safari では backface-visibility が効かないことがあるため、表示する面を明示的に切り替える（ui.js の flipCard） */
+.kcard .kc-back { visibility: hidden; }
+.kcard.show-back .kc-back { visibility: visible; }
+.kcard.show-back .kc-front { visibility: hidden; }

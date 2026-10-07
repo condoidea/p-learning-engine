@@ -1068,7 +1068,11 @@
     cv.back = !cv.back;
     var k = $('#kcard');
     Sfx.whoosh();
-    gsap.to(k, { rotateY: cv.back ? 180 : 0, duration: 0.6, ease: 'back.out(1.2)' });
+    /* iOS Safari では backface-visibility が効かないことがあるため、半回転を過ぎた時点で表示する面を切り替える */
+    gsap.to(k, { rotateY: cv.back ? 180 : 0, duration: 0.6, ease: 'back.out(1.2)', onUpdate: function () {
+      var a = ((gsap.getProperty(k, 'rotateY') % 360) + 360) % 360;
+      k.classList.toggle('show-back', a > 90 && a < 270);
+    } });
     if (cv.back) {
       gsap.from($$('.kc-back .kc-sec', k), { opacity: 0, x: 20, stagger: 0.1, duration: 0.35, delay: 0.25, clearProps: 'opacity,transform' });
       var bar = $('.kc-back .evo-bar i', k);
