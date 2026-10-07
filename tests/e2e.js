@@ -64,6 +64,8 @@
       if (s.t === 'fill') { var all = s.a.concat(s.extra || []); for (var fk = 0; fk < s.a.length; fk++) { var fc = $$('.fl-chip').find(function (x) { return !x.disabled && all[+x.dataset.i] === s.a[fk]; }); if (fc) fc.click(); } }
       if (s.t === 'like') { $$('.lk-row').forEach(function (x) { x.click(); }); }
       if (s.t === 'route') { for (var rk = 1; rk < s.stops.length; rk++) { var pin = $$('.rt-pin').find(function (g) { return g.dataset.p === s.stops[rk].p; }); pin.dispatchEvent(new MouseEvent('click', { bubbles: true })); await waitFor(function () { return $$('.rt-log li').length > rk; }, 3000); } }
+      if (s.t === 'widget') { if (window.__LE_WIDGET && window.__LE_WIDGET.solve) window.__LE_WIDGET.solve(); await waitFor(function () { return !$('#lsGo').disabled; }, 4000); }
+      if (s.t === 'build') { for (var bk = 0; bk < s.ans.length; bk++) { var bc = $$('.bd-chip').find(function (x) { return !x.disabled && x.dataset.v === s.ans[bk]; }); if (bc) bc.click(); } }
       if (s.t === 'match') { for (var m = 0; m < s.pairs.length; m++) { $('.mt.l[data-i="' + m + '"]').click(); $('.mt.r[data-i="' + m + '"]').click(); } }
       if (s.t === 'num') { $('.num-in').value = String(s.answer); $('.num-check').click(); }
       if (s.t === 'steps') { var g = 0; while ($('.ex-more') && $('.ex-more').style.display !== 'none' && g++ < 30) $('.ex-more').click(); }
@@ -80,11 +82,11 @@
     return null;
   }
   function correctChoice() {
-    var qt = $('#qText').textContent, code = $('#qCode').textContent;
-    var q = LE.questions.find(function (x) { return x.q === qt && (!x.code || x.code === code); });
+    var id = $('#qText').dataset.qid;
+    var q = LE.questions.find(function (x) { return x.id === id; });
     if (!q) return null;
-    var ans = q.o[q.a || 0];
-    return $$('.choice').find(function (x) { return x.querySelector('.ct').textContent === ans; });
+    var a = q.a || 0;
+    return $$('.choice').find(function (x) { return +x.dataset.oi === a; });
   }
   async function playSet(mode, arg, wrongFirst) {
     UI.startSet(mode, arg);

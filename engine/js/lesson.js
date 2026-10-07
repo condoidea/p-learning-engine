@@ -8,8 +8,25 @@
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   function S() { return Core.S; }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-  /* 本文の書式：**太字** `等幅` [[用語]] [[用語|表示]] 改行 */
-  function fmt(t) {
+  /* 数式（COURSE.math のとき）：$…$ を KaTeX で描画。COURSE.katexMacros でマクロ（色分けなど）を定義できる */
+  var MATH = !!(window.COURSE && COURSE.math);
+  var MACROS = (window.COURSE && COURSE.katexMacros) || {};
+  function tex(s, display) {
+    if (!window.katex) return esc(s);
+    try { return katex.renderToString(s, { throwOnError: false, displayMode: !!display, macros: MACROS }); } catch (e) { return esc(s); }
+  }
+  function withMath(t, rest) {
+    if (!MATH) return rest(t);
+    return String(t == null ? '' : t).split(/(\$\$[^$]+\$\$|\$[^$]+\$)/g).map(function (p, i) {
+      if (!(i % 2)) return rest(p);
+      return p.charAt(1) === '$' ? tex(p.slice(2, -2), true) : tex(p.slice(1, -1));
+    }).join('');
+  }
+  /* 図（HTML）の中の $…$ も数式にする */
+  function mviz(h) { return withMath(h, function (x) { return x; }); }
+  /* 本文の書式：**太字** `等幅` [[用語]] [[用語|表示]] 改行（数式コースでは $…$ も） */
+  function fmt(t) { return withMath(t, fmt0); }
+  function fmt0(t) {
     return esc(t || '')
       .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
       .replace(/`(.+?)`/g, '<code>$1</code>')
@@ -217,7 +234,7 @@
   /* =========================================================
    * レッスンプレイヤー
    * ========================================================= */
-  var INTERACTIVE = { quiz: 1, bits: 1, gate: 1, order: 1, match: 1, num: 1, stack: 1, timeline: 1, decide: 1, advise: 1, route: 1, fill: 1 };
+  var INTERACTIVE = { quiz: 1, bits: 1, gate: 1, order: 1, match: 1, num: 1, stack: 1, timeline: 1, decide: 1, advise: 1, route: 1, fill: 1, widget: 1, build: 1 };
   /* 背景が地図のコースでは、レッスンの舞台（L.place / ユニットの舞台）へ地図を動かす */
   function stage(L) {
     if (!L || !window.FX3D || !FX3D.focus) return;
@@ -348,13 +365,13 @@
    * ========================================================= */
   var STEP = {};
   STEP.say = function (s, body) {
-    if (s.viz) body.innerHTML = '<div class="vz vz-anim">' + s.viz + '</div>';
+    if (s.viz) body.innerHTML = '<div class="vz vz-anim">' + mviz(s.viz) + '</div>';
     setReady(true);
   };
   STEP.term = function (s, body) {
     body.innerHTML = '<div class="term-card"><span class="term-stamp">用語GET</span><small>' + esc(s.yomi || '') + '</small><h2>' + esc(s.word) + '</h2>' +
       '<p class="term-short">' + fmt(s.short) + '</p>' + (s.ex ? '<p class="term-ex"><span>たとえるなら</span>' + fmt(s.ex) + '</p>' : '') + '</div>' +
-      (s.viz ? '<div class="vz vz-anim">' + s.viz + '</div>' : '');
+      (s.viz ? '<div class="vz vz-anim">' + mviz(s.viz) + '</div>' : '');
     var tc = $('.term-card', body);
     gsap.fromTo(tc, { rotateY: 90 }, { rotateY: 0, duration: 0.6, ease: 'back.out(1.6)', delay: 0.15 });
     gsap.fromTo($('.term-stamp', body), { scale: 3, opacity: 0, rotate: -40 }, { scale: 1, opacity: 1, rotate: -12, duration: 0.4, delay: 0.6, ease: 'back.out(3)', onStart: function () { Sfx.coin(); } });
@@ -371,7 +388,7 @@
     if (!s.ns) Core.shuffle(order);
     var tried = 0;
     body.innerHTML = '<div class="ls-talk">' + pico('think') + '<div class="bubble q">' + fmt(s.q) + '</div></div>' +
-      (s.viz ? '<div class="vz vz-anim">' + s.viz + '</div>' : '') +
+      (s.viz ? '<div class="vz vz-anim">' + mviz(s.viz) + '</div>' : '') +
       (s.code ? '<pre class="q-code">' + esc(s.code) + '</pre>' : '') +
       '<div class="ls-opts">' + order.map(function (oi, k) { return '<button class="ls-opt" data-i="' + oi + '"><span class="ck">' + 'ABCDEF'[k] + '</span><span>' + fmt(s.o[oi]) + '</span></button>'; }).join('') + '</div>' +
       (s.hint ? '<button class="ls-hint">💡 ヒントを見る</button>' : '');
@@ -676,7 +693,7 @@
    *  {t:'fill', text, viz:'…{{0}}…{{1}}…', a:['答え0','答え1'], extra:['ダミー'], hints:[…]}
    * ========================================================= */
   STEP.fill = function (s, body) {
-    var vz = s.viz.replace(/\{\{(\d+)\}\}/g, function (m, k) { return '<button class="fl-b" data-k="' + k + '"><span>？</span></button>'; });
+    var vz = mviz(s.viz).replace(/\{\{(\d+)\}\}/g, function (m, k) { return '<button class="fl-b" data-k="' + k + '"><span>？</span></button>'; });
     var all = s.a.concat(s.extra || []);
     var chips = Core.shuffle(all.map(function (v, i) { return { v: v, i: i }; }));
     body.innerHTML = '<div class="vz fl-vz">' + vz + '</div><div class="fl-pool">' + chips.map(function (c) { return '<button class="chipb fl-chip" data-i="' + c.i + '">' + fmt(c.v) + '</button>'; }).join('') + '</div>' +
@@ -733,6 +750,74 @@
     if (!left) setReady(true);
   };
 
+  /* =========================================================
+   * ウィジェット：図形を動かして体感する（コースの LE.widgets[名前] が中身を描く）
+   *  {t:'widget', w:'unit', text, goal, ...任意の設定}
+   *  ウィジェットは (api, s) を受け取り、ミッション達成で api.ok()、失敗で api.ng(msg) を呼ぶ。
+   *  戻り値 {solve: fn} は自動テスト用（ミッションを自動で達成する）
+   * ========================================================= */
+  STEP.widget = function (s, body) {
+    var W = LE.widgets && LE.widgets[s.w];
+    if (!W) { body.innerHTML = '<p>（ウィジェット ' + esc(s.w) + ' がありません）</p>'; setReady(true); return; }
+    /* ミッションの文言（図の上）はウィジェットが api.goal で書きかえる */
+    body.innerHTML = '<p class="bits-goal wg-goal">' + (s.goal ? '🎯 ' + fmt(s.goal) : '') + '</p><div class="wg wg-' + esc(s.w) + '"></div>';
+    var el = $('.wg', body), miss = 0, done = false;
+    var api = {
+      el: el, fmt: fmt, tex: tex, esc: esc, html: mviz,   // html：HTML はそのまま、$…$ だけ数式にする
+      ok: function (msg, title) { if (done) return; done = true; solved(el, miss === 0, msg || s.ok, title); },
+      ng: function (msg) { if (done) return; miss++; missed(msg || s.hint); },
+      goal: function (h) { var g = $('.wg-goal', body); if (g) { g.innerHTML = '🎯 ' + mviz(h); gsap.fromTo(g, { scale: 1.08 }, { scale: 1, duration: 0.3 }); } },
+      tick: function () { Sfx.tap(); },
+      ding: function (n) { Sfx.correct(n || 1); },
+      burst: function (x, y, n) { FX.burst(x, y, { n: n || 16, speed: 5 }); },
+      isDone: function () { return done; }
+    };
+    window.__LE_WIDGET = W(api, s) || {};
+  };
+
+  /* =========================================================
+   * 公式を組み立てる：札を正しい順にタップして式を完成させる（1手ごとに判定）
+   *  {t:'build', text, ans:['\\sin\\theta', '=', '\\frac{a}{c}'], extra:['\\frac{b}{c}'], pre:'', post:''}
+   *  札は TeX。同じ札が複数あってもよい
+   * ========================================================= */
+  STEP.build = function (s, body) {
+    var pool = s.ans.concat(s.extra || []).map(function (v, i) { return { v: v, i: i }; });
+    Core.shuffle(pool);
+    body.innerHTML = '<div class="bd"><div class="bd-line">' + (s.pre ? '<span class="bd-pre">' + tex(s.pre) + '</span>' : '') +
+      s.ans.map(function (_, k) { return '<span class="bd-slot" data-k="' + k + '"></span>'; }).join('') +
+      (s.post ? '<span class="bd-pre">' + tex(s.post) + '</span>' : '') + '</div>' +
+      '<div class="bd-pool">' + pool.map(function (p) { return '<button class="chipb bd-chip" data-v="' + esc(p.v) + '">' + tex(p.v) + '</button>'; }).join('') + '</div>' +
+      '<p class="bits-goal">🎯 ' + fmt(s.goal || '左から順に、札をタップして式を完成させよう') + '</p></div>';
+    var k = 0, miss = 0;
+    var slots = $$('.bd-slot', body);
+    function mark() { slots.forEach(function (x, i) { x.classList.toggle('act', i === k); }); }
+    mark();
+    $$('.bd-chip', body).forEach(function (c) {
+      c.addEventListener('click', function () {
+        if (P.ready || c.disabled) return;
+        if (c.dataset.v === s.ans[k]) {
+          c.disabled = true;
+          gsap.to(c, { scale: 0.5, opacity: 0, duration: 0.2, onComplete: function () { c.style.display = 'none'; } });
+          var sl = slots[k];
+          sl.innerHTML = tex(s.ans[k]); sl.classList.add('ok');
+          gsap.fromTo(sl, { scale: 1.6, y: -10 }, { scale: 1, y: 0, duration: 0.4, ease: 'back.out(3)' });
+          var cc = centerOf(sl); FX.burst(cc[0], cc[1], { n: 10, speed: 4 }); Sfx.correct(k + 1);
+          k++; mark();
+          if (k >= s.ans.length) {
+            var line = $('.bd-line', body);
+            gsap.fromTo(line, { scale: 1 }, { scale: 1.12, duration: 0.2, yoyo: true, repeat: 1, ease: 'power2.out' });
+            solved(line, miss === 0, s.ok, pick(['公式完成！', 'カンペキ！', '組み上がった！']));
+          }
+        } else {
+          miss++;
+          c.classList.add('bad'); setTimeout(function () { c.classList.remove('bad'); }, 500);
+          gsap.fromTo(c, { x: -8 }, { x: 0, duration: 0.4, ease: 'elastic.out(1.5,0.3)' });
+          missed(s.hint || 'その札は、ここではないよ。');
+        }
+      });
+    });
+  };
+
   STEP.match = function (s, body) {
     var L = Core.shuffle(s.pairs.map(function (p, i) { return i; })), R = Core.shuffle(s.pairs.map(function (p, i) { return i; }));
     var sel = null, left = s.pairs.length, miss = 0;
@@ -763,8 +848,8 @@
     return parseFloat(String(v).replace(/[０-９．－]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); }).replace(/[,，\s]/g, '').replace('ー', '-'));
   }
   STEP.num = function (s, body) {
-    var tries = 0;
-    body.innerHTML = (s.viz ? '<div class="vz vz-anim">' + s.viz + '</div>' : '') +
+    var tries = 0, sol = [].concat(s.solve || []);   // 解き方は配列でも1つの文字列でもよい
+    body.innerHTML = (s.viz ? '<div class="vz vz-anim">' + mviz(s.viz) + '</div>' : '') +
       '<div class="num-row"><input class="num-in" inputmode="decimal" autocomplete="off" placeholder="?"><span class="num-unit">' + esc(s.unit || '') + '</span><button class="btn-primary num-check">チェック</button></div>' +
       (s.hint ? '<button class="ls-hint">💡 ヒントを見る</button>' : '') + '<div class="num-solve"></div>';
     var inp = $('.num-in', body);
@@ -778,11 +863,11 @@
       tries++;
       if (Math.abs(v - s.answer) <= (s.tol || 1e-9)) {
         inp.classList.add('ok'); inp.disabled = true; $('.num-check', body).style.display = 'none';
-        solved(inp, tries === 1, s.ok || (s.solve ? s.solve.join('\n') : ''));
+        solved(inp, tries === 1, s.ok || sol.join('\n'));
       } else {
         inp.classList.add('bad'); setTimeout(function () { inp.classList.remove('bad'); }, 600);
-        if (tries >= 2 && s.solve) {
-          $('.num-solve', body).innerHTML = '<div class="solve"><b>解き方</b><ol>' + s.solve.map(function (x) { return '<li>' + fmt(x) + '</li>'; }).join('') + '</ol></div>';
+        if (tries >= 2 && sol.length) {
+          $('.num-solve', body).innerHTML = '<div class="solve"><b>解き方</b><ol>' + sol.map(function (x) { return '<li>' + fmt(x) + '</li>'; }).join('') + '</ol></div>';
           gsap.from('.solve li', { opacity: 0, x: -20, stagger: 0.15 });
           missed('解き方を見て、もう一度入力してみよう。答えは **' + s.answer + (s.unit || '') + '**。');
         } else missed(s.hint || '計算をもう一度たしかめよう。');
@@ -958,7 +1043,7 @@
   }
 
   window.Lesson = {
-    renderMap: renderMap, start: start, stage: stage, next: nextLesson, isDone: isDone, all: allLessons, no: lessonNo, label: label, fmt: fmt, bind: bind,
+    renderMap: renderMap, start: start, stage: stage, tex: tex, mviz: mviz, math: withMath, next: nextLesson, isDone: isDone, all: allLessons, no: lessonNo, label: label, fmt: fmt, bind: bind,
     active: function () { return !!P; }
   };
 })();

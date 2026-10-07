@@ -32,10 +32,10 @@
     'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js',
     'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js'
   ];
-  var ENGINE_JS = ['core', 'audio', 'fx3d', 'fxmap', 'fx2d', 'lesson', 'ui'];
+  var ENGINE_JS = ['core', 'audio', 'fx3d', 'fxmap', 'fxgeo', 'fx2d', 'lesson', 'ui'];
   /* 古地図の背景（scene.preset 'map'）では three.js を読み込まない */
   var MAP_SCENE = C.scene && C.scene.preset === 'map';
-  if (MAP_SCENE) LIBS = LIBS.slice(0, 1);
+  if (MAP_SCENE || (C.scene && C.scene.preset === 'geo')) LIBS = LIBS.slice(0, 1);
   var courseDir = 'courses/' + C.id + '/';
 
   function css(href) { document.write('<link rel="stylesheet" href="' + href + '">'); }
@@ -47,6 +47,7 @@
   document.write('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>');
   css(FONTS);
   if (C.fonts) css(C.fonts);                         // コース専用の書体（Google Fonts の URL）
+  (C.extCss || []).forEach(css);                     // 外部ライブラリのCSS（KaTeX など）
   ENGINE_CSS.forEach(function (n) { css('engine/css/' + n + '.css' + V); });
   (C.css || []).forEach(function (f) { css(courseDir + f + V); });
   js('engine/js/terms.js' + V);
@@ -69,7 +70,7 @@
   window.LEBoot = {
     body: function () {
       document.write(fill(window.LE_TEMPLATE || ''));
-      LIBS.forEach(js);
+      LIBS.concat(C.libs || []).forEach(js);              // C.libs：コースが使う外部ライブラリ（KaTeX など）
       js('engine/js/api.js' + V);
       (C.files || []).forEach(function (f) { js(courseDir + f + V); });
       ENGINE_JS.forEach(function (n) { js('engine/js/' + n + '.js' + V); });

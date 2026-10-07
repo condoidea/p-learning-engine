@@ -1,0 +1,129 @@
+/* =========================================================
+ * サンカク・ラッシュ — 見た目
+ *  コンセプト：「夜の方眼ノート × 蛍光ペン」
+ *   ・背景は方眼ノートの上で単位円が回り続ける（fxgeo.js）
+ *   ・色のルールを全画面で統一：sin＝ピンク、cos＝シアン、tan＝イエロー
+ *   ・丸ゴシック（M PLUS Rounded 1c）でやわらかく、数字はどっしり
+ * ========================================================= */
+:root {
+  --bg: #0a0d1f;
+  --accent: #ff5fa2;
+  --accent2: #38d9ff;
+  --gold: #ffd84d;
+  --ok: #5cffb0;
+  --ng: #ff5470;
+  --text: #eef2ff;
+  --muted: #9aa6cf;
+  --glass: rgba(14, 18, 42, 0.78);
+  --line: rgba(160, 190, 255, 0.18);
+  --f-display: 'M PLUS Rounded 1c', 'Zen Kaku Gothic New', sans-serif;
+  --f-body: 'M PLUS Rounded 1c', 'Zen Kaku Gothic New', sans-serif;
+  --fx-confetti: #ff5fa2, #38d9ff, #ffd84d, #5cffb0, #b48cff, #ffffff;
+  --sin: #ff5fa2; --cos: #38d9ff; --tan: #ffd84d;
+}
+body { font-family: var(--f-body); background: radial-gradient(ellipse at 30% 20%, #141a3a, #0a0d1f 70%) fixed; }
+
+/* 数式 */
+.katex { font-size: 1.08em; }
+.bubble .katex, .ls-body .katex { color: inherit; }
+.katex .mfrac .frac-line { border-bottom-width: 0.06em; }
+.recap .katex, .kc-sec .katex { font-size: 1.02em; }
+
+/* 吹き出し：ノートの付せん風 */
+.bubble { border-radius: 14px 14px 14px 4px; line-height: 1.85; }
+.mascot .ms-ico { font-family: 'Times New Roman', serif; font-style: italic; font-weight: 700; font-size: 30px; color: #fff;
+  background: radial-gradient(circle at 35% 30%, #ff8cbf, #ff5fa2 55%, #b0306c); text-shadow: 0 2px 6px rgba(0,0,0,.35); }
+
+/* 図（静止画 SVG） */
+.fg { width: 100%; max-width: 340px; height: auto; display: block; margin: 0 auto; overflow: visible; }
+.fg .k { fill: none; stroke: rgba(238,242,255,.85); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.fg .k.fillw { fill: rgba(255,255,255,.05); }
+.fg .thin { stroke-width: 1.3; }
+.fg .thick { stroke-width: 4.5; }
+.fg .s { fill: none; stroke: var(--sin); stroke-width: 2.6; stroke-linecap: round; }
+.fg .c { fill: none; stroke: var(--cos); stroke-width: 2.6; stroke-linecap: round; }
+.fg .t { fill: none; stroke: var(--tan); stroke-width: 2.6; stroke-linecap: round; }
+.fg .h { fill: none; stroke: #ff8a5c; stroke-width: 2.4; }
+.fg .g { fill: none; stroke: var(--ok); stroke-width: 2.2; }
+.fg .v { fill: none; stroke: #b48cff; stroke-width: 2.2; stroke-dasharray: 5 4; }
+.fg .dot { fill: #fff; }
+.fg text, .fg .tx { fill: #eef2ff; font: 700 14px var(--f-body); text-anchor: middle; dominant-baseline: middle; font-style: normal; }
+.fg .tx.s { fill: var(--sin); } .fg .tx.c { fill: var(--cos); } .fg .tx.t { fill: var(--tan); } .fg .tx.h { fill: #ff8a5c; } .fg .tx.g { fill: var(--ok); } .fg .tx.v { fill: #b48cff; }
+.fg .tx.sm { font-size: 11px; }
+.vz .fg { max-width: 300px; }
+.vz-row .fg { max-width: 220px; flex: 1 1 160px; }
+.q-fig { margin: 4px auto 10px; max-width: 320px; }
+.q-fig .fg { max-width: 300px; }
+
+/* 式を並べる箱 */
+.fx-rows { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; font-size: 17px; }
+.fx-rows > div { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.fl-b { min-width: 4.2em; min-height: 2.6em; }
+.fl-chip .katex, .fl-b .katex { font-size: 1.15em; }
+
+/* ウィジェット */
+.wg { display: flex; flex-direction: column; gap: 8px; }
+.gw { position: relative; display: flex; flex-direction: column; gap: 8px; }
+.gw-svg { width: 100%; max-width: 440px; margin: 0 auto; display: block; touch-action: none; user-select: none;
+  background:
+    linear-gradient(rgba(120,160,255,.07) 1px, transparent 1px) 0 0 / 20px 20px,
+    linear-gradient(90deg, rgba(120,160,255,.07) 1px, transparent 1px) 0 0 / 20px 20px,
+    radial-gradient(ellipse at 50% 40%, rgba(30,38,86,.9), rgba(10,13,31,.95));
+  border-radius: 16px; border: 1px solid var(--line); box-shadow: inset 0 0 40px rgba(0,0,0,.45), 0 10px 30px -12px rgba(0,0,0,.7); }
+.gw-svg .gw-t { font: 800 13px var(--f-body); pointer-events: none; }
+.gw-h { cursor: grab; }
+.gw-h:active { cursor: grabbing; }
+.gw-read { min-height: 3.2em; padding: 10px 14px; border-radius: 12px; background: rgba(8,10,26,.75); border: 1px solid var(--line);
+  text-align: center; font-size: 15px; line-height: 1.8; font-variant-numeric: tabular-nums; }
+.gw-read small { color: var(--muted); }
+.gw-yay { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); padding: 6px 16px; border-radius: 99px; pointer-events: none; opacity: 0;
+  background: linear-gradient(90deg, var(--sin), var(--tan)); color: #1a0d1f; font: 900 15px var(--f-display); box-shadow: 0 6px 20px rgba(255,95,162,.5); white-space: nowrap; }
+.gw-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.gw-btn { padding: 8px 16px; border-radius: 99px; font: 800 15px var(--f-display); background: rgba(255,255,255,.06); border: 2px solid var(--line); color: var(--text);
+  transition: transform .15s cubic-bezier(.3,1.6,.5,1), background .2s, border-color .2s; }
+.gw-btn:hover { transform: translateY(-2px); }
+.gw-btn:active { transform: scale(.94); }
+.gw-btn.on { background: rgba(255,95,162,.18); border-color: var(--sin); }
+.gw-btn.gw-sin { border-color: var(--sin); color: var(--sin); font-style: italic; font-family: 'Times New Roman', serif; font-size: 19px; }
+.gw-btn.gw-cos { border-color: var(--cos); color: var(--cos); font-style: italic; font-family: 'Times New Roman', serif; font-size: 19px; }
+.gw-btn.gw-tan { border-color: var(--tan); color: var(--tan); font-style: italic; font-family: 'Times New Roman', serif; font-size: 19px; }
+.gw-corner { cursor: pointer; }
+.wg-goal small { color: var(--muted); }
+
+/* 公式を組み立てる */
+.bd { display: flex; flex-direction: column; gap: 14px; }
+.bd-line { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; min-height: 64px; padding: 12px; border-radius: 14px;
+  background: rgba(8,10,26,.7); border: 1px dashed var(--line); font-size: 19px; }
+.bd-pre { padding: 0 2px; }
+.bd-slot { min-width: 34px; min-height: 40px; border-radius: 8px; border-bottom: 3px solid rgba(255,255,255,.25); display: inline-flex; align-items: center; justify-content: center; padding: 2px 4px; transition: border-color .2s; }
+.bd-slot.act { border-bottom-color: var(--tan); animation: bdBlink 1s ease-in-out infinite; }
+.bd-slot.ok { border-bottom-color: transparent; text-shadow: 0 0 12px rgba(255,255,255,.25); }
+@keyframes bdBlink { 50% { border-bottom-color: rgba(255,216,77,.25); } }
+.bd-pool { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.bd-chip { font-size: 18px; min-width: 48px; text-align: center; padding: 8px 12px; transition: transform .15s cubic-bezier(.3,1.6,.5,1); }
+.bd-chip:hover { transform: translateY(-2px); }
+.bd-chip.bad { border-color: var(--ng); }
+
+/* 問題の数式 */
+#qText .katex { font-size: 1.12em; }
+.choice .ct .katex { font-size: 1.15em; }
+.choice .ct { line-height: 1.9; }
+
+/* 表 */
+.vz-tbl td, .vz-tbl th { text-align: center; padding: 6px 10px; }
+.vz-tbl .katex { font-size: 1.05em; }
+
+@media (max-width: 560px) {
+  .fx-rows { font-size: 15.5px; }
+  .gw-read { font-size: 13.5px; }
+  .bd-line { font-size: 16px; }
+}
+
+/* ミッションの文言：図の上に、付せん風 */
+.wg-goal { margin: 0; padding: 8px 14px; border-radius: 12px; background: rgba(255,216,77,.1); border: 1px solid rgba(255,216,77,.35); color: #fff3c4; font-weight: 700; text-align: center; }
+.wg-goal:empty { display: none; }
+.wg-goal .katex { color: inherit; }
+
+/* 図の文字はエンジン側の汎用クラス（.s .t .h など）の影響を受けないように固定 */
+.fg text { font-family: var(--f-body) !important; font-weight: 700 !important; font-size: 14px; letter-spacing: 0 !important; }
+.fg text.sm { font-size: 11px !important; }

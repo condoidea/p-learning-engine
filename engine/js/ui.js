@@ -488,7 +488,13 @@
     if (isRe) { badge.textContent = '再挑戦'; badge.className = 'tag badge re'; }
     else if (!c || !c.seen) { badge.textContent = 'NEW'; badge.className = 'tag badge new'; }
     else { badge.textContent = '復習 · 記憶 ' + Math.round(Core.retr(c) * 100) + '%'; badge.className = 'tag badge rev'; }
-    $('#qText').textContent = q.q;
+    $('#qText').innerHTML = qfmt(q.q);
+    $('#qText').dataset.qid = q.id;
+    /* 問題の図（q.fig：HTML/SVG の文字列、または LE.figs の関数名と引数 [名前, …]） */
+    var fig = $('#qFig');
+    if (!fig) { fig = document.createElement('div'); fig.id = 'qFig'; fig.className = 'q-fig'; $('#qText').insertAdjacentElement('afterend', fig); }
+    var fh = !q.fig ? '' : Array.isArray(q.fig) ? (LE.figs && LE.figs[q.fig[0]] ? LE.figs[q.fig[0]].apply(null, q.fig.slice(1)) : '') : q.fig;
+    fig.innerHTML = fh ? Lesson.mviz(fh) : ''; fig.style.display = fh ? '' : 'none';
     var code = $('#qCode');
     if (q.code) { code.innerHTML = C.highlight ? C.highlight(q.code, esc) : esc(q.code); code.style.display = ''; } else { code.style.display = 'none'; }
 
@@ -501,7 +507,8 @@
     order.forEach(function (oi, k) {
       var b = document.createElement('button');
       b.className = 'choice';
-      b.innerHTML = '<span class="ck">' + KANA[k] + '</span><span class="ct">' + esc(q.o[oi]) + '</span><span class="cn">' + (k + 1) + '</span>';
+      b.dataset.oi = oi;
+      b.innerHTML = '<span class="ck">' + KANA[k] + '</span><span class="ct">' + qfmt(q.o[oi]) + '</span><span class="cn">' + (k + 1) + '</span>';
       b.addEventListener('click', function (ev) { answer(k, ev); });
       b.addEventListener('mouseenter', function () { if (!session.answered) Sfx.hover(); });
       box.appendChild(b);
@@ -627,7 +634,7 @@
       gsap.to(o, { v: ok ? 100 : 0, duration: 1.1, delay: 0.5, ease: 'power3.out', onUpdate: function () { bar.style.width = o.v + '%'; val.textContent = Math.round(o.v) + '%'; } });
       if (rescue) gsap.fromTo($('.mem-stamp', mem), { scale: 3, opacity: 0, rotate: -25 }, { scale: 1, opacity: 1, rotate: -8, duration: 0.45, delay: 1.2, ease: 'back.out(3)', onStart: function () { Sfx.coin(); } });
     } else mem.style.display = 'none';
-    $('#fbExp').textContent = q.e || '';
+    $('#fbExp').innerHTML = qfmt(q.e || '');
     gsap.to(fb, { height: 'auto', opacity: 1, duration: 0.45, ease: 'power3.out', delay: ok ? 0.1 : 0.25 });
     setTimeout(function () {
       var r = fb.getBoundingClientRect();
@@ -917,6 +924,8 @@
   var TIER_NEXT = { bronze: 'silver', silver: 'gold', gold: 'holo' };
   var TIER_AT = { bronze: 0.25, silver: 0.55, gold: 0.8 };
   function fmtC(t) { return Lesson.fmt(t); }
+  /* 問題文・選択肢：数式コースは $…$ を描画、それ以外は従来どおりの文字 */
+  function qfmt(t) { return C.math ? Lesson.fmt(t) : esc(t); }   // 数式コースは **太字** と $…$ を使える
   function totalCards() { return Core.ALL_CARDS.length; }
   function readCount() { return Core.ALL_CARDS.filter(Core.owned).length; }
 
@@ -1003,7 +1012,7 @@
         '<div class="kc-side">' + side + '</div>';
     };
     var front = '<div class="kc-face kc-front"><div class="kc-shine"></div>' + head('表：要点') + '<div class="kc-scroll">' +
-      '<section class="kc-sec ana"><h4>💭 思い出そう</h4><p>' + fmtC(d.ana || L.goal) + '</p>' + (vizStep ? '<div class="vz">' + vizStep.viz + '</div>' : '') + '</section>' +
+      '<section class="kc-sec ana"><h4>💭 思い出そう</h4><p>' + fmtC(d.ana || L.goal) + '</p>' + (vizStep ? '<div class="vz">' + Lesson.mviz(vizStep.viz) + '</div>' : '') + '</section>' +
       '<section class="kc-sec pts"><h4>✅ 要点 <small>レッスンのまとめ</small></h4><ul>' + (recap.points || []).map(function (p) { return '<li>' + fmtC(p) + '</li>'; }).join('') + '</ul></section>' +
       (d.how && d.how.length ? '<section class="kc-sec how"><h4>🧮 公式・手順</h4><ol>' + d.how.map(function (h) { return '<li>' + fmtC(h) + '</li>'; }).join('') + '</ol></section>' : '') +
       '</div><div class="kc-flip-hint">↻ タップで裏面へ（補足・ひっかけ・マスター度）</div><div class="kc-new" id="kcNew">NEW!</div></div>';
