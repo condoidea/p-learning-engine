@@ -3,7 +3,13 @@
  * ========================================================= */
 (function () {
   'use strict';
-  var KEY = 'bitrush.fe.v1';
+  var C = window.COURSE || {};
+  var TEST = window.LE_E2E ? '.e2e' : '';           // 自動テスト中は別の保存先を使い、本物の学習データに触れない
+  var KEY = (C.storageKey || 'le.' + (C.id || 'default') + '.v1') + TEST;
+  var PROFILE_KEY = 'le.profile.v1' + TEST;          // 全コース共通：XP（レベル）・ストリーク・ログイン日
+  var PROFILE_FIELDS = ['totalXp', 'streak', 'loginDay'];
+  var DEFAULT_TITLES = [[1, 'ビギナー'], [5, 'ルーキー'], [10, 'レギュラー'], [20, 'エキスパート'], [30, 'マスター'], [50, 'レジェンド']];
+  function rule(q) { return (C.fieldRules || {})[q.f] || {}; }
   var DAY = 86400000;
   var MIN = 60000;
   var LN09 = Math.log(0.9);
@@ -50,7 +56,7 @@
       revealed: {},
       lessons: {},
       decks: {},
-      stats: { answered: 0, correct: 0, bestCombo: 0, crits: 0, chests: 0, legendary: 0, perfectSets: 0, sets: 0, mockBest: 0, bCorrect: 0, rescues: 0, cardsRead: 0, zones: 0, bossWins: 0 }
+      stats: { answered: 0, correct: 0, bestCombo: 0, crits: 0, chests: 0, legendary: 0, perfectSets: 0, sets: 0, mockBest: 0, focusCorrect: 0, rescues: 0, cardsRead: 0, zones: 0, bossWins: 0 }
     };
   }
   function merge(base, src) {
@@ -61,21 +67,40 @@
     return base;
   }
   var S;
+  var migratedFrom = null;
+  function readJSON(k) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
   function load() {
-    try { S = merge(defaults(), JSON.parse(localStorage.getItem(KEY) || '{}')); }
-    catch (e) { S = defaults(); }
+    var raw = readJSON(KEY);
+    /* 旧版のデータがあれば自動で引き継ぐ（新しい保存先が空のときだけ） */
+    if (!raw && !TEST) (C.legacyKeys || []).some(function (k) { var v = readJSON(k); if (v) { raw = v; migratedFrom = k; } return !!v; });
+    S = merge(defaults(), raw || {});
+    if (S.stats.bCorrect && !S.stats.focusCorrect) S.stats.focusCorrect = S.stats.bCorrect; // 旧版の統計名
+    /* 全コース共通のプロフィール（なければ、このコースの値から作る） */
+    var P = readJSON(PROFILE_KEY);
+    if (P) PROFILE_FIELDS.forEach(function (f) { if (P[f] !== undefined) S[f] = P[f]; });
+    if (migratedFrom) save();
     return S;
   }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* 容量超過・プライベートモード等 */ } }
+  function save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(S));
+      var P = readJSON(PROFILE_KEY) || {};
+      PROFILE_FIELDS.forEach(function (f) { P[f] = S[f]; });
+      P.updated = Date.now();
+      P.courses = P.courses || {};
+      P.courses[C.id || 'default'] = { last: Date.now(), lessons: Object.keys(S.lessons || {}).length };
+      localStorage.setItem(PROFILE_KEY, JSON.stringify(P));
+    } catch (e) { /* 容量超過・プライベートモード等 */ }
+  }
 
   /* ---------- 問題 ---------- */
   var QMAP = {};
-  FE.questions.forEach(function (q) { QMAP[q.id] = q; });
-  var FMAP = {}; FE.fields.forEach(function (f) { FMAP[f.id] = f; });
-  FE.lessonDefs = FE.lessonDefs || {};
+  LE.questions.forEach(function (q) { QMAP[q.id] = q; });
+  var FMAP = {}; LE.fields.forEach(function (f) { FMAP[f.id] = f; });
+  LE.lessonDefs = LE.lessonDefs || {};
   var Q2LESSON = {};
-  Object.keys(FE.lessonDefs).forEach(function (lid) { (FE.lessonDefs[lid].q || []).forEach(function (qid) { (Q2LESSON[qid] = Q2LESSON[qid] || []).push(lid); }); });
-  var CMAP = {}; FE.cats.forEach(function (c) { CMAP[c.id] = c; });
+  Object.keys(LE.lessonDefs).forEach(function (lid) { (LE.lessonDefs[lid].q || []).forEach(function (qid) { (Q2LESSON[qid] = Q2LESSON[qid] || []).push(lid); }); });
+  var CMAP = {}; LE.cats.forEach(function (c) { CMAP[c.id] = c; });
 
   /* =========================================================
    * SRS：SM-2 を基礎に、保持率 R(t)=0.9^(経過/間隔) で「忘れかけ度」を表現
@@ -99,8 +124,8 @@
     return r * depth * (c.lastOk ? 1 : 0.35);
   }
   function gradeFor(q, ms) {
-    var hard = q.f === 'btrace';
-    var fast = hard ? 40000 : 12000, ok = hard ? 120000 : 35000;
+    var r = rule(q);
+    var fast = r.fast || C.gradeFast || 12000, ok = r.ok || C.gradeOk || 35000;
     if (ms < fast) return 5;
     if (ms < ok) return 4;
     return 3;
@@ -156,7 +181,7 @@
     return S.days[k];
   }
   function pool(filter) {
-    return FE.questions.filter(function (q) { return !filter || filter(q); });
+    return LE.questions.filter(function (q) { return !filter || filter(q); });
   }
   function dueList(filter, now) {
     now = now || Date.now();
@@ -209,7 +234,7 @@
     for (var i = 0; i < ls.length; i++) if (S.lessons[ls[i]] && S.lessons[ls[i]].done) return true;
     return false;
   }
-  function learnedCount() { return FE.questions.filter(function (q) { return S.settings.allQ || isLearned(q.id); }).length; }
+  function learnedCount() { return LE.questions.filter(function (q) { return S.settings.allQ || isLearned(q.id); }).length; }
   function buildQueue(mode, arg) {
     var size = S.settings.setSize;
     var t = today();
@@ -218,30 +243,31 @@
     var gate = function (q) { return S.settings.allQ || isLearned(q.id); };
     filter = gate;
     if (mode === 'field') filter = function (q) { return q.f === arg && gate(q); };
-    if (mode === 'B') filter = function (q) { return FMAP[q.f].cat === 'B' && gate(q); };
+    if (mode === 'focus') filter = function (q) { return C.focus && FMAP[q.f].cat === C.focus.cat && gate(q); };
     if (mode === 'boss') { /* ユニットボス：そのユニットの全レッスンから混ぜて出題（インターリービング） */
-      var U = FE.units.find(function (x) { return x.id === arg; });
+      var U = LE.units.find(function (x) { return x.id === arg; });
       var bq = [];
-      U.lessons.forEach(function (lid) { bq = bq.concat((FE.lessonDefs[lid].q || []).map(function (id) { return QMAP[id]; }).filter(Boolean)); });
+      U.lessons.forEach(function (lid) { bq = bq.concat((LE.lessonDefs[lid].q || []).map(function (id) { return QMAP[id]; }).filter(Boolean)); });
       return shuffle(bq).slice(0, 12);
     }
     if (mode === 'lesson') {
-      var L = FE.lessonDefs[arg];
+      var L = LE.lessonDefs[arg];
       var lq = (L && L.q || []).map(function (id) { return QMAP[id]; }).filter(Boolean);
       return shuffle(lq).slice(0, Math.max(size, lq.length));
     }
     if (mode === 'quick') size = 3;
 
     if (mode === 'mock') {
-      /* 科目A の出題比率に合わせて 20問 */
-      var aFields = FE.fields.filter(function (f) { return CMAP[f.cat].exam === 'A'; });
+      /* 模試：対象区分（mock.exam）の出題比率に合わせて mock.count 問 */
+      var mk = C.mock || {}, cnt = mk.count || 20;
+      var aFields = LE.fields.filter(function (f) { return !mk.exam || CMAP[f.cat].exam === mk.exam; });
       var tw = aFields.reduce(function (s, f) { return s + f.weight; }, 0);
       list = [];
       aFields.forEach(function (f) {
-        var n = Math.max(1, Math.round(20 * f.weight / tw));
+        var n = Math.max(1, Math.round(cnt * f.weight / tw));
         list = list.concat(shuffle(pool(function (q) { return q.f === f.id && gate(q); })).slice(0, n));
       });
-      return shuffle(list).slice(0, 20);
+      return shuffle(list).slice(0, cnt);
     }
     if (mode === 'weak') {
       list = weakList(filter).slice(0, size);
@@ -250,7 +276,7 @@
     }
     var due = dueList(filter);
     var fresh = newList(filter);
-    var allowNew = (mode === 'field' || mode === 'B') ? Math.max(newLeft, Math.ceil(size / 2)) : newLeft;
+    var allowNew = (mode === 'field' || mode === 'focus') ? Math.max(newLeft, Math.ceil(size / 2)) : newLeft;
     list = interleave(due.slice(), fresh.slice(0, allowNew), size);
     if (list.length < size) { // ノルマ以上に頑張る人向け：①記憶が薄れ始めた問題 → ②新規（上限超過分） → ③その他
       var now = Date.now();
@@ -272,13 +298,18 @@
     });
     return { total: qs.length, seen: seen, due: due, mastery: qs.length ? sum / qs.length : 0 };
   }
+  /* 試験の定義（満点・合格ライン）。コース設定 exams に無ければ1000点満点・合格ラインなし */
+  function examDef(id) {
+    return (C.exams || []).find(function (e) { return e.id === id; }) || { id: id, name: id, max: 1000, pass: null };
+  }
   function predict(exam, now) {
-    var fs = FE.fields.filter(function (f) { return CMAP[f.cat].exam === exam; });
+    var fs = LE.fields.filter(function (f) { return CMAP[f.cat].exam === exam; });
     var tw = 0, acc = 0;
     fs.forEach(function (f) { var st = fieldStats(f.id, now); tw += f.weight; acc += f.weight * st.mastery; });
     var m = tw ? acc / tw : 0;
-    /* 4択の偶然正答(25%)を下限とした正答率推定を 1000点換算 */
-    return Math.round((0.25 + 0.75 * m) * 1000);
+    /* 当てずっぽうで取れる割合（guessRate）を下限に、記憶の定着度から正答率を推定して満点換算 */
+    var ex = examDef(exam), g = (C.predict && C.predict.guessRate != null) ? C.predict.guessRate : 0.25;
+    return Math.round((g + (1 - g) * m) * ex.max);
   }
   /* 忘却曲線：今後 days 日、復習しなかった場合の平均保持率 */
   function curve(days, steps) {
@@ -299,10 +330,10 @@
    * 進化ランクは、そのレッスンで解放された問題のマスター度で決まる。
    * ========================================================= */
   var ALL_CARDS = [], LMAP = {};
-  (FE.units || []).forEach(function (u) {
+  (LE.units || []).forEach(function (u) {
     u.lessons.forEach(function (lid, i) {
-      var L = FE.lessonDefs[lid];
-      var c = { id: lid, L: L, unit: u, no: i + 1, t: L.title, def: (FE.cardDefs || {})[lid] || {} };
+      var L = LE.lessonDefs[lid];
+      var c = { id: lid, L: L, unit: u, no: i + 1, t: L.title, def: (LE.cardDefs || {})[lid] || {} };
       ALL_CARDS.push(c); LMAP[lid] = c;
     });
   });
@@ -337,7 +368,7 @@
     return { total: cs.length, got: got, tiers: tiers };
   }
   function unitCleared(uid) {
-    var u = FE.units.find(function (x) { return x.id === uid; });
+    var u = LE.units.find(function (x) { return x.id === uid; });
     return u.lessons.every(function (lid) { return S.lessons[lid] && S.lessons[lid].done; });
   }
 
@@ -350,11 +381,7 @@
     while (rest >= xpNeed(lv)) { rest -= xpNeed(lv); lv++; }
     return { level: lv, cur: rest, need: xpNeed(lv) };
   }
-  var TITLES = [
-    [1, '見習いビット'], [3, 'バイト戦士'], [5, 'キロバイト級'], [8, 'パケット職人'], [11, 'メガバイト級'],
-    [14, 'アルゴリズム剣士'], [17, 'ギガバイト級'], [20, 'スタック魔導士'], [25, 'テラバイト級'],
-    [30, '合格圏の住人'], [36, 'ペタバイト級'], [42, 'IPAの申し子'], [50, '情報処理の覇者']
-  ];
+  var TITLES = C.titles || DEFAULT_TITLES;
   function titleFor(lv) { var t = TITLES[0][1]; TITLES.forEach(function (x) { if (lv >= x[0]) t = x[1]; }); return t; }
   var THEMES = {
     cyan:    { name: 'ネオンシアン',   a: '#38e8ff', b: '#7a5cff', lv: 1 },
@@ -381,25 +408,31 @@
     { id: 'a1000',  ico: '🌌', name: '1000問の旅',   desc: '累計1000問回答', test: function (s) { return s.stats.answered >= 1000; } },
     { id: 'perfect',ico: '✨', name: 'パーフェクト', desc: 'セットを全問正解', test: function (s) { return s.stats.perfectSets >= 1; } },
     { id: 'rescue', ico: '🛟', name: '記憶レスキュー', desc: '忘れかけの復習問題を20問救出', test: function (s) { return s.stats.rescues >= 20; } },
-    { id: 'allf',   ico: '🗺', name: '全分野制覇',   desc: '全分野の問題に1問以上挑戦', test: function (s) { return FE.fields.every(function (f) { return fieldStats(f.id).seen > 0; }); } },
-    { id: 'm80',    ico: '🧠', name: 'スペシャリスト', desc: 'いずれかの分野でマスター度80%', test: function (s) { return FE.fields.some(function (f) { return fieldStats(f.id).mastery >= 0.8; }); } },
+    { id: 'allf',   ico: '🗺', name: '全分野制覇',   desc: '全分野の問題に1問以上挑戦', test: function (s) { return LE.fields.every(function (f) { return fieldStats(f.id).seen > 0; }); } },
+    { id: 'm80',    ico: '🧠', name: 'スペシャリスト', desc: 'いずれかの分野でマスター度80%', test: function (s) { return LE.fields.some(function (f) { return fieldStats(f.id).mastery >= 0.8; }); } },
     { id: 'lv10',   ico: '🔟', name: 'レベル10',     desc: 'レベル10に到達', test: function (s) { return levelInfo(s.totalXp).level >= 10; } },
     { id: 'lv25',   ico: '🏆', name: 'レベル25',     desc: 'レベル25に到達', test: function (s) { return levelInfo(s.totalXp).level >= 25; } },
     { id: 'legend', ico: '🌈', name: 'レジェンド',   desc: 'LEGENDARY 宝箱を引く', test: function (s) { return s.stats.legendary >= 1; } },
-    { id: 'mock',   ico: '🎓', name: '模試合格ライン', desc: 'ミニ模試で600点以上', test: function (s) { return s.stats.mockBest >= 600; } },
-    { id: 'btr',    ico: '{}', name: 'トレーサー',   desc: '科目B問題に累計10問正解', test: function (s) { return s.stats.bCorrect >= 10; } },
+
     { id: 'rd1',    ico: '📇', name: 'はじめてのカード', desc: '復習カードを1枚手に入れる', test: function (s) { return ALL_CARDS.some(owned); } },
     { id: 'rd30',   ico: '📚', name: 'カードコレクター', desc: '復習カードを30枚集める', test: function (s) { return ALL_CARDS.filter(owned).length >= 30; } },
     { id: 'rdall',  ico: '🗃', name: '図鑑コンプリート', desc: '全ての復習カードを集める', test: function (s) { return ALL_CARDS.every(owned); } },
     { id: 'gold',   ico: '🥇', name: 'ゴールドカード', desc: 'カードをゴールドに進化させる', test: function (s) { return ALL_CARDS.some(function (c) { var t = cardTier(c); return t === 'gold' || t === 'holo'; }); } },
     { id: 'holo',   ico: '🌈', name: 'ホログラム',   desc: 'カードをホロに進化させる', test: function (s) { return ALL_CARDS.some(function (c) { return cardTier(c) === 'holo'; }); } },
-    { id: 'unit1',  ico: '🏁', name: 'ユニット制覇', desc: 'ユニットのレッスンを全部クリア', test: function (s) { return FE.units.some(function (u) { return unitCleared(u.id); }); } },
+    { id: 'unit1',  ico: '🏁', name: 'ユニット制覇', desc: 'ユニットのレッスンを全部クリア', test: function (s) { return LE.units.some(function (u) { return unitCleared(u.id); }); } },
     { id: 'boss1',  ico: '⚔', name: 'ボスキラー',   desc: 'ユニットボスを倒す', test: function (s) { return s.stats.bossWins >= 1; } },
-    { id: 'bossall',ico: '👑', name: '全ボス制覇',   desc: '全ユニットのボスを倒す', test: function (s) { return FE.units.every(function (u) { return s.bosses[u.id]; }); } },
+    { id: 'bossall',ico: '👑', name: '全ボス制覇',   desc: '全ユニットのボスを倒す', test: function (s) { return LE.units.every(function (u) { return s.bosses[u.id]; }); } },
     { id: 'zone',   ico: '🌀', name: 'ZONE突入',     desc: 'レッスンで5問連続一発正解', test: function (s) { return s.stats.zones >= 1; } },
     { id: 'owl',    ico: '🦉', name: '夜ふかし学習', desc: '23時以降に学習する', test: function (s) { return s._owl; } },
     { id: 'bird',   ico: '🐓', name: '朝活の鬼',     desc: '7時前に学習する', test: function (s) { return s._bird; } }
   ];
+  /* コース設定に応じた実績（模試・特訓モード） */
+  (function () {
+    var mk = C.mock, ex = mk && examDef(mk.exam);
+    if (mk && ex.pass) ACH.push({ id: 'mock', ico: '🎓', name: '模試合格ライン', desc: (mk.label || 'ミニ模試') + 'で' + ex.pass + '点以上', test: function (s) { return s.stats.mockBest >= ex.pass; } });
+    var fo = C.focus;
+    if (fo) ACH.push({ id: 'btr', ico: fo.achIco || '🔥', name: fo.achName || fo.label + 'マスター', desc: fo.achDesc || fo.label + 'で累計10問正解', test: function (s) { return (s.stats.focusCorrect || 0) >= 10; } });
+  })();
   function checkAch() {
     var h = new Date().getHours();
     S._owl = S._owl || h >= 23;
@@ -416,11 +449,11 @@
     { type: 'combo',   label: function (n) { return n + 'コンボを達成する'; }, n: [3, 5, 7] },
     { type: 'rescue',  label: function (n) { return '復習問題を' + n + '問正解する'; }, n: [3, 5] },
     { type: 'sets',    label: function (n) { return n + 'セットクリアする'; }, n: [1, 2] },
-    { type: 'bq',      label: function (n) { return '科目B問題に' + n + '問正解する'; }, n: [2, 3] },
     { type: 'read',    label: function (n) { return '復習カードを' + n + '枚見返す'; }, n: [2, 3] },
     { type: 'lesson',  label: function (n) { return 'レッスンを' + n + '本クリアする'; }, n: [1, 1, 2] },
     { type: 'newq',    label: function (n) { return '新しい問題に' + n + '問挑戦する'; }, n: [5, 8] }
   ];
+  if (C.focus) QUEST_POOL.push({ type: 'focus', label: function (n) { return (C.focus.questLabel || C.focus.label + 'で{n}問正解する').replace('{n}', n); }, n: [2, 3] });
   function ensureQuests() {
     var k = dayKey();
     if (S.quests.day === k && S.quests.list.length) return;
@@ -477,7 +510,7 @@
     if (info.wasDue) { xp += 6; tags.push('RESCUE'); }
     if (info.wasNew) { xp += 3; }
     if (info.grade === 5) { xp += 4; tags.push('SPEED'); }
-    if (q.f === 'btrace') xp += 8;
+    xp += rule(q).xpBonus || 0;
     var mult = 1;
     if (combo >= 10) { mult *= 1.5; tags.push('FEVER'); }
     if (S.boostArmed) { mult *= 2; tags.push('BOOST'); }
@@ -524,6 +557,7 @@
   window.Core = {
     get S() { return S; },
     load: load, save: save, defaults: defaults,
+    examDef: examDef, rule: rule, COURSE: C, migratedFrom: function () { return migratedFrom; },
     QMAP: QMAP, FMAP: FMAP, CMAP: CMAP, THEMES: THEMES, ACH: ACH, TITLES: TITLES,
     dayKey: dayKey, dayDiff: dayDiff, shuffle: shuffle, rand: rand,
     retr: retr, strength: strength, review: review, fmtIvl: fmtIvl,
@@ -536,7 +570,8 @@
     cardTier: cardTier, cardProgress: cardProgress, markRead: markRead, owned: owned, unitStats: unitStats, unitCleared: unitCleared,
     isLearned: isLearned, learnedCount: learnedCount, Q2LESSON: Q2LESSON,
     calcXp: calcXp, rollChest: rollChest, addXp: addXp,
-    reset: function () { S = defaults(); save(); return S; },
+    /* このコースだけリセット（XP・ストリークなど全コース共通のプロフィールは残す） */
+    reset: function () { var keep = {}; PROFILE_FIELDS.forEach(function (f) { keep[f] = S[f]; }); S = defaults(); PROFILE_FIELDS.forEach(function (f) { S[f] = keep[f]; }); save(); return S; },
     replace: function (obj) { S = merge(defaults(), obj); save(); return S; }
   };
 })();

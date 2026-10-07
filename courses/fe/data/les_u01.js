@@ -1,5 +1,5 @@
 /* UNIT 1 コンピュータの言葉（基礎理論） */
-FE.gloss({
+LE.gloss({
   'ビット': 'コンピュータが扱う情報の最小単位。0か1のどちらか1つ。',
   'バイト': '8ビットをひとまとめにした単位。1バイトで256通りを表せる。',
   '10進数': 'ふだん使っている数の表し方。0〜9の10種類の数字を使い、10ごとに桁が上がる。',
@@ -8,7 +8,7 @@ FE.gloss({
   '桁の重み': 'その桁の1がいくつ分の価値をもつか。10進数なら1,10,100…、2進数なら1,2,4,8…'
 });
 
-FE.defLesson('u1', {
+LE.defLesson('u1', {
   id: 'u1-1', title: 'コンピュータはなぜ0と1なの？', goal: '2進数のしくみがわかり、2進数⇔10進数を変換できる',
   q: ['basic-005'],
   steps: [
@@ -49,7 +49,7 @@ FE.defLesson('u1', {
   ]
 });
 
-FE.defLesson('u1', {
+LE.defLesson('u1', {
   id: 'u1-2', title: '16進数と小数の2進数', goal: '16進数の意味がわかり、16進数や2進数の小数を10進数にできる',
   q: ['basic-001', 'basic-002'],
   steps: [
@@ -87,7 +87,7 @@ FE.defLesson('u1', {
   ]
 });
 
-FE.defLesson('u1', {
+LE.defLesson('u1', {
   id: 'u1-3', title: 'マイナスの数のあらわし方', goal: '2の補数で負の数を表し、その値や範囲を求められる',
   q: ['basic-003', 'basic-004'],
   steps: [
@@ -120,7 +120,7 @@ FE.defLesson('u1', {
   ]
 });
 
-FE.defLesson('u1', {
+LE.defLesson('u1', {
   id: 'u1-4', title: '論理演算：AND・OR・XOR', goal: '論理演算と論理回路の動きがわかり、ド・モルガンの法則を使える',
   q: ['basic-006', 'basic-007', 'hw-001', 'hw-002'],
   steps: [
@@ -156,7 +156,7 @@ FE.defLesson('u1', {
   ]
 });
 
-FE.defLesson('u1', {
+LE.defLesson('u1', {
   id: 'u1-5', title: '確率と統計のきほん', goal: '場合の数・確率・組合せを計算でき、正規分布の目安がわかる',
   q: ['basic-008', 'basic-009', 'basic-012'],
   steps: [
@@ -188,7 +188,7 @@ FE.defLesson('u1', {
   ]
 });
 
-FE.defLesson('u1', {
+LE.defLesson('u1', {
   id: 'u1-6', title: '計算の誤差と情報量', goal: '情報落ち・桁落ちの違いがわかり、情報量とデータ量を計算できる',
   q: ['basic-010', 'basic-011', 'basic-014'],
   steps: [
@@ -223,7 +223,7 @@ FE.defLesson('u1', {
   ]
 });
 
-FE.defLesson('u1', {
+LE.defLesson('u1', {
   id: 'u1-7', title: '式の書き方・状態の変化・AI', goal: '逆ポーランド記法、オートマトン、機械学習の種類を説明できる',
   q: ['basic-013', 'basic-015', 'basic-016'],
   steps: [

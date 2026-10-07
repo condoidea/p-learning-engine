@@ -18,12 +18,12 @@
   }
   function allLessons() {
     var out = [];
-    FE.units.forEach(function (u) { u.lessons.forEach(function (id) { out.push(FE.lessonDefs[id]); }); });
+    LE.units.forEach(function (u) { u.lessons.forEach(function (id) { out.push(LE.lessonDefs[id]); }); });
     return out;
   }
   function isDone(id) { var r = S().lessons[id]; return !!(r && r.done); }
   function isOpen(L) {
-    var u = FE.units.find(function (x) { return x.id === L.unit; });
+    var u = LE.units.find(function (x) { return x.id === L.unit; });
     var i = u.lessons.indexOf(L.id);
     return i === 0 || isDone(u.lessons[i - 1]);
   }
@@ -31,8 +31,8 @@
   function lessonNo(L) { return allLessons().indexOf(L) + 1; }
   /* ロードマップ・カード・問題で共通の番号「ユニット-レッスン」 */
   function label(L) {
-    var ui = FE.units.findIndex(function (u) { return u.id === L.unit; });
-    return (ui + 1) + '-' + (FE.units[ui].lessons.indexOf(L.id) + 1);
+    var ui = LE.units.findIndex(function (u) { return u.id === L.unit; });
+    return (ui + 1) + '-' + (LE.units[ui].lessons.indexOf(L.id) + 1);
   }
 
   /* =========================================================
@@ -62,8 +62,8 @@
     $('#rmNext').textContent = nx ? 'Lesson ' + label(nx) + '：' + nx.title : '全レッスン制覇！';
 
     box.innerHTML = '';
-    FE.units.forEach(function (u, ui) {
-      var ls = u.lessons.map(function (id) { return FE.lessonDefs[id]; });
+    LE.units.forEach(function (u, ui) {
+      var ls = u.lessons.map(function (id) { return LE.lessonDefs[id]; });
       if (!ls.length) return;
       var ud = ls.filter(function (L) { return isDone(L.id); }).length;
       var sec = document.createElement('section');
@@ -88,7 +88,7 @@
       });
       /* ユニットボス */
       var cleared = Core.unitCleared(u.id), beaten = !!S().bosses[u.id];
-      var bi = FE.bosses[u.id] || { name: 'BOSS', ico: '👾' };
+      var bi = LE.bosses[u.id] || { name: 'BOSS', ico: '👾' };
       var bn = document.createElement('button');
       bn.className = 'node boss-node ' + (beaten ? 'done' : cleared ? 'open' : 'locked');
       bn.dataset.id = 'boss-' + u.id;
@@ -144,8 +144,8 @@
   }
   function bossPreview(u, ui) {
     var cleared = Core.unitCleared(u.id), beaten = !!S().bosses[u.id];
-    var bi = FE.bosses[u.id] || { name: 'BOSS', ico: '👾' };
-    var n = 0; u.lessons.forEach(function (lid) { n += (FE.lessonDefs[lid].q || []).length; });
+    var bi = LE.bosses[u.id] || { name: 'BOSS', ico: '👾' };
+    var n = 0; u.lessons.forEach(function (lid) { n += (LE.lessonDefs[lid].q || []).length; });
     var qn = Math.min(12, n), hp = Math.max(3, Math.ceil(qn * 0.7));
     var pv = $('#lessonPreview');
     pv.style.setProperty('--c', '#ff4d6d');
@@ -189,10 +189,10 @@
   function preview(L) {
     var open = isOpen(L), done = isDone(L.id);
     var pv = $('#lessonPreview');
-    var u = FE.units.find(function (x) { return x.id === L.unit; });
+    var u = LE.units.find(function (x) { return x.id === L.unit; });
     pv.style.setProperty('--c', u.color);
     var nSteps = L.steps.length, nInt = L.steps.filter(function (s) { return INTERACTIVE[s.t]; }).length;
-    pv.innerHTML = '<div class="pv-card glass"><small>UNIT ' + (FE.units.indexOf(u) + 1) + ' ' + esc(u.name) + ' ／ Lesson ' + label(L) + '</small><h3>' + esc(L.title) + '</h3>' +
+    pv.innerHTML = '<div class="pv-card glass"><small>UNIT ' + (LE.units.indexOf(u) + 1) + ' ' + esc(u.name) + ' ／ Lesson ' + label(L) + '</small><h3>' + esc(L.title) + '</h3>' +
       '<p class="pv-goal">🎯 ' + esc(L.goal || '') + '</p>' +
       '<div class="pv-meta"><span>⏱ 約' + Math.max(3, Math.round(nSteps * 0.5)) + '分</span><span>🧩 体験・確認 ' + nInt + '問</span><span>🔓 解放される問題 ' + L.q.length + '問</span></div>' +
       (open ? '<button class="btn-mega pv-go"><span class="mega-label">' + (done ? 'REPLAY' : 'START') + '</span><span class="mega-sub">' + (done ? 'もう一度学ぶ' : 'レッスンをはじめる') + '</span></button>' : '<p class="pv-lock">🔒 前のレッスンをクリアすると開放されます</p>') +
@@ -218,7 +218,7 @@
   var P = null;
   function start(id) {
     Sfx.unlock();
-    var L = FE.lessonDefs[id];
+    var L = LE.lessonDefs[id];
     P = { L: L, i: 0, xp: 0, first: {}, combo: 0, ready: false, startAt: Date.now() };
     UI.go('lesson');
     setTimeout(function () { renderStep(true); }, 350);
@@ -663,7 +663,7 @@
     var tip = $('#glossTip');
     var g = e.target.closest && e.target.closest('.gl');
     if (!g) { if (tip.classList.contains('show') && !e.target.closest('#glossTip')) tip.classList.remove('show'); return; }
-    var term = g.dataset.t, def = FE.glossary[term];
+    var term = g.dataset.t, def = LE.glossary[term];
     tip.innerHTML = '<b>' + esc(term) + '</b><p>' + fmt(def || '（このあとのレッスンで説明するよ）') + '</p>';
     tip.classList.add('show');
     var r = g.getBoundingClientRect(), w = Math.min(300, window.innerWidth - 32);

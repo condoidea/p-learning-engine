@@ -1,5 +1,5 @@
 /* UNIT 4 OSとシステムの信頼性（ソフトウェア・システム構成要素） */
-FE.gloss({
+LE.gloss({
   'OS': 'オペレーティングシステム。WindowsやLinuxなど。CPUやメモリを管理し、アプリが動く土台になる基本ソフト。',
   'タスク': 'OSから見た「実行中の仕事（プログラム）」の単位。プロセスともいう。',
   '稼働率': 'システムが正常に動いている時間の割合。0〜1で表す。',
@@ -8,7 +8,7 @@ FE.gloss({
   'クラウド': 'インターネット経由で、サーバやソフトを必要な分だけ借りて使う形態。'
 });
 
-FE.defLesson('u4', {
+LE.defLesson('u4', {
   id: 'u4-1', title: 'OSの仕事とタスク管理', goal: 'タスクの3つの状態とスケジューリング、デッドロックがわかる',
   q: ['sw-001', 'sw-002', 'sw-005', 'sw-006'],
   steps: [
@@ -40,7 +40,7 @@ FE.defLesson('u4', {
   ]
 });
 
-FE.defLesson('u4', {
+LE.defLesson('u4', {
   id: 'u4-2', title: '仮想記憶：メモリが足りないときの工夫', goal: '仮想記憶・ページフォールト・ページ置換（LRU/FIFO）がわかる',
   q: ['sw-003', 'sw-004'],
   steps: [
@@ -67,7 +67,7 @@ FE.defLesson('u4', {
   ]
 });
 
-FE.defLesson('u4', {
+LE.defLesson('u4', {
   id: 'u4-3', title: 'ファイル・プログラムの翻訳・OSS', goal: '絶対パスと相対パス、コンパイルの流れ、OSSの意味がわかる',
   q: ['sw-007', 'sw-008', 'sw-009', 'sw-010'],
   steps: [
@@ -96,7 +96,7 @@ FE.defLesson('u4', {
   ]
 });
 
-FE.defLesson('u4', {
+LE.defLesson('u4', {
   id: 'u4-4', title: '稼働率の計算', goal: 'MTBF・MTTRから稼働率を求め、直列・並列の稼働率を計算できる',
   q: ['sys-001', 'sys-002', 'sys-003'],
   steps: [
@@ -126,7 +126,7 @@ FE.defLesson('u4', {
   ]
 });
 
-FE.defLesson('u4', {
+LE.defLesson('u4', {
   id: 'u4-5', title: '止まらないシステムの作り方とRAID', goal: 'フェールセーフ等の設計思想、スタンバイ方式、RAIDの種類を区別できる',
   q: ['sys-004', 'sys-005', 'sys-006', 'sys-007'],
   steps: [
@@ -153,7 +153,7 @@ FE.defLesson('u4', {
   ]
 });
 
-FE.defLesson('u4', {
+LE.defLesson('u4', {
   id: 'u4-6', title: 'システムの形とクラウド', goal: '性能指標、3層クライアントサーバ、クラウドの種類、スケールアウトがわかる',
   q: ['sys-008', 'sys-009', 'sys-010', 'sys-011'],
   steps: [

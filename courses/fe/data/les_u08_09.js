@@ -1,5 +1,5 @@
 /* UNIT 8 システム開発 ／ UNIT 9 マネジメント */
-FE.gloss({
+LE.gloss({
   'モジュール': 'プログラムを機能ごとに分けた部品。',
   'アジャイル': '短い期間で「作る→見せる→直す」を繰り返して開発する考え方。',
   'プロジェクト': '期限のある、独自の成果物を作る仕事。システム開発など。',
@@ -9,7 +9,7 @@ FE.gloss({
 });
 
 /* ===================== UNIT 8 ===================== */
-FE.defLesson('u8', {
+LE.defLesson('u8', {
   id: 'u8-1', title: 'システムの作り方の流れ', goal: 'ウォーターフォールとアジャイル（スクラム・XP）、DevOpsの違いがわかる',
   q: ['dev-006', 'dev-007', 'dev-011'],
   steps: [
@@ -32,7 +32,7 @@ FE.defLesson('u8', {
   ]
 });
 
-FE.defLesson('u8', {
+LE.defLesson('u8', {
   id: 'u8-2', title: 'テストのやり方', goal: 'ブラックボックス／ホワイトボックス、同値分割・限界値、スタブ・ドライバ、回帰テストがわかる',
   q: ['dev-001', 'dev-002', 'dev-003', 'dev-004'],
   steps: [
@@ -60,7 +60,7 @@ FE.defLesson('u8', {
   ]
 });
 
-FE.defLesson('u8', {
+LE.defLesson('u8', {
   id: 'u8-3', title: '良い設計とオブジェクト指向', goal: 'モジュールの結合度、オブジェクト指向の用語、UML、リファクタリングがわかる',
   q: ['dev-005', 'dev-008', 'dev-009', 'dev-010', 'dev-012'],
   steps: [
@@ -89,7 +89,7 @@ FE.defLesson('u8', {
 });
 
 /* ===================== UNIT 9 ===================== */
-FE.defLesson('u9', {
+LE.defLesson('u9', {
   id: 'u9-1', title: 'プロジェクトとスケジュール', goal: 'WBS・スコープの意味がわかり、クリティカルパスを求められる',
   q: ['pm-001', 'pm-002', 'pm-003', 'pm-004', 'pm-008', 'pm-009'],
   steps: [
@@ -116,7 +116,7 @@ FE.defLesson('u9', {
   ]
 });
 
-FE.defLesson('u9', {
+LE.defLesson('u9', {
   id: 'u9-2', title: '見積りと進捗管理（EVM）', goal: '工数計算・三点見積・ファンクションポイント法、EVMの読み方がわかる',
   q: ['pm-005', 'pm-006', 'pm-007', 'pm-010'],
   steps: [
@@ -143,7 +143,7 @@ FE.defLesson('u9', {
   ]
 });
 
-FE.defLesson('u9', {
+LE.defLesson('u9', {
   id: 'u9-3', title: 'ITサービスを止めない管理', goal: 'SLA、インシデント管理と問題管理の違い、サービスデスク、BCPがわかる',
   q: ['sm-001', 'sm-002', 'sm-003', 'sm-004', 'sm-005', 'sm-006', 'sm-007', 'sm-008'],
   steps: [
@@ -169,7 +169,7 @@ FE.defLesson('u9', {
   ]
 });
 
-FE.defLesson('u9', {
+LE.defLesson('u9', {
   id: 'u9-4', title: 'システム監査と内部統制', goal: '監査人の独立性・監査の流れ、内部統制とITガバナンスがわかる',
   q: ['audit-001', 'audit-002', 'audit-003', 'audit-004', 'audit-005'],
   steps: [

@@ -166,8 +166,8 @@ kbd { font-family: var(--f-mono); font-size: .75em; padding: 1px 6px; border: 1p
 .meter-bar i { display: block; height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, var(--ng), var(--gold)); }
 .meter.pass .meter-bar i { background: linear-gradient(90deg, var(--accent), var(--ok)); box-shadow: 0 0 14px var(--ok); }
 .meter.pass .meter-label b { color: var(--ok); }
-.pass-line { position: absolute; left: 60%; top: -5px; bottom: -5px; width: 2px; background: #fff; box-shadow: 0 0 8px #fff; }
-.pass-line::after { content: '600'; position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-family: var(--f-mono); font-size: 9px; color: var(--muted); font-style: normal; }
+.pass-line { position: absolute; top: -5px; bottom: -5px; width: 2px; background: #fff; box-shadow: 0 0 8px #fff; }
+.pass-line::after { content: attr(data-v); position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-family: var(--f-mono); font-size: 9px; color: var(--muted); font-style: normal; }
 .note { margin: 6px 0 0; font-size: 12px; color: var(--muted); line-height: 1.6; }
 
 .curve { grid-column: 6 / 13; }

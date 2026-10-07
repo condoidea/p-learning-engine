@@ -2,7 +2,7 @@
 /* =========================================================
  * コースデータの整合性チェック（依存なし・Node だけで動く）
  *   使い方：node tests/check-course.js fe
- *   - 入口HTML（fe.html）に書かれた順に courses/ と engine/js/core.js を読み込む
+ *   - courses/<id>/course.js の files に書かれた順にデータを読み込み、エンジンの core.js で検査する
  *   - 問題・レッスン・カード・ボスの整合性を検査し、件数を出す（リファクタ前後の比較用）
  * ========================================================= */
 'use strict';
@@ -12,12 +12,8 @@ const vm = require('vm');
 
 const root = path.resolve(__dirname, '..');
 const courseId = process.argv[2] || 'fe';
-const entry = path.join(root, courseId + '.html');
-if (!fs.existsSync(entry)) { console.error('入口ファイルがありません: ' + entry); process.exit(2); }
-
-const html = fs.readFileSync(entry, 'utf8');
-const srcs = [...html.matchAll(/<script src="([^"?]+)(?:\?[^"]*)?"><\/script>/g)].map(m => m[1])
-  .filter(s => s.startsWith('courses/') || /engine\/js\/(config|core)\.js$/.test(s));
+const courseDir = 'courses/' + courseId + '/';
+if (!fs.existsSync(path.join(root, courseDir, 'course.js'))) { console.error('コース設定がありません: ' + courseDir + 'course.js'); process.exit(2); }
 
 const store = {};
 const sandbox = {
@@ -27,11 +23,12 @@ const sandbox = {
 };
 sandbox.window = sandbox;
 vm.createContext(sandbox);
-for (const s of srcs) {
-  const file = path.join(root, s);
-  vm.runInContext(fs.readFileSync(file, 'utf8'), sandbox, { filename: s });
-}
-const LE = sandbox.LE || sandbox.FE;
+const run = (s) => vm.runInContext(fs.readFileSync(path.join(root, s), 'utf8'), sandbox, { filename: s });
+run(courseDir + 'course.js');
+run('engine/js/api.js');
+for (const f of sandbox.COURSE.files) run(courseDir + f);
+run('engine/js/core.js');
+const LE = sandbox.LE;
 const Core = sandbox.Core;
 Core.load();
 

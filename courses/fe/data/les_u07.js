@@ -1,5 +1,5 @@
 /* UNIT 7 セキュリティ */
-FE.gloss({
+LE.gloss({
   '暗号化': 'データを第三者に読めない形に変換すること。元に戻すことを復号という。',
   '鍵': '暗号化・復号に使う秘密の情報。同じ方式でも鍵が違えば結果が変わる。',
   '公開鍵': '誰に知られてもよい鍵。秘密鍵とペアで作られる。',
@@ -9,7 +9,7 @@ FE.gloss({
   '脆弱性': 'ソフトウェアやシステムのセキュリティ上の弱点（バグなど）。'
 });
 
-FE.defLesson('u7', {
+LE.defLesson('u7', {
   id: 'u7-1', title: '守るべき3つのものと、主な脅威', goal: 'CIA（機密性・完全性・可用性）と代表的なマルウェア・攻撃がわかる',
   q: ['sec-001', 'sec-011', 'sec-012', 'sec-018'],
   steps: [
@@ -34,7 +34,7 @@ FE.defLesson('u7', {
   ]
 });
 
-FE.defLesson('u7', {
+LE.defLesson('u7', {
   id: 'u7-2', title: '暗号のしくみ：共通鍵と公開鍵', goal: '共通鍵暗号と公開鍵暗号の違い、どの鍵で暗号化するかがわかる',
   q: ['sec-002', 'sec-003'],
   steps: [
@@ -60,7 +60,7 @@ FE.defLesson('u7', {
   ]
 });
 
-FE.defLesson('u7', {
+LE.defLesson('u7', {
   id: 'u7-3', title: 'ハッシュ・デジタル署名・認証局', goal: 'ハッシュの性質、デジタル署名の鍵の使い方、認証局の役割がわかる',
   q: ['sec-004', 'sec-005', 'sec-006'],
   steps: [
@@ -89,7 +89,7 @@ FE.defLesson('u7', {
   ]
 });
 
-FE.defLesson('u7', {
+LE.defLesson('u7', {
   id: 'u7-4', title: 'Webとパスワードへの攻撃', goal: 'SQLインジェクション・XSS・CSRF・パスワード攻撃と対策がわかる',
   q: ['sec-007', 'sec-008', 'sec-009', 'sec-010'],
   steps: [
@@ -115,7 +115,7 @@ FE.defLesson('u7', {
   ]
 });
 
-FE.defLesson('u7', {
+LE.defLesson('u7', {
   id: 'u7-5', title: '守りの技術と組織の対策', goal: 'DMZ・多要素認証・リスク対応・ISMS・CSIRTがわかる',
   q: ['sec-013', 'sec-014', 'sec-015', 'sec-016', 'sec-017'],
   steps: [

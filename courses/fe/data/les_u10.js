@@ -1,11 +1,11 @@
 /* UNIT 10 ストラテジ（経営戦略・会計・業務改善・システム戦略・法務） */
-FE.gloss({
+LE.gloss({
   '固定費': '売上に関係なく毎月かかる費用。家賃や正社員の給料など。',
   '変動費': '売上（作る量）に比例して増える費用。材料費など。',
   '著作権': '文章・音楽・プログラムなどの創作物を守る権利。作った瞬間に自動で発生する。'
 });
 
-FE.defLesson('u10', {
+LE.defLesson('u10', {
   id: 'u10-1', title: '会社の戦略を考える道具', goal: 'SWOT・PPM・ファイブフォース・バランススコアカードを使い分けられる',
   q: ['biz-001', 'biz-002', 'biz-005', 'biz-006', 'biz-007'],
   steps: [
@@ -32,7 +32,7 @@ FE.defLesson('u10', {
   ]
 });
 
-FE.defLesson('u10', {
+LE.defLesson('u10', {
   id: 'u10-2', title: 'マーケティングと新しい技術', goal: '4P・STP・ロングテール・キャズム・CRM・RFIDなどがわかる',
   q: ['biz-003', 'biz-004', 'biz-008', 'biz-009', 'biz-010', 'biz-011', 'biz-012'],
   steps: [
@@ -55,7 +55,7 @@ FE.defLesson('u10', {
   ]
 });
 
-FE.defLesson('u10', {
+LE.defLesson('u10', {
   id: 'u10-3', title: '会社のお金：財務諸表と損益分岐点', goal: '貸借対照表と損益計算書の違い、利益の段階、損益分岐点の計算ができる',
   q: ['corp-001', 'corp-002', 'corp-003', 'corp-004', 'corp-012'],
   steps: [
@@ -81,7 +81,7 @@ FE.defLesson('u10', {
   ]
 });
 
-FE.defLesson('u10', {
+LE.defLesson('u10', {
   id: 'u10-4', title: '品質管理・在庫・会社の責任', goal: 'QC七つ道具、ブレーンストーミング、在庫管理、CSRなどがわかる',
   q: ['corp-005', 'corp-006', 'corp-007', 'corp-008', 'corp-009', 'corp-010', 'corp-011'],
   steps: [
@@ -107,7 +107,7 @@ FE.defLesson('u10', {
   ]
 });
 
-FE.defLesson('u10', {
+LE.defLesson('u10', {
   id: 'u10-5', title: 'ITで会社を変える（システム戦略）', goal: 'BPR・EA・ERP・RFP・非機能要件・SaaS・ROI・DXがわかる',
   q: ['sysst-001', 'sysst-002', 'sysst-003', 'sysst-004', 'sysst-005', 'sysst-006', 'sysst-007', 'sysst-008'],
   steps: [
@@ -134,7 +134,7 @@ FE.defLesson('u10', {
   ]
 });
 
-FE.defLesson('u10', {
+LE.defLesson('u10', {
   id: 'u10-6', title: '知っておくべき法律', goal: '著作権・産業財産権・営業秘密、セキュリティ関連法、派遣と請負の違いがわかる',
   q: ['law-001', 'law-002', 'law-003', 'law-004', 'law-005', 'law-006', 'law-007', 'law-008', 'law-009', 'law-010'],
   steps: [

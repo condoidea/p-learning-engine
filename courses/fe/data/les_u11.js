@@ -1,5 +1,5 @@
 /* UNIT 11 科目B：プログラムを読む（擬似言語）＋ セキュリティ事例 */
-FE.gloss({
+LE.gloss({
   '擬似言語': '試験用の、日本語まじりのプログラムの書き方。実際のプログラミング言語ではないが、考え方は同じ。',
   '変数': '値を入れておく名前つきの箱。中身はあとから入れ替えられる。',
   '代入': '変数に値を入れること。擬似言語では「←」で書く。',
@@ -8,7 +8,7 @@ FE.gloss({
   '関数': '処理をひとまとめにして名前を付けたもの。値を受け取り（引数）、結果を返す（戻り値）。'
 });
 
-FE.defLesson('u11', {
+LE.defLesson('u11', {
   id: 'u11-1', title: 'プログラムを1行ずつ追う', goal: '変数・代入・繰返しを理解し、トレースで変数の値を追える',
   q: ['btrace-001', 'btrace-012'],
   steps: [
@@ -60,7 +60,7 @@ FE.defLesson('u11', {
   ]
 });
 
-FE.defLesson('u11', {
+LE.defLesson('u11', {
   id: 'u11-2', title: '配列と if：最大値・合計を求める', goal: '配列の要素番号・if文を理解し、最大値を探すプログラムを追える',
   q: ['btrace-003', 'btrace-013', 'btrace-015'],
   steps: [
@@ -101,7 +101,7 @@ FE.defLesson('u11', {
   ]
 });
 
-FE.defLesson('u11', {
+LE.defLesson('u11', {
   id: 'u11-3', title: '割り算の「商」と「mod（余り）」', goal: 'mod と商を使った桁の分解・偶奇判定・最大公約数を追える',
   q: ['btrace-002', 'btrace-006', 'btrace-009', 'btrace-011'],
   steps: [
@@ -147,7 +147,7 @@ FE.defLesson('u11', {
   ]
 });
 
-FE.defLesson('u11', {
+LE.defLesson('u11', {
   id: 'u11-4', title: '探索と整列のプログラム', goal: '2分探索と交換（バブルソート）のプログラムを追える',
   q: ['btrace-004', 'btrace-007'],
   steps: [
@@ -187,7 +187,7 @@ FE.defLesson('u11', {
   ]
 });
 
-FE.defLesson('u11', {
+LE.defLesson('u11', {
   id: 'u11-5', title: '関数・再帰・リスト・ハッシュ', goal: '関数の戻り値、再帰の計算、配列で作ったリストやハッシュ表を追える',
   q: ['btrace-005', 'btrace-008', 'btrace-010', 'btrace-014'],
   steps: [
@@ -230,7 +230,7 @@ FE.defLesson('u11', {
   ]
 });
 
-FE.defLesson('u11', {
+LE.defLesson('u11', {
   id: 'u11-6', title: '科目B セキュリティ事例の解き方', goal: '事例問題で「最も適切な対応」を選ぶ考え方がわかる',
   q: ['bsec-001', 'bsec-002', 'bsec-003', 'bsec-004', 'bsec-005', 'bsec-006', 'bsec-007'],
   steps: [

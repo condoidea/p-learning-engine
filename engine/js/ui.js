@@ -134,40 +134,59 @@
       ul.appendChild(li);
     });
   }
-  var MILES = [400, 500, 600, 700, 800];
-  function checkMilestones(a, b) {
+  var C = Core.COURSE;
+  var MILE_RATES = [0.4, 0.5, 0.6, 0.7, 0.8];          // 満点に対する割合で節目を作る（1000点満点なら 400〜800）
+  function examList() { return C.exams && C.exams.length ? C.exams : [{ id: 'all', name: '予測', max: 1000, pass: null }]; }
+  function checkMilestones(scores) {
     var got = [];
-    [['A', a], ['B', b]].forEach(function (m) {
-      MILES.forEach(function (t) {
-        var k = m[0] + t;
-        if (m[1] >= t && !S.milestones[k]) { S.milestones[k] = Date.now(); got.push({ exam: m[0], t: t }); }
+    examList().forEach(function (ex) {
+      MILE_RATES.forEach(function (r) {
+        var t = Math.round(ex.max * r), k = ex.id + t;
+        if (scores[ex.id] >= t && !S.milestones[k]) { S.milestones[k] = Date.now(); got.push({ ex: ex, t: t }); }
       });
     });
     if (!got.length) return;
     Core.save();
-    var top = got.reduce(function (x, y) { return y.t > x.t ? y : x; });
+    var top = got.reduce(function (x, y) { return y.t / y.ex.max > x.t / x.ex.max ? y : x; });
+    var ex = top.ex, pass = ex.pass;
     setTimeout(function () {
-      if (top.t >= 600) { FX.slam('科目' + top.exam + ' ' + top.t + '点', top.t === 600 ? '合格ライン突破！この調子で定着させよう' : '合格圏をさらに固めた！', '#5cff9d'); FX.confetti(240); Sfx.levelUp(); }
-      else { FX.toast('📈', '科目' + top.exam + ' 予測 ' + top.t + '点 突破！', '合格ライン600点まであと ' + (600 - top.t) + '点', 'quest'); Sfx.crit(); }
+      if (pass ? top.t >= pass : top.t >= ex.max * 0.8) {
+        FX.slam(ex.name + ' ' + top.t + '点', pass && top.t === pass ? '合格ライン突破！この調子で定着させよう' : pass ? '合格圏をさらに固めた！' : '目標圏に到達！', '#5cff9d');
+        FX.confetti(240); Sfx.levelUp();
+      } else {
+        FX.toast('📈', ex.name + ' 予測 ' + top.t + '点 突破！', pass ? '合格ライン' + pass + '点まであと ' + (pass - top.t) + '点' : 'この調子で積み上げよう', 'quest');
+        Sfx.crit();
+      }
     }, 1500);
   }
+  function buildMeters() {
+    var box = $('#meters'); if (!box || box.childElementCount) return;
+    box.innerHTML = examList().map(function (ex) {
+      return '<div class="meter" data-exam="' + esc(ex.id) + '"><div class="meter-label"><span>' + esc(ex.name) + '</span><b>0</b></div>' +
+        '<div class="meter-bar"><i></i>' + (ex.pass ? '<em class="pass-line" style="left:' + (ex.pass / ex.max * 100) + '%" data-v="' + ex.pass + '"></em>' : '') + '</div></div>';
+    }).join('');
+  }
   function renderPredict() {
-    var a = Core.predict('A'), b = Core.predict('B');
-    checkMilestones(a, b);
-    [['#meterA', a], ['#meterB', b]].forEach(function (m) {
-      var el = $(m[0]);
+    buildMeters();
+    var scores = {};
+    examList().forEach(function (ex) { scores[ex.id] = Core.predict(ex.id); });
+    checkMilestones(scores);
+    examList().forEach(function (ex) {
+      var el = $('.meter[data-exam="' + ex.id + '"]');
+      var v = scores[ex.id];
       var bar = $('.meter-bar i', el);
-      el.classList.toggle('pass', m[1] >= 600);
-      gsap.fromTo(bar, { width: '0%' }, { width: m[1] / 10 + '%', duration: 1.3, ease: 'power3.out', delay: 0.2 });
+      el.classList.toggle('pass', !!ex.pass && v >= ex.pass);
+      gsap.fromTo(bar, { width: '0%' }, { width: (v / ex.max * 100) + '%', duration: 1.3, ease: 'power3.out', delay: 0.2 });
       var b2 = $('.meter-label b', el); b2.textContent = 0;
-      FX.countUp(b2, m[1], 1.3);
+      FX.countUp(b2, v, 1.3);
     });
     var ex = S.settings.examDate;
     var cd = $('#examCountdown');
     if (ex) {
       var left = Core.dayDiff(Core.dayKey(), ex);
-      cd.textContent = left > 0 ? '試験まであと ' + left + ' 日' : left === 0 ? '今日が試験日！' : '試験日を更新しよう';
-    } else cd.textContent = '設定で試験日を入れよう';
+      var dl = C.examDateLabel || '目標日';
+      cd.textContent = left > 0 ? dl + 'まであと ' + left + ' 日' : left === 0 ? '今日が' + dl + '！' : dl + 'を更新しよう';
+    } else cd.textContent = '設定で' + (C.examDateLabel || '目標日') + 'を入れよう';
   }
   /* エビングハウスの節約率データ（20分58%, 1時間44%, 9時間36%, 1日34%, 2日28%, 6日25%, 31日21%）を補間 */
   var EBB = [[0, 1], [0.014, 0.58], [0.042, 0.44], [0.375, 0.36], [1, 0.34], [2, 0.28], [6, 0.25], [31, 0.21]];
@@ -224,11 +243,11 @@
   function renderFields() {
     var box = $('#fieldList');
     box.innerHTML = '';
-    FE.cats.forEach(function (cat) {
+    LE.cats.forEach(function (cat) {
       var g = document.createElement('div');
       g.className = 'field-group';
-      g.innerHTML = '<h2 class="sec-title" style="--c:' + cat.color + '">' + esc(cat.name) + '<small>' + (cat.exam === 'A' ? '科目A 約' + cat.weight + '問' : '科目B 20問') + '</small></h2>';
-      FE.fields.filter(function (f) { return f.cat === cat.id; }).forEach(function (f) {
+      g.innerHTML = '<h2 class="sec-title" style="--c:' + cat.color + '">' + esc(cat.name) + '<small>' + (Core.examDef(cat.exam).name + ' 約' + cat.weight + '問') + '</small></h2>';
+      LE.fields.filter(function (f) { return f.cat === cat.id; }).forEach(function (f) {
         var st = Core.fieldStats(f.id);
         var pct = Math.round(st.mastery * 100);
         var row = document.createElement('button');
@@ -339,7 +358,7 @@
       var blob = new Blob([JSON.stringify(S, null, 1)], { type: 'application/json' });
       var a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'bitrush-backup-' + Core.dayKey() + '.json';
+      a.download = (C.id || 'course') + '-backup-' + Core.dayKey() + '.json';
       a.click();
       setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
     });
@@ -388,7 +407,7 @@
     session = { mode: mode, arg: arg, queue: q, idx: 0, combo: 0, maxCombo: 0, xp: 0, ok: 0, ng: 0, first: {}, res: {}, re: {}, shown: {}, tier0: {}, answered: false, done: false };
     if (mode === 'boss') {
       var hp = Math.max(3, Math.ceil(q.length * 0.7));
-      session.boss = { unit: arg, hp: hp, max: hp, info: FE.bosses[arg] || { name: 'BOSS', ico: '👾' } };
+      session.boss = { unit: arg, hp: hp, max: hp, info: LE.bosses[arg] || { name: 'BOSS', ico: '👾' } };
     }
     Core.save();
     go('quiz');
@@ -398,7 +417,7 @@
       showQuestion();
       if (session.boss) { FX.slam('BOSS BATTLE', session.boss.info.name + '　' + session.boss.max + '回正解で撃破！', '#ff4d6d'); Sfx.combo(10); FX3D.pulse(3); }
       else if (boosted) FX.slam('BOOST ×2', 'このセットの獲得XPが2倍', '#ffd84d');
-      else if (mode === 'mock') FX.slam('MOCK EXAM', '科目A 20問 ／ 1000点換算');
+      else if (mode === 'mock') FX.slam('MOCK EXAM', (C.mock && C.mock.slam) || '');
     }, 450);
   }
   /* ---- ユニットボス ---- */
@@ -470,7 +489,7 @@
     else { badge.textContent = '復習 · 記憶 ' + Math.round(Core.retr(c) * 100) + '%'; badge.className = 'tag badge rev'; }
     $('#qText').textContent = q.q;
     var code = $('#qCode');
-    if (q.code) { code.innerHTML = highlight(q.code); code.style.display = ''; } else { code.style.display = 'none'; }
+    if (q.code) { code.innerHTML = C.highlight ? C.highlight(q.code, esc) : esc(q.code); code.style.display = ''; } else { code.style.display = 'none'; }
 
     var order = [0, 1, 2, 3].slice(0, q.o.length);
     if (!q.ns) Core.shuffle(order);
@@ -494,23 +513,12 @@
     gsap.fromTo(card, { opacity: 0, y: 40, rotateX: -12, scale: 0.96 }, { opacity: 1, y: 0, rotateX: 0, scale: 1, duration: 0.55, ease: 'expo.out' });
     gsap.from($$('.choice', box), { opacity: 0, x: -30, duration: 0.4, stagger: 0.06, delay: 0.15, ease: 'power3.out', clearProps: 'transform,opacity' });
 
-    var limit = q.f === 'btrace' ? 180 : 60;
+    var limit = Core.rule(q).limitSec || C.limitSec || 60;
     if (timerTween) timerTween.kill();
     timerTween = gsap.fromTo('#qTimer', { width: '0%' }, { width: '100%', duration: limit, ease: 'none' });
     session.t0 = performance.now();
   }
   /* 擬似言語のかんたんなシンタックスハイライト */
-  function highlight(src) {
-    var s = esc(src);
-    s = s.replace(/(【[a-z]】)/g, '<span class="hl-blank">$1</span>');
-    s = s.replace(/^(\s*)(○)/gm, '$1<span class="hl-fn">$2</span>');
-    s = s.replace(/\b(if|elseif|else|endif|while|endwhile|for|endfor|do|return|and|or|not|mod|true|false)\b/g, '<span class="hl-kw">$1</span>');
-    s = s.replace(/(整数型の二次元配列|整数型の配列|整数型|論理型|文字列型|実数型|大域)/g, '<span class="hl-ty">$1</span>');
-    s = s.replace(/(を|から|まで|ずつ増やす|ずつ減らす|の要素数|の商)/g, '<span class="hl-jp">$1</span>');
-    s = s.replace(/(\/\/.*)$/gm, '<span class="hl-cm">$1</span>');
-    return s;
-  }
-
   function answer(k, ev) {
     if (!session || session.answered) return;
     session.answered = true;
@@ -546,11 +554,12 @@
       S.stats.correct++; t.correct++;
       S.stats.bestCombo = Math.max(S.stats.bestCombo, session.combo);
       if (info.wasDue) S.stats.rescues++;
-      if (cat === 'B') S.stats.bCorrect++;
+      var isFocus = C.focus && cat === C.focus.cat;
+      if (isFocus) S.stats.focusCorrect = (S.stats.focusCorrect || 0) + 1;
       quests = quests.concat(Core.questEvent('correct', 1));
       quests = quests.concat(Core.questEvent('combo', session.combo, true));
       if (info.wasDue) quests = quests.concat(Core.questEvent('rescue', 1));
-      if (cat === 'B') quests = quests.concat(Core.questEvent('bq', 1));
+      if (isFocus) quests = quests.concat(Core.questEvent('focus', 1));
 
       var xr = Core.calcXp(true, info, session.combo - 1, ms, q);
       session.xp += xr.xp;
@@ -704,7 +713,8 @@
     var quests = Core.questEvent('sets', 1);
     var mockScore = null;
     if (session.mode === 'mock') {
-      mockScore = Math.round(firstOk / firstTotal * 1000);
+      var mex = Core.examDef(C.mock && C.mock.exam);
+      mockScore = Math.round(firstOk / firstTotal * mex.max);
       S.stats.mockBest = Math.max(S.stats.mockBest, mockScore);
     }
     var wasBoost = S.boostArmed;
@@ -730,7 +740,7 @@
     go('result');
     var acc = firstOk / Math.max(1, firstTotal);
     var title = boss ? (bossWin ? 'BOSS DEFEATED!!' : 'もう一息！') : perfect ? 'PERFECT!!' : acc >= 0.8 ? 'GREAT!' : acc >= 0.6 ? 'NICE!' : 'GOOD TRY';
-    $('#resMode').textContent = { daily: 'DAILY SET', quick: 'QUICK 3', weak: 'WEAK POINT', B: '科目B特訓', mock: 'MINI MOCK', field: Core.FMAP[session.arg] ? Core.FMAP[session.arg].name : 'FIELD', lesson: 'LESSON CHECK', boss: 'UNIT BOSS' }[session.mode] + (wasBoost ? ' ／ BOOST×2' : '');
+    $('#resMode').textContent = { daily: 'DAILY SET', quick: 'QUICK 3', weak: 'WEAK POINT', focus: (C.focus && C.focus.label) || 'FOCUS', mock: 'MINI MOCK', field: Core.FMAP[session.arg] ? Core.FMAP[session.arg].name : 'FIELD', lesson: 'LESSON CHECK', boss: 'UNIT BOSS' }[session.mode] + (wasBoost ? ' ／ BOOST×2' : '');
     var rt = $('#resTitle'); rt.textContent = title;
     rt.className = 'res-title' + (perfect ? ' perfect' : '');
     $('#resCorrect').textContent = 0;
@@ -740,7 +750,9 @@
     var ms = $('#mockScore');
     if (mockScore != null) {
       ms.style.display = '';
-      ms.innerHTML = '<small>科目A 換算スコア</small><b>' + mockScore + '</b><span class="' + (mockScore >= 600 ? 'pass' : 'fail') + '">' + (mockScore >= 600 ? '合格ライン突破！' : '合格ラインまであと ' + (600 - mockScore) + '点') + '</span>';
+      var mp = Core.examDef(C.mock && C.mock.exam).pass;
+      ms.innerHTML = '<small>' + esc((C.mock && C.mock.scoreLabel) || '換算スコア') + '</small><b>' + mockScore + '</b>' +
+        (mp ? '<span class="' + (mockScore >= mp ? 'pass' : 'fail') + '">' + (mockScore >= mp ? '合格ライン突破！' : '合格ラインまであと ' + (mp - mockScore) + '点') + '</span>' : '');
     } else ms.style.display = 'none';
 
     var goal = S.settings.dailyGoal;
@@ -873,7 +885,7 @@
     var ov = $('#overlay-login');
     $('#loginStreak').textContent = S.streak.count;
     var msg;
-    if (firstTime) msg = 'ようこそ BIT RUSH へ。1日3問でストリーク継続。まずは軽く触ってみよう。（+' + bonus + 'XP）';
+    if (firstTime) msg = (C.welcome || 'ようこそ。1日3問でストリーク継続。まずは最初のレッスンから。') + '（+' + bonus + 'XP）';
     else if (res.usedFreeze) msg = '🧊 ストリークフリーズが発動！ 休んだ ' + res.usedFreeze + ' 日分の記録を守った。（+' + bonus + 'XP）';
     else if (res.broken) msg = '連続記録（' + res.lost + '日）は途切れたけど、記憶はちゃんと残ってる。今日からまた積もう。（+' + bonus + 'XP）';
     else msg = '今日も来てくれた。3問解けばストリーク継続！（+' + bonus + 'XP）';
@@ -932,7 +944,7 @@
     }).join('') + '<span class="dt">入手 <b>' + got + ' / ' + total + '</b></span>';
 
     var box = $('#deckList'); box.innerHTML = '';
-    FE.units.forEach(function (u, ui) {
+    LE.units.forEach(function (u, ui) {
       var us = Core.unitStats(u.id);
       var sec = document.createElement('section');
       sec.className = 'dex-unit';
@@ -1014,7 +1026,7 @@
     var t = Core.cardTier(c);
     var ov = $('#overlay-deck');
     ov.style.setProperty('--c', c.unit.color);
-    $('#deckTitle').innerHTML = '<span>' + esc(c.unit.icon) + '</span> UNIT ' + (FE.units.indexOf(c.unit) + 1) + '　' + esc(c.unit.name) + '<small>' + (cv.i + 1) + ' / ' + cv.list.length + '</small>';
+    $('#deckTitle').innerHTML = '<span>' + esc(c.unit.icon) + '</span> UNIT ' + (LE.units.indexOf(c.unit) + 1) + '　' + esc(c.unit.name) + '<small>' + (cv.i + 1) + ' / ' + cv.list.length + '</small>';
     var tl = gsap.timeline();
     if (dir) tl.to(k, { x: -dir * 120, opacity: 0, rotateY: (cv.back ? 180 : 0) - dir * 60, duration: 0.2, ease: 'power2.in' });
     tl.add(function () {
@@ -1161,6 +1173,8 @@
     });
     Lesson.bind();
     $('#btnQuick').addEventListener('click', function () { startSet('quick'); });
+    if (!C.focus) $('#modeFocus').remove();
+    if (!C.mock) $('#modeMock').remove();
     $$('.mode[data-mode]').forEach(function (b) { b.addEventListener('click', function () { startSet(b.dataset.mode); }); });
     $('#btnQuit').addEventListener('click', function () { go('home'); });
     $('#btnNext').addEventListener('click', next);
@@ -1216,5 +1230,6 @@
   gsap.from('#scr-home .glass', { y: 40, opacity: 0, duration: 0.8, stagger: 0.08, ease: 'expo.out', delay: 0.2, clearProps: 'opacity,transform' });
   gsap.from('#tabbar', { y: 80, opacity: 0, duration: 0.8, ease: 'expo.out', delay: 0.4, clearProps: 'transform,opacity' });
   setTimeout(loginBonus, 600);
+  if (Core.migratedFrom()) setTimeout(function () { FX.toast('📦', '旧版の学習データを引き継ぎました', '進捗・XP・ストリークをそのまま続けられます', 'quest'); }, 2500);
   setInterval(function () { if (Core.dayKey() !== S.quests.day && current === 'home') { Core.ensureQuests(); renderHome(); } }, 60000);
 })();

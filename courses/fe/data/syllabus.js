@@ -5,9 +5,7 @@
  *  科目B：20問/100分（アルゴリズムとプログラミング 16問・情報セキュリティ 4問）
  *  合格基準：科目A・科目Bともに 600点以上／1000点（IRT方式）
  * ========================================================= */
-window.FE = window.FE || {};
-
-FE.cats = [
+LE.cats = [
   { id: 'T', name: 'テクノロジ系', exam: 'A', weight: 41, color: '#38e8ff' },
   { id: 'M', name: 'マネジメント系', exam: 'A', weight: 7,  color: '#ffb347' },
   { id: 'S', name: 'ストラテジ系', exam: 'A', weight: 12, color: '#c779ff' },
@@ -15,7 +13,7 @@ FE.cats = [
 ];
 
 /* weight = 科目内でのおおよその出題比重（予測スコア算出用） */
-FE.fields = [
+LE.fields = [
   { id: 'basic', cat: 'T', name: '基礎理論', icon: '∑', weight: 6,
     desc: '基数変換・論理演算・確率統計・情報理論・誤差' },
   { id: 'algo',  cat: 'T', name: 'アルゴリズムとデータ構造', icon: '⇅', weight: 5,
@@ -55,12 +53,3 @@ FE.fields = [
   { id: 'bsec',  cat: 'B', name: '情報セキュリティ事例', icon: '⚑', weight: 4,
     desc: '科目B 情報セキュリティ' }
 ];
-
-FE.questions = FE.questions || [];
-FE.add = function (field, list) {
-  list.forEach(function (q, i) {
-    q.f = field;
-    q.id = q.id || (field + '-' + String(i + 1).padStart(3, '0'));
-    FE.questions.push(q);
-  });
-};

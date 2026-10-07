@@ -1,5 +1,5 @@
 /* UNIT 2 コンピュータの中身（コンピュータ構成要素・ハードウェア） */
-FE.gloss({
+LE.gloss({
   'CPU': 'コンピュータの頭脳。命令を読んで計算や判断を実行する装置。',
   '主記憶': 'CPUが作業中のプログラムやデータを置いておくメモリ。メインメモリ。電源を切ると消える。',
   '補助記憶': 'SSDやHDDなど、電源を切ってもデータが残る保存装置。',
@@ -10,7 +10,7 @@ FE.gloss({
   'レジスタ': 'CPUの中にある、最も高速で小さな記憶場所。'
 });
 
-FE.defLesson('u2', {
+LE.defLesson('u2', {
   id: 'u2-1', title: 'CPUとメモリの関係', goal: 'CPU・主記憶・補助記憶の役割がわかり、CPUの性能を計算できる',
   q: ['comp-001'],
   steps: [
@@ -42,7 +42,7 @@ FE.defLesson('u2', {
   ]
 });
 
-FE.defLesson('u2', {
+LE.defLesson('u2', {
   id: 'u2-2', title: 'メモリの階層とキャッシュ', goal: 'キャッシュのしくみと実効アクセス時間がわかり、メモリの種類を区別できる',
   q: ['comp-002', 'comp-003', 'comp-005', 'comp-006'],
   steps: [
@@ -75,7 +75,7 @@ FE.defLesson('u2', {
   ]
 });
 
-FE.defLesson('u2', {
+LE.defLesson('u2', {
   id: 'u2-3', title: 'CPUを速くする工夫と割込み', goal: 'パイプライン・DMA・割込みなどの仕組みを説明できる',
   q: ['comp-004', 'comp-007', 'comp-008', 'comp-009', 'comp-011'],
   steps: [
@@ -108,7 +108,7 @@ FE.defLesson('u2', {
   ]
 });
 
-FE.defLesson('u2', {
+LE.defLesson('u2', {
   id: 'u2-4', title: '入出力装置とデータ量の計算', goal: '主な接続方式を知り、画像のデータ量を計算できる',
   q: ['comp-010', 'comp-012', 'comp-013'],
   steps: [
@@ -132,7 +132,7 @@ FE.defLesson('u2', {
   ]
 });
 
-FE.defLesson('u2', {
+LE.defLesson('u2', {
   id: 'u2-5', title: '回路・画面・メディア・IoT', goal: '半加算器、UI設計、画像形式、センサとアクチュエータを説明できる',
   q: ['hw-003', 'hw-004', 'hw-005', 'hw-006', 'hw-007', 'hw-008'],
   steps: [
