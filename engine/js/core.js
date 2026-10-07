@@ -35,7 +35,7 @@
     return {
       v: 1,
       created: Date.now(),
-      settings: { examDate: '', dailyGoal: 20, newPerDay: 15, setSize: 10, sound: true, lite: !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches), theme: 'cyan', allQ: false },
+      settings: { examDate: '', dailyGoal: 20, newPerDay: 15, setSize: 10, sound: true, lite: !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches), theme: (C.themes ? Object.keys(C.themes)[0] : 'cyan'), allQ: false },
       cards: {},
       totalXp: 0,
       streak: { count: 0, best: 0, lastDay: '', freezes: 1 },
@@ -44,7 +44,7 @@
       ach: {},
       items: { boost: 0 },
       boostArmed: false,
-      themes: ['cyan'],
+      themes: [C.themes ? Object.keys(C.themes)[0] : 'cyan'],
       titles: [],
       title: '',
       pity: 0,
@@ -390,7 +390,9 @@
     gold:    { name: 'ゴールドラッシュ', a: '#ffd84d', b: '#ff6a3d', lv: 20 },
     violet:  { name: 'ネビュラ',       a: '#c779ff', b: '#38e8ff', lv: 0, legendary: true },
     crimson: { name: 'クリムゾン',     a: '#ff4d6d', b: '#ffd84d', lv: 0, legendary: true }
-  };
+  };  if (C.themes) THEMES = C.themes;                   // コース専用のテーマカラー
+  var FIRST_THEME = Object.keys(THEMES)[0];
+
 
   /* 実績 */
   var ACH = [
@@ -414,14 +416,14 @@
     { id: 'lv25',   ico: '🏆', name: 'レベル25',     desc: 'レベル25に到達', test: function (s) { return levelInfo(s.totalXp).level >= 25; } },
     { id: 'legend', ico: '🌈', name: 'レジェンド',   desc: 'LEGENDARY 宝箱を引く', test: function (s) { return s.stats.legendary >= 1; } },
 
-    { id: 'rd1',    ico: '📇', name: 'はじめてのカード', desc: '復習カードを1枚手に入れる', test: function (s) { return ALL_CARDS.some(owned); } },
-    { id: 'rd30',   ico: '📚', name: 'カードコレクター', desc: '復習カードを30枚集める', test: function (s) { return ALL_CARDS.filter(owned).length >= 30; } },
-    { id: 'rdall',  ico: '🗃', name: '図鑑コンプリート', desc: '全ての復習カードを集める', test: function (s) { return ALL_CARDS.every(owned); } },
+    { id: 'rd1',    ico: '📇', name: 'はじめてのカード', desc: LE_T('card') + 'を1枚手に入れる', test: function (s) { return ALL_CARDS.some(owned); } },
+    { id: 'rd30',   ico: '📚', name: 'カードコレクター', desc: LE_T('card') + 'を30枚集める', test: function (s) { return ALL_CARDS.filter(owned).length >= 30; } },
+    { id: 'rdall',  ico: '🗃', name: '図鑑コンプリート', desc: '全ての' + LE_T('card') + 'を集める', test: function (s) { return ALL_CARDS.every(owned); } },
     { id: 'gold',   ico: '🥇', name: 'ゴールドカード', desc: 'カードをゴールドに進化させる', test: function (s) { return ALL_CARDS.some(function (c) { var t = cardTier(c); return t === 'gold' || t === 'holo'; }); } },
     { id: 'holo',   ico: '🌈', name: 'ホログラム',   desc: 'カードをホロに進化させる', test: function (s) { return ALL_CARDS.some(function (c) { return cardTier(c) === 'holo'; }); } },
     { id: 'unit1',  ico: '🏁', name: 'ユニット制覇', desc: 'ユニットのレッスンを全部クリア', test: function (s) { return LE.units.some(function (u) { return unitCleared(u.id); }); } },
-    { id: 'boss1',  ico: '⚔', name: 'ボスキラー',   desc: 'ユニットボスを倒す', test: function (s) { return s.stats.bossWins >= 1; } },
-    { id: 'bossall',ico: '👑', name: '全ボス制覇',   desc: '全ユニットのボスを倒す', test: function (s) { return LE.units.every(function (u) { return s.bosses[u.id]; }); } },
+    { id: 'boss1',  ico: '⚔', name: LE_T('boss') + 'キラー', desc: LE_T('boss') + 'を倒す', test: function (s) { return s.stats.bossWins >= 1; } },
+    { id: 'bossall',ico: '👑', name: '全' + LE_T('boss') + '制覇', desc: 'すべての' + LE_T('boss') + 'を倒す', test: function (s) { return LE.units.every(function (u) { return s.bosses[u.id]; }); } },
     { id: 'zone',   ico: '🌀', name: 'ZONE突入',     desc: 'レッスンで5問連続一発正解', test: function (s) { return s.stats.zones >= 1; } },
     { id: 'owl',    ico: '🦉', name: '夜ふかし学習', desc: '23時以降に学習する', test: function (s) { return s._owl; } },
     { id: 'bird',   ico: '🐓', name: '朝活の鬼',     desc: '7時前に学習する', test: function (s) { return s._bird; } }
@@ -449,7 +451,7 @@
     { type: 'combo',   label: function (n) { return n + 'コンボを達成する'; }, n: [3, 5, 7] },
     { type: 'rescue',  label: function (n) { return '復習問題を' + n + '問正解する'; }, n: [3, 5] },
     { type: 'sets',    label: function (n) { return n + 'セットクリアする'; }, n: [1, 2] },
-    { type: 'read',    label: function (n) { return '復習カードを' + n + '枚見返す'; }, n: [2, 3] },
+    { type: 'read',    label: function (n) { return LE_T('card') + 'を' + n + '枚見返す'; }, n: [2, 3] },
     { type: 'lesson',  label: function (n) { return 'レッスンを' + n + '本クリアする'; }, n: [1, 1, 2] },
     { type: 'newq',    label: function (n) { return '新しい問題に' + n + '問挑戦する'; }, n: [5, 8] }
   ];
@@ -557,7 +559,7 @@
   window.Core = {
     get S() { return S; },
     load: load, save: save, defaults: defaults,
-    examDef: examDef, rule: rule, COURSE: C, migratedFrom: function () { return migratedFrom; },
+    examDef: examDef, rule: rule, firstTheme: function () { return FIRST_THEME; }, COURSE: C, migratedFrom: function () { return migratedFrom; },
     QMAP: QMAP, FMAP: FMAP, CMAP: CMAP, THEMES: THEMES, ACH: ACH, TITLES: TITLES,
     dayKey: dayKey, dayDiff: dayDiff, shuffle: shuffle, rand: rand,
     retr: retr, strength: strength, review: review, fmtIvl: fmtIvl,

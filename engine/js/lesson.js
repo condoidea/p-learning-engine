@@ -32,18 +32,20 @@
   /* ロードマップ・カード・問題で共通の番号「ユニット-レッスン」 */
   function label(L) {
     var ui = LE.units.findIndex(function (u) { return u.id === L.unit; });
-    return (ui + 1) + '-' + (LE.units[ui].lessons.indexOf(L.id) + 1);
+    return LE_UNO(ui + 1) + '-' + (LE.units[ui].lessons.indexOf(L.id) + 1);
   }
 
   /* =========================================================
-   * ピコ（ナビキャラ）
+   * ナビキャラ：既定はロボットのピコ。COURSE.mascot = {ico, name} で差し替え
    * ========================================================= */
+  var MASCOT = (window.COURSE && COURSE.mascot) || null;
   function pico(mood) {
+    if (MASCOT) return '<div class="pico mascot ' + (mood || '') + '" aria-hidden="true"><span class="ms-ico">' + MASCOT.ico + '</span>' + (MASCOT.name ? '<span class="ms-name">' + esc(MASCOT.name) + '</span>' : '') + '</div>';
     return '<div class="pico ' + (mood || '') + '" aria-hidden="true"><div class="pico-ant"></div><div class="pico-head"><i class="pe l"></i><i class="pe r"></i><i class="pm"></i></div></div>';
   }
   function setMood(m) {
     var p = $('#lsStage .pico'); if (!p) return;
-    p.className = 'pico ' + m;
+    p.className = 'pico ' + (MASCOT ? 'mascot ' : '') + m;
     gsap.fromTo(p, { y: 0 }, { y: -10, duration: 0.15, yoyo: true, repeat: 1, ease: 'power2.out' });
   }
 
@@ -59,7 +61,7 @@
     ring.style.strokeDasharray = C;
     gsap.fromTo(ring, { strokeDashoffset: C }, { strokeDashoffset: C * (1 - done / Math.max(1, all.length)), duration: 1.2, ease: 'power3.out' });
     $('#rmLearned').textContent = Core.learnedCount();
-    $('#rmNext').textContent = nx ? 'Lesson ' + label(nx) + '：' + nx.title : '全レッスン制覇！';
+    $('#rmNext').textContent = nx ? LE_T('lesson') + ' ' + label(nx) + '：' + nx.title : '全レッスン制覇！';
 
     box.innerHTML = '';
     LE.units.forEach(function (u, ui) {
@@ -69,7 +71,7 @@
       var sec = document.createElement('section');
       sec.className = 'unit' + (ud === ls.length ? ' clear' : '');
       sec.style.setProperty('--c', u.color);
-      sec.innerHTML = '<div class="unit-head glass"><span class="unit-ico">' + esc(u.icon) + '</span><div><small>UNIT ' + (ui + 1) + '</small><h3>' + esc(u.name) + '</h3><p>' + esc(u.desc) + '</p></div>' +
+      sec.innerHTML = '<div class="unit-head glass"><span class="unit-ico">' + esc(u.icon) + '</span><div><small>' + LE_T('unit') + ' ' + LE_UNO(ui + 1) + '</small><h3>' + esc(u.name) + '</h3><p>' + esc(u.desc) + '</p></div>' +
         '<div class="unit-prog"><b>' + ud + '</b>/' + ls.length + '</div></div><div class="unit-path"><svg class="unit-line"></svg></div>';
       var path = sec.querySelector('.unit-path');
       ls.forEach(function (L, i) {
@@ -82,20 +84,20 @@
         n.dataset.id = L.id;
         n.innerHTML = '<span class="node-disc">' + (st.indexOf('done') === 0 ? '✓' : st.indexOf('locked') === 0 ? '🔒' : label(L)) + '</span>' +
           '<span class="node-stars">' + [1, 2, 3].map(function (k) { return '<i class="' + (k <= stars ? 'on' : '') + '">★</i>'; }).join('') + '</span>' +
-          '<span class="node-label">' + esc(L.title) + '</span>' + (nx && nx.id === L.id ? '<span class="node-start">START</span>' : '');
+          '<span class="node-label">' + (L.year ? '<em class="node-year">' + esc(L.year) + '</em>' : '') + esc(L.title) + '</span>' + (nx && nx.id === L.id ? '<span class="node-start">START</span>' : '');
         n.addEventListener('click', function () { preview(L); });
         path.appendChild(n);
       });
       /* ユニットボス */
       var cleared = Core.unitCleared(u.id), beaten = !!S().bosses[u.id];
-      var bi = LE.bosses[u.id] || { name: 'BOSS', ico: '👾' };
+      var bi = LE.bosses[u.id] || { name: LE_T('bossEn'), ico: '👾' };
       var bn = document.createElement('button');
       bn.className = 'node boss-node ' + (beaten ? 'done' : cleared ? 'open' : 'locked');
       bn.dataset.id = 'boss-' + u.id;
       bn.style.setProperty('--off', '0%');
       bn.innerHTML = '<span class="node-disc">' + (cleared ? bi.ico : '🔒') + '</span>' +
         '<span class="node-stars">' + (beaten ? '<i class="on">👑</i>' : '') + '</span>' +
-        '<span class="node-label">' + (cleared ? 'BOSS：' + esc(bi.name) : 'BOSS：？？？') + '</span>' + (cleared && !beaten ? '<span class="node-start boss">BOSS</span>' : '');
+        '<span class="node-label">' + (cleared ? LE_T('bossEn') + '：' + esc(bi.name) : LE_T('bossEn') + '：？？？') + '</span>' + (cleared && !beaten ? '<span class="node-start boss">' + LE_T('bossEn') + '</span>' : '');
       bn.addEventListener('click', function () { bossPreview(u, ui); });
       path.appendChild(bn);
       if (ud === ls.length) sec.querySelector('.unit-head').insertAdjacentHTML('beforeend', '<span class="unit-stamp">' + (beaten ? '👑 MASTER' : 'CLEAR') + '</span>');
@@ -136,7 +138,7 @@
         onStart: function () {
           var r = disc.getBoundingClientRect();
           FX.burst(r.left + r.width / 2, r.top + r.height / 2, { n: 60, speed: 10 });
-          FX.floatText(r.left + r.width / 2, r.top - 10, n.classList.contains('boss-node') ? 'BOSS 出現！' : 'UNLOCK!', 'crit');
+          FX.floatText(r.left + r.width / 2, r.top - 10, n.classList.contains('boss-node') ? LE_T('bossEn') + ' 出現！' : 'UNLOCK!', 'crit');
           Sfx.chestOpen(n.classList.contains('boss-node') ? 'epic' : 'rare');
           FX3D.pulse(2);
         }, clearProps: 'transform,opacity' });
@@ -144,17 +146,17 @@
   }
   function bossPreview(u, ui) {
     var cleared = Core.unitCleared(u.id), beaten = !!S().bosses[u.id];
-    var bi = LE.bosses[u.id] || { name: 'BOSS', ico: '👾' };
+    var bi = LE.bosses[u.id] || { name: LE_T('bossEn'), ico: '👾' };
     var n = 0; u.lessons.forEach(function (lid) { n += (LE.lessonDefs[lid].q || []).length; });
     var qn = Math.min(12, n), hp = Math.max(3, Math.ceil(qn * 0.7));
     var pv = $('#lessonPreview');
     pv.style.setProperty('--c', '#ff4d6d');
-    pv.innerHTML = '<div class="pv-card glass boss-pv"><small>UNIT ' + (ui + 1) + ' ／ ' + esc(u.name) + '</small>' +
+    pv.innerHTML = '<div class="pv-card glass boss-pv"><small>' + LE_T('unit') + ' ' + LE_UNO(ui + 1) + ' ／ ' + esc(u.name) + '</small>' +
       '<div class="pv-boss-ico">' + (cleared ? bi.ico : '🔒') + '</div><h3>' + (cleared ? esc(bi.name) : '？？？') + '</h3>' +
       '<p class="pv-goal">' + (cleared ? 'ユニット全体から <b>' + qn + '問</b> をシャッフル出題。<b>' + hp + '回</b> 正解すれば撃破！ 範囲を混ぜて解くことで、本番の「どの知識を使う問題か見抜く力」が鍛えられる。' : 'このユニットのレッスンを全部クリアすると出現する。') + '</p>' +
       (beaten ? '<p class="pv-goal">👑 撃破済み。再戦すると復習になるよ。</p>' : '') +
       '<div class="pv-meta"><span>🎁 初撃破でレア宝箱確定</span><span>⚔ 間違えてもペナルティなし</span></div>' +
-      (cleared ? '<button class="btn-mega pv-go boss-go"><span class="mega-label">FIGHT</span><span class="mega-sub">' + (beaten ? '再戦する' : 'ボスに挑む') + '</span></button>' : '') +
+      (cleared ? '<button class="btn-mega pv-go boss-go"><span class="mega-label">' + LE_T('fight') + '</span><span class="mega-sub">' + (beaten ? '再戦する' : LE_T('boss') + 'に挑む') + '</span></button>' : '') +
       '<button class="btn-ghost pv-close">とじる</button></div>';
     pv.classList.add('show');
     gsap.fromTo(pv, { opacity: 0 }, { opacity: 1, duration: 0.2 });
@@ -192,12 +194,12 @@
     var u = LE.units.find(function (x) { return x.id === L.unit; });
     pv.style.setProperty('--c', u.color);
     var nSteps = L.steps.length, nInt = L.steps.filter(function (s) { return INTERACTIVE[s.t]; }).length;
-    pv.innerHTML = '<div class="pv-card glass"><small>UNIT ' + (LE.units.indexOf(u) + 1) + ' ' + esc(u.name) + ' ／ Lesson ' + label(L) + '</small><h3>' + esc(L.title) + '</h3>' +
+    pv.innerHTML = '<div class="pv-card glass"><small>' + LE_T('unit') + ' ' + LE_UNO(LE.units.indexOf(u) + 1) + ' ' + esc(u.name) + ' ／ ' + LE_T('lesson') + ' ' + label(L) + '</small>' + (L.year ? '<span class="pv-year">' + esc(L.year) + '</span>' : '') + '<h3>' + esc(L.title) + '</h3>' +
       '<p class="pv-goal">🎯 ' + esc(L.goal || '') + '</p>' +
       '<div class="pv-meta"><span>⏱ 約' + Math.max(3, Math.round(nSteps * 0.5)) + '分</span><span>🧩 体験・確認 ' + nInt + '問</span><span>🔓 解放される問題 ' + L.q.length + '問</span></div>' +
       (open ? '<button class="btn-mega pv-go"><span class="mega-label">' + (done ? 'REPLAY' : 'START') + '</span><span class="mega-sub">' + (done ? 'もう一度学ぶ' : 'レッスンをはじめる') + '</span></button>' : '<p class="pv-lock">🔒 前のレッスンをクリアすると開放されます</p>') +
       (done && L.q.length ? '<button class="btn-ghost pv-prac">⚔ このレッスンの問題を解く（' + L.q.length + '問）</button>' : '') +
-      (done ? '<button class="btn-ghost pv-card-open">📇 復習カードを見る</button>' : '<p class="pv-cardnote">📇 クリアすると、このレッスンの復習カードが手に入る</p>') +
+      (done ? '<button class="btn-ghost pv-card-open">📇 ' + LE_T('card') + 'を見る</button>' : '<p class="pv-cardnote">📇 クリアすると、このレッスンの' + LE_T('card') + 'が手に入る</p>') +
       '<button class="btn-ghost pv-close">とじる</button></div>';
     pv.classList.add('show');
     gsap.fromTo(pv, { opacity: 0 }, { opacity: 1, duration: 0.2 });
@@ -214,7 +216,7 @@
   /* =========================================================
    * レッスンプレイヤー
    * ========================================================= */
-  var INTERACTIVE = { quiz: 1, bits: 1, gate: 1, order: 1, match: 1, num: 1, stack: 1 };
+  var INTERACTIVE = { quiz: 1, bits: 1, gate: 1, order: 1, match: 1, num: 1, stack: 1, timeline: 1 };
   var P = null;
   function start(id) {
     Sfx.unlock();
@@ -470,6 +472,44 @@
     });
     draw();
   };
+  /* 年表：出来事を古い順にタップ。正しければ年表に年号つきで刻まれる（1手ごとに即フィードバック） */
+  STEP.timeline = function (s, body) {
+    var items = s.items.map(function (it, i) { return { i: i, y: it.y, t: it.t, label: it.label || String(it.y) }; });
+    var sorted = items.slice().sort(function (a, b) { return a.y - b.y; });
+    var pool = Core.shuffle(items.slice());
+    if (pool.every(function (v, i) { return v === sorted[i]; })) pool.reverse();
+    var k = 0, miss = 0;
+    body.innerHTML = '<div class="tl-wrap"><div class="tl-track"></div><div class="tl-pool">' +
+      pool.map(function (it) { return '<button class="chipb tl-chip" data-i="' + it.i + '">' + fmt(it.t) + '</button>'; }).join('') + '</div>' +
+      '<p class="bits-goal">🎯 ' + esc(s.goal || 'いちばん古い出来事から順にタップ') + '</p></div>';
+    var track = $('.tl-track', body);
+    $$('.tl-chip', body).forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (P.ready || b.disabled) return;
+        var it = items[+b.dataset.i];
+        if (it === sorted[k] || it.y === sorted[k].y) {
+          var idx = sorted.indexOf(it); if (idx !== k) { sorted[idx] = sorted[k]; sorted[k] = it; }
+          k++;
+          b.disabled = true;
+          gsap.to(b, { scale: 0.6, opacity: 0, duration: 0.25, onComplete: function () { b.style.display = 'none'; } });
+          var row = document.createElement('div');
+          row.className = 'tl-row';
+          row.innerHTML = '<span class="tl-y">' + esc(it.label) + '</span><span class="tl-dot"></span><span class="tl-t">' + fmt(it.t) + '</span>';
+          track.appendChild(row);
+          gsap.from(row, { x: -30, opacity: 0, duration: 0.45, ease: 'back.out(2)' });
+          gsap.from($('.tl-y', row), { scale: 2.2, duration: 0.5, ease: 'back.out(3)' });
+          Sfx.correct(k);
+          var c = centerOf(row); FX.burst(c[0] - 60, c[1], { n: 14, speed: 4 });
+          if (k === items.length) solved(track, miss === 0, s.ok);
+        } else {
+          miss++;
+          b.classList.add('bad'); setTimeout(function () { b.classList.remove('bad'); }, 500);
+          gsap.fromTo(b, { x: -8 }, { x: 0, duration: 0.4, ease: 'elastic.out(1.5,0.3)' });
+          missed(s.hint || 'それより前に起きた出来事が残っているよ。');
+        }
+      });
+    });
+  };
   STEP.match = function (s, body) {
     var L = Core.shuffle(s.pairs.map(function (p, i) { return i; })), R = Core.shuffle(s.pairs.map(function (p, i) { return i; }));
     var sel = null, left = s.pairs.length, miss = 0;
@@ -624,13 +664,13 @@
     $('#lcXp').textContent = 0;
     $('#lcAcc').textContent = ks.length ? ok + ' / ' + ks.length : '—';
     $('#lcUnlock').innerHTML = (L.q.length ? '<div class="lc-un">🔓 本番形式の問題 <b>' + L.q.length + '問</b> が解放された！</div>' : '') +
-      (card ? '<div class="lc-cardget"><p class="lc-cg-head">' + (firstClear ? 'CARD GET!' : 'REVIEW CARD') + '</p>' + UI.miniCard(card, 'big') + '<small class="lc-cnote">タップで見る。このレッスンのまとめ＋補足が入った復習カード。図鑑でいつでも見返せる</small></div>' : '');
+      (card ? '<div class="lc-cardget"><p class="lc-cg-head">' + (firstClear ? LE_T('cardGet') : LE_T('card')) + '</p>' + UI.miniCard(card, 'big') + '<small class="lc-cnote">タップで見る。このレッスンのまとめ＋補足が入った' + LE_T('card') + '。図鑑でいつでも見返せる</small></div>' : '');
     var cg = $('#lcUnlock .mcard'); if (cg) cg.addEventListener('click', function () { UI.openCard(L.id); });
     var acts = $('#lcActs'); acts.innerHTML = '';
     function btn(label, cls, fn) { var b = document.createElement('button'); b.className = cls; b.innerHTML = label; b.addEventListener('click', fn); acts.appendChild(b); }
     if (L.q.length) btn('⚔ 学んだことを問題で確かめる（' + L.q.length + '問）', 'btn-primary', function () { close(); setTimeout(function () { UI.startSet('lesson', L.id); }, 250); });
     if (nx && nx.id !== L.id) btn('▶ 次のレッスン：' + esc(nx.title), L.q.length ? 'btn-ghost' : 'btn-primary', function () { close(); setTimeout(function () { start(nx.id); }, 250); });
-    btn('ロードマップへ', 'btn-ghost', function () { close(); UI.go('learn'); });
+    btn(LE_T('roadmap') + 'へ', 'btn-ghost', function () { close(); UI.go('learn'); });
     function close() { gsap.to(ov, { opacity: 0, duration: 0.25, onComplete: function () { ov.classList.remove('show'); } }); }
 
     gsap.to('#lsBar', { width: '100%', duration: 0.4 });

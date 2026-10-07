@@ -1,0 +1,42 @@
+/* =========================================================
+ * ext.css — エンジン拡張部品の既定スタイル（コースの theme.css で上書きできる）
+ *  ・差し替えナビキャラ（COURSE.mascot）
+ *  ・年号ラベル（レッスンの year）
+ *  ・年表ステップ（timeline）
+ * ========================================================= */
+
+/* ---- 差し替えナビキャラ ---- */
+.pico.mascot { width: 58px; height: 58px; margin-top: 2px; display: grid; place-items: center; position: relative; flex: none;
+  border-radius: 50%; background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--accent) 35%, #1a1a2e), #0b0e24 75%);
+  border: 2px solid var(--accent); box-shadow: 0 0 18px -4px var(--accent); }
+.pico.mascot .ms-ico { font-size: 30px; line-height: 1; transition: transform .25s; animation: msIdle 3s ease-in-out infinite; }
+.pico.mascot .ms-name { position: absolute; bottom: -16px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 10px; color: var(--muted); letter-spacing: .08em; }
+.pico.mascot.happy .ms-ico { animation: msHop .5s ease-out 2; }
+.pico.mascot.sad .ms-ico { transform: rotate(-14deg) translateY(2px); filter: grayscale(.4); animation: none; }
+.pico.mascot.think .ms-ico { transform: rotate(8deg); animation: none; }
+@keyframes msIdle { 50% { transform: translateY(-2px) rotate(-3deg); } }
+@keyframes msHop { 40% { transform: translateY(-8px) scale(1.12); } }
+
+/* ---- 年号 ---- */
+.node-year { display: block; font-style: normal; font-family: var(--f-num, inherit); font-size: 12px; color: var(--accent); letter-spacing: .05em; }
+.pv-year { display: inline-block; margin-top: 2px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--line); font-family: var(--f-num, inherit); font-size: 13px; color: var(--accent); }
+.mc-year { font-family: var(--f-num, inherit); font-size: 11px; color: var(--muted); }
+.kc-year { position: relative; z-index: 1; display: inline-block; margin-top: 6px; font-family: var(--f-num, inherit); font-size: 13px; color: var(--accent); letter-spacing: .08em; }
+
+/* ---- 年表ステップ ---- */
+.tl-wrap { display: flex; flex-direction: column; gap: 14px; }
+.tl-track { position: relative; display: flex; flex-direction: column; gap: 10px; min-height: 48px; padding: 6px 0 6px 0; }
+.tl-track::before { content: ''; position: absolute; left: 96px; top: 0; bottom: 0; width: 2px; background: linear-gradient(var(--accent), transparent); opacity: .6; }
+.tl-track:empty::after { content: 'ここに年表が刻まれていく'; display: block; padding: 12px 0 12px 116px; color: var(--muted); font-size: 13px; }
+.tl-row { position: relative; display: grid; grid-template-columns: 84px 24px 1fr; align-items: center; gap: 0; }
+.tl-y { text-align: right; padding-right: 10px; font-family: var(--f-num, inherit); font-size: 20px; color: var(--accent); }
+.tl-dot { width: 14px; height: 14px; margin-left: 5px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+.tl-t { padding: 8px 12px; border-radius: 10px; background: rgba(255,255,255,.05); border: 1px solid var(--line); font-size: 14.5px; line-height: 1.6; }
+.tl-pool { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.tl-chip.bad { border-color: var(--ng); background: rgba(255,77,109,.14); }
+@media (max-width: 520px) {
+  .tl-track::before { left: 72px; }
+  .tl-row { grid-template-columns: 62px 22px 1fr; }
+  .tl-y { font-size: 16px; }
+  .tl-track:empty::after { padding-left: 90px; }
+}

@@ -25,6 +25,7 @@ sandbox.window = sandbox;
 vm.createContext(sandbox);
 const run = (s) => vm.runInContext(fs.readFileSync(path.join(root, s), 'utf8'), sandbox, { filename: s });
 run(courseDir + 'course.js');
+run('engine/js/terms.js');
 run('engine/js/api.js');
 for (const f of sandbox.COURSE.files) run(courseDir + f);
 run('engine/js/core.js');
@@ -34,7 +35,7 @@ Core.load();
 
 const errors = [];
 const err = (m) => errors.push(m);
-const STEP_TYPES = ['say', 'term', 'quiz', 'bits', 'gate', 'order', 'match', 'num', 'steps', 'trace', 'stack', 'recap'];
+const STEP_TYPES = ['say', 'term', 'quiz', 'bits', 'gate', 'order', 'match', 'num', 'steps', 'trace', 'stack', 'timeline', 'recap'];
 
 /* ---- 問題 ---- */
 const ids = new Set();
@@ -68,6 +69,7 @@ for (const [lid, L] of Object.entries(LE.lessonDefs)) {
     if (s.t === 'match' && new Set(s.pairs.map(p => p[1])).size !== s.pairs.length) err('match の右側が重複: ' + at);
     if (s.t === 'trace') { const n = s.code.split('\n').length; s.rows.forEach(r => { if (r.l >= n) err('trace の行番号が範囲外: ' + at); }); }
     if (s.t === 'num' && typeof s.answer !== 'number') err('num の answer が数値でない: ' + at);
+    if (s.t === 'timeline') { if (!s.items || s.items.length < 3) err('timeline の項目が3つ未満: ' + at); else s.items.forEach(it => { if (typeof it.y !== 'number') err('timeline の y が数値でない: ' + at); }); }
   });
 }
 const unmapped = LE.questions.filter(q => !mapped[q.id]).map(q => q.id);

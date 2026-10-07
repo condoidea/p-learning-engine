@@ -13,7 +13,7 @@
    * ========================================================= */
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function applyTheme() {
-    var th = Core.THEMES[S.settings.theme] || Core.THEMES.cyan;
+    var th = Core.THEMES[S.settings.theme] || Core.THEMES[Core.firstTheme()];
     document.documentElement.style.setProperty('--accent', th.a);
     document.documentElement.style.setProperty('--accent2', th.b);
     FX3D.setTheme(th);
@@ -117,7 +117,7 @@
     $('#startSub').textContent = !learned ? 'レッスンをクリアすると解放' : S.items.boost > 0 ? '⚡ XPブースト×2 を使って開始' : due ? '忘れかけの復習 ' + due + '問を含むセット' : '学んだ範囲 ' + learned + '問から出題';
     $('#btnStart').classList.toggle('locked', !learned);
     var nx = Lesson.next();
-    $('#learnSub').textContent = nx ? 'Lesson ' + Lesson.label(nx) + '：' + nx.title : '全レッスン制覇！ボス戦と復習へ';
+    $('#learnSub').textContent = nx ? LE_T('lesson') + ' ' + Lesson.label(nx) + '：' + nx.title : '全レッスン制覇！' + LE_T('boss') + '戦と復習へ';
 
     renderQuests();
     renderPredict();
@@ -151,10 +151,10 @@
     var ex = top.ex, pass = ex.pass;
     setTimeout(function () {
       if (pass ? top.t >= pass : top.t >= ex.max * 0.8) {
-        FX.slam(ex.name + ' ' + top.t + '点', pass && top.t === pass ? '合格ライン突破！この調子で定着させよう' : pass ? '合格圏をさらに固めた！' : '目標圏に到達！', '#5cff9d');
+        FX.slam(ex.name + ' ' + top.t + '点', pass && top.t === pass ? LE_T('passLine') + '突破！この調子で定着させよう' : pass ? '合格圏をさらに固めた！' : '目標圏に到達！', '#5cff9d');
         FX.confetti(240); Sfx.levelUp();
       } else {
-        FX.toast('📈', ex.name + ' 予測 ' + top.t + '点 突破！', pass ? '合格ライン' + pass + '点まであと ' + (pass - top.t) + '点' : 'この調子で積み上げよう', 'quest');
+        FX.toast('📈', ex.name + ' 予測 ' + top.t + '点 突破！', pass ? LE_T('passLine') + pass + '点まであと ' + (pass - top.t) + '点' : 'この調子で積み上げよう', 'quest');
         Sfx.crit();
       }
     }, 1500);
@@ -407,7 +407,7 @@
     session = { mode: mode, arg: arg, queue: q, idx: 0, combo: 0, maxCombo: 0, xp: 0, ok: 0, ng: 0, first: {}, res: {}, re: {}, shown: {}, tier0: {}, answered: false, done: false };
     if (mode === 'boss') {
       var hp = Math.max(3, Math.ceil(q.length * 0.7));
-      session.boss = { unit: arg, hp: hp, max: hp, info: LE.bosses[arg] || { name: 'BOSS', ico: '👾' } };
+      session.boss = { unit: arg, hp: hp, max: hp, info: LE.bosses[arg] || { name: LE_T('bossEn'), ico: '👾' } };
     }
     Core.save();
     go('quiz');
@@ -415,7 +415,7 @@
     renderBoss(true);
     setTimeout(function () {
       showQuestion();
-      if (session.boss) { FX.slam('BOSS BATTLE', session.boss.info.name + '　' + session.boss.max + '回正解で撃破！', '#ff4d6d'); Sfx.combo(10); FX3D.pulse(3); }
+      if (session.boss) { FX.slam(LE_T('bossEn') + ' BATTLE', session.boss.info.name + '　' + session.boss.max + '回正解で撃破！', '#ff4d6d'); Sfx.combo(10); FX3D.pulse(3); }
       else if (boosted) FX.slam('BOOST ×2', 'このセットの獲得XPが2倍', '#ffd84d');
       else if (mode === 'mock') FX.slam('MOCK EXAM', (C.mock && C.mock.slam) || '');
     }, 450);
@@ -446,7 +446,7 @@
       session.bossWin = true;
       setTimeout(function () {
         gsap.to(ico, { scale: 1.6, rotate: 30, opacity: 0, duration: 0.6, ease: 'power2.in' });
-        FX.slam('BOSS DEFEATED!!', b.info.name + ' を倒した！', '#ffd84d');
+        FX.slam(LE_T('bossEn') + ' DEFEATED!!', b.info.name + ' を倒した！', '#ffd84d');
         FX.confetti(220); FX.flash('#ffffff', 0.5); FX3D.pulse(4); Sfx.levelUp();
       }, 500);
     }
@@ -480,7 +480,7 @@
     $('#qField').style.setProperty('--c', cat.color);
     var lc = Core.Q2CARD[q.id];
     var lb = $('#qLesson');
-    if (lc) { lb.style.display = ''; lb.textContent = '📍 Lesson ' + Lesson.label(lc.L); lb.style.setProperty('--c', lc.unit.color); lb.dataset.id = lc.id; }
+    if (lc) { lb.style.display = ''; lb.textContent = '📍 ' + LE_T('lesson') + ' ' + Lesson.label(lc.L); lb.style.setProperty('--c', lc.unit.color); lb.dataset.id = lc.id; }
     else lb.style.display = 'none';
     var badge = $('#qBadge');
     var isRe = session.re[q.id] === session.idx;
@@ -739,7 +739,7 @@
 
     go('result');
     var acc = firstOk / Math.max(1, firstTotal);
-    var title = boss ? (bossWin ? 'BOSS DEFEATED!!' : 'もう一息！') : perfect ? 'PERFECT!!' : acc >= 0.8 ? 'GREAT!' : acc >= 0.6 ? 'NICE!' : 'GOOD TRY';
+    var title = boss ? (bossWin ? LE_T('bossEn') + ' DEFEATED!!' : 'もう一息！') : perfect ? 'PERFECT!!' : acc >= 0.8 ? 'GREAT!' : acc >= 0.6 ? 'NICE!' : 'GOOD TRY';
     $('#resMode').textContent = { daily: 'DAILY SET', quick: 'QUICK 3', weak: 'WEAK POINT', focus: (C.focus && C.focus.label) || 'FOCUS', mock: 'MINI MOCK', field: Core.FMAP[session.arg] ? Core.FMAP[session.arg].name : 'FIELD', lesson: 'LESSON CHECK', boss: 'UNIT BOSS' }[session.mode] + (wasBoost ? ' ／ BOOST×2' : '');
     var rt = $('#resTitle'); rt.textContent = title;
     rt.className = 'res-title' + (perfect ? ' perfect' : '');
@@ -752,14 +752,14 @@
       ms.style.display = '';
       var mp = Core.examDef(C.mock && C.mock.exam).pass;
       ms.innerHTML = '<small>' + esc((C.mock && C.mock.scoreLabel) || '換算スコア') + '</small><b>' + mockScore + '</b>' +
-        (mp ? '<span class="' + (mockScore >= mp ? 'pass' : 'fail') + '">' + (mockScore >= mp ? '合格ライン突破！' : '合格ラインまであと ' + (mp - mockScore) + '点') + '</span>' : '');
+        (mp ? '<span class="' + (mockScore >= mp ? 'pass' : 'fail') + '">' + (mockScore >= mp ? LE_T('passLine') + '突破！' : LE_T('passLine') + 'まであと ' + (mp - mockScore) + '点') + '</span>' : '');
     } else ms.style.display = 'none';
 
     var goal = S.settings.dailyGoal;
     var msg;
     if (t.answered >= goal) msg = '🎉 今日のノルマ達成！ 間隔をあけて復習するほど記憶は強くなります。今日はここで切り上げても大丈夫。続けるなら新しい分野にどうぞ。';
     else msg = 'あと ' + (goal - t.answered) + ' 問で今日のノルマ達成。' + (Core.dueList().length ? '忘れかけの復習が ' + Core.dueList().length + ' 問待っています。' : '');
-    if (boss) msg = bossWin ? '👑 ' + boss.info.name + ' を撃破！ ユニットの範囲を混ぜて解けた＝本番に近い力がついている証拠。ロードマップに王冠が付いたよ。' : 'あと ' + boss.hp + ' 回の正解で撃破だった！ 間違えた問題は復習カードで確認して、もう一度挑もう。';
+    if (boss) msg = bossWin ? '👑 ' + boss.info.name + ' を撃破！ 範囲を混ぜて解けた＝本番に近い力がついている証拠。' + LE_T('roadmap') + 'に王冠が付いたよ。' : 'あと ' + boss.hp + ' 回の正解で撃破だった！ 間違えた問題は' + LE_T('card') + 'で確認して、もう一度挑もう。';
     $('#resMsg').textContent = msg;
     $('#evoArea').innerHTML = '';
 
@@ -923,7 +923,7 @@
     var t = Core.cardTier(c);
     var isNew = t !== 'locked' && !S.cardSeen[c.id];
     return '<button class="mcard t-' + t + (extraCls ? ' ' + extraCls : '') + '" data-id="' + c.id + '" style="--c:' + c.unit.color + '">' +
-      '<span class="mc-lbl">' + Lesson.label(c.L) + '</span>' +
+      '<span class="mc-lbl">' + Lesson.label(c.L) + '</span>' + (c.L.year ? '<span class="mc-year">' + esc(c.L.year) + '</span>' : '') +
       (t === 'locked' ? '<span class="mc-lock">🔒</span><b>' + esc(c.t) + '</b><small>レッスンをクリアで入手</small>'
         : '<b>' + esc(c.t) + '</b><span class="mc-tier">' + TIER_NAME[t] + '</span>') +
       (isNew ? '<i class="mc-new">NEW</i>' : '') + '</button>';
@@ -949,7 +949,7 @@
       var sec = document.createElement('section');
       sec.className = 'dex-unit';
       sec.style.setProperty('--c', u.color);
-      sec.innerHTML = '<h2 class="sec-title" style="--c:' + u.color + '">UNIT ' + (ui + 1) + '　' + esc(u.name) + '<small>' + us.got + ' / ' + us.total + ' 枚' + (S.bosses[u.id] ? '　👑 ボス撃破' : '') + '</small></h2>' +
+      sec.innerHTML = '<h2 class="sec-title" style="--c:' + u.color + '">' + LE_T('unit') + ' ' + LE_UNO(ui + 1) + '　' + esc(u.name) + '<small>' + us.got + ' / ' + us.total + ' 枚' + (S.bosses[u.id] ? '　👑 ' + LE_T('boss') + '撃破' : '') + '</small></h2>' +
         '<div class="mcard-grid">' + Core.ALL_CARDS.filter(function (c) { return c.unit.id === u.id; }).map(function (c) { return miniCard(c); }).join('') + '</div>';
       box.appendChild(sec);
     });
@@ -957,7 +957,7 @@
       b.addEventListener('click', function () {
         var c = Core.LMAP[b.dataset.id];
         if (!Core.owned(c)) {
-          FX.toast('🔒', 'Lesson ' + Lesson.label(c.L) + ' をクリアすると手に入る', c.t);
+          FX.toast('🔒', LE_T('lesson') + ' ' + Lesson.label(c.L) + ' をクリアすると手に入る', c.t);
           gsap.fromTo(b, { x: -6 }, { x: 0, duration: 0.4, ease: 'elastic.out(1.5,0.3)' });
           return;
         }
@@ -997,8 +997,8 @@
     var recap = L.steps[L.steps.length - 1];
     var vizStep = d.vizFind ? L.steps.find(function (s) { return s.viz && s.viz.indexOf(d.vizFind) >= 0; }) : null;
     var head = function (side) {
-      return '<div class="kc-head"><span class="kc-lesson">📍 Lesson ' + Lesson.label(L) + '</span><span class="kc-unit">' + esc(c.unit.name) + '</span>' +
-        '<span class="kc-tier">' + TIER_NAME[t === 'locked' ? 'bronze' : t] + '</span></div><h2 class="kc-title">' + esc(c.t) + '</h2>' +
+      return '<div class="kc-head"><span class="kc-lesson">📍 ' + LE_T('lesson') + ' ' + Lesson.label(L) + '</span><span class="kc-unit">' + esc(c.unit.name) + '</span>' +
+        '<span class="kc-tier">' + TIER_NAME[t === 'locked' ? 'bronze' : t] + '</span></div>' + (L.year ? '<span class="kc-year">' + esc(L.year) + '</span>' : '') + '<h2 class="kc-title">' + esc(c.t) + '</h2>' +
         '<div class="kc-side">' + side + '</div>';
     };
     var front = '<div class="kc-face kc-front"><div class="kc-shine"></div>' + head('表：要点') + '<div class="kc-scroll">' +
@@ -1026,7 +1026,7 @@
     var t = Core.cardTier(c);
     var ov = $('#overlay-deck');
     ov.style.setProperty('--c', c.unit.color);
-    $('#deckTitle').innerHTML = '<span>' + esc(c.unit.icon) + '</span> UNIT ' + (LE.units.indexOf(c.unit) + 1) + '　' + esc(c.unit.name) + '<small>' + (cv.i + 1) + ' / ' + cv.list.length + '</small>';
+    $('#deckTitle').innerHTML = '<span>' + esc(c.unit.icon) + '</span> ' + LE_T('unit') + ' ' + LE_UNO(LE.units.indexOf(c.unit) + 1) + '　' + esc(c.unit.name) + '<small>' + (cv.i + 1) + ' / ' + cv.list.length + '</small>';
     var tl = gsap.timeline();
     if (dir) tl.to(k, { x: -dir * 120, opacity: 0, rotateY: (cv.back ? 180 : 0) - dir * 60, duration: 0.2, ease: 'power2.in' });
     tl.add(function () {

@@ -1,6 +1,7 @@
 /* audio.js — WebAudio でその場合成する効果音（音声ファイル不要） */
 (function () {
   'use strict';
+  var ROYAL = !!(window.COURSE && window.COURSE.sound === 'royal');   // COURSE.sound = 'royal'：古楽器風の音色
   var ctx = null, master = null;
   var SCALE = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21, 24, 26, 28, 31]; // ペンタトニック：コンボで音階が上がる
 
@@ -11,14 +12,19 @@
     if (!AC) return null;
     ctx = new AC();
     master = ctx.createGain();
-    master.gain.value = 0.32;
+    master.gain.value = ROYAL ? 0.42 : 0.32;
     var comp = ctx.createDynamicsCompressor();
-    master.connect(comp); comp.connect(ctx.destination);
+    if (ROYAL) { /* 古楽器っぽく：高音を丸めて温かい響きに */
+      var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 3200; lp.Q.value = 0.4;
+      master.connect(lp); lp.connect(comp);
+    } else master.connect(comp);
+    comp.connect(ctx.destination);
     return ctx;
   }
   function hz(semi) { return 440 * Math.pow(2, (semi - 9) / 12) * 2; } // C5 基準
   function tone(f, t0, dur, type, vol, slideTo) {
     var o = ctx.createOscillator(), g = ctx.createGain();
+    if (ROYAL && (type === 'square' || type === 'sawtooth')) { type = 'triangle'; dur *= 1.6; } // ハープ・リュート風のはじく音
     o.type = type || 'sine';
     o.frequency.setValueAtTime(f, t0);
     if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
@@ -58,6 +64,7 @@
     },
     wrong: function () {
       buzz([30, 40, 30]);
+      if (ROYAL) { play(function (t) { tone(110, t, 0.35, 'sine', 0.35, 55); tone(82, t + 0.02, 0.4, 'sine', 0.2, 45); noise(t, 0.12, 0.08, 400, 150); }); return; } // 太鼓のような低い音
       play(function (t) {
         tone(220, t, 0.28, 'sawtooth', 0.14, 90);
         tone(160, t + 0.02, 0.3, 'square', 0.08, 70);

@@ -51,17 +51,17 @@ window.LE_TEMPLATE = `
             </div>
             <div class="hero-cta">
               <button class="btn-mega" id="btnLearn">
-                <span class="mega-label">LEARN</span>
+                <span class="mega-label">{{t:learn}}</span>
                 <span class="mega-sub" id="learnSub">次のレッスン</span>
               </button>
               <button class="btn-mega alt" id="btnStart">
-                <span class="mega-label">REVIEW</span>
+                <span class="mega-label">{{t:review}}</span>
                 <span class="mega-sub" id="startSub">学んだ範囲の復習・演習</span>
               </button>
               <div class="chips">
                 <span class="chip"><i class="dot due"></i>復習 <b id="dueCount">0</b></span>
                 <span class="chip"><i class="dot new"></i>新規 <b id="newCount">0</b></span>
-                <span class="chip chip-card" data-go="learn" title="まだ開いていない復習カード">📇 NEWカード <b id="unreadCount">0</b></span>
+                <span class="chip chip-card" data-go="learn" title="まだ開いていない{{t:card}}">📇 NEW{{t:cardShort}} <b id="unreadCount">0</b></span>
                 <span class="chip" id="freezeChip" title="ストリークフリーズ：1日休んでも連続記録が守られる">🧊 <b id="freezeCount">0</b></span>
               </div>
               <button class="btn-ghost" id="btnQuick">⚡ やる気ゼロの日用：3問だけ</button>
@@ -95,7 +95,7 @@ window.LE_TEMPLATE = `
             <button class="mode" data-mode="weak"><span class="m-ico">🎯</span><b>弱点狙い撃ち</b><small>間違えた問題を集中攻撃</small></button>
             <button class="mode" data-mode="focus" id="modeFocus"><span class="m-ico">{{focusIcon}}</span><b>{{focusLabel}}</b><small>{{focusDesc}}</small></button>
             <button class="mode" data-mode="mock" id="modeMock"><span class="m-ico">📝</span><b>{{mockLabel}}</b><small>{{mockDesc}}</small></button>
-            <button class="mode" data-go="learn"><span class="m-ico">🗺</span><b>ロードマップ</b><small>レッスンで理解 → カードを集めて進化</small></button>
+            <button class="mode" data-go="learn"><span class="m-ico">🗺</span><b>{{t:roadmap}}</b><small>レッスンで理解 → {{t:cardShort}}を集めて進化</small></button>
           </div>
         </div>
       </div>
@@ -114,7 +114,7 @@ window.LE_TEMPLATE = `
       <div class="qcard glass" id="qcard">
         <div class="q-meta">
           <span class="tag" id="qField">分野</span>
-          <button class="tag lesson-tag" id="qLesson" title="この問題を学んだレッスンの復習カードを開く"></button>
+          <button class="tag lesson-tag" id="qLesson" title="この問題を学んだレッスンの{{t:card}}を開く"></button>
           <span class="tag badge" id="qBadge">NEW</span>
           <span class="q-timer"><i id="qTimer"></i></span>
         </div>
@@ -130,7 +130,7 @@ window.LE_TEMPLATE = `
           <p class="fb-exp" id="fbExp"></p>
           <div class="fb-btns">
             <button class="btn-next" id="btnNext">次へ <kbd>Enter</kbd></button>
-            <button class="btn-ghost" id="btnCard">📇 復習カードを見る <kbd>C</kbd></button>
+            <button class="btn-ghost" id="btnCard">📇 {{t:card}}を見る <kbd>C</kbd></button>
           </div>
         </div>
       </div>
@@ -165,7 +165,7 @@ window.LE_TEMPLATE = `
     </section>
 
     <section class="screen" id="scr-learn">
-      <div class="seg" id="learnTabs"><button class="on" data-tab="road">🗺 ロードマップ</button><button data-tab="dex">📇 復習カード図鑑</button></div>
+      <div class="seg" id="learnTabs"><button class="on" data-tab="road">🗺 {{t:roadmap}}</button><button data-tab="dex">📇 {{t:dex}}</button></div>
       <div id="tab-road">
         <div class="rm-head glass">
           <div class="dex-rate">
@@ -188,8 +188,8 @@ window.LE_TEMPLATE = `
             <div class="ring-center"><b id="dexPct">0</b><small>% 収集</small></div>
           </div>
           <div class="dex-info">
-            <p class="eyebrow">REVIEW CARD DEX</p>
-            <h1>復習カード図鑑</h1>
+            <p class="eyebrow">{{t:dexEn}}</p>
+            <h1>{{t:dex}}</h1>
             <p class="dex-desc">レッスンを1つクリアするごとに1枚入手。表にレッスンのまとめ、裏に＋α補足とひっかけ。その範囲の問題をマスターするほど <span class="t-bronze">ブロンズ</span> → <span class="t-silver">シルバー</span> → <span class="t-gold">ゴールド</span> → <span class="t-holo">ホロ</span> に進化する。</p>
             <div class="dex-tiers" id="dexTiers"></div>
           </div>
@@ -253,7 +253,7 @@ window.LE_TEMPLATE = `
           <li><b>学んだ範囲だけ出題</b>：レッスンを終えた範囲の問題だけが復習・演習に出ます（習熟学習）。</li>
           <li><b>間隔反復（忘却曲線）</b>：忘れかけたタイミングで出題。正解するほど次の間隔が伸びます。</li>
           <li><b>想起練習（テスト効果）</b>：読むより「思い出す」ほうが記憶に残ります。</li>
-          <li><b>インターリービング</b>：分野を混ぜて出題し（ボス戦など）、問題の見分け方まで鍛えます。</li>
+          <li><b>インターリービング</b>：分野を混ぜて出題し（{{t:boss}}戦など）、問題の見分け方まで鍛えます。</li>
           <li><b>小さな習慣</b>：1日3問でもストリーク継続。ノルマ達成後は「休むのも戦略」。</li>
         </ul>
       </div>

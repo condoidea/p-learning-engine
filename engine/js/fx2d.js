@@ -61,7 +61,9 @@
     },
     confetti: function (amount) {
       var n = Math.round((amount || 160) * (lite() ? 0.35 : 1));
-      var cols = [css('--accent'), css('--accent2'), '#ffd84d', '#5cff9d', '#ff3fa4', '#ffffff'];
+      /* 紙吹雪の色：テーマの --fx-confetti（カンマ区切り）があればそれを使う */
+      var custom = getComputedStyle(document.documentElement).getPropertyValue('--fx-confetti').trim();
+      var cols = custom ? custom.split(',').map(function (x) { return x.trim(); }) : [css('--accent'), css('--accent2'), '#ffd84d', '#5cff9d', '#ff3fa4', '#ffffff'];
       var W = window.innerWidth;
       for (var i = 0; i < n; i++) {
         var fromLeft = i % 2 === 0;

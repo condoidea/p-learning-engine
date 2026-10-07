@@ -1,6 +1,9 @@
 /* fx3d.js — three.js の背景演出
  *  ・星空パーティクル / シンセウェーブ風グリッド / 回転するデータコア
  *  ・正解でコアが脈動＋衝撃波、不正解で赤く明滅、コンボで加速、FEVER で虹色
+ *  COURSE.scene でコースごとに雰囲気を変えられる
+ *    preset: 'neon'（既定：ネオン×グリッド×データコア）／ 'royal'（金の塵×天球儀、グリッドなし）
+ *    bg: 背景色、a / b: 初期の主色・副色
  */
 (function () {
   'use strict';
@@ -14,16 +17,19 @@
   try { renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, powerPreference: 'high-performance' }); }
   catch (e) { return; }
   var lite = false;
+  var SC = (window.COURSE && window.COURSE.scene) || {};
+  var ROYAL = SC.preset === 'royal';
+  var BG = new THREE.Color(SC.bg || (ROYAL ? '#0c0705' : '#05060f'));
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.setClearColor(0x05060f, 1);
+  renderer.setClearColor(BG, 1);
 
   var scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x05060f, 0.045);
+  scene.fog = new THREE.FogExp2(BG, ROYAL ? 0.05 : 0.045);
   var camera = new THREE.PerspectiveCamera(60, 1, 0.1, 200);
   camera.position.set(0, 0.6, 9);
 
-  var accent = new THREE.Color('#38e8ff');
-  var accent2 = new THREE.Color('#7a5cff');
+  var accent = new THREE.Color(SC.a || (ROYAL ? '#d8b45a' : '#38e8ff'));
+  var accent2 = new THREE.Color(SC.b || (ROYAL ? '#a3262b' : '#7a5cff'));
 
   /* ---- 星空 ---- */
   var STARS = 2600;
@@ -35,11 +41,12 @@
     sp[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th) * 0.6;
     sp[i * 3 + 2] = r * Math.cos(ph);
     var k = Math.random();
-    sc[i * 3] = 0.6 + k * 0.4; sc[i * 3 + 1] = 0.7 + k * 0.3; sc[i * 3 + 2] = 1;
+    if (ROYAL) { sc[i * 3] = 1; sc[i * 3 + 1] = 0.7 + k * 0.25; sc[i * 3 + 2] = 0.35 + k * 0.35; } // 金の塵（ろうそくの光の色）
+    else { sc[i * 3] = 0.6 + k * 0.4; sc[i * 3 + 1] = 0.7 + k * 0.3; sc[i * 3 + 2] = 1; }
   }
   sg.setAttribute('position', new THREE.BufferAttribute(sp, 3));
   sg.setAttribute('color', new THREE.BufferAttribute(sc, 3));
-  var stars = new THREE.Points(sg, new THREE.PointsMaterial({ size: 0.09, vertexColors: true, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false }));
+  var stars = new THREE.Points(sg, new THREE.PointsMaterial({ size: ROYAL ? 0.12 : 0.09, vertexColors: true, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false }));
   scene.add(stars);
 
   /* ---- グリッド床（奥から流れてくる） ---- */
@@ -47,13 +54,15 @@
   grid.material.color = accent2.clone();
   grid.material.transparent = true; grid.material.opacity = 0.28;
   grid.position.y = -3.2;
+  grid.visible = !ROYAL;
   scene.add(grid);
 
   /* ---- データコア ---- */
   var core = new THREE.Group();
   scene.add(core);
-  var ico = new THREE.IcosahedronGeometry(1.35, 1);
-  var wire = new THREE.LineSegments(new THREE.EdgesGeometry(ico), new THREE.LineBasicMaterial({ color: accent, transparent: true, opacity: 0.95 }));
+  /* royal：経線・緯線の天球儀（中世の天文学の道具）。neon：多面体のデータコア */
+  var wireGeo = ROYAL ? new THREE.WireframeGeometry(new THREE.SphereGeometry(1.35, 16, 10)) : new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(1.35, 1));
+  var wire = new THREE.LineSegments(wireGeo, new THREE.LineBasicMaterial({ color: accent, transparent: true, opacity: ROYAL ? 0.7 : 0.95 }));
   core.add(wire);
   var inner = new THREE.Mesh(new THREE.IcosahedronGeometry(0.85, 2), new THREE.MeshBasicMaterial({ color: accent2, transparent: true, opacity: 0.35, wireframe: true }));
   core.add(inner);
@@ -61,7 +70,7 @@
   core.add(glow);
   var rings = [];
   for (var j = 0; j < 3; j++) {
-    var ring = new THREE.Mesh(new THREE.TorusGeometry(2 + j * 0.42, 0.012, 8, 128), new THREE.MeshBasicMaterial({ color: j % 2 ? accent2 : accent, transparent: true, opacity: 0.55 }));
+    var ring = new THREE.Mesh(new THREE.TorusGeometry(2 + j * 0.42, ROYAL ? 0.032 : 0.012, 8, 160), new THREE.MeshBasicMaterial({ color: j % 2 ? accent2 : accent, transparent: true, opacity: 0.55 }));
     ring.rotation.x = Math.PI / 2 + (j - 1) * 0.5;
     ring.rotation.y = j * 0.7;
     core.add(ring); rings.push(ring);

@@ -43,7 +43,8 @@ LE.addTo = function (lessonId, field, list) {
   var L = LE.lessonDefs[lessonId];
   if (!L) throw new Error('LE.addTo: レッスン ' + lessonId + ' が未登録です');
   list.forEach(function (q, i) {
-    q.id = 'x-' + lessonId + '-' + (i + 1);
+    L.xn = (L.xn || 0) + 1;
+    q.id = 'x-' + lessonId + '-' + L.xn;
     q.f = field;
     LE.questions.push(q);
     L.q.push(q.id);

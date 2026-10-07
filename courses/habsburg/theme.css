@@ -1,0 +1,257 @@
+/* =========================================================
+ * ハプスブルク年代記 — 見た目
+ *  コンセプト：「装飾写本 × 帝国の宮廷」
+ *   ・読む面（レッスン・古文書・図解）は羊皮紙、枠は胡桃材の暗色に金の罫線
+ *   ・色は紋章の原色：金（Or）・赤（Gules）・青（Azure）・緑（Vert）・黒（Sable）
+ *   ・見出しの欧文は Cinzel（ローマ碑文体）、日本語は明朝。説明の頭文字は彩飾頭文字
+ *   ・スタンプは封蝋（赤い蝋に金の文字）
+ * ========================================================= */
+:root {
+  --bg: #0c0705;
+  --accent: #d8b45a;
+  --accent2: #a3262b;
+  --ok: #6fbf73;
+  --ng: #d2463c;
+  --gold: #e6c35c;
+  --text: #f1e6cf;
+  --muted: #b8a585;
+  --glass: rgba(30, 19, 12, 0.86);
+  --glass-2: rgba(255, 236, 200, 0.05);
+  --line: rgba(216, 180, 90, 0.30);
+  --radius: 6px;
+  --f-display: 'Shippori Mincho B1', 'Zen Old Mincho', serif;
+  --f-latin: 'Cinzel', 'Shippori Mincho B1', serif;
+  --f-body: 'Zen Old Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+  --f-num: 'Cinzel', 'Shippori Mincho B1', serif;
+  --fx-confetti: #d8b45a, #f6e7b0, #a3262b, #6b1414, #fff8e6, #2b4c8c;
+  /* 羊皮紙とインク */
+  --parch: #efe2c4;
+  --parch-2: #e2cfa6;
+  --parch-edge: #b8955a;
+  --ink: #2b1a0e;
+  --ink-2: #6b5236;
+  --rubric: #8e1b1b;     /* 写本の朱書き */
+}
+
+body {
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(120, 40, 20, 0.35), transparent 60%),
+    radial-gradient(ellipse at 50% 120%, rgba(60, 30, 10, 0.5), transparent 60%),
+    var(--bg) fixed;
+  letter-spacing: 0.02em;
+}
+/* ブラウン管の走査線 → ろうそくの光の周辺減光に */
+#scanlines { background: radial-gradient(ellipse at center, transparent 45%, rgba(0, 0, 0, 0.65) 100%) !important; animation: none !important; }
+
+/* ---- 枠（胡桃材＋金の二重罫） ---- */
+.glass {
+  background: linear-gradient(170deg, rgba(42, 27, 17, 0.92), rgba(22, 13, 8, 0.92));
+  border: 1px solid var(--line);
+  box-shadow: inset 0 0 0 4px rgba(12, 7, 5, 0.6), inset 0 0 0 5px rgba(216, 180, 90, 0.18), 0 10px 30px -12px rgba(0, 0, 0, 0.8);
+}
+.card-head h2, .page-head h1, .sec-title, .dex-info h1 { font-family: var(--f-display); font-weight: 800; letter-spacing: 0.06em; }
+.card-head h2::before { content: '❧ '; color: var(--accent2); }
+.eyebrow { font-family: var(--f-latin); letter-spacing: 0.35em; color: var(--accent); }
+
+/* ---- ロゴ・トップバー ---- */
+.brand { font-family: 'Cinzel Decorative', var(--f-latin); font-weight: 900; font-size: 19px; letter-spacing: 0.08em; }
+.brand-mark { color: var(--text); }
+.brand-rush { font-style: normal; background: linear-gradient(90deg, #f6e7b0, var(--accent), #b8862f); -webkit-background-clip: text; background-clip: text; color: transparent; margin-left: 6px; }
+#topbar { background: linear-gradient(to bottom, rgba(12, 7, 5, 0.95), rgba(12, 7, 5, 0)); }
+/* レベル章：盾の形 */
+.lv-badge { border-radius: 0; clip-path: polygon(0 0, 100% 0, 100% 62%, 50% 100%, 0 62%); background: linear-gradient(160deg, #f3d98b, #b8862f); color: #3a2208; box-shadow: none; padding-bottom: 6px; }
+.lv-badge small { font-family: var(--f-latin); }
+.xpbar { border-radius: 2px; border-color: rgba(216, 180, 90, 0.4); }
+.xpbar i { background: linear-gradient(90deg, #8e1b1b, var(--accent)); box-shadow: 0 0 10px rgba(216, 180, 90, 0.6); }
+.tb-streak { border-radius: 4px; }
+
+/* ---- ボタン ---- */
+.btn-mega {
+  border-radius: 4px;
+  background: linear-gradient(170deg, #f6e3a1 0%, #d8b45a 45%, #a87b25 100%);
+  color: #2b1806;
+  box-shadow: inset 0 0 0 2px rgba(255, 245, 210, 0.6), inset 0 0 0 4px rgba(120, 80, 20, 0.35), 0 10px 30px -10px rgba(216, 180, 90, 0.7);
+}
+.btn-mega .mega-label { font-family: var(--f-latin); font-weight: 900; letter-spacing: 0.18em; }
+.btn-mega .mega-sub { font-family: var(--f-display); }
+.btn-mega.alt {
+  background: linear-gradient(170deg, #6a1717, #3a0b0b 70%);
+  color: #f6e7b0;
+  box-shadow: inset 0 0 0 1px rgba(216, 180, 90, 0.6), inset 0 0 0 4px rgba(20, 5, 5, 0.6), 0 10px 30px -14px #a3262b;
+}
+.btn-mega.alt .mega-sub { color: #e9d5a8; }
+.btn-primary, .btn-next, .ls-go:not(:disabled) {
+  border-radius: 4px; background: linear-gradient(170deg, #f3d98b, #b8862f); color: #2b1806;
+  box-shadow: inset 0 0 0 1px rgba(255, 245, 210, 0.6), 0 6px 0 rgba(60, 35, 10, 0.6);
+  font-family: var(--f-display); letter-spacing: 0.08em;
+}
+.btn-ghost { border-radius: 4px; border-color: rgba(216, 180, 90, 0.35); }
+.mode { border-radius: 4px; }
+.mode .m-ico { color: var(--accent); }
+.chip { border-radius: 4px; }
+
+/* ---- タブバー ---- */
+#tabbar { border-radius: 6px; background: rgba(24, 14, 9, 0.92); border-color: rgba(216, 180, 90, 0.35); }
+#tabbar button.on { background: rgba(163, 38, 43, 0.35); }
+#tabbar button.on span { color: var(--gold); text-shadow: 0 0 8px rgba(230, 195, 92, 0.7); }
+
+/* ---- 羊皮紙の面（読むところ） ---- */
+.bubble, .term-card, .ex-card, .recap li, .vz, .solve, .tl-t, .kc-face, .ls-hint-text {
+  background: linear-gradient(175deg, #f4e8cc 0%, var(--parch) 55%, var(--parch-2) 100%) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--parch-edge) !important;
+  box-shadow: inset 0 0 30px rgba(120, 80, 30, 0.18), 0 8px 24px -10px rgba(0, 0, 0, 0.7);
+}
+.bubble { border-radius: 3px 14px 14px 14px; font-family: var(--f-body); font-size: 16.5px; }
+.bubble b, .ls-body :is(p, li, .term-short, .term-ex, .ex-q, .tr-say) b, .kc-sec b, .recap b, .tl-t b {
+  background: none !important; color: var(--rubric) !important; font-weight: 700;
+}
+.bubble code, .kc-sec code, .recap code { background: rgba(80, 50, 20, 0.12); color: var(--ink); }
+.gl { color: var(--rubric) !important; border-bottom-color: var(--rubric) !important; }
+/* 彩飾頭文字（説明の最初の1文字） */
+.t-say .bubble::first-letter {
+  float: left; font-family: 'Shippori Mincho B1', serif; font-weight: 800; font-size: 2.7em; line-height: 1;
+  margin: 2px 8px 0 0; padding: 2px 6px; color: var(--rubric);
+  background: linear-gradient(160deg, #f6e3a1, #d8b45a); border: 1px solid #a87b25; border-radius: 2px;
+  text-shadow: 1px 1px 0 rgba(255, 245, 210, 0.7);
+}
+.bubble.q { border-left: 4px solid var(--rubric) !important; }
+
+/* 用語カード（封蝋つき） */
+.term-card h2 { color: var(--ink); font-family: var(--f-display); }
+.term-card small, .term-ex span { color: var(--ink-2) !important; }
+.term-ex { background: rgba(120, 80, 30, 0.08) !important; color: var(--ink); }
+.term-stamp, .kc-new, .unit-stamp, .mem-stamp, .node-start, .lc-cg-head + .mcard .mc-new {
+  font-family: var(--f-display) !important;
+}
+.term-stamp {
+  top: -18px; right: 12px; width: 64px; height: 64px; padding: 0; display: grid; place-items: center; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #c43b35, #7a1414 70%); border: 3px solid #5a0d0d; color: #f6e3a1;
+  font-size: 13px; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5), inset 0 0 0 3px rgba(255, 200, 150, 0.25);
+}
+/* 例題・まとめ */
+.ex-tag { background: var(--rubric); border-radius: 2px; font-family: var(--f-display); }
+.ex-q { color: var(--ink); }
+.ex-steps li::marker { color: var(--rubric); font-family: var(--f-num); }
+.recap li i { background: var(--rubric); color: #f6e3a1; }
+
+/* ---- 図解（羊皮紙の上に紋章色の箱） ---- */
+.vz { border-radius: 4px; }
+.bx { background: #f8eed6; border-color: #8c6a3a; color: var(--ink); border-radius: 3px; box-shadow: none !important; font-family: var(--f-body); }
+.bx small { color: var(--ink-2); }
+.bx.c1 { border-color: #a87b25; background: #f6e3a8; }   /* 金 */
+.bx.c2 { border-color: #8e1b1b; background: #f2d2c6; }   /* 赤 */
+.bx.c3 { border-color: #2b4c8c; background: #d9e1f2; }   /* 青 */
+.bx.c4 { border-color: #2f6b3a; background: #d9ead3; }   /* 緑 */
+.bx.c5 { border-color: #3a2a20; background: #d8cbb8; }   /* 黒 */
+.bx.fill { background: linear-gradient(160deg, #8e1b1b, #5a0d0d); color: #f6e3a1; border-color: #a87b25; }
+.bx.fill small { color: #e9c9a0; }
+.ar { color: #6b5236; }
+.note, .lbl { color: var(--ink-2) !important; }
+.vz-tbl th { color: var(--rubric); background: rgba(120, 80, 30, 0.1); font-family: var(--f-display); }
+.vz-tbl td { border-top-color: rgba(107, 82, 54, 0.35); color: var(--ink); }
+.vz-tbl tr.hl td { background: rgba(216, 180, 90, 0.35); color: var(--ink); }
+.em1, .em3 { color: #8a6416; } .em2, .em5 { color: var(--rubric); } .em4 { color: #2f6b3a; }
+.big { color: var(--ink); }
+
+/* ---- レッスン画面 ---- */
+.ls-prog { border-radius: 2px; background: rgba(255, 236, 200, 0.08); }
+.ls-prog i { background: linear-gradient(90deg, #8e1b1b, var(--accent)); border-radius: 2px; }
+.ls-xp { color: var(--gold); }
+.ls-opt { border-radius: 4px; background: linear-gradient(170deg, rgba(48, 30, 18, 0.95), rgba(26, 16, 10, 0.95)); border-color: rgba(216, 180, 90, 0.35); font-family: var(--f-body); }
+.ls-opt .ck { font-family: var(--f-latin); border-radius: 2px; background: rgba(216, 180, 90, 0.18); color: var(--gold); }
+.ls-opt.right { border-color: var(--ok); background: rgba(70, 120, 60, 0.35); }
+.ls-opt.wrong { border-color: var(--ng); background: rgba(130, 30, 25, 0.35); }
+.ls-fb { border-radius: 4px; font-family: var(--f-body); }
+.ls-fb b { font-family: var(--f-display) !important; }
+.chipb, .mt { border-radius: 4px; background: linear-gradient(170deg, rgba(48, 30, 18, 0.95), rgba(26, 16, 10, 0.95)); font-family: var(--f-body); }
+.chipb em { color: var(--gold); font-family: var(--f-num); }
+.mt.sel { border-color: var(--gold); }
+.num-in { font-family: var(--f-num); border-radius: 4px; background: #1b110a; }
+
+/* ナビキャラ：金のメダルの中の鷹 */
+.pico.mascot { background: radial-gradient(circle at 35% 30%, #a3262b, #4a0c0c 75%); border: 3px solid #d8b45a; box-shadow: 0 0 0 2px #5a3a12, 0 0 20px -4px #d8b45a; }
+.pico.mascot .ms-name { color: var(--gold); font-family: var(--f-display); }
+
+/* 年表ステップ */
+.tl-track::before { background: linear-gradient(#d8b45a, rgba(216, 180, 90, 0.1)); }
+.tl-y { color: var(--gold); font-weight: 700; }
+.tl-dot { background: radial-gradient(circle at 35% 30%, #c43b35, #7a1414); box-shadow: 0 0 0 2px #d8b45a; }
+.tl-t { border-radius: 3px; font-family: var(--f-body); }
+
+/* ---- 年代記（ロードマップ） ---- */
+.unit-head { border-left: 0; border-top: 3px double var(--accent); }
+.unit-head h3 { font-family: var(--f-display); font-weight: 800; }
+.unit-head small { font-family: var(--f-latin); letter-spacing: 0.3em; }
+.unit-ico { border-radius: 2px; color: var(--gold); background: rgba(163, 38, 43, 0.35); }
+.node-disc { font-family: var(--f-num); border-radius: 50%; }
+/* 開いている章＝赤い封蝋、クリア済み＝金貨、未開放＝鉄 */
+.node.open .node-disc { background: radial-gradient(circle at 35% 30%, #c43b35, #7a1414 70%); color: #f6e3a1; border-color: #5a0d0d; box-shadow: 0 5px 0 rgba(40, 8, 8, 0.8), inset 0 0 0 3px rgba(255, 200, 150, 0.2); }
+.node.done .node-disc { background: radial-gradient(circle at 35% 30%, #fbe7a6, #c99a35 70%); color: #4a2e08; border-color: #f3dd9c; }
+.node.locked .node-disc { background: radial-gradient(circle at 35% 30%, #3a3633, #1d1a18); color: rgba(255, 255, 255, 0.35); }
+.node-label { font-family: var(--f-display); }
+.node-year { font-family: var(--f-num); color: var(--gold); font-size: 13px; letter-spacing: 0.08em; }
+.node-start { background: var(--parch); color: var(--rubric); border-radius: 2px; letter-spacing: 0.15em; }
+.node-start::after { border-top-color: var(--parch); }
+.unit-line .ul-done { stroke: var(--accent); }
+.unit-stamp {
+  border-radius: 50%; width: 92px; height: 92px; padding: 0; display: grid; place-items: center; text-align: center;
+  background: radial-gradient(circle at 35% 30%, #c43b35, #7a1414 70%); border: 3px solid #5a0d0d; color: #f6e3a1; font-size: 12px; text-shadow: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6), inset 0 0 0 4px rgba(255, 200, 150, 0.2); top: -26px;
+}
+.pv-card { border-top-color: var(--accent2); }
+.pv-card h3 { font-family: var(--f-display); font-weight: 800; }
+.pv-year { color: var(--gold); border-color: rgba(216, 180, 90, 0.4); }
+
+/* ---- 古文書（復習カード） ---- */
+.kc-face { border-radius: 6px; }
+.kc-face::before { padding: 4px; }
+.kc-title { color: var(--ink); font-family: var(--f-display); font-weight: 800; }
+.kc-side, .kc-unit, .kc-flip-hint, .mast-note { color: var(--ink-2) !important; }
+.kc-lesson { background: var(--rubric); color: #f6e3a1; border-radius: 2px; }
+.kc-year { color: var(--rubric); font-weight: 700; }
+.kc-sec { background: rgba(120, 80, 30, 0.07) !important; border-color: rgba(107, 82, 54, 0.3) !important; color: var(--ink) !important; font-family: var(--f-body); }
+.kc-sec h4 { color: var(--rubric) !important; font-family: var(--f-display); }
+.kc-sec h4 small { color: var(--ink-2) !important; }
+.kc-sec li::marker { color: var(--rubric); }
+.kc-sec.extra h4 { color: #2b4c8c !important; }
+.ex-item > b { color: #2b4c8c !important; }
+.kc-sec.trap h4 { color: var(--rubric) !important; }
+.ld { color: var(--ink-2); border-color: rgba(107, 82, 54, 0.4); }
+.kc-shine { mix-blend-mode: multiply; opacity: 0.15 !important; }
+.kc-new { border-color: var(--rubric); color: var(--rubric); background: rgba(244, 232, 204, 0.9); }
+.mcard { background: linear-gradient(170deg, #f1e3c2, #dcc596); border-radius: 4px; }
+.mcard b { color: var(--ink); font-family: var(--f-display); }
+.mcard small, .mc-year { color: var(--ink-2); }
+.mcard.t-locked { background: linear-gradient(170deg, #2a1d14, #17100b); opacity: 0.75; }
+.mcard.t-locked b { color: var(--muted); }
+.mc-lbl { background: var(--rubric) !important; color: #f6e3a1 !important; border-radius: 2px; font-family: var(--f-num); }
+
+/* ---- 問題画面 ---- */
+.qcard { background: linear-gradient(170deg, rgba(40, 25, 15, 0.95), rgba(20, 12, 8, 0.95)); }
+.q-text { font-family: var(--f-display); font-weight: 600; }
+.choice { border-radius: 4px; font-family: var(--f-body); }
+.choice .ck { border-radius: 2px; font-family: var(--f-display); }
+.fb-verdict { font-family: var(--f-display); font-weight: 800; }
+.boss { border-radius: 4px; background: linear-gradient(120deg, rgba(163, 38, 43, 0.3), rgba(30, 15, 10, 0.6)); border-color: rgba(216, 180, 90, 0.5); }
+.boss-top b { font-family: var(--f-display); font-weight: 800; }
+.boss-hp i { background: linear-gradient(90deg, #7a1414, #c43b35); }
+
+/* ---- 演出の文字 ---- */
+.slam-text { font-family: 'Cinzel Decorative', var(--f-latin) !important; font-style: normal !important; letter-spacing: 0.04em;
+  color: #fff3cf !important; text-shadow: 0 0 18px var(--slam, #d8b45a), 0 0 50px var(--slam, #d8b45a), 3px 3px 0 #5a0d0d !important; }
+.slam-sub { font-family: var(--f-display); background: rgba(20, 10, 6, 0.85); border: 1px solid rgba(216, 180, 90, 0.4); }
+.res-title { font-family: 'Cinzel Decorative', var(--f-latin) !important; font-style: normal !important; color: #fff3cf; text-shadow: 0 0 20px var(--accent), 3px 3px 0 #5a0d0d !important; }
+.lu-small, .lc-cg-head { font-family: var(--f-latin); }
+.lu-num b { color: #fff3cf; text-shadow: 0 0 30px var(--accent), 4px 4px 0 #5a0d0d; }
+.lc-title, .lu-title { font-family: var(--f-display); }
+.float-text { font-family: var(--f-latin); }
+.toast { border-radius: 4px; background: rgba(30, 18, 11, 0.95); font-family: var(--f-body); }
+.toast b { font-family: var(--f-display); }
+.overlay { background: rgba(10, 5, 3, 0.85); }
+
+/* スマホ：ロゴを詰める */
+@media (max-width: 560px) {
+  .brand { font-size: 14px; letter-spacing: 0.04em; }
+  .brand-rush { display: none; }
+}

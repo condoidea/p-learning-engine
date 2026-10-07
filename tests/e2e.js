@@ -58,6 +58,7 @@
       if (s.t === 'bits' && s.target != null) { var bs = $$('.bit'), n = bs.length; bs.forEach(function (b, k) { if (s.target & (1 << (n - 1 - k))) b.click(); }); }
       if (s.t === 'gate') { $$('.sw')[0].click(); $$('.sw')[1].click(); $$('.sw')[0].click(); }
       if (s.t === 'order') { for (var k = 0; k < s.items.length; k++) $$('.ord-pool .chipb').find(function (x) { return +x.dataset.i === k; }).click(); $('.ord-check').click(); }
+      if (s.t === 'timeline') { var ord = s.items.map(function (it, ii) { return { y: it.y, i: ii }; }).sort(function (x, z) { return x.y - z.y; }); ord.forEach(function (o) { var c = $$('.tl-chip').find(function (x) { return +x.dataset.i === o.i && !x.disabled; }); if (c) c.click(); }); }
       if (s.t === 'match') { for (var m = 0; m < s.pairs.length; m++) { $('.mt.l[data-i="' + m + '"]').click(); $('.mt.r[data-i="' + m + '"]').click(); } }
       if (s.t === 'num') { $('.num-in').value = String(s.answer); $('.num-check').click(); }
       if (s.t === 'steps') { var g = 0; while ($('.ex-more') && $('.ex-more').style.display !== 'none' && g++ < 30) $('.ex-more').click(); }

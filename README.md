@@ -21,8 +21,10 @@
 ```
 index.html              コース選択（タイトル画面）
 fe.html                 基本情報コースの入口（中身は数行。engine/js/boot.js が組み立てる）
+habsburg.html           ハプスブルク年代記コースの入口
 engine/
   js/boot.js            起動処理（スタイル・画面・スクリプトを順に読み込む）
+  js/terms.js           画面の呼び名（コースごとに差し替え可能）
   js/template.js        画面の骨組み（全コース共通）
   js/api.js             教材を書くための関数（LE.add / LE.defLesson など）
   js/core.js            学習ロジック（間隔反復・習熟ゲート・XP・実績・保存）
@@ -37,6 +39,7 @@ courses/
     course.js           コース設定（名前・試験形式・特別ルール・読み込むファイル）
     theme.css           コース専用の見た目
     data/               教材（分野・ロードマップ・レッスン・問題・復習カード）
+  habsburg/             ハプスブルク年代記（マンガ『ハプスブルク家の華麗なる受難』1〜3巻の範囲・高校世界史レベル）
 tests/
   check-course.js       教材の整合性チェック（Node）
   e2e.js                ブラウザでの通しテスト（<コース>.html?e2e で起動）
