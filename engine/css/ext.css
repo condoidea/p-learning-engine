@@ -207,3 +207,25 @@ html.scene-map #bg3d { display: none; }
 .sh-dots i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.18); transition: background .3s, transform .3s; }
 .sh-dots i.on { background: var(--accent); transform: scale(1.15); }
 .sh-next, .sh-again { padding: 10px 22px; }
+
+/* =========================================================
+ * 考えてから見る（ask）／まとめの答え合わせ（recapTap）
+ * ========================================================= */
+.ask { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.ask-q { margin: 0; font-weight: 800; font-size: 15.5px; text-align: center; }
+.ask-o { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.ask-b { padding: 9px 16px; border-radius: 12px; font-size: 15px; background: rgba(255,255,255,.06); border: 2px solid var(--line); color: var(--text);
+  transition: transform .15s cubic-bezier(.3,1.6,.5,1), border-color .2s, background .2s; }
+.ask-b:not(:disabled):hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--accent) 60%, transparent); }
+.ask-b.ok { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 16%, transparent); }
+.ask-b.bad { border-color: var(--ng); opacity: .55; }
+.ask-b.dim { opacity: .35; }
+.ask-r { display: flex; flex-direction: column; gap: 8px; }
+.ask-why { margin: 0; text-align: center; color: var(--muted); font-size: 14px; }
+.ask-reveal { padding: 12px 14px; border-radius: 12px; background: rgba(8,10,26,.6); border-left: 4px solid var(--ok); line-height: 1.8; font-size: 15px; }
+.rc-lead { margin: 0 0 6px; text-align: center; font-size: 14px; color: var(--muted); }
+.rc-tap li.rv { cursor: pointer; }
+.rc-tap li.rv-k .katex { filter: blur(6px); transition: filter .3s; }
+.rc-tap li.rv-b b { filter: blur(6px); background: color-mix(in srgb, var(--accent) 35%, transparent); border-radius: 4px; transition: filter .3s; }
+.rc-tap li.rv::after { content: 'タップ'; margin-left: auto; flex: none; align-self: center; font-size: 11px; padding: 2px 8px; border-radius: 99px; border: 1px dashed var(--muted); color: var(--muted); }
+.rc-tap li.open b, .rc-tap li.open .katex { filter: none; }

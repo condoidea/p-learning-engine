@@ -71,6 +71,7 @@ for (const [lid, L] of Object.entries(LE.lessonDefs)) {
     if (s.t === 'trace') { const n = s.code.split('\n').length; s.rows.forEach(r => { if (r.l >= n) err('trace の行番号が範囲外: ' + at); }); }
     if (s.t === 'num' && typeof s.answer !== 'number') err('num の answer が数値でない: ' + at);
     if (s.t === 'show' && (!s.frames || !s.frames.length)) err('show にコマ（frames）がない: ' + at);
+    [s].concat(s.frames || []).forEach(f => { if (f.ask && (!f.ask.o || f.ask.o.length < 2 || !f.ask.q)) err('ask は q と2つ以上の o が必要: ' + at); });
     if (s.t === 'widget' && !(LE.widgets && LE.widgets[s.w])) err('widget が見つからない: ' + s.w + ' @' + at);
     if (s.t === 'build' && (!s.ans || !s.ans.length)) err('build に答え（ans）がない: ' + at);
     if (s.t === 'decide' && (!s.o || s.o.filter(o => o.hist).length !== 1)) err('decide は史実の選択肢（hist）がちょうど1つ必要: ' + at);

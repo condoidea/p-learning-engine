@@ -17,9 +17,9 @@ window.LE_COURSES = [
     color: '#d8b45a', color2: '#a3262b', lessons: 34
   },
   {
-    id: 'trig', entry: 'trig.html', storageKey: 'le.trig.v1',
+    id: 'trig', entry: 'trig.html', storageKey: 'le.trig.v2',
     title: '三角比・平面図形の公式', brand: 'TRIG RUSH', icon: '📐',
     desc: 'プリント1枚の公式マインドマップを、図を動かして覚える。sin・cos・tan から正弦定理・余弦定理・メネラウスまで。',
-    color: '#ff5fa2', color2: '#38d9ff', lessons: 20
+    color: '#ff5fa2', color2: '#38d9ff', lessons: 15
   }
 ];

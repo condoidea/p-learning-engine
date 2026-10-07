@@ -329,7 +329,7 @@
     progress();
     setReady(false);
     var html = '<div class="ls-step t-' + s.t + '">';
-    var bubble = s.t === 'show' ? (s.frames[0].say || '') : s.t === 'say' ? s.text : s.t === 'term' ? 'あたらしい用語だよ！' : s.t === 'recap' ? 'ここまでのまとめ！' : s.text || s.q;
+    var bubble = s.t === 'show' ? (s.frames[0].say || '') : s.t === 'say' ? s.text : s.t === 'term' ? 'あたらしい用語だよ！' : s.t === 'recap' ? (window.COURSE && COURSE.recapTap ? 'まとめ！ 思い出せるかな？' : 'ここまでのまとめ！') : s.text || s.q;
     if (s.t !== 'quiz') html += '<div class="ls-talk">' + pico(s.t === 'recap' ? 'happy' : '') + '<div class="bubble' + (/^[*\s]*[0-9０-９]/.test(bubble || '') ? ' num-start' : '') + '">' + fmt(bubble) + '</div></div>';
     html += '<div class="ls-body"></div></div>';
     st.innerHTML = html;
@@ -366,6 +366,7 @@
   var STEP = {};
   STEP.say = function (s, body) {
     if (s.viz) body.innerHTML = '<div class="vz vz-anim">' + mviz(s.viz) + '</div>';
+    if (s.ask) { askBlock(body, s.ask, function (r) { revealInto(r, s.reveal, s.rviz); setReady(true); }); return; }
     setReady(true);
   };
   STEP.term = function (s, body) {
@@ -378,6 +379,7 @@
     setReady(true);
   };
   STEP.recap = function (s, body) {
+    if (window.COURSE && COURSE.recapTap) { recapTap(s, body); return; }
     body.innerHTML = '<ul class="recap">' + s.points.map(function (p) { return '<li><i>✔</i><span>' + fmt(p) + '</span></li>'; }).join('') + '</ul>';
     gsap.from($$('.recap li', body), { x: -30, opacity: 0, stagger: 0.12, duration: 0.4, delay: 0.3, ease: 'back.out(2)', onComplete: function () { } });
     setReady(true);
@@ -766,7 +768,8 @@
       el: el, fmt: fmt, tex: tex, esc: esc, html: mviz,   // html：HTML はそのまま、$…$ だけ数式にする
       ok: function (msg, title) { if (done) return; done = true; solved(el, miss === 0, msg || s.ok, title); },
       ng: function (msg) { if (done) return; miss++; missed(msg || s.hint); },
-      goal: function (h) { var g = $('.wg-goal', body); if (g) { g.innerHTML = '🎯 ' + mviz(h); gsap.fromTo(g, { scale: 1.08 }, { scale: 1, duration: 0.3 }); } },
+      /* goal：HTML も **太字** も使える */
+      goal: function (h) { var g = $('.wg-goal', body); if (g) { g.innerHTML = '🎯 ' + mviz(h).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>'); gsap.fromTo(g, { scale: 1.08 }, { scale: 1, duration: 0.3 }); } },
       tick: function () { Sfx.tap(); },
       ding: function (n) { Sfx.correct(n || 1); },
       burst: function (x, y, n) { FX.burst(x, y, { n: n || 16, speed: 5 }); },
@@ -836,9 +839,10 @@
         bub.innerHTML = fmt(f.say);
         gsap.fromTo(bub, { opacity: 0.25, y: 6 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' });
       }
-      if (f.viz != null) {
+      var nw = null;
+      if (f.viz != null || f.ask) {
         var old = stg.firstElementChild;
-        var nw = document.createElement('div'); nw.className = 'sh-frame'; nw.innerHTML = mviz(f.viz);
+        nw = document.createElement('div'); nw.className = 'sh-frame'; nw.innerHTML = f.viz != null ? mviz(f.viz) : '';
         if (old) gsap.to(old, { opacity: 0, duration: 0.2, onComplete: function () { old.remove(); } });
         stg.appendChild(nw);
         /* 図の線はペンで描くように、文字はふわっと */
@@ -851,16 +855,89 @@
       }
       $$('.sh-dots i', body).forEach(function (d, j) { d.classList.toggle('on', j <= i); });
       Sfx.tap();
-      if (i >= n - 1) {
-        nx.style.display = 'none'; ag.style.display = '';
-        if (!P.ready) setReady(true);
+      function fin() {
+        if (i >= n - 1) { nx.style.display = 'none'; ag.style.display = ''; if (!P.ready) setReady(true); }
+        else nx.style.display = '';
       }
+      if (f.ask && nw) { nx.style.display = 'none'; askBlock(nw, f.ask, function (r) { revealInto(r, f.reveal, f.rviz); fin(); }); }
+      else fin();
     }
     nx.addEventListener('click', function () { if (k < n - 1) frame(k + 1); });
-    ag.addEventListener('click', function () { nx.style.display = ''; ag.style.display = 'none'; frame(0); });
+    ag.addEventListener('click', function () { ag.style.display = 'none'; frame(0); });
     frame(0);
   };
 
+  /* =========================================================
+   * 考えてから見る（ask）：説明の前に小さな問いを出し、答えると説明が現れる
+   *  ask = {q:'問い', o:['正解', 'ちがう', …], why:['', 'ちがう理由', …]}（o[0] が正解。表示はシャッフル）
+   *  予想（生成効果）のための問いなので採点しない。まちがえたらヒントを出して、もう一度
+   * ========================================================= */
+  function askBlock(box, ask, onDone) {
+    var order = Core.shuffle(ask.o.map(function (_, i) { return i; }));
+    var wrap = document.createElement('div'); wrap.className = 'ask';
+    wrap.innerHTML = '<p class="ask-q">🤔 ' + fmt(ask.q) + '</p><div class="ask-o">' +
+      order.map(function (i) { return '<button class="ask-b"' + (i === 0 ? ' data-ok="1"' : '') + ' data-i="' + i + '">' + fmt(ask.o[i]) + '</button>'; }).join('') + '</div><div class="ask-r"></div>';
+    box.appendChild(wrap);
+    gsap.from(wrap, { opacity: 0, y: 12, duration: 0.4, delay: 0.25, ease: 'power3.out', clearProps: 'all' });
+    var r = $('.ask-r', wrap), fin = false;
+    $$('.ask-b', wrap).forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (fin || b.disabled) return;
+        var i = +b.dataset.i;
+        if (i === 0) {
+          fin = true;
+          b.classList.add('ok');
+          $$('.ask-b', wrap).forEach(function (x) { x.disabled = true; if (x !== b) x.classList.add('dim'); });
+          var c = centerOf(b); FX.burst(c[0], c[1], { n: 22, speed: 6 }); Sfx.correct(1);
+          gsap.fromTo(b, { scale: 1.12 }, { scale: 1, duration: 0.45, ease: 'back.out(3)' });
+          r.innerHTML = '';
+          if (onDone) onDone(r);
+        } else {
+          b.disabled = true; b.classList.add('bad');
+          gsap.fromTo(b, { x: -8 }, { x: 0, duration: 0.4, ease: 'elastic.out(1.5,0.3)' });
+          Sfx.wrong();
+          r.innerHTML = '<p class="ask-why">' + fmt((ask.why && ask.why[i]) || ask.hint || 'もう一度考えてみよう。') + '</p>';
+          gsap.fromTo(r, { opacity: 0 }, { opacity: 1, duration: 0.3 });
+        }
+      });
+    });
+    return wrap;
+  }
+  /* 答えのあとに出す説明（reveal）とおまけの図（rviz） */
+  function revealInto(r, html, viz) {
+    if (html) {
+      var p = document.createElement('div'); p.className = 'ask-reveal'; p.innerHTML = fmt(html);
+      r.appendChild(p);
+      gsap.fromTo(p, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease: 'back.out(1.6)' });
+    }
+    if (viz) {
+      var v = document.createElement('div'); v.className = 'vz'; v.innerHTML = mviz(viz);
+      r.appendChild(v);
+      var svg = $('svg', v); if (svg) inkDraw(svg);
+      gsap.from($$('.vz > *', r), { opacity: 0, y: 10, duration: 0.4, stagger: 0.08, delay: 0.2, clearProps: 'all' });
+    }
+  }
+
+  /* まとめを「思い出してから答え合わせ」に：太字のキーワードをぼかし、タップでくっきり */
+  function recapTap(s, body) {
+    body.innerHTML = '<p class="rc-lead">ぼかした所を<b>頭の中で言ってから</b>タップ！</p><ul class="recap rc-tap">' + s.points.map(function (p) {
+      /* 太字があれば太字を、なければ数式をぼかす */
+      var h = fmt(p), cls = /<b>/.test(h) ? 'rv rv-b' : /class="katex"/.test(h) ? 'rv rv-k' : 'open';
+      return '<li class="' + cls + '"><i>✔</i><span>' + h + '</span></li>';
+    }).join('') + '</ul>';
+    var left = $$('.rc-tap li.rv', body).length;
+    gsap.from($$('.recap li', body), { x: -30, opacity: 0, stagger: 0.12, duration: 0.4, delay: 0.3, ease: 'back.out(2)' });
+    $$('.rc-tap li.rv', body).forEach(function (li) {
+      li.addEventListener('click', function () {
+        if (!li.classList.contains('rv')) return;
+        li.classList.remove('rv'); li.classList.add('open');
+        gsap.fromTo($$('b, .katex', li), { scale: 1.25 }, { scale: 1, duration: 0.4, ease: 'back.out(3)' });
+        Sfx.coin(); left--;
+        if (!left) setReady(true);
+      });
+    });
+    if (!left) setReady(true);
+  }
   STEP.match = function (s, body) {
     var L = Core.shuffle(s.pairs.map(function (p, i) { return i; })), R = Core.shuffle(s.pairs.map(function (p, i) { return i; }));
     var sel = null, left = s.pairs.length, miss = 0;

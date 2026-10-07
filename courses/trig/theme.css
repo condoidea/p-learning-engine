@@ -134,3 +134,6 @@ body { font-family: var(--f-body); background: radial-gradient(ellipse at 30% 20
 .fx-big .katex-display { margin: 0; }
 .sh-stage .fg { max-width: 300px; }
 .bubble .katex-display { margin: 6px 0; }
+.gw-btn.ask { box-shadow: 0 0 0 3px rgba(255,255,255,.08); animation: askPulse 1.4s ease-in-out infinite; }
+@keyframes askPulse { 50% { box-shadow: 0 0 0 7px rgba(255,255,255,.03), 0 0 18px rgba(255,255,255,.18); } }
+.gw-btn.gw-next { border-color: var(--ok); color: var(--ok); }
