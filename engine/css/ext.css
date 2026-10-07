@@ -242,3 +242,10 @@ b.tw-hl { display: inline-block; }
 .gl::after { content: '?'; display: inline-block; margin-left: 2px; width: 13px; height: 13px; line-height: 13px; border-radius: 50%; font-size: 9px; font-weight: 900; text-align: center; vertical-align: 2px; background: var(--gold); color: #1a1205; }
 /* 答えたあとの説明のキーワードにもマーカー */
 .ask-reveal b, .ls-fb p b { color: #fff; background: linear-gradient(transparent 60%, color-mix(in srgb, var(--accent) 40%, transparent) 60%); }
+
+/* 覚えること（b：マーカー）／覚え方のヒント（.hook：波線💡）／この教材での呼び方・約束（.aside：グレー📎） */
+.hook { text-decoration: underline wavy color-mix(in srgb, var(--gold) 70%, transparent); text-underline-offset: 4px; text-decoration-thickness: 1.5px; }
+.hook::before { content: '💡'; font-size: .8em; margin-right: 2px; }
+.aside { color: var(--muted); font-size: .92em; }
+.aside::before { content: '📎'; font-size: .8em; margin-right: 2px; opacity: .8; }
+.tw .hook::before, .tw .aside::before { opacity: 1; }

@@ -24,11 +24,14 @@
   }
   /* 図（HTML）の中の $…$ も数式にする */
   function mviz(h) { return withMath(h, function (x) { return x; }); }
-  /* 本文の書式：**太字** `等幅` [[用語]] [[用語|表示]] 改行（数式コースでは $…$ も） */
+  /* 本文の書式：**覚えること（マーカー）** __覚え方のヒント（波線💡）__ ((この教材での呼び方・約束（グレー📎）)) `等幅` [[用語]] [[用語|表示]] 改行（数式コースでは $…$ も）
+   *  学習者は「何を覚えるべきか」を自分では判断できないので、覚えること・覚え方・便宜上の呼び方を見た目で分ける */
   function fmt(t) { GL_USED = {}; GL_N.n = 0; return withMath(t, fmt0); }
   function fmt0(t) {
     return esc(autoGloss(t || ''))
       .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+      .replace(/__(.+?)__/g, '<span class="hook">$1</span>')
+      .replace(/\(\((.+?)\)\)/g, '<span class="aside">$1</span>')
       .replace(/`(.+?)`/g, '<code>$1</code>')
       .replace(/\[\[(.+?)(?:\|(.+?))?\]\]/g, function (m, term, label) { return '<button class="gl" data-t="' + term + '">' + (label || term) + '</button>'; })
       .replace(/\n/g, '<br>');
