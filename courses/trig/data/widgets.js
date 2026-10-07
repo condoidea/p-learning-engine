@@ -116,53 +116,86 @@
 
   /* =========================================================
    * sct：筆記体の s・c・t で三角比を覚える
-   *  ボタンを押すと、文字を書く筆の動きが辺の上を走る。「1番目に通る辺が分母、2番目が分子」
+   *  三角形の辺の上に、筆記体の文字をペンで書く。
+   *  ペンが ① 最初に通った辺 → 分母、② 次に通った辺 → 分子。
+   *  書き終わると、①②の辺の名前が右の分数の「下」「上」へ飛んでいく
    * ========================================================= */
   LE.widgets.sct = function (api) {
-    var st = stage(api, 300, 200);
-    var A = { x: 50, y: 165 }, B = { x: 240, y: 165 }, C = { x: 240, y: 45 }; // A=θ, B=直角, C=上
-    var tri = el('polygon', { points: [A, B, C].map(function (p) { return p.x + ',' + p.y; }).join(' '), fill: 'rgba(255,255,255,.04)', stroke: K.dim, 'stroke-width': 2 }, st.svg);
-    el('path', { d: 'M228,165 v-12 h12', fill: 'none', stroke: K.dim, 'stroke-width': 1.5 }, st.svg);
+    var st = stage(api, 360, 210);
+    var A = { x: 30, y: 175 }, B = { x: 228, y: 175 }, C = { x: 228, y: 52 };
+    el('polygon', { points: [A, B, C].map(function (p) { return p.x + ',' + p.y; }).join(' '), fill: 'rgba(255,255,255,.04)', stroke: K.dim, 'stroke-width': 2 }, st.svg);
+    el('path', { d: 'M216,175 v-12 h12', fill: 'none', stroke: K.dim, 'stroke-width': 1.5 }, st.svg);
     el('path', { d: arcPath(A, B, C, 28), fill: 'none', stroke: K.ink, 'stroke-width': 1.5 }, st.svg);
-    text(st.svg, 92, 155, 'θ', K.ink, 15);
-    var lc = text(st.svg, 132, 92, 'c', K.ink, 17), la = text(st.svg, 258, 108, 'a', K.ink, 17), lb = text(st.svg, 145, 184, 'b', K.ink, 17);
-    var ink = el('path', { fill: 'none', 'stroke-width': 5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, st.svg);
-    var pen = el('circle', { r: 6, fill: '#fff' }, st.svg); set(pen, { opacity: 0 });
-    /* 筆の道：sin＝A→C→B（c→a）、cos＝C→A→B（c→b）、tan＝A→B→C（b→a） */
+    text(st.svg, 70, 166, 'θ', K.ink, 15);
+    var LBL = { c: { x: 116, y: 100 }, a: { x: 246, y: 114 }, b: { x: 129, y: 194 } };
+    var lab = { c: text(st.svg, LBL.c.x, LBL.c.y, 'c', K.ink, 18), a: text(st.svg, LBL.a.x, LBL.a.y, 'a', K.ink, 18), b: text(st.svg, LBL.b.x, LBL.b.y, 'b', K.ink, 18) };
+    /* 右側：分数の置き場 */
+    var fx = 310;
+    var fName = text(st.svg, fx, 36, '', K.ink, 17, { 'font-style': 'italic' });
+    var fBar = line(st.svg, { x: fx, y: 112 }, { x: fx, y: 112 }, K.ink, 2.5);
+    var slotT = el('rect', { x: fx - 18, y: 66, width: 36, height: 34, rx: 7, fill: 'none', stroke: K.dim, 'stroke-dasharray': '4 4' }, st.svg);
+    var slotB = el('rect', { x: fx - 18, y: 124, width: 36, height: 34, rx: 7, fill: 'none', stroke: K.dim, 'stroke-dasharray': '4 4' }, st.svg);
+    text(st.svg, fx + 34, 83, '②', K.dim, 12); text(st.svg, fx + 34, 141, '①', K.dim, 12);
+    text(st.svg, fx, 186, '①分母 ②分子', K.dim, 10);
+    var layer = el('g', {}, st.svg);
+    var ink = el('path', { fill: 'none', 'stroke-width': 6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, st.svg);
+    var pen = el('circle', { r: 7, fill: '#fff' }, st.svg); set(pen, { opacity: 0 });
+    /* 筆の道：辺の上を通りながら、文字の形のはね・しっぽをつけた */
+    var MID = { c: { x: (A.x + C.x) / 2, y: (A.y + C.y) / 2 }, a: { x: C.x, y: (B.y + C.y) / 2 }, b: { x: (A.x + B.x) / 2, y: A.y } };
     var R = {
-      sin: { d: 'M50,165 L240,45 Q262,95 240,165', c: K.sin, first: lc, second: la, frac: '\\S\\theta = \\dfrac{a}{c}', say: '筆記体の s：まず c（斜辺）、次に a。1番目が分母、2番目が分子 → $\\dfrac{a}{c}$' },
-      cos: { d: 'M240,45 L50,165 Q140,190 240,165', c: K.cos, first: lc, second: lb, frac: '\\C\\theta = \\dfrac{b}{c}', say: '筆記体の c：上から斜辺 c をなぞって、底辺 b へ → $\\dfrac{b}{c}$' },
-      tan: { d: 'M50,165 L240,165 L240,45 q-14,-16 -30,-4', c: K.tan, first: lb, second: la, frac: '\\T\\theta = \\dfrac{a}{b}', say: '筆記体の t：底辺 b を走って、たて棒 a を上へ → $\\dfrac{a}{b}$' }
+      sin: { d: 'M16,188 Q20,170 30,175 L228,52 Q252,112 230,162 Q220,190 192,182', c: K.sin, first: 'c', second: 'a', t1: 0.22, t2: 0.7,
+        name: 'sin θ', letter: 's', say: '筆記体の <b>s</b> は、θ の角から<b>斜辺 c</b> をかけ上がって、<b>たて a</b> をおりる。<br>① c が分母、② a が分子 → $\\S\\theta=\\dfrac{a}{c}$' },
+      cos: { d: 'M246,38 Q236,36 228,52 L30,175 L228,175 Q246,173 250,158', c: K.cos, first: 'c', second: 'b', t1: 0.22, t2: 0.72,
+        name: 'cos θ', letter: 'c', say: '筆記体の <b>c</b> は、上から<b>斜辺 c</b> をおりて、<b>底辺 b</b> を右へ（「&lt;」の形）。<br>① c が分母、② b が分子 → $\\C\\theta=\\dfrac{b}{c}$' },
+      tan: { d: 'M30,175 L228,175 L228,52 M204,82 L252,82', c: K.tan, first: 'b', second: 'a', t1: 0.2, t2: 0.62,
+        name: 'tan θ', letter: 't', say: '筆記体の <b>t</b> は、<b>底辺 b</b> を走って、<b>たて a</b> を上へ。最後に横棒をピッ。<br>① b が分母、② a が分子 → $\\T\\theta=\\dfrac{a}{b}$' }
     };
+    function badge(n, side, col) {
+      var p = MID[side], g = el('g', { transform: 'translate(' + p.x + ',' + p.y + ')' }, layer);
+      el('circle', { r: 11, fill: col, stroke: '#0b0e24', 'stroke-width': 2 }, g);
+      text(g, 0, 1, n, '#0b0e24', 12);
+      gsap.fromTo(g, { scale: 0, transformOrigin: 'center' }, { scale: 1, duration: 0.35, ease: 'back.out(3)' });
+    }
+    function fly(side, to, col) {
+      var from = LBL[side], t = text(layer, from.x, from.y, side, col, 20);
+      var o = { x: from.x, y: from.y };
+      return gsap.to(o, { x: to.x, y: to.y, duration: 0.6, ease: 'back.out(1.6)', onUpdate: function () { set(t, { x: o.x, y: o.y }); } });
+    }
     var seen = {}, btns = document.createElement('div'); btns.className = 'gw-btns';
     ['sin', 'cos', 'tan'].forEach(function (k) {
       var b = document.createElement('button'); b.className = 'gw-btn gw-' + k; b.textContent = k; btns.appendChild(b);
       b.addEventListener('click', function () { play(k); });
     });
     st.wrap.insertBefore(btns, st.read);
-    readout(api, st, 'ボタンを押して、筆の動きを見よう');
-    var m = missions(api, st, [{ goal: 'sin・cos・tan の3つとも、筆の動きを見よう', test: function () { return Object.keys(seen).length >= 3; }, yay: '3つ制覇！', msg: '「1番目が分母、2番目が分子」。テストの前に、筆記体を空中に書いて思い出そう。' }]);
+    readout(api, st, 'ボタンを押すと、筆記体を書くペンが三角形の辺の上を走るよ');
+    var m = missions(api, st, [{ goal: 'sin・cos・tan の3つとも、ペンの動きを見よう', test: function () { return Object.keys(seen).length >= 3; }, yay: '3つ制覇！', msg: 'θ の角から書き始めて、①最初に通った辺が分母、②次に通った辺が分子。テスト中は空中で筆記体を書いて思い出そう。' }]);
     var tl;
     function play(k) {
       var r = R[k];
       if (tl) tl.kill();
-      [lc, la, lb].forEach(function (t) { gsap.set(t, { attr: { fill: K.ink }, scale: 1 }); });
+      layer.innerHTML = '';
+      ['a', 'b', 'c'].forEach(function (s) { set(lab[s], { fill: K.ink }); });
+      set(fName, { fill: r.c }); fName.textContent = r.name + ' =';
+      set(fBar, { x1: fx, x2: fx, stroke: r.c });
       set(ink, { d: r.d, stroke: r.c });
       var len = ink.getTotalLength();
       set(ink, { 'stroke-dasharray': len, 'stroke-dashoffset': len });
-      var o = { t: 0 };
+      var o = { t: 0 }, b1 = false, b2 = false;
       tl = gsap.timeline();
       tl.set(pen, { opacity: 1 })
-        .to(o, { t: 1, duration: 1.5, ease: 'power1.inOut', onUpdate: function () {
+        .to(o, { t: 1, duration: 1.9, ease: 'power1.inOut', onUpdate: function () {
           set(ink, { 'stroke-dashoffset': len * (1 - o.t) });
           var p = ink.getPointAtLength(len * o.t); set(pen, { cx: p.x, cy: p.y });
-          if (o.t > 0.18) set(r.first, { fill: r.c });
-          if (o.t > 0.68) set(r.second, { fill: r.c });
+          if (!b1 && o.t > r.t1) { b1 = true; badge('1', r.first, r.c); set(lab[r.first], { fill: r.c }); api.tick(); }
+          if (!b2 && o.t > r.t2) { b2 = true; badge('2', r.second, r.c); set(lab[r.second], { fill: r.c }); api.tick(); }
         } })
         .to(pen, { opacity: 0, duration: 0.2 })
+        .add(fly(r.first, { x: fx, y: 142 }, r.c))
+        .add(fly(r.second, { x: fx, y: 84 }, r.c), '-=0.25')
+        .to(fBar, { attr: { x1: fx - 22, x2: fx + 22 }, duration: 0.3, ease: 'power2.out' }, '-=0.2')
         .add(function () {
-          readout(api, st, '$' + r.frac + '$　' + r.say);
-          gsap.fromTo(st.read, { scale: 0.9, opacity: 0.4 }, { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(2)' });
+          readout(api, st, r.say);
+          gsap.fromTo(st.read, { scale: 0.92, opacity: 0.4 }, { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(2)' });
           api.ding(Object.keys(seen).length + 1);
           seen[k] = 1; m.check();
         });
@@ -172,57 +205,54 @@
   };
 
   /* =========================================================
-   * rtri：直角三角形の頂点を動かすと sin・cos・tan が変わる／大きさを変えても変わらない
-   *  s.mode = 'angle'（角度を変える）| 'size'（大きさを変える）
+   * rtri：直角三角形
+   *  mode 'angle'：斜辺の先の点を、点線の「レール（円弧）」にそって回すと角θが変わる
+   *  mode 'size' ：同じ点を斜辺の向きにのばしたり縮めたりすると、大きさだけが変わる
    * ========================================================= */
   LE.widgets.rtri = function (api, s) {
-    var st = stage(api, 320, 220);
-    var A = { x: 40, y: 190 }, th = 30, size = 1;
-    var base = 200;
+    var st = stage(api, 320, 230);
+    var A = { x: 34, y: 205 }, Lmax = 190, th = s.mode === 'size' ? (s.th || 35) : 20, size = s.mode === 'size' ? 0.85 : 1;
+    var guide = el('path', { fill: 'none', stroke: 'rgba(255,255,255,.22)', 'stroke-width': 2, 'stroke-dasharray': '3 7', 'stroke-linecap': 'round' }, st.svg);
     var tri = el('polygon', { fill: 'rgba(255,255,255,.04)', stroke: K.dim, 'stroke-width': 2 }, st.svg);
     var la = line(st.svg, A, A, K.sin, 5), lb = line(st.svg, A, A, K.cos, 5), lc = line(st.svg, A, A, K.ink, 2.5);
     var arc = el('path', { fill: 'none', stroke: K.ink, 'stroke-width': 1.5 }, st.svg);
     var tTh = text(st.svg, 0, 0, '', K.ink, 13), tA = text(st.svg, 0, 0, 'a', K.sin, 15), tB = text(st.svg, 0, 0, 'b', K.cos, 15), tC = text(st.svg, 0, 0, 'c', K.ink, 15);
     var sq = el('path', { fill: 'none', stroke: K.dim, 'stroke-width': 1.3 }, st.svg);
-    var B, C;
-    var h;
-    var drags = 0, sizes = {};
-    function geo() {
-      var L = base * size;
-      B = { x: A.x + L, y: A.y };
-      C = { x: B.x, y: A.y - L * Math.tan(th * D2R) };
-      if (C.y < 8) { var k = (A.y - 8) / (A.y - C.y); B.x = A.x + (B.x - A.x) * k; C = { x: B.x, y: 8 }; }
-    }
+    var B, C, h, sizes = {};
+    if (s.mode === 'size') set(guide, { d: 'M' + A.x + ',' + A.y + ' L' + (A.x + Lmax * 1.05 * Math.cos(th * D2R)).toFixed(1) + ',' + (A.y - Lmax * 1.05 * Math.sin(th * D2R)).toFixed(1) });
+    else set(guide, { d: 'M' + (A.x + Lmax) + ',' + A.y + ' A' + Lmax + ',' + Lmax + ' 0 0,0 ' + (A.x + Lmax * Math.cos(78 * D2R)).toFixed(1) + ',' + (A.y - Lmax * Math.sin(78 * D2R)).toFixed(1) });
     function draw() {
-      geo();
+      var L = Lmax * size;
+      C = { x: A.x + L * Math.cos(th * D2R), y: A.y - L * Math.sin(th * D2R) };
+      B = { x: C.x, y: A.y };
       set(tri, { points: [A, B, C].map(function (p) { return p.x.toFixed(1) + ',' + p.y.toFixed(1); }).join(' ') });
       mvLine(la, B, C); mvLine(lb, A, B); mvLine(lc, A, C);
       set(arc, { d: arcPath(A, B, C, 30) });
       set(sq, { d: 'M' + (B.x - 11) + ',' + B.y + ' v-11 h11' });
-      mvText(tTh, A.x + 46, A.y - 10, Math.round(th) + '°');
+      mvText(tTh, A.x + 46 * Math.cos(th / 2 * D2R), A.y - 46 * Math.sin(th / 2 * D2R), Math.round(th) + '°');
       mvText(tA, B.x + 14, (B.y + C.y) / 2); mvText(tB, (A.x + B.x) / 2, A.y + 16); mvText(tC, (A.x + C.x) / 2 - 12, (A.y + C.y) / 2 - 10);
-      h.pos(s.mode === 'size' ? B.x : C.x, s.mode === 'size' ? B.y : C.y);
+      h.pos(C.x, C.y);
       var sn = Math.sin(th * D2R), cs = Math.cos(th * D2R), tn = Math.tan(th * D2R);
       readout(api, st, '$\\theta=' + Math.round(th) + '^\\circ$　　$\\S\\theta=' + f(sn) + '$　$\\C\\theta=' + f(cs) + '$　$\\T\\theta=' + f(tn) + '$' +
-        (s.mode === 'size' ? '<br><small>辺の長さ：a=' + f((B.y - C.y) / 40, 1) + '　b=' + f((B.x - A.x) / 40, 1) + '　c=' + f(dist(A, C) / 40, 1) + '（ものさしの目盛り）</small>' : ''));
+        (s.mode === 'size' ? '<br><small>辺の長さ：a=' + f((B.y - C.y) / 40, 1) + '　b=' + f((B.x - A.x) / 40, 1) + '　c=' + f(L / 40, 1) + '（大きさが変わっても比は同じ）</small>' : '<br><small>点を点線のレールにそって回そう</small>'));
+    }
+    function snapEnd() {
+      var t = snapTo(th, [30, 45, 60], 4);
+      if (t !== th) { var o = { v: th }; gsap.to(o, { v: t, duration: 0.45, ease: 'back.out(2.5)', onUpdate: function () { th = o.v; draw(); }, onComplete: function () { th = t; draw(); m.check(); } }); api.tick(); }
+      else m.check();
     }
     if (s.mode === 'size') {
-      th = s.th || 35;
-      h = handle(st.svg, 0, 0, K.cos, function (x) { size = Math.max(0.35, Math.min(1.25, (x - A.x) / base)); draw(); },
-        function () { drags++; sizes[Math.round(size * 4)] = 1; m.check(); });
+      h = handle(st.svg, 0, 0, K.cos, function (x, y) {
+        var ux = Math.cos(th * D2R), uy = -Math.sin(th * D2R), d = (x - A.x) * ux + (y - A.y) * uy;   // 斜辺の向きへの射影
+        size = Math.max(0.3, Math.min(1, d / Lmax)); draw();
+      }, function () { sizes[Math.round(size * 5)] = 1; m.check(); });
     } else {
-      h = handle(st.svg, 0, 0, K.sin, function (x, y) {
-        var v = Math.atan2(A.y - y, base * size) / D2R; th = Math.max(5, Math.min(75, v)); draw();
-      }, function () {
-        var t = snapTo(th, [30, 45, 60], 4);
-        if (t !== th) { var o = { v: th }; gsap.to(o, { v: t, duration: 0.45, ease: 'back.out(2.5)', onUpdate: function () { th = o.v; draw(); }, onComplete: function () { th = t; draw(); m.check(); } }); api.tick(); }
-        else m.check();
-      });
+      h = handle(st.svg, 0, 0, K.sin, function (x, y) { th = Math.max(8, Math.min(78, degOf(A, { x: x, y: y }))); draw(); }, snapEnd);
     }
     var list = s.mode === 'size'
-      ? [{ goal: '青い点をドラッグして、三角形の大きさをいろいろ変えてみよう（角度はそのまま）', test: function () { return Object.keys(sizes).length >= 3; }, yay: '値が変わらない！', msg: '大きさを変えても sin・cos・tan は同じ。三角比は「角度だけ」で決まる！' }]
-      : [{ goal: 'ピンクの点を動かして、$\\S\\theta=0.50$ にしよう', test: function () { return Math.round(th) === 30; }, yay: 'θ=30°！', msg: '' },
-         { goal: '次は $\\S\\theta=\\C\\theta$ になる角度を探そう', test: function () { return Math.round(th) === 45; }, yay: 'θ=45°！', msg: '' },
+      ? [{ goal: '青い点を斜辺の向きに動かして、三角形の<b>大きさ</b>をいろいろ変えてみよう（角度はそのまま）', test: function () { return Object.keys(sizes).length >= 3; }, yay: '値が変わらない！', msg: '大きさを変えても sin・cos・tan は同じ。三角比は「角度だけ」で決まる！' }]
+      : [{ goal: 'ピンクの点を<b>レールにそって回し</b>、$\\S\\theta=0.50$ にしよう', test: function () { return Math.round(th) === 30; }, yay: 'θ=30°！' },
+         { goal: '次は $\\S\\theta=\\C\\theta$（ピンクとシアンが同じ長さ）になる角度へ', test: function () { return Math.round(th) === 45; }, yay: 'θ=45°！' },
          { goal: '$\\T\\theta$ が $1.73$（＝$\\sqrt3$）になる角度は？', test: function () { return Math.round(th) === 60; }, yay: 'θ=60°！', msg: '30°・45°・60° は三角定規の角度。次のレッスンでくわしく！' }];
     var m = missions(api, st, list);
     draw();
@@ -616,8 +646,10 @@
    * ========================================================= */
   LE.widgets.area = function (api) {
     var st = stage(api, 320, 210);
-    var A = { x: 60, y: 180 }, c = 200, b = 140, th = 50;
+    var A = { x: 135, y: 185 }, c = 160, b = 120, th = 50;   // 鈍角にしても図がはみ出さない配置
     var B = { x: A.x + c, y: A.y };
+    /* 角Aを変える点が動くレール（点線の半円） */
+    el('path', { d: 'M' + (A.x + b) + ',' + A.y + ' A' + b + ',' + b + ' 0 0,0 ' + (A.x - b) + ',' + A.y, fill: 'none', stroke: 'rgba(255,255,255,.2)', 'stroke-width': 2, 'stroke-dasharray': '3 7', 'stroke-linecap': 'round' }, st.svg);
     var tri = el('polygon', { fill: 'rgba(92,255,176,.16)', stroke: K.ink, 'stroke-width': 2 }, st.svg);
     var hL = line(st.svg, A, A, K.sin, 3.5, { 'stroke-dasharray': '6 4' });
     var arc = el('path', { fill: 'none', stroke: K.ink, 'stroke-width': 1.5 }, st.svg);
@@ -632,7 +664,7 @@
       mvText(tb, (A.x + CC.x) / 2 - 10, (A.y + CC.y) / 2 - 8); mvText(th1, CC.x + 32, (CC.y + A.y) / 2);
       h.pos(CC.x, CC.y);
       var S = 0.5 * (b / 20) * (c / 20) * Math.sin(th * D2R);
-      readout(api, st, '$A=' + Math.round(th) + '^\\circ$　$S=\\dfrac12\\cdot b\\cdot c\\cdot\\S A=\\dfrac12\\cdot 7\\cdot 10\\cdot' + f(Math.sin(th * D2R)) + '=\\mathbf{' + f(S, 1) + '}$');
+      readout(api, st, '$A=' + Math.round(th) + '^\\circ$　$S=\\dfrac12\\cdot b\\cdot c\\cdot\\S A=\\dfrac12\\cdot ' + (b / 20) + '\\cdot ' + (c / 20) + '\\cdot' + f(Math.sin(th * D2R)) + '=\\mathbf{' + f(S, 1) + '}$');
     }
     var h = handle(st.svg, 0, 0, K.sin, function (x, y) { th = Math.max(8, Math.min(172, degOf(A, { x: x, y: Math.min(y, A.y) }))); draw(); }, function () {
       var t = snapTo(th, [30, 45, 60, 90, 120, 135, 150], 4);
@@ -753,6 +785,8 @@
     var st = stage(api, 320, 220);
     var A = { x: 120, y: 190 }, c = 150, b = 110, th = 60;
     var B = { x: A.x + c, y: A.y };
+    /* 角Aを変える点が動くレール（点線の半円） */
+    el('path', { d: 'M' + (A.x + b) + ',' + A.y + ' A' + b + ',' + b + ' 0 0,0 ' + (A.x - b) + ',' + A.y, fill: 'none', stroke: 'rgba(255,255,255,.2)', 'stroke-width': 2, 'stroke-dasharray': '3 7', 'stroke-linecap': 'round' }, st.svg);
     var tri = el('polygon', { fill: 'rgba(255,255,255,.05)', stroke: K.ink, 'stroke-width': 2 }, st.svg);
     var aL = line(st.svg, B, B, K.hi, 4.5);
     var arc = el('path', { fill: 'rgba(56,217,255,.25)', stroke: K.cos, 'stroke-width': 1.5 }, st.svg);

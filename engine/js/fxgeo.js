@@ -28,7 +28,7 @@
   resize();
   window.addEventListener('resize', resize);
 
-  var st = { th: 0.6, speed: 0.18, energy: 0, fever: false, hue: 0, mode: 'home', shake: 0, red: 0, rings: [], dim: 1, lite: false };
+  var st = { th: 0.6, speed: 0.18, energy: 0, fever: false, hue: 0, mode: 'home', shake: 0, red: 0, rings: [], dim: 0.75, lite: false };
   var hist = [];               // sin のグラフの履歴
   var last = performance.now();
 
@@ -141,7 +141,8 @@
   api.shake = function (v) { st.shake = (v || 0.3) * 40; };
   api.setEnergy = function (e) { st.energy = Math.max(0, Math.min(1, e || 0)); };
   api.fever = function (on) { st.fever = !!on; };
-  api.setMode = function (m) { st.mode = m; st.dim = (m === 'lesson' || m === 'quiz') ? 0.45 : m === 'page' ? 0.6 : 1; };
+  /* 文字を読む画面では背景を十分に暗くする（飾りが文字のじゃまをしないように） */
+  api.setMode = function (m) { st.mode = m; st.dim = (m === 'lesson' || m === 'quiz') ? 0.14 : m === 'page' ? 0.3 : 0.75; };
   api.setTheme = function () {};
   api.setLite = function (on) { st.lite = !!on; };
   window.FX3D = api;

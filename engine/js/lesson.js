@@ -783,7 +783,7 @@
   STEP.build = function (s, body) {
     var pool = s.ans.concat(s.extra || []).map(function (v, i) { return { v: v, i: i }; });
     Core.shuffle(pool);
-    body.innerHTML = '<div class="bd"><div class="bd-line">' + (s.pre ? '<span class="bd-pre">' + tex(s.pre) + '</span>' : '') +
+    body.innerHTML = (s.viz ? '<div class="vz vz-anim">' + mviz(s.viz) + '</div>' : '') + '<div class="bd"><div class="bd-line">' + (s.pre ? '<span class="bd-pre">' + tex(s.pre) + '</span>' : '') +
       s.ans.map(function (_, k) { return '<span class="bd-slot" data-k="' + k + '"></span>'; }).join('') +
       (s.post ? '<span class="bd-pre">' + tex(s.post) + '</span>' : '') + '</div>' +
       '<div class="bd-pool">' + pool.map(function (p) { return '<button class="chipb bd-chip" data-v="' + esc(p.v) + '">' + tex(p.v) + '</button>'; }).join('') + '</div>' +

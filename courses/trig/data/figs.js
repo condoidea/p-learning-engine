@@ -28,10 +28,13 @@
         T([204, 80], o.a == null ? 'a' : o.a, hl.indexOf('a') >= 0 ? 'tx s' : 'tx') + T([110, 142], o.b == null ? 'b' : o.b, hl.indexOf('b') >= 0 ? 'tx c' : 'tx') + T([98, 68], o.c == null ? 'c' : o.c, hl.indexOf('c') >= 0 ? 'tx h' : 'tx'));
     },
     /* 三角定規の2枚 */
-    rulers: function () {
+    /* o.blank=true で辺の数字をかくす（思い出す練習用） */
+    rulers: function (o) {
+      o = o || {};
       var A = [14, 120], B = [118, 120], C = [118, 60], D = [140, 120], E = [206, 120], F = [206, 54];
-      return S(220, 140, poly([A, B, C], 'k fillw') + sq(B) + T([42, 114], '30°', 'tx', 10) + T([108, 76], '60°', 'tx', 10) + T([60, 82], '2') + T([66, 134], '√3') + T([128, 92], '1') +
-        poly([D, E, F], 'k fillw') + sq(E) + T([160, 114], '45°', 'tx', 10) + T([164, 80], '√2') + T([174, 134], '1') + T([214, 88], '1'));
+      var n = function (p, v) { return T(p, o.blank ? '?' : v, o.blank ? 'tx h' : 'tx'); };
+      return S(220, 140, poly([A, B, C], 'k fillw') + sq(B) + T([42, 114], '30°', 'tx', 10) + T([108, 76], '60°', 'tx', 10) + n([60, 82], '2') + n([66, 134], '√3') + n([128, 92], '1') +
+        poly([D, E, F], 'k fillw') + sq(E) + T([160, 114], '45°', 'tx', 10) + n([164, 80], '√2') + n([174, 134], '1') + n([214, 88], '1'));
     },
     /* 単位円と点P（deg） */
     unit: function (deg, o) {
@@ -52,6 +55,7 @@
       if (o.r) out += circ([91, 86.2], 41.8, 'g');
       out += L(B, C, hl.indexOf('a') >= 0 ? 's thick' : 'k') + L(A, C, hl.indexOf('b') >= 0 ? 'c thick' : 'k') + L(A, B, hl.indexOf('c') >= 0 ? 't thick' : 'k');
       if (o.A) out += arc(A, 18, 241, 302, 'h') + T([84, 50], o.A, 'tx h', 11);
+      if (o.B) out += arc(B, 20, 0, 61, 'h') + T([50, 116], o.B, 'tx h', 11);
       out += T([80, 12], 'A') + T([10, 134], 'B') + T([210, 134], 'C') +
         T([110, 142], o.a == null ? 'a' : o.a) + T([150, 70], o.b == null ? 'b' : o.b) + T([40, 70], o.c == null ? 'c' : o.c);
       return S(220, o.R ? 205 : 150, out);
