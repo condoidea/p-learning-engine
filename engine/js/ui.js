@@ -488,7 +488,7 @@
     if (isRe) { badge.textContent = '再挑戦'; badge.className = 'tag badge re'; }
     else if (!c || !c.seen) { badge.textContent = 'NEW'; badge.className = 'tag badge new'; }
     else { badge.textContent = '復習 · 記憶 ' + Math.round(Core.retr(c) * 100) + '%'; badge.className = 'tag badge rev'; }
-    $('#qText').innerHTML = qfmt(q.q);
+    $('#qText').innerHTML = C.math ? Lesson.fmtG(q.q) : qfmt(q.q);   // 問題文には用語ヘルプもつく
     $('#qText').dataset.qid = q.id;
     /* 問題の図（q.fig：HTML/SVG の文字列、または LE.figs の関数名と引数 [名前, …]） */
     var fig = $('#qFig');
@@ -634,7 +634,7 @@
       gsap.to(o, { v: ok ? 100 : 0, duration: 1.1, delay: 0.5, ease: 'power3.out', onUpdate: function () { bar.style.width = o.v + '%'; val.textContent = Math.round(o.v) + '%'; } });
       if (rescue) gsap.fromTo($('.mem-stamp', mem), { scale: 3, opacity: 0, rotate: -25 }, { scale: 1, opacity: 1, rotate: -8, duration: 0.45, delay: 1.2, ease: 'back.out(3)', onStart: function () { Sfx.coin(); } });
     } else mem.style.display = 'none';
-    $('#fbExp').innerHTML = qfmt(q.e || '');
+    $('#fbExp').innerHTML = C.math ? Lesson.fmtG(q.e || '') : qfmt(q.e || '');
     gsap.to(fb, { height: 'auto', opacity: 1, duration: 0.45, ease: 'power3.out', delay: ok ? 0.1 : 0.25 });
     setTimeout(function () {
       var r = fb.getBoundingClientRect();

@@ -7,7 +7,7 @@
  * ========================================================= */
 window.COURSE = {
   id: 'habsburg',
-  version: '2.5',
+  version: '2.6',
   title: 'ハプスブルク年代記｜鷹の城から帝冠へ',
   appName: 'ハプスブルク年代記',
   brand: ['HABSBURG', 'CHRONICLE'],
@@ -23,6 +23,8 @@ window.COURSE = {
   fonts: 'https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Cinzel+Decorative:wght@700;900&family=Shippori+Mincho+B1:wght@600;800&family=Zen+Old+Mincho:wght@400;700&family=UnifrakturMaguntia&display=swap',
 
   /* 世界観 */
+  typewriter: true,                    // 吹き出しの文字を一文字ずつ。キーワードは跳ねてマーカー
+  autoGloss: true,                     // 用語集の言葉に、自動でヘルプ（？）をつける
   scene: { preset: 'map' },            // ろうそくの灯りで見る古地図。物語の舞台へ地図が動く
   sound: 'royal',                      // 古楽器風の音色
   mascot: { ico: '🦅', name: '鷹のハビ' },   // ハプスブルク ≒「鷹の城（ハビヒツブルク）」

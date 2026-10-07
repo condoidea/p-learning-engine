@@ -229,3 +229,16 @@ html.scene-map #bg3d { display: none; }
 .rc-tap li.rv-b b { filter: blur(6px); background: color-mix(in srgb, var(--accent) 35%, transparent); border-radius: 4px; transition: filter .3s; }
 .rc-tap li.rv::after { content: 'タップ'; margin-left: auto; flex: none; align-self: center; font-size: 11px; padding: 2px 8px; border-radius: 99px; border: 1px dashed var(--muted); color: var(--muted); }
 .rc-tap li.open b, .rc-tap li.open .katex { filter: none; }
+
+/* =========================================================
+ * タイプライター（COURSE.typewriter）とキーワードのマーカー
+ * ========================================================= */
+.tw .tw-c { opacity: 0; }
+.tw .tw-c.on { opacity: 1; transition: opacity .12s; }
+.tw b { background-size: 0% 100% !important; background-repeat: no-repeat !important; transition: background-size .5s cubic-bezier(.3,.8,.3,1); }
+.tw b.tw-hl { background-size: 100% 100% !important; }
+b.tw-hl { display: inline-block; }
+/* 用語ヘルプ：点線＋小さな「？」で、タップできると分かるように */
+.gl::after { content: '?'; display: inline-block; margin-left: 2px; width: 13px; height: 13px; line-height: 13px; border-radius: 50%; font-size: 9px; font-weight: 900; text-align: center; vertical-align: 2px; background: var(--gold); color: #1a1205; }
+/* 答えたあとの説明のキーワードにもマーカー */
+.ask-reveal b, .ls-fb p b { color: #fff; background: linear-gradient(transparent 60%, color-mix(in srgb, var(--accent) 40%, transparent) 60%); }

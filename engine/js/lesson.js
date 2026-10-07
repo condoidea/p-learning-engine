@@ -25,14 +25,103 @@
   /* 図（HTML）の中の $…$ も数式にする */
   function mviz(h) { return withMath(h, function (x) { return x; }); }
   /* 本文の書式：**太字** `等幅` [[用語]] [[用語|表示]] 改行（数式コースでは $…$ も） */
-  function fmt(t) { return withMath(t, fmt0); }
+  function fmt(t) { GL_USED = {}; GL_N.n = 0; return withMath(t, fmt0); }
   function fmt0(t) {
-    return esc(t || '')
+    return esc(autoGloss(t || ''))
       .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
       .replace(/`(.+?)`/g, '<code>$1</code>')
       .replace(/\[\[(.+?)(?:\|(.+?))?\]\]/g, function (m, term, label) { return '<button class="gl" data-t="' + term + '">' + (label || term) + '</button>'; })
       .replace(/\n/g, '<br>');
   }
+  /* =========================================================
+   * 用語ヘルプの自動リンク（COURSE.autoGloss）
+   *  本文に LE.glossary の用語が出てきたら、最初の1回だけ [[用語]] と同じボタンにする（2文字以上の用語、1つの文で最大3つ）
+   * ========================================================= */
+  var GL_TERMS = null, GL_USED = {}, GL_N = { n: 0 }, GL_ON = false;
+  /* 文章（吹き出し・説明・まとめ・問題文）用。ボタンの中（選択肢など）では使わない：ボタンの入れ子になるため */
+  function fmtG(t) { GL_ON = true; try { return fmt(t); } finally { GL_ON = false; } }
+  function autoGloss(t) {
+    if (!GL_ON || !(window.COURSE && COURSE.autoGloss) || !t) return t;
+    if (!GL_TERMS) GL_TERMS = Object.keys(LE.glossary || {}).filter(function (k) { return k.length >= 2; }).sort(function (a, b) { return b.length - a.length; });
+    var used = GL_USED;
+    return String(t).split(/(\[\[.+?\]\]|\*\*|`.+?`)/g).map(function (part, i) {
+      if (i % 2 || GL_N.n >= 3) return part;
+      GL_TERMS.forEach(function (term) {
+        if (GL_N.n >= 3 || used[term]) return;
+        var at = part.indexOf(term);
+        if (at < 0) return;
+        /* もっと長い用語の一部（例：内接円の「内接」）は、すでにリンク済みなら飛ばす */
+        if (/\[\[[^\]]*$/.test(part.slice(0, at))) return;
+        used[term] = 1; GL_N.n++;
+        part = part.slice(0, at) + '[[' + term + ']]' + part.slice(at + term.length);
+      });
+      return part;
+    }).join('');
+  }
+
+  /* =========================================================
+   * タイプライター表示（COURSE.typewriter）
+   *  吹き出しの文字が一文字ずつ流れて出る。数式はまとめてポン、キーワード（太字）は出きったら跳ねてマーカーが引かれる。
+   *  吹き出しをタップすると残りを一気に表示。自動テスト中は使わない
+   * ========================================================= */
+  var TW = !!(window.COURSE && COURSE.typewriter) && !window.LE_E2E;
+  function typeIn(el, done) {
+    if (!el || !TW) { if (done) done(); return { skip: function () {} }; }
+    var units = [], bolds = [];
+    (function walk(node) {
+      Array.prototype.slice.call(node.childNodes).forEach(function (ch) {
+        if (ch.nodeType === 3) {
+          var txt = ch.textContent; if (!txt) return;
+          var frag = document.createDocumentFragment();
+          Array.from(txt).forEach(function (c) { var sp = document.createElement('span'); sp.className = 'tw-c'; sp.textContent = c; frag.appendChild(sp); units.push({ el: sp, c: c }); });
+          node.replaceChild(frag, ch);
+        } else if (ch.nodeType === 1) {
+          if (ch.classList.contains('katex') || ch.classList.contains('katex-display') || ch.classList.contains('gl') || ch.tagName === 'BR' || ch.tagName === 'svg') {
+            ch.classList.add('tw-c'); units.push({ el: ch, atom: true, br: ch.tagName === 'BR' });
+          } else {
+            var startIdx = units.length;
+            walk(ch);
+            if (ch.tagName === 'B' && units.length > startIdx) bolds.push({ el: ch, last: units.length - 1 });
+          }
+        }
+      });
+    })(el);
+    el.classList.add('tw');
+    var i = 0, timer = null, fin = false;
+    var bAt = {}; bolds.forEach(function (b) { bAt[b.last] = (bAt[b.last] || []).concat(b.el); });
+    function pop(u) {
+      u.el.classList.add('on');
+      if (u.atom && !u.br) gsap.fromTo(u.el, { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: 'back.out(3)' });
+    }
+    function bounce(b) {
+      b.classList.add('tw-hl');
+      gsap.fromTo(b, { y: -7, scale: 1.18 }, { y: 0, scale: 1, duration: 0.6, ease: 'elastic.out(1, 0.45)' });
+    }
+    function step() {
+      if (fin) return;
+      if (i >= units.length) { finish(); return; }
+      var u = units[i];
+      pop(u);
+      (bAt[i] || []).forEach(bounce);
+      i++;
+      var wait = u.atom ? (u.br ? 160 : 120) : /[。！？]/.test(u.c) ? 170 : /[、，]/.test(u.c) ? 90 : 26;
+      timer = setTimeout(step, wait);
+    }
+    function finish() {
+      if (fin) return; fin = true; clearTimeout(timer);
+      for (; i < units.length; i++) { units[i].el.classList.add('on'); (bAt[i] || []).forEach(function (b) { b.classList.add('tw-hl'); }); }
+      el.classList.remove('tw');
+      el.removeEventListener('click', onTap);
+      if (done) done();
+    }
+    function onTap(e) { if (e.target.closest && e.target.closest('.gl')) return; finish(); }
+    el.addEventListener('click', onTap);
+    timer = setTimeout(step, 180);
+    return { skip: finish };
+  }
+  /* 吹き出しの文字が出きってから実行（問い・選択肢を出すタイミング合わせ） */
+  function whenTyped(fn) { if (P && P.typing) P.typingQ.push(fn); else fn(); }
+
   function allLessons() {
     var out = [];
     LE.units.forEach(function (u) { u.lessons.forEach(function (id) { out.push(LE.lessonDefs[id]); }); });
@@ -295,7 +384,7 @@
       FX3D.pulse(0.6);
     }
     setMood('happy');
-    feedback('ok', '<b>' + (title || (firstTry ? pick(['正解！', 'ばっちり！', 'その通り！', 'ナイス！']) : 'できた！')) + '</b>' + (msg ? '<p>' + fmt(msg) + '</p>' : ''));
+    feedback('ok', '<b>' + (title || (firstTry ? pick(['正解！', 'ばっちり！', 'その通り！', 'ナイス！']) : 'できた！')) + '</b>' + (msg ? '<p>' + fmtG(msg) + '</p>' : ''));
     setReady(true);
   }
   function zoneIn() {
@@ -318,7 +407,7 @@
     Sfx.wrong();
     FX.shake(5);
     setMood('sad');
-    feedback('ng', '<b>おしい！</b><p>' + fmt(msg || 'もう一度考えてみよう。') + '</p>');
+    feedback('ng', '<b>おしい！</b><p>' + fmtG(msg || 'もう一度考えてみよう。') + '</p>');
   }
   function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
 
@@ -330,11 +419,16 @@
     setReady(false);
     var html = '<div class="ls-step t-' + s.t + '">';
     var bubble = s.t === 'show' ? (s.frames[0].say || '') : s.t === 'say' ? s.text : s.t === 'term' ? 'あたらしい用語だよ！' : s.t === 'recap' ? (window.COURSE && COURSE.recapTap ? 'まとめ！ 思い出せるかな？' : 'ここまでのまとめ！') : s.text || s.q;
-    if (s.t !== 'quiz') html += '<div class="ls-talk">' + pico(s.t === 'recap' ? 'happy' : '') + '<div class="bubble' + (/^[*\s]*[0-9０-９]/.test(bubble || '') ? ' num-start' : '') + '">' + fmt(bubble) + '</div></div>';
+    if (s.t !== 'quiz') html += '<div class="ls-talk">' + pico(s.t === 'recap' ? 'happy' : '') + '<div class="bubble' + (/^[*\s]*[0-9０-９]/.test(bubble || '') ? ' num-start' : '') + '">' + fmtG(bubble) + '</div></div>';
     html += '<div class="ls-body"></div></div>';
     st.innerHTML = html;
     var body = $('.ls-body', st);
+    P.typing = TW && s.t !== 'quiz'; P.typingQ = [];
     (STEP[s.t] || STEP.say)(s, body);
+    if (P.typing) {
+      var me = P;
+      typeIn($('.ls-talk .bubble', st), function () { if (P !== me) return; me.typing = false; var q = me.typingQ; me.typingQ = []; q.forEach(function (f) { f(); }); });
+    }
     if (s.art && LE.art && LE.art[s.art]) {
       body.insertAdjacentHTML('afterbegin', '<figure class="ls-art">' + LE.art[s.art] + (s.cap ? '<figcaption>' + fmt(s.cap) + '</figcaption>' : '') + '</figure>');
       inkDraw($('.ls-art svg', body));
@@ -366,7 +460,7 @@
   var STEP = {};
   STEP.say = function (s, body) {
     if (s.viz) body.innerHTML = '<div class="vz vz-anim">' + mviz(s.viz) + '</div>';
-    if (s.ask) { askBlock(body, s.ask, function (r) { revealInto(r, s.reveal, s.rviz); setReady(true); }); return; }
+    if (s.ask) { whenTyped(function () { askBlock(body, s.ask, function (r) { revealInto(r, s.reveal, s.rviz); setReady(true); }); }); return; }
     setReady(true);
   };
   STEP.term = function (s, body) {
@@ -380,7 +474,7 @@
   };
   STEP.recap = function (s, body) {
     if (window.COURSE && COURSE.recapTap) { recapTap(s, body); return; }
-    body.innerHTML = '<ul class="recap">' + s.points.map(function (p) { return '<li><i>✔</i><span>' + fmt(p) + '</span></li>'; }).join('') + '</ul>';
+    body.innerHTML = '<ul class="recap">' + s.points.map(function (p) { return '<li><i>✔</i><span>' + fmtG(p) + '</span></li>'; }).join('') + '</ul>';
     gsap.from($$('.recap li', body), { x: -30, opacity: 0, stagger: 0.12, duration: 0.4, delay: 0.3, ease: 'back.out(2)', onComplete: function () { } });
     setReady(true);
   };
@@ -827,7 +921,7 @@
    *  インプット用（採点しない）。最後のコマまで見ると「つづける」が押せる
    * ========================================================= */
   STEP.show = function (s, body) {
-    var k = -1, n = s.frames.length;
+    var k = -1, n = s.frames.length, firstRun = true;   // 最初のコマの台詞は renderStep が吹き出しに出す
     body.innerHTML = '<div class="sh"><div class="sh-stage vz"></div><div class="sh-nav"><div class="sh-dots">' +
       s.frames.map(function () { return '<i></i>'; }).join('') + '</div><button class="btn-primary sh-next">次へ ▶</button><button class="btn-ghost sh-again">↺ もう一度</button></div></div>';
     var stg = $('.sh-stage', body), nx = $('.sh-next', body), ag = $('.sh-again', body), bub = $('#lsStage .bubble');
@@ -835,9 +929,11 @@
     function frame(i) {
       k = i;
       var f = s.frames[i];
-      if (bub && f.say != null) {
-        bub.innerHTML = fmt(f.say);
+      var typed = false;
+      if (bub && f.say != null && !(i === 0 && firstRun)) {
+        bub.innerHTML = fmtG(f.say);
         gsap.fromTo(bub, { opacity: 0.25, y: 6 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' });
+        typed = true;
       }
       var nw = null;
       if (f.viz != null || f.ask) {
@@ -859,12 +955,13 @@
         if (i >= n - 1) { nx.style.display = 'none'; ag.style.display = ''; if (!P.ready) setReady(true); }
         else nx.style.display = '';
       }
-      if (f.ask && nw) { nx.style.display = 'none'; askBlock(nw, f.ask, function (r) { revealInto(r, f.reveal, f.rviz); fin(); }); }
-      else fin();
+      nx.style.display = 'none';
+      var go = function () { if (f.ask && nw) askBlock(nw, f.ask, function (r) { revealInto(r, f.reveal, f.rviz); fin(); }); else fin(); };
+      if (typed) typeIn(bub, go); else whenTyped(go);
     }
     nx.addEventListener('click', function () { if (k < n - 1) frame(k + 1); });
     ag.addEventListener('click', function () { ag.style.display = 'none'; frame(0); });
-    frame(0);
+    frame(0); firstRun = false;
   };
 
   /* =========================================================
@@ -875,7 +972,7 @@
   function askBlock(box, ask, onDone) {
     var order = Core.shuffle(ask.o.map(function (_, i) { return i; }));
     var wrap = document.createElement('div'); wrap.className = 'ask';
-    wrap.innerHTML = '<p class="ask-q">🤔 ' + fmt(ask.q) + '</p><div class="ask-o">' +
+    wrap.innerHTML = '<p class="ask-q">🤔 ' + fmtG(ask.q) + '</p><div class="ask-o">' +
       order.map(function (i) { return '<button class="ask-b"' + (i === 0 ? ' data-ok="1"' : '') + ' data-i="' + i + '">' + fmt(ask.o[i]) + '</button>'; }).join('') + '</div><div class="ask-r"></div>';
     box.appendChild(wrap);
     gsap.from(wrap, { opacity: 0, y: 12, duration: 0.4, delay: 0.25, ease: 'power3.out', clearProps: 'all' });
@@ -906,9 +1003,10 @@
   /* 答えのあとに出す説明（reveal）とおまけの図（rviz） */
   function revealInto(r, html, viz) {
     if (html) {
-      var p = document.createElement('div'); p.className = 'ask-reveal'; p.innerHTML = fmt(html);
+      var p = document.createElement('div'); p.className = 'ask-reveal'; p.innerHTML = fmtG(html);
       r.appendChild(p);
       gsap.fromTo(p, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease: 'back.out(1.6)' });
+      typeIn(p);
     }
     if (viz) {
       var v = document.createElement('div'); v.className = 'vz'; v.innerHTML = mviz(viz);
@@ -922,7 +1020,7 @@
   function recapTap(s, body) {
     body.innerHTML = '<p class="rc-lead">ぼかした所を<b>頭の中で言ってから</b>タップ！</p><ul class="recap rc-tap">' + s.points.map(function (p) {
       /* 太字があれば太字を、なければ数式をぼかす */
-      var h = fmt(p), cls = /<b>/.test(h) ? 'rv rv-b' : /class="katex"/.test(h) ? 'rv rv-k' : 'open';
+      var h = fmtG(p), cls = /<b>/.test(h) ? 'rv rv-b' : /class="katex"/.test(h) ? 'rv rv-k' : 'open';
       return '<li class="' + cls + '"><i>✔</i><span>' + h + '</span></li>';
     }).join('') + '</ul>';
     var left = $$('.rc-tap li.rv', body).length;
@@ -1163,7 +1261,7 @@
   }
 
   window.Lesson = {
-    renderMap: renderMap, start: start, stage: stage, tex: tex, mviz: mviz, math: withMath, next: nextLesson, isDone: isDone, all: allLessons, no: lessonNo, label: label, fmt: fmt, bind: bind,
+    renderMap: renderMap, start: start, stage: stage, tex: tex, mviz: mviz, math: withMath, fmtG: fmtG, next: nextLesson, isDone: isDone, all: allLessons, no: lessonNo, label: label, fmt: fmt, bind: bind,
     active: function () { return !!P; }
   };
 })();

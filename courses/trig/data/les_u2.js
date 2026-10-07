@@ -11,7 +11,7 @@ LE.defLesson('u2', {
       ], ok: '$\\sin(90^\\circ-\\theta)=\\dfrac{b}{c}=\\cos\\theta$。たてとよこが入れかわるから、sin と cos も入れかわる！' },
     { t: 'say', text: '$\\S(90^\\circ-\\theta)=\\C\\theta$。たてとよこが入れかわるから。',
       ask: { q: 'では $\\C(90^\\circ-\\theta)$ は？', o: ['$\\S\\theta$', '$\\C\\theta$', '$-\\S\\theta$'], why: ['', 'よこも入れかわるよ。', 'マイナスはつかない。'] },
-      reveal: 'フック：**90°−θ は「名前チェンジ」**。tan は**ひっくり返る**：$\\T(90^\\circ-\\theta)=\\dfrac{1}{\\T\\theta}$' },
+      reveal: 'フック：**90°−θ は「名前チェンジ」**。tan は**ひっくり返る**（逆数）：$\\T(90^\\circ-\\theta)=\\dfrac{1}{\\T\\theta}$' },
     { t: 'fill', text: 'プリントの3つの式を完成させよう。',
       viz: '<div class="fx-rows"><div>$\\S(90^\\circ-\\theta)=$ {{0}}</div><div>$\\C(90^\\circ-\\theta)=$ {{1}}</div><div>$\\T(90^\\circ-\\theta)=$ {{2}}</div></div>',
       a: ['$\\C\\theta$', '$\\S\\theta$', '$\\dfrac{1}{\\T\\theta}$'], extra: ['$-\\C\\theta$', '$\\T\\theta$'], hint: '名前チェンジ：sin↔cos、tan は逆数。' },

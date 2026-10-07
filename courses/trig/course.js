@@ -6,14 +6,14 @@
  * ========================================================= */
 window.COURSE = {
   id: 'trig',
-  version: '21',
+  version: '24',
   title: 'サンカク・ラッシュ｜三角比・平面図形の公式',
   appName: 'サンカク・ラッシュ',
   brand: ['TRIG', 'RUSH'],
   storageKey: 'le.trig.v2',   // 2026-10-08 プリントに沿って15レッスンに再構成（旧 v1 の進捗は使わない）
 
   files: [
-    'data/syllabus.js', 'data/curriculum.js', 'data/figs.js', 'data/widgets.js',
+    'data/syllabus.js', 'data/curriculum.js', 'data/glossary.js', 'data/figs.js', 'data/widgets.js',
     'data/les_u1.js', 'data/les_u2.js', 'data/les_u3.js', 'data/les_u4.js', 'data/les_u5.js',
     'data/cards.js'
   ],
@@ -22,6 +22,8 @@ window.COURSE = {
   /* 数式は KaTeX で描く */
   math: true,
   recapTap: true,                      // まとめはキーワードをぼかして「思い出してからタップ」
+  typewriter: true,                    // 吹き出しの文字を一文字ずつ。キーワードは跳ねてマーカー
+  autoGloss: true,                     // 用語集の言葉に、自動でヘルプ（？）をつける
   libs: ['https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js'],
   extCss: ['https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css'],
   /* 色分けマクロ：\S \C \T で sin cos tan を色つきで書ける */
