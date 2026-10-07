@@ -39,25 +39,39 @@ LE.addTo('u1-1', 'def', [
 ]);
 
 LE.defLesson('u1', {
-  id: 'u1-2', title: '30°・45°・60° は三角定規で', goal: '有名角の sin・cos・tan を、三角定規から出せる',
+  id: 'u1-2', title: '30°・45°・60° は三角定規で', goal: '三角定規の辺の比から、有名角の sin・cos・tan を出せる',
   steps: [
-    { t: 'say', text: 'プリントのすみのメモ：「**30°・45°・60° → 三角定規**」。\n表を丸暗記しなくていい。三角定規の2枚の**辺の比**だけ覚えておこう。',
-      viz: LE.figs.rulers() },
-    { t: 'fill', text: '辺の比をうめよう。',
-      viz: LE.figs.rulers({ blank: true }) + '<div class="fx-rows"><div>30°・60° の定規：　1 : {{0}} : {{1}}　<small>（たて : 斜辺 : よこ）</small></div><div>45° の定規：　1 : 1 : {{2}}</div></div>',
+    { t: 'show', frames: [
+      { say: 'テストによく出る **30°・45°・60°**。\nじつは、筆箱の**三角定規の2枚**から全部出せる。\n…でも、辺の長さって知ってる？', viz: LE.figs.rulers({ blank: true }) },
+      { say: '1枚目のひみつ。\n**正三角形**（3辺とも2、角はぜんぶ60°）を用意して…', viz: LE.figs.eqCut(0) },
+      { say: '真ん中で**半分に切る**！\n底辺の 2 が **1 と 1** に分かれる。斜辺は 2 のまま。角は 30° と 60° と 90°。', viz: LE.figs.eqCut(1) },
+      { say: '残った「たて」の長さは？', viz: LE.figs.eqCut(2) },
+      { say: '**三平方の定理**で $?^2+1^2=2^2$ → $?=\\sqrt3$。\n合言葉は「**いち・に・ルート3**」（2 はいちばん長い斜辺）。', viz: LE.figs.eqCut(3) },
+      { say: '2枚目のひみつ。\n**正方形**（1辺が1）を、**対角線で半分に切る**と…', viz: LE.figs.sqCut(0) },
+      { say: '45° の定規のできあがり。2辺は 1 と 1。斜辺は？', viz: LE.figs.sqCut(1) },
+      { say: '$1^2+1^2=?^2$ → $?=\\sqrt2$。\n合言葉は「**いち・いち・ルート2**」。', viz: LE.figs.sqCut(2) }
+    ] },
+    { t: 'fill', text: 'さっそく思い出そう。2枚の定規の辺の比は？',
+      viz: LE.figs.rulers({ blank: true }) + '<div class="fx-rows"><div>30°・60° の定規：　1 : {{0}} : {{1}}　<small>（短い辺 : 斜辺 : 残りの辺）</small></div><div>45° の定規：　1 : 1 : {{2}}</div></div>',
       a: ['2', '$\\sqrt3$', '$\\sqrt2$'], extra: ['3', '$\\sqrt5$'],
-      hint: '30°の定規は「いち・に・ルート3」、45°は「いち・いち・ルート2」。斜辺がいちばん長い。',
-      ok: '「いち・に・ルート3」「いち・いち・ルート2」。これだけ覚えればOK。' },
-    { t: 'widget', w: 'ruler', text: 'お題の角を三角定規から探してタップ。辺が光って、値が出るよ。' },
-    { t: 'say', text: 'おまけのフック：sin は\n$\\S30^\\circ=\\dfrac{\\sqrt1}{2}$、$\\S45^\\circ=\\dfrac{\\sqrt2}{2}$、$\\S60^\\circ=\\dfrac{\\sqrt3}{2}$\nと、**ルートの中が 1・2・3** と増えていく。cos はその**逆順**。',
+      hint: '正三角形を半分 →「いち・に・ルート3」、正方形を半分 →「いち・いち・ルート2」。',
+      ok: '忘れたら、正三角形と正方形を半分に切った絵を思い出せばOK。' },
+    { t: 'show', frames: [
+      { say: '値の出し方は Lesson 1-1 と同じ。\n**その角を左下に置いて**、筆記体の s・c・t。', viz: LE.figs.rt({ deg: 30, th: '30°', a: '1', b: '√3', c: '2' }) },
+      { say: '$\\S30^\\circ$ ＝ 斜辺分のたて ＝ $\\dfrac12$\n$\\T30^\\circ$ ＝ よこ分のたて ＝ $\\dfrac{1}{\\sqrt3}$', viz: LE.figs.rt({ deg: 30, th: '30°', a: '1', b: '√3', c: '2', hl: 'ac' }) },
+      { say: '**60°** を左下に置くと、定規が裏返って **たて √3・よこ 1** に入れかわる！\n$\\S60^\\circ=\\dfrac{\\sqrt3}{2}$、$\\C60^\\circ=\\dfrac12$', viz: LE.figs.rt({ deg: 60, th: '60°', a: '√3', b: '1', c: '2', hl: 'ac' }) },
+      { say: '**45°** は たて も よこ も 1。\n$\\S45^\\circ=\\dfrac{1}{\\sqrt2}$、$\\T45^\\circ=\\dfrac11=1$', viz: LE.figs.rt({ deg: 45, th: '45°', a: '1', b: '1', c: '√2', hl: 'ab' }) }
+    ] },
+    { t: 'widget', w: 'ruler', text: '自分でやってみよう。お題の角を左下に置いた定規が出てくるよ。**分母の辺 → 分子の辺** の順にタップ！' },
+    { t: 'say', text: '最後に、表で見たときのフック。\nsin は $\\dfrac{\\sqrt1}{2},\\ \\dfrac{\\sqrt2}{2},\\ \\dfrac{\\sqrt3}{2}$ と、**ルートの中が 1・2・3** と増えていく。cos はその**逆順**。',
       viz: '<table class="vz-tbl"><tr><th>θ</th><th>30°</th><th>45°</th><th>60°</th></tr><tr><td>$\\S$</td><td>$\\frac{\\sqrt1}{2}$</td><td>$\\frac{\\sqrt2}{2}$</td><td>$\\frac{\\sqrt3}{2}$</td></tr><tr><td>$\\C$</td><td>$\\frac{\\sqrt3}{2}$</td><td>$\\frac{\\sqrt2}{2}$</td><td>$\\frac{\\sqrt1}{2}$</td></tr><tr><td>$\\T$</td><td>$\\frac{1}{\\sqrt3}$</td><td>$1$</td><td>$\\sqrt3$</td></tr></table>' },
-    { t: 'match', text: '値を結ぼう。',
+    { t: 'match', text: '値を結ぼう。迷ったら定規を思い浮かべて。',
       pairs: [['$\\S30^\\circ$', '$\\dfrac12$'], ['$\\C30^\\circ$', '$\\dfrac{\\sqrt3}{2}$'], ['$\\T45^\\circ$', '$1$'], ['$\\T60^\\circ$', '$\\sqrt3$']] },
     { t: 'num', viz: LE.figs.rulers(), text: '$\\T60^\\circ=\\sqrt3$ を小数で言うと？（小数第2位まで）', answer: 1.73, tol: 0.011, hint: '$\\sqrt3=1.7320\\ldots$（ひとなみにおごれや）', solve: '$\\sqrt3\\fallingdotseq1.73$' },
     { t: 'recap', points: [
-      '30°・60°：**1 : 2 : √3**（たて : 斜辺 : よこ）、45°：**1 : 1 : √2**',
-      'sin は $\\dfrac{\\sqrt1}{2},\\dfrac{\\sqrt2}{2},\\dfrac{\\sqrt3}{2}$（30°→60°）、cos はその逆順',
-      'tan：$\\dfrac1{\\sqrt3},\\ 1,\\ \\sqrt3$'
+      '正三角形を半分 → **1 : 2 : √3**（30°・60°）、正方形を半分 → **1 : 1 : √2**（45°）',
+      '値は「その角を左下に置いて」s・c・t。60° は定規が裏返る（たて √3・よこ 1）',
+      'sin は $\\dfrac{\\sqrt1}{2},\\dfrac{\\sqrt2}{2},\\dfrac{\\sqrt3}{2}$（30°→60°）、cos はその逆順'
     ] }
   ]
 });
@@ -116,8 +130,12 @@ LE.defLesson('u1', {
     { t: 'widget', w: 'pyth', text: 'シアン（cos²）とピンク（sin²）の正方形。P を動かしても、面積の和は…？' },
     { t: 'build', viz: LE.figs.unit(40), text: '1つめの公式を組み立てよう。', ans: ['\\cos^2\\theta', '+', '\\sin^2\\theta', '=', '1'], extra: ['\\tan^2\\theta', '2'],
       ok: '「単位円の三平方」。この式がすべての出発点。' },
-    { t: 'order', text: '2つめの公式の作り方（プリントの「÷cos²θ」の矢印）。正しい順に並べよう。',
-      items: ['$\\cos^2\\theta+\\sin^2\\theta=1$ から出発', '両辺を $\\cos^2\\theta$ で割る', '$1+\\dfrac{\\sin^2\\theta}{\\cos^2\\theta}=\\dfrac{1}{\\cos^2\\theta}$', '$\\dfrac{\\sin\\theta}{\\cos\\theta}=\\tan\\theta$ なので $1+\\tan^2\\theta=\\dfrac{1}{\\cos^2\\theta}$'] },
+    { t: 'show', frames: [
+      { say: '2つめの公式は、1つめから**作れる**。\n$\\cos^2\\theta+\\sin^2\\theta=1$ の両辺を、$\\cos^2\\theta$ で割ってみよう。', viz: '<div class="fx-big">$$\\cos^2\\theta+\\sin^2\\theta=1$$</div>' },
+      { say: '全部を $\\cos^2\\theta$ で割ると…', viz: '<div class="fx-big">$$\\dfrac{\\cos^2\\theta}{\\cos^2\\theta}+\\dfrac{\\sin^2\\theta}{\\cos^2\\theta}=\\dfrac{1}{\\cos^2\\theta}$$</div>' },
+      { say: '左の1つめは 1。2つめは $\\left(\\dfrac{\\sin\\theta}{\\cos\\theta}\\right)^2=\\tan^2\\theta$！', viz: '<div class="fx-big">$$1+\\tan^2\\theta=\\dfrac{1}{\\cos^2\\theta}$$</div>' },
+      { say: 'プリントの「÷cos²θ」の矢印は、このこと。\n忘れても、1つめの式から30秒で作り直せる。', viz: '<div class="fx-big">$$1+\\tan^2\\theta=\\dfrac{1}{\\cos^2\\theta}$$</div>' }
+    ] },
     { t: 'build', text: '2つめの公式を組み立てよう。', ans: ['1', '+', '\\tan^2\\theta', '=', '\\dfrac{1}{\\cos^2\\theta}'], extra: ['\\dfrac{1}{\\sin^2\\theta}', '\\cos^2\\theta'],
       hint: '「÷cos²θ」で作ったから、右辺の分母は cos²θ。' },
     { t: 'steps', q: '$\\theta$ は鋭角で $\\S\\theta=\\dfrac35$ のとき、$\\C\\theta$ と $\\T\\theta$ は？', steps: [

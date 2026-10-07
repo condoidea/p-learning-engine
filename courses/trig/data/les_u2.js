@@ -35,6 +35,7 @@ LE.addTo('u2-1', 'reduce', [
 LE.defLesson('u2', {
   id: 'u2-2', title: '180°−θ：sin だけ生き残る', goal: '$180^\\circ-\\theta$ の還元公式を使える',
   steps: [
+    { t: 'say', text: '今度の鏡は **y軸**。\n単位円の点 P（角 θ）を左右に映すと、映った点 P\' の角は $180^\\circ-\\theta$。\n左右に映すと座標はどうなる？ 動かして確かめよう。', viz: LE.figs.unit(30) },
     { t: 'widget', w: 'mirror', mode: '180', text: '今度は P を**y軸の鏡**に映す。P\' は $180^\\circ-\\theta$ の点。何が変わる？' },
     { t: 'say', text: 'y軸で左右に映すと、**高さ（y）はそのまま、x だけ符号が反対**。\nだから\n$\\S(180^\\circ-\\theta)=\\S\\theta$\n$\\C(180^\\circ-\\theta)=-\\C\\theta$\n$\\T(180^\\circ-\\theta)=-\\T\\theta$' },
     { t: 'say', text: 'フック：**180°−θ は「名前はそのまま、sin だけ生き残る（ほかはマイナス）」**。\n90°−θ（名前チェンジ）とセットで覚えよう。',

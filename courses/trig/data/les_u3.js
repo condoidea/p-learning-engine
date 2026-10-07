@@ -5,6 +5,11 @@ LE.defLesson('u3', {
     { t: 'say', text: '弧 AB の向こう側の円周上の点 P から、A と B を見る角が**円周角** ∠APB。\nプリントの3つの図は、ぜんぶこの仲間。',
       viz: '<div class="vz-row">' + LE.figs.ins('same', { p: '●', q: '●' }) + '</div>' },
     { t: 'widget', w: 'inscribed', text: 'P や B を動かして、角がどうなるか見よう。' },
+    { t: 'show', frames: [
+      { say: '円周角のルールは3つだけ。\n① **同じ弧の円周角は等しい**（P がどこにいても同じ）', viz: LE.figs.ins('same', { p: '●', q: '●' }) },
+      { say: '② **中心角は円周角の2倍**', viz: LE.figs.ins('center', { p: 'θ', o: '2θ' }) },
+      { say: '③ **直径の円周角は 90°**（中心角 180° の半分）', viz: LE.figs.ins('diam', { x: '90°' }) }
+    ] },
     { t: 'fill', text: '3つのルールをまとめよう。',
       viz: '<div class="fx-rows"><div>① 同じ弧の円周角は {{0}}</div><div>② 中心角は円周角の {{1}}</div><div>③ 直径に対する円周角は {{2}}</div></div>',
       a: ['等しい', '2倍', '90°'], extra: ['半分', '180°'],
@@ -66,6 +71,11 @@ LE.defLesson('u3', {
     { t: 'say', text: '点 P を通る2本の直線が、円と交わる。\nフック：**P からの「手前 × 奥」はどの線でも同じ**。\n形は3つ（プリントの3つの図）。',
       viz: '<div class="vz-row">' + LE.figs.pow(1) + LE.figs.pow(2) + LE.figs.pow(3) + '</div>' },
     { t: 'widget', w: 'power', text: 'タブで形を切りかえて、P を動かそう。' },
+    { t: 'show', frames: [
+      { say: '① 円の中で交わる弦：P から見て「手前×奥」どうしが等しい。\n$PA\\cdot PB=PC\\cdot PD$', viz: LE.figs.pow(1) },
+      { say: '② 円の外から2本：これも「手前×奥」。**PB は P から奥まで**の長さ。\n$PA\\cdot PB=PC\\cdot PD$', viz: LE.figs.pow(2) },
+      { say: '③ 片方が接線：接線は円と1点（T）でしかふれないから、「手前も奥も T」。\n$PA\\cdot PB=PT\\cdot PT=PT^2$', viz: LE.figs.pow(3) }
+    ] },
     { t: 'build', viz: '<div class="vz-row">' + LE.figs.pow(1) + LE.figs.pow(2) + '</div>', text: '①②の形の式を組み立てよう。', ans: ['PA', '\\cdot', 'PB', '=', 'PC', '\\cdot', 'PD'], extra: ['AB', 'CD'],
       hint: 'P から測った長さどうしをかける。AB や CD（弦の長さ）は使わない！' },
     { t: 'build', viz: LE.figs.pow(3), text: '③（接線）の形。接線は「手前も奥も T」だから…', ans: ['PA', '\\cdot', 'PB', '=', 'PT^2'], extra: ['PT', 'AB'] },

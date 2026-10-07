@@ -33,6 +33,7 @@ LE.defLesson('u4', {
     { t: 'say', text: '三角形にぴったり入る円＝**内接円**。その中心が [[内心]]。\nフック：内心は「**ナイ・カク**」＝**内角の二等分線**の交点。',
       viz: LE.figs.incir() },
     { t: 'widget', w: 'incircle', text: '内心 I から3つの頂点に線を引くと、三角形が3色に分かれる。どの三角形も高さは r！' },
+    { t: 'say', text: '3つの三角形の面積をたすと $\\dfrac12ar+\\dfrac12br+\\dfrac12cr$。\n$\\dfrac r2$ でくくると、\n$$S=\\dfrac r2(a+b+c)$$\n（r は内接円の半径）', viz: LE.figs.incir() },
     { t: 'build', viz: LE.figs.incir(), text: '面積の式を組み立てよう。', pre: 'S=', ans: ['\\dfrac{r}{2}', '(', 'a+b+c', ')'], extra: ['\\dfrac{R}{2}', 'abc'],
       ok: '$\\dfrac12ar+\\dfrac12br+\\dfrac12cr$ を $\\dfrac r2$ でくくった形。' },
     { t: 'num', viz: LE.figs.rt({ a: '3', b: '4', c: '5', th: '' }), text: '3辺が $3,4,5$ の直角三角形（面積 6）。内接円の半径 $r$ は？', answer: 1, hint: '$6=\\dfrac r2(3+4+5)$', solve: '$6=\\dfrac r2\\times12=6r$ → $r=1$' },
@@ -52,6 +53,7 @@ LE.defLesson('u4', {
     { t: 'say', text: '三角形の3つの頂点を通る円＝**外接円**（半径 $R$）。その中心が [[外心]]。\nフック：外心は「**3辺の垂直二等分線**」の交点（3つの頂点から等しい距離）。',
       viz: LE.figs.sinR() },
     { t: 'widget', w: 'sine', text: 'A を円周上で動かしても、$\\dfrac{a}{\\S A}$ はずっと同じ値…？' },
+    { t: 'say', text: 'これが**正弦定理**。\n$$\\dfrac{a}{\\S A}=\\dfrac{b}{\\S B}=\\dfrac{c}{\\S C}=2R$$\nフック：「**辺と、その向かいの角がペア**」「右辺は外接円の**直径** 2R」。', viz: LE.figs.tri({ R: true }) },
     { t: 'build', viz: LE.figs.tri({ R: true }), text: '正弦定理を組み立てよう。辺と、その**向かいの角**がペア！',
       ans: ['\\dfrac{a}{\\S A}', '=', '\\dfrac{b}{\\S B}', '=', '\\dfrac{c}{\\S C}', '=', '2R'], extra: ['R', '\\dfrac{a}{\\S B}'],
       hint: '辺 a の向かいは角 A。同じ文字どうしでペア。最後は直径 2R。' },
@@ -74,13 +76,18 @@ LE.addTo('u4-3', 'sine', [
 LE.defLesson('u4', {
   id: 'u4-4', title: '余弦定理', goal: '$a^2=b^2+c^2-2bc\\cos A$ と $\\cos A$ の形を使える',
   steps: [
-    { t: 'say', text: 'C から辺 AB に垂線を下ろす。すると直角三角形が2つ。\nたて ＝ $b\\S A$、よこ ＝ $c-b\\C A$。\nあとは**三平方**で $a^2$ を計算するだけ（プリントの証明）。',
+    { t: 'say', text: '余弦定理は「**三平方の定理の進化版**」。\n直角じゃない三角形でも、辺の長さが計算できる。\nどうやって作るか、プリントの証明を見てみよう。',
       viz: LE.figs.cosProof() },
-    { t: 'order', viz: LE.figs.cosProof(), text: '証明の流れを正しい順に並べよう。',
-      items: ['$a^2=(b\\sin A)^2+(c-b\\cos A)^2$', '$=b^2\\sin^2A+c^2-2bc\\cos A+b^2\\cos^2A$', '$=b^2(\\sin^2A+\\cos^2A)+c^2-2bc\\cos A$', '$=b^2+c^2-2bc\\cos A$'] },
+    { t: 'show', frames: [
+      { say: 'C から辺 AB に**垂線**を下ろすと、直角三角形が2つできる。\nたて ＝ $b\\sin A$、左の部分 ＝ $b\\cos A$、右の部分 ＝ $c-b\\cos A$。', viz: LE.figs.cosProof() },
+      { say: '右の直角三角形で**三平方**：', viz: '<div class="fx-big">$$a^2=(b\\sin A)^2+(c-b\\cos A)^2$$</div>' },
+      { say: 'かっこを開くと…', viz: '<div class="fx-big">$$a^2=b^2\\sin^2A+c^2-2bc\\cos A+b^2\\cos^2A$$</div>' },
+      { say: '$\\sin^2A+\\cos^2A=1$ でまとめると、完成！', viz: '<div class="fx-big">$$a^2=b^2+c^2-2bc\\C A$$</div>' }
+    ] },
     { t: 'widget', w: 'cosine', text: '角 A を動かして、$a^2$ と $b^2+c^2$ のずれ（補正）を見よう。' },
     { t: 'build', viz: LE.figs.tri({ A: 'A' }), text: '余弦定理を組み立てよう。', pre: 'a^2=', ans: ['b^2', '+', 'c^2', '-', '2bc', '\\C A'], extra: ['+', '\\S A', 'a^2'],
       ok: 'フック：「**三平方＋補正（−2bc cos A）**」。A＝90°なら補正が消えて三平方。' },
+    { t: 'say', text: 'この式を $\\cos A=$ の形に変形すると、**3辺から角**が分かる形になる。\n$$\\C A=\\dfrac{b^2+c^2-a^2}{2bc}$$\n分子は「両どなりの2乗の和 − 向かいの2乗」。', viz: LE.figs.tri({ A: 'A' }) },
     { t: 'build', viz: LE.figs.tri({ A: 'A' }), text: 'cos A を求める形に変形すると…', pre: '\\C A=', ans: ['\\dfrac{b^2+c^2-a^2}{2bc}'], extra: ['\\dfrac{a^2-b^2-c^2}{2bc}', '\\dfrac{b^2+c^2-a^2}{bc}'],
       hint: '分子は「両どなりの2乗の和 − 向かいの2乗」、分母は 2bc。' },
     { t: 'num', viz: LE.figs.tri({ A: '60°', a: '?', b: '3', c: '5' }), text: '$b=3,\\ c=5,\\ A=60^\\circ$ のとき、$a^2$ は？', answer: 19, solve: '$9+25-2\\cdot3\\cdot5\\cdot\\dfrac12=34-15=19$（$a=\\sqrt{19}$）' },

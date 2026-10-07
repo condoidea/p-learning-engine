@@ -125,5 +125,12 @@ body { font-family: var(--f-body); background: radial-gradient(ellipse at 30% 20
 .wg-goal .katex { color: inherit; }
 
 /* 図の文字はエンジン側の汎用クラス（.s .t .h など）の影響を受けないように固定 */
-.fg text { font-family: var(--f-body) !important; font-weight: 700 !important; font-size: 14px; letter-spacing: 0 !important; }
+.fg text { font-family: var(--f-body) !important; font-weight: 700 !important; font-size: 14px; letter-spacing: 0 !important; stroke: none !important; }
 .fg text.sm { font-size: 11px !important; }
+.gw-side { cursor: pointer; pointer-events: stroke; }
+
+/* 見せて教える：大きく見せる式 */
+.fx-big { width: 100%; padding: 18px 8px; border-radius: 14px; background: rgba(8,10,26,.7); border: 1px solid var(--line); text-align: center; font-size: 19px; overflow-x: auto; }
+.fx-big .katex-display { margin: 0; }
+.sh-stage .fg { max-width: 300px; }
+.bubble .katex-display { margin: 6px 0; }

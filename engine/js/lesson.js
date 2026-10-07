@@ -329,7 +329,7 @@
     progress();
     setReady(false);
     var html = '<div class="ls-step t-' + s.t + '">';
-    var bubble = s.t === 'say' ? s.text : s.t === 'term' ? 'あたらしい用語だよ！' : s.t === 'recap' ? 'ここまでのまとめ！' : s.text || s.q;
+    var bubble = s.t === 'show' ? (s.frames[0].say || '') : s.t === 'say' ? s.text : s.t === 'term' ? 'あたらしい用語だよ！' : s.t === 'recap' ? 'ここまでのまとめ！' : s.text || s.q;
     if (s.t !== 'quiz') html += '<div class="ls-talk">' + pico(s.t === 'recap' ? 'happy' : '') + '<div class="bubble' + (/^[*\s]*[0-9０-９]/.test(bubble || '') ? ' num-start' : '') + '">' + fmt(bubble) + '</div></div>';
     html += '<div class="ls-body"></div></div>';
     st.innerHTML = html;
@@ -816,6 +816,49 @@
         }
       });
     });
+  };
+
+  /* =========================================================
+   * 見せて教える（アニメーション解説）：コマ送りで、キャラが一言ずつ話し、図がペンで描かれていく
+   *  {t:'show', frames:[{say:'…', viz:'<svg …>'}, …]}
+   *  インプット用（採点しない）。最後のコマまで見ると「つづける」が押せる
+   * ========================================================= */
+  STEP.show = function (s, body) {
+    var k = -1, n = s.frames.length;
+    body.innerHTML = '<div class="sh"><div class="sh-stage vz"></div><div class="sh-nav"><div class="sh-dots">' +
+      s.frames.map(function () { return '<i></i>'; }).join('') + '</div><button class="btn-primary sh-next">次へ ▶</button><button class="btn-ghost sh-again">↺ もう一度</button></div></div>';
+    var stg = $('.sh-stage', body), nx = $('.sh-next', body), ag = $('.sh-again', body), bub = $('#lsStage .bubble');
+    ag.style.display = 'none';
+    function frame(i) {
+      k = i;
+      var f = s.frames[i];
+      if (bub && f.say != null) {
+        bub.innerHTML = fmt(f.say);
+        gsap.fromTo(bub, { opacity: 0.25, y: 6 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' });
+      }
+      if (f.viz != null) {
+        var old = stg.firstElementChild;
+        var nw = document.createElement('div'); nw.className = 'sh-frame'; nw.innerHTML = mviz(f.viz);
+        if (old) gsap.to(old, { opacity: 0, duration: 0.2, onComplete: function () { old.remove(); } });
+        stg.appendChild(nw);
+        /* 図の線はペンで描くように、文字はふわっと */
+        var svg = $('svg', nw);
+        if (svg && !f.still) {
+          inkDraw(svg);
+          gsap.from($$('text', svg), { opacity: 0, duration: 0.4, stagger: 0.04, delay: 0.35 });
+        }
+        gsap.from($$('.vz-row > *, .vz-col > *, .bx, .note', nw), { opacity: 0, y: 10, duration: 0.35, stagger: 0.08, delay: 0.2, clearProps: 'all' });
+      }
+      $$('.sh-dots i', body).forEach(function (d, j) { d.classList.toggle('on', j <= i); });
+      Sfx.tap();
+      if (i >= n - 1) {
+        nx.style.display = 'none'; ag.style.display = '';
+        if (!P.ready) setReady(true);
+      }
+    }
+    nx.addEventListener('click', function () { if (k < n - 1) frame(k + 1); });
+    ag.addEventListener('click', function () { nx.style.display = ''; ag.style.display = 'none'; frame(0); });
+    frame(0);
   };
 
   STEP.match = function (s, body) {

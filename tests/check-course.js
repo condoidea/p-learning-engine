@@ -35,7 +35,7 @@ Core.load();
 
 const errors = [];
 const err = (m) => errors.push(m);
-const STEP_TYPES = ['say', 'term', 'quiz', 'bits', 'gate', 'order', 'match', 'num', 'steps', 'trace', 'stack', 'timeline', 'decide', 'advise', 'route', 'fill', 'like', 'widget', 'build', 'recap'];
+const STEP_TYPES = ['say', 'term', 'quiz', 'bits', 'gate', 'order', 'match', 'num', 'steps', 'trace', 'stack', 'timeline', 'decide', 'advise', 'route', 'fill', 'like', 'widget', 'build', 'show', 'recap'];
 
 /* ---- 問題 ---- */
 const ids = new Set();
@@ -70,6 +70,7 @@ for (const [lid, L] of Object.entries(LE.lessonDefs)) {
     if (s.t === 'match' && new Set(s.pairs.map(p => p[1])).size !== s.pairs.length) err('match の右側が重複: ' + at);
     if (s.t === 'trace') { const n = s.code.split('\n').length; s.rows.forEach(r => { if (r.l >= n) err('trace の行番号が範囲外: ' + at); }); }
     if (s.t === 'num' && typeof s.answer !== 'number') err('num の answer が数値でない: ' + at);
+    if (s.t === 'show' && (!s.frames || !s.frames.length)) err('show にコマ（frames）がない: ' + at);
     if (s.t === 'widget' && !(LE.widgets && LE.widgets[s.w])) err('widget が見つからない: ' + s.w + ' @' + at);
     if (s.t === 'build' && (!s.ans || !s.ans.length)) err('build に答え（ans）がない: ' + at);
     if (s.t === 'decide' && (!s.o || s.o.filter(o => o.hist).length !== 1)) err('decide は史実の選択肢（hist）がちょうど1つ必要: ' + at);

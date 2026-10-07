@@ -17,15 +17,45 @@
   function sq(p, k) { return '<path class="k thin" d="M' + (p[0] - 10) + ',' + p[1] + ' v-10 h10"/>'; }
 
   LE.figs = {
-    /* 直角三角形（θは左下、直角は右下）。o = {a,b,c,th,hl:'a'|'b'|'c'|'ac'…} */
+    /* 直角三角形（θは左下、直角は右下）。o = {a,b,c,th,hl:'a'|'b'|'c'|'ac'…, deg:角度（図の形をその角度にする）} */
     rt: function (o) {
       o = o || {};
-      var A = [30, 125], B = [190, 125], C = [190, 30], hl = o.hl || '';
+      var deg = o.deg || 30.7, r = Math.PI / 180, hl = o.hl || '';
+      var Lh = Math.min(165 / Math.cos(deg * r), 100 / Math.sin(deg * r));
+      var A = [24, 125], B = [+(24 + Lh * Math.cos(deg * r)).toFixed(1), 125], C = [B[0], +(125 - Lh * Math.sin(deg * r)).toFixed(1)];
+      var mc = [(A[0] + C[0]) / 2 - 10, (A[1] + C[1]) / 2 - 8];
       return S(220, 150,
         poly([A, B, C], 'k fillw') + sq(B) +
         L(B, C, hl.indexOf('a') >= 0 ? 's thick' : 'k') + L(A, B, hl.indexOf('b') >= 0 ? 'c thick' : 'k') + L(A, C, hl.indexOf('c') >= 0 ? 'h thick' : 'k') +
-        arc(A, 24, 0, 30.7, 'k thin') + T([66, 117], o.th || 'θ') +
-        T([204, 80], o.a == null ? 'a' : o.a, hl.indexOf('a') >= 0 ? 'tx s' : 'tx') + T([110, 142], o.b == null ? 'b' : o.b, hl.indexOf('b') >= 0 ? 'tx c' : 'tx') + T([98, 68], o.c == null ? 'c' : o.c, hl.indexOf('c') >= 0 ? 'tx h' : 'tx'));
+        arc(A, 24, 0, deg, 'k thin') + T([A[0] + 38 * Math.cos(deg / 2 * r), A[1] - 34 * Math.sin(deg / 2 * r) + 2], o.th || 'θ', 'tx', o.th && o.th.length > 2 ? 11 : 0) +
+        T([B[0] + 14, (B[1] + C[1]) / 2], o.a == null ? 'a' : o.a, hl.indexOf('a') >= 0 ? 'tx s' : 'tx') + T([(A[0] + B[0]) / 2, 142], o.b == null ? 'b' : o.b, hl.indexOf('b') >= 0 ? 'tx c' : 'tx') + T(mc, o.c == null ? 'c' : o.c, hl.indexOf('c') >= 0 ? 'tx h' : 'tx'));
+    },
+    /* 正三角形を半分に切る（30°・60°の定規ができるまで）。stage 0〜3 */
+    eqCut: function (stage) {
+      var A = [110, 14], B = [30, 152], C = [190, 152], M = [110, 152], out = '';
+      if (stage === 0) {
+        out += poly([A, B, C], 'k fillw') + T([60, 78], '2') + T([162, 78], '2') + T([110, 166], '2') +
+          T([110, 40], '60°', 'tx sm') + T([52, 142], '60°', 'tx sm') + T([168, 142], '60°', 'tx sm');
+      } else {
+        out += poly([A, B, M], 'k thin') + poly([A, M, C], 'k fillw') + L(A, M, stage >= 1 ? 'h' : 'k') + '<path class="k thin" d="M' + (M[0] + 10) + ',' + M[1] + ' v-10 h-10"/>';
+        out += T([70, 160], '1', 'tx sm') + T([150, 166], '1') + T([166, 78], '2', 'tx h');
+        out += T([123, 46], '30°', 'tx t sm') + T([172, 142], '60°', 'tx c sm');
+        if (stage === 1) out += T([60, 78], '2', 'tx sm');
+        if (stage >= 2) out += T([96, 96], stage === 2 ? '?' : '√3', stage === 2 ? 'tx h' : 'tx s');
+        if (stage === 3) out += T([52, 40], '?²＋1²＝2²', 'tx sm') + T([52, 58], '→ ?＝√3', 'tx s sm');
+      }
+      return S(220, 175, out);
+    },
+    /* 正方形を対角線で半分に切る（45°の定規ができるまで）。stage 0〜2 */
+    sqCut: function (stage) {
+      var A = [40, 140], B = [160, 140], C = [160, 20], D = [40, 20], out = '';
+      if (stage === 0) out += poly([A, B, C, D], 'k fillw') + L(A, C, 'h') + T([100, 156], '1') + T([174, 80], '1') + T([60, 34], '90°', 'tx sm');
+      else {
+        out += poly([A, C, D], 'k thin') + poly([A, B, C], 'k fillw') + sq(B) + T([100, 156], '1') + T([174, 80], '1') +
+          T([76, 130], '45°', 'tx t sm') + T([150, 46], '45°', 'tx t sm') + T([88, 70], stage === 1 ? '?' : '√2', stage === 1 ? 'tx h' : 'tx s');
+        if (stage === 2) out += T([60, 26], '1²＋1²＝?²', 'tx sm') + T([60, 44], '→ ?＝√2', 'tx s sm');
+      }
+      return S(200, 165, out);
     },
     /* 三角定規の2枚 */
     /* o.blank=true で辺の数字をかくす（思い出す練習用） */

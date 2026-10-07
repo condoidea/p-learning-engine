@@ -263,57 +263,113 @@
   };
 
   /* =========================================================
-   * ruler：三角定規ハント。お題の角を三角定規の中から探してタップ → 辺がひかって値が出る
+   * ruler：三角定規で値を出す
+   *  お題（例：tan 30°）の角を左下に置いた三角定規が出てくる。
+   *  ① 分母になる辺 → ② 分子になる辺 の順にタップ。辺の長さが分数に飛んでいき、値が完成する。
+   *  60° のときは定規がくるっと裏返って、60° が左下に来る（たてとよこが入れかわる）
    * ========================================================= */
-  LE.widgets.ruler = function (api) {
-    var st = stage(api, 340, 210);
-    /* 30-60-90：斜辺2・底辺√3・高さ1 ／ 45-45-90：斜辺√2・1・1 */
-    var u = 62;
-    var T1 = { A: { x: 20, y: 180 }, B: { x: 20 + u * 1.732, y: 180 }, C: { x: 20 + u * 1.732, y: 180 - u } };     // A=30°, C=60°
-    var T2 = { A: { x: 205, y: 180 }, B: { x: 205 + u * 1.6, y: 180 }, C: { x: 205 + u * 1.6, y: 180 - u * 1.6 } }; // A=45°, C=45°
-    function poly(T) { el('polygon', { points: [T.A, T.B, T.C].map(function (p) { return p.x + ',' + p.y; }).join(' '), fill: 'rgba(255,255,255,.05)', stroke: K.dim, 'stroke-width': 2 }, st.svg); el('path', { d: 'M' + (T.B.x - 10) + ',' + T.B.y + ' v-10 h10', fill: 'none', stroke: K.dim }, st.svg); }
-    poly(T1); poly(T2);
-    var sides = {
-      t1h: line(st.svg, T1.A, T1.C, 'transparent', 6), t1b: line(st.svg, T1.A, T1.B, 'transparent', 6), t1v: line(st.svg, T1.B, T1.C, 'transparent', 6),
-      t2h: line(st.svg, T2.A, T2.C, 'transparent', 6), t2b: line(st.svg, T2.A, T2.B, 'transparent', 6), t2v: line(st.svg, T2.B, T2.C, 'transparent', 6)
+  LE.widgets.ruler = function (api, s) {
+    var st = stage(api, 340, 248);
+    var D = {
+      30: { a: '1', b: '√3', c: '2', ta: '1', tb: '\\sqrt3', tc: '2' },
+      45: { a: '1', b: '1', c: '√2', ta: '1', tb: '1', tc: '\\sqrt2' },
+      60: { a: '√3', b: '1', c: '2', ta: '\\sqrt3', tb: '1', tc: '2' }
     };
-    text(st.svg, (T1.A.x + T1.C.x) / 2 - 10, (T1.A.y + T1.C.y) / 2 - 10, '2', K.ink, 15); text(st.svg, (T1.A.x + T1.B.x) / 2, 196, '√3', K.ink, 15); text(st.svg, T1.B.x + 12, (T1.B.y + T1.C.y) / 2, '1', K.ink, 15);
-    text(st.svg, (T2.A.x + T2.C.x) / 2 - 12, (T2.A.y + T2.C.y) / 2 - 8, '√2', K.ink, 15); text(st.svg, (T2.A.x + T2.B.x) / 2, 196, '1', K.ink, 15); text(st.svg, T2.B.x + 12, (T2.B.y + T2.C.y) / 2, '1', K.ink, 15);
-    /* 角のボタン */
-    var corners = [
-      { id: 'a30', p: T1.A, off: [26, -8], deg: 30, opp: 't1v', adj: 't1b', hyp: 't1h', v: { sin: '\\dfrac{1}{2}', cos: '\\dfrac{\\sqrt3}{2}', tan: '\\dfrac{1}{\\sqrt3}' } },
-      { id: 'a60', p: T1.C, off: [-10, 22], deg: 60, opp: 't1b', adj: 't1v', hyp: 't1h', v: { sin: '\\dfrac{\\sqrt3}{2}', cos: '\\dfrac{1}{2}', tan: '\\sqrt3' } },
-      { id: 'a45', p: T2.A, off: [26, -8], deg: 45, opp: 't2v', adj: 't2b', hyp: 't2h', v: { sin: '\\dfrac{1}{\\sqrt2}', cos: '\\dfrac{1}{\\sqrt2}', tan: '1' } }
-    ];
-    var Q = [['cos', 60], ['sin', 30], ['tan', 45], ['sin', 60], ['tan', 30]];
-    var qi = 0, wrongs = 0;
-    corners.forEach(function (c) {
-      var g = el('g', { class: 'gw-corner' }, st.svg);
-      var hit = el('circle', { cx: c.p.x + c.off[0], cy: c.p.y + c.off[1], r: 20, fill: 'rgba(255,255,255,.06)', stroke: K.dim, 'stroke-dasharray': '3 3' }, g);
-      text(g, c.p.x + c.off[0], c.p.y + c.off[1], c.deg + '°', K.ink, 13);
-      gsap.to(hit, { attr: { r: 23 }, duration: 1, repeat: -1, yoyo: true, ease: 'sine.inOut' });
-      g.addEventListener('click', function () { tap(c, hit); });
-    });
-    function ask() { if (qi >= Q.length) return; var q = Q[qi]; api.goal('お題：$\\' + (q[0] === 'sin' ? 'S' : q[0] === 'cos' ? 'C' : 'T') + ' ' + q[1] + '^\\circ$ の角はどこ？ タップしよう　<small>(' + (qi + 1) + '/' + Q.length + ')</small>'); }
-    function tap(c, hit) {
-      if (api.isDone()) return;
-      var q = Q[qi];
-      if (c.deg !== q[1]) { wrongs++; gsap.fromTo(hit, { attr: { fill: 'rgba(255,80,110,.5)' } }, { attr: { fill: 'rgba(255,255,255,.06)' }, duration: 0.6 }); api.ng('その角は ' + c.deg + '°。お題は ' + q[1] + '° だよ。'); return; }
-      Object.keys(sides).forEach(function (k) { set(sides[k], { stroke: 'transparent' }); });
-      var fn = q[0], col = K[fn];
-      var top = fn === 'cos' ? c.adj : c.opp, bot = fn === 'tan' ? c.adj : c.hyp;
-      set(sides[bot], { stroke: col, opacity: 0.45 }); set(sides[top], { stroke: col, opacity: 1 });
-      [sides[top], sides[bot]].forEach(function (L) { gsap.fromTo(L, { attr: { 'stroke-width': 12 } }, { attr: { 'stroke-width': 6 }, duration: 0.5, ease: 'back.out(2)' }); });
-      readout(api, st, '$\\' + (fn === 'sin' ? 'S' : fn === 'cos' ? 'C' : 'T') + ' ' + q[1] + '^\\circ = ' + c.v[fn] + '$　<small>' + (fn === 'tan' ? '底辺分の高さ' : fn === 'sin' ? '斜辺分の高さ' : '斜辺分の底辺') + '（明るい辺が分子）</small>');
-      gsap.fromTo(st.read, { scale: 0.85 }, { scale: 1, duration: 0.4, ease: 'back.out(2.5)' });
-      api.ding(qi + 1); yay(st, 'ナイス！');
-      qi++;
-      if (qi >= Q.length) setTimeout(function () { api.ok('三角定規の 1:2:√3 と 1:1:√2 さえ描ければ、表を丸暗記しなくても値が出せる！'); }, 600);
-      else setTimeout(ask, 900);
+    var VAL = { sin30: '\\dfrac12', cos30: '\\dfrac{\\sqrt3}{2}', tan30: '\\dfrac{1}{\\sqrt3}', sin45: '\\dfrac{1}{\\sqrt2}', cos45: '\\dfrac{1}{\\sqrt2}', tan45: '1',
+      sin60: '\\dfrac{\\sqrt3}{2}', cos60: '\\dfrac12', tan60: '\\sqrt3' };
+    var ROLE = { sin: { den: 'c', num: 'a' }, cos: { den: 'c', num: 'b' }, tan: { den: 'b', num: 'a' } };
+    var WORD = { a: 'たて', b: 'よこ', c: '斜辺' };
+    var RULE = { sin: '斜辺分のたて', cos: '斜辺分のよこ', tan: 'よこ分のたて' };
+    var Q = s.q || [['sin', 30], ['cos', 30], ['tan', 30], ['sin', 60], ['cos', 60], ['tan', 45]];
+    var MAC = { sin: '\\S', cos: '\\C', tan: '\\T' };
+    var tri = el('g', {}, st.svg), fl = el('g', {}, st.svg);
+    /* 右側：分数の置き場 */
+    var fx = 296;
+    var fName = text(st.svg, fx, 34, '', K.ink, 15, { 'font-style': 'italic' });
+    var fBar = line(st.svg, { x: fx, y: 117 }, { x: fx, y: 117 }, K.ink, 2.5);
+    el('rect', { x: fx - 20, y: 70, width: 40, height: 36, rx: 8, fill: 'none', stroke: K.dim, 'stroke-dasharray': '4 4' }, st.svg);
+    el('rect', { x: fx - 20, y: 128, width: 40, height: 36, rx: 8, fill: 'none', stroke: K.dim, 'stroke-dasharray': '4 4' }, st.svg);
+    text(st.svg, fx, 60, '② 分子', K.dim, 10); text(st.svg, fx, 176, '① 分母', K.dim, 10);
+    var qi = 0, phase = 'den', cur = null, busy = false, prevDeg = null;
+    function geo(deg) {
+      var r = deg * D2R, A = { x: 22, y: 200 }, Lh = Math.min(200 / Math.cos(r), 160 / Math.sin(r));
+      var B = { x: A.x + Lh * Math.cos(r), y: A.y }, C = { x: B.x, y: A.y - Lh * Math.sin(r) };
+      return { A: A, B: B, C: C };
     }
-    readout(api, st, '三角定規の辺の比：<b>1 : 2 : √3</b>（30°・60°）と <b>1 : 1 : √2</b>（45°）');
-    ask();
-    return { solve: function () { while (qi < Q.length) { var q = Q[qi]; var c = corners.find(function (x) { return x.deg === q[1]; }); tap(c, el('circle')); } } };
+    function setup() {
+      var q = Q[qi], fn = q[0], deg = q[1], d = D[deg], G = geo(deg);
+      tri.innerHTML = ''; fl.innerHTML = '';
+      set(fName, { fill: K[fn] }); fName.textContent = fn + ' ' + deg + '° =';
+      set(fBar, { x1: fx, x2: fx, stroke: K[fn] });
+      el('polygon', { points: [G.A, G.B, G.C].map(function (p) { return p.x.toFixed(1) + ',' + p.y.toFixed(1); }).join(' '), fill: 'rgba(255,255,255,.05)' }, tri);
+      el('path', { d: 'M' + (G.B.x - 11) + ',' + G.B.y + ' v-11 h11', fill: 'none', stroke: K.dim, 'stroke-width': 1.5 }, tri);
+      el('path', { d: arcPath(G.A, G.B, G.C, 30), fill: 'none', stroke: K[fn], 'stroke-width': 2.5 }, tri);
+      text(tri, G.A.x + 48 * Math.cos(deg / 2 * D2R), G.A.y - 44 * Math.sin(deg / 2 * D2R), deg + '°', K[fn], 14);
+      var sides = { a: [G.B, G.C], b: [G.A, G.B], c: [G.A, G.C] };
+      var labPos = {
+        a: { x: G.B.x + 16, y: (G.B.y + G.C.y) / 2 }, b: { x: (G.A.x + G.B.x) / 2, y: G.A.y + 17 },
+        c: { x: (G.A.x + G.C.x) / 2 - 16 * Math.sin(deg * D2R), y: (G.A.y + G.C.y) / 2 - 16 * Math.cos(deg * D2R) }
+      };
+      cur = { fn: fn, deg: deg, d: d, vis: {}, lab: {}, pos: labPos };
+      ['a', 'b', 'c'].forEach(function (k) {
+        var sd = sides[k];
+        cur.vis[k] = line(tri, sd[0], sd[1], 'rgba(232,238,255,.75)', 3);
+        cur.lab[k] = text(tri, labPos[k].x, labPos[k].y, d[k], K.ink, 16);
+        text(tri, labPos[k].x + (k === 'a' ? 0 : 0), labPos[k].y + (k === 'b' ? 15 : 15), WORD[k], K.dim, 9);
+        var hit = line(tri, sd[0], sd[1], 'transparent', 28, { class: 'gw-side' });
+        hit.addEventListener('click', function () { tap(k); });
+      });
+      phase = 'den';
+      api.goal('お題 $' + MAC[fn] + ' ' + deg + '^\\circ$：まず<b>分母</b>になる辺をタップ　<small>(' + (qi + 1) + '/' + Q.length + ')</small>');
+      /* 登場：60° は「裏返し」て出てくる（たてとよこが入れかわる） */
+      if (prevDeg !== null && prevDeg !== deg && (deg === 60 || prevDeg === 60)) {
+        gsap.fromTo(tri, { scaleX: -0.1, opacity: 0.2, transformOrigin: '50% 50%' }, { scaleX: 1, opacity: 1, duration: 0.7, ease: 'back.out(1.6)' });
+        readout(api, st, deg === 60 ? '60° を左下に置くと、<b>たて √3・よこ 1</b> に入れかわる！（斜辺は 2 のまま）' : '30° を左下に戻すと、たて 1・よこ √3。');
+      } else {
+        gsap.fromTo(tri, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out' });
+        if (prevDeg === null) readout(api, st, '30°・60° の定規は <b>1 : 2 : √3</b>、45° の定規は <b>1 : 1 : √2</b>。<br><small>sin＝斜辺分のたて　cos＝斜辺分のよこ　tan＝よこ分のたて</small>');
+      }
+      prevDeg = deg;
+    }
+    function fly(k, to) {
+      var from = cur.pos[k], t = text(fl, from.x, from.y, cur.d[k], K[cur.fn], 19), o = { x: from.x, y: from.y };
+      gsap.to(o, { x: to.x, y: to.y, duration: 0.55, ease: 'back.out(1.7)', onUpdate: function () { set(t, { x: o.x, y: o.y }); } });
+    }
+    function tap(k) {
+      if (busy || api.isDone() || !cur) return;
+      var want = ROLE[cur.fn][phase];
+      if (k !== want) {
+        gsap.fromTo(cur.vis[k], { attr: { stroke: '#ff5470' } }, { attr: { stroke: 'rgba(232,238,255,.75)' }, duration: 0.7 });
+        api.ng(cur.fn + ' は「' + RULE[cur.fn] + '」。' + (phase === 'den' ? '分母' : '分子') + 'は ' + WORD[want] + ' の辺だよ。');
+        return;
+      }
+      set(cur.vis[k], { stroke: K[cur.fn], 'stroke-width': phase === 'den' ? 4 : 6, opacity: phase === 'den' ? 0.6 : 1 });
+      gsap.fromTo(cur.vis[k], { attr: { 'stroke-width': 12 } }, { attr: { 'stroke-width': phase === 'den' ? 4 : 6 }, duration: 0.45, ease: 'back.out(2)' });
+      set(cur.lab[k], { fill: K[cur.fn] });
+      fly(k, phase === 'den' ? { x: fx, y: 146 } : { x: fx, y: 88 });
+      api.tick();
+      if (phase === 'den') {
+        phase = 'num';
+        api.goal('お題 $' + MAC[cur.fn] + ' ' + cur.deg + '^\\circ$：次は<b>分子</b>の辺をタップ　<small>(' + (qi + 1) + '/' + Q.length + ')</small>');
+        return;
+      }
+      busy = true;
+      gsap.to(fBar, { attr: { x1: fx - 22, x2: fx + 22 }, duration: 0.3, delay: 0.35, ease: 'power2.out' });
+      var key = cur.fn + cur.deg, d = cur.d, num = ROLE[cur.fn].num, den = ROLE[cur.fn].den;
+      setTimeout(function () {
+        readout(api, st, '$' + MAC[cur.fn] + ' ' + cur.deg + '^\\circ=\\dfrac{' + d['t' + num] + '}{' + d['t' + den] + '}' + (('\\dfrac{' + d['t' + num] + '}{' + d['t' + den] + '}').replace(/[{}]/g, '') === VAL[key].replace(/[{}]/g, '') ? '' : '=' + VAL[key]) + '$　<small>' + WORD[den] + ' ' + d[den] + ' 分の ' + WORD[num] + ' ' + d[num] + '</small>');
+        gsap.fromTo(st.read, { scale: 0.88 }, { scale: 1, duration: 0.45, ease: 'back.out(2.5)' });
+        api.ding(qi + 1); yay(st, ['ナイス！', 'その通り！', 'カンペキ！'][qi % 3]);
+        var r = st.wrap.getBoundingClientRect(); api.burst(r.left + r.width * 0.8, r.top + r.height * 0.35, 18);
+      }, 600);
+      setTimeout(function () {
+        busy = false; qi++;
+        if (qi >= Q.length) api.ok('三角定規の 1:2:√3 と 1:1:√2 さえ描ければ、表を丸暗記しなくても値が出せる！');
+        else setup();
+      }, 2300);
+    }
+    setup();
+    return { solve: function () { qi = Q.length; api.ok(); } };
   };
 
   /* =========================================================

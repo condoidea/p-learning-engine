@@ -195,3 +195,15 @@ html.scene-map #bg3d { display: none; }
 .lk-row.open .lk-b em { display: inline; }
 .lk-row.open { border-color: color-mix(in srgb, var(--gold) 50%, transparent); }
 .lk-note { margin: 4px 0 0; font-size: 14px; line-height: 1.7; color: var(--muted); }
+
+/* =========================================================
+ * 見せて教える（show）
+ * ========================================================= */
+.sh { display: flex; flex-direction: column; gap: 10px; }
+.sh-stage { position: relative; min-height: 180px; display: grid; }
+.sh-stage > .sh-frame { grid-area: 1 / 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.sh-nav { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.sh-dots { display: flex; gap: 6px; }
+.sh-dots i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.18); transition: background .3s, transform .3s; }
+.sh-dots i.on { background: var(--accent); transform: scale(1.15); }
+.sh-next, .sh-again { padding: 10px 22px; }
