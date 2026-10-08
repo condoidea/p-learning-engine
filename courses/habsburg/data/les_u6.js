@@ -121,7 +121,7 @@ LE.defLesson('u6', {
   id: 'u6-4', place: 'venezia', year: '1495年', title: 'ヴェネツィア同盟：フランス包囲網', goal: '神聖同盟（ヴェネツィア同盟）とフォルノーヴォの戦いの意味がわかる',
   steps: [
     { t: 'say', text: '**1495年3月**、**ヴェネツィア**で反フランスの大同盟が結ばれる。\nメンバーは、**教皇アレクサンデル6世**、**ヴェネツィア**、**ミラノ**、**マクシミリアン**、そして**スペイン**。\n「ヴェネツィア同盟」または「神聖同盟」と呼ばれる。',
-      viz: '<div class="vz-row"><div class="bx c1 sm">教皇</div><div class="bx c3 sm">ヴェネツィア</div><div class="bx c2 sm">ミラノ</div><div class="bx fill sm">マクシミリアン</div><div class="bx c4 sm">スペイン</div></div><div class="vz-row"><span class="ar v">↓</span></div><div class="vz-row"><div class="bx c5">フランス王シャルル8世を包囲</div></div>' },
+      viz: '<div class="vz-row"><div class="bx c1 sm">教皇</div><div class="bx c3 sm">ヴェネツィア</div><div class="bx c2 sm">ミラノ</div><div class="bx fill sm">マクシミリアン</div><div class="bx c4 sm">スペイン</div></div><div class="vz-row"><span class="ar">↓</span></div><div class="vz-row"><div class="bx c5">フランス王シャルル8世を包囲</div></div>' },
     { t: 'advise', to: 'ローマ王マクシミリアン', ico: '🦁', text: 'あなたはヴェネツィアの外交官。マクシミリアンを反フランス同盟に誘おう。',
       need: 2, win: '同盟成立', o: [
         { t: 'フランスがイタリアを支配すれば、帝国の一部である北イタリアも危ない', ok: true, r: '「帝国の権利が侵されるのは見過ごせぬ」' },

@@ -742,6 +742,52 @@
    * 旅（地図の上で駒を進める）：次の目的地をタップすると駒が進み、記録が残る
    *  {t:'route', piece:'♚', text, stops:[{p:'frankfurt', t:'…', hint}], decoys:['paris']}
    * ========================================================= */
+  /* 地名ラベルが重ならないように置く（点の位置は動かさない）。
+   *  右・左・下・上・斜めの候補から、ほかのラベルや点との重なり、地図からのはみ出しがいちばん少ない場所を選ぶ */
+  function placeLabels(pins, R, FS) {
+    if (!pins.length) return;
+    var boxes = [], dots = pins.map(function (g) { var t = g.transform.baseVal.consolidate().matrix; return { x: t.e, y: t.f }; });
+    var hit = function (a, b) { return a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h; };
+    // 見えている地図の範囲（画面の枠を地図の座標に直す）
+    var view = null, layer = pins[0].parentNode, frame = layer.closest ? layer.closest('.rt-map') : null;
+    try {
+      var m = layer.getScreenCTM().inverse(), fr = frame.getBoundingClientRect(), svg = layer.ownerSVGElement;
+      var p1 = svg.createSVGPoint(), p2 = svg.createSVGPoint();
+      p1.x = fr.left; p1.y = fr.top; p2.x = fr.right; p2.y = fr.bottom;
+      p1 = p1.matrixTransform(m); p2 = p2.matrixTransform(m);
+      view = { x: p1.x + R, y: p1.y + R, w: p2.x - p1.x - R * 2, h: p2.y - p1.y - R * 2 };
+    } catch (e) { view = null; }
+    var outside = function (b) { return view ? Math.max(0, view.x - b.x) + Math.max(0, b.x + b.w - view.x - view.w) + Math.max(0, view.y - b.y) + Math.max(0, b.y + b.h - view.y - view.h) : 0; };
+    pins.forEach(function (g, n) {
+      var tx = g.querySelector('text'); if (!tx) return;
+      var w, h = FS * 1.1;
+      try { w = tx.getComputedTextLength(); } catch (e) { w = 0; }
+      if (!w) w = FS * tx.textContent.length;
+      var d = dots[n], up = -R * 1.6, dn = R * 1.4 + FS * 0.9, mid = FS * 0.35;
+      var cand = [
+        { cls: '', x: R * 1.6, y: mid, bx: R * 1.6 },
+        { cls: 'lb-l', x: -R * 1.6, y: mid, bx: -R * 1.6 - w },
+        { cls: 'lb-c', x: 0, y: dn, bx: -w / 2 },
+        { cls: 'lb-c', x: 0, y: up, bx: -w / 2 },
+        { cls: '', x: R, y: dn, bx: R },
+        { cls: '', x: R, y: up, bx: R },
+        { cls: 'lb-l', x: -R, y: dn, bx: -R - w },
+        { cls: 'lb-l', x: -R, y: up, bx: -R - w }
+      ];
+      var best = null;
+      cand.forEach(function (c, i) {
+        var box = { x: d.x + c.bx, y: d.y + c.y - h * 0.8, w: w, h: h };
+        var bad = boxes.filter(function (b) { return hit(box, b); }).length * 100 +
+          dots.filter(function (o, k) { return k !== n && hit(box, { x: o.x - R, y: o.y - R, w: R * 2, h: R * 2 }); }).length * 60 +
+          outside(box) / FS * 40 + i;   // 同じくらいなら、右 → 左 → 下 → 上 の順に好む
+        if (!best || bad < best.bad) best = { c: c, box: box, bad: bad };
+      });
+      tx.setAttribute('x', best.c.x.toFixed(2)); tx.setAttribute('y', best.c.y.toFixed(2));
+      tx.classList.remove('lb-l', 'lb-c');
+      if (best.c.cls) tx.classList.add(best.c.cls);
+      boxes.push(best.box);
+    });
+  }
   STEP.route = function (s, body) {
     if (!window.LEMap) { body.innerHTML = '<p>（地図データがありません）</p>'; setReady(true); return; }
     var ids = s.stops.map(function (x) { return x.p; }).concat(s.decoys || []);
@@ -762,7 +808,8 @@
       '<g class="rt-piece" transform="translate(' + c0[0].toFixed(2) + ',' + c0[1].toFixed(2) + ')"><circle r="' + (R * 2.3).toFixed(2) + '"/><text y="' + (R * 1.15).toFixed(2) + '" font-size="' + (R * 3.4).toFixed(2) + '">' + (s.piece || '♚') + '</text></g>';
     body.innerHTML = '<div class="route"><div class="rt-map">' + LEMap.svg({ center: center, span: span, extra: extra }) + '</div>' +
       '<ol class="rt-log"><li><b>' + esc(LEMap.name(s.stops[0].p)) + '</b>' + fmt(s.stops[0].t || '') + '</li></ol>' +
-      '<p class="bits-goal">🎯 ' + esc(s.goal || '次の目的地を地図でタップ') + '</p></div>';
+      '<p class="bits-goal">🎯 ' + esc(s.goal || '次の目的地を地図でタップ') + '<small class="rt-how">地図の地名をタップすると、駒（' + esc(s.piece || '♚') + '）がそこへ進むよ</small></p></div>';
+    placeLabels($$('.rt-pin', body), R, FS);
     var trail = $('.rt-trail', body), piece = $('.rt-piece', body), log = $('.rt-log', body);
     var k = 1, miss = 0, pos = { x: c0[0], y: c0[1] }, moving = false;
     $$('.rt-pin', body).forEach(function (g) {

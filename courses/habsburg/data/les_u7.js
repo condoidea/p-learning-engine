@@ -247,7 +247,7 @@ LE.defLesson('u7', {
       why: ['正解。思いがけない死が続いた結果だった。', '戦争ではない。', 'フアナは次女。長女はイサベル。', '教皇の指名ではない。'] },
     { t: 'say', art: 'cradle', place: 'gent', text: 'そして**1500年2月24日**。フランドルの都市**ヘント**で、フィリップとフアナに男の子が生まれた。\n名前は**カール**。曾祖父シャルル突進公（＝カール）にちなんだ名前だ。\nヘントの街は、祝いの鐘とかがり火に包まれた。' },
     { t: 'fill', text: 'この赤ちゃんが受け継ぐかもしれないものを整理しよう。4人の祖父母から、何がやってくる？',
-      viz: '<div class="vz-col"><div class="vz-row"><div class="bx c1 sm">{{0}}<small>オーストリアとハプスブルク家の領地／帝冠への道</small></div><div class="bx c4 sm">{{1}}<small>ブルゴーニュ公家の遺産：ネーデルラント</small></div></div><div class="vz-row"><div class="bx c3 sm">{{2}}<small>カスティーリャ＋海の向こうの新大陸</small></div><div class="bx c2 sm">{{3}}<small>アラゴン＋ナポリ・シチリア・サルデーニャ</small></div></div><span class="ar v">↓</span><div class="bx fill">赤ちゃんカール（1500年生）</div></div>',
+      viz: '<div class="vz-col"><div class="vz-row"><div class="bx c1 sm">{{0}}<small>オーストリアとハプスブルク家の領地／帝冠への道</small></div><div class="bx c4 sm">{{1}}<small>ブルゴーニュ公家の遺産：ネーデルラント</small></div></div><div class="vz-row"><div class="bx c3 sm">{{2}}<small>カスティーリャ＋海の向こうの新大陸</small></div><div class="bx c2 sm">{{3}}<small>アラゴン＋ナポリ・シチリア・サルデーニャ</small></div></div><span class="ar">↓</span><div class="bx fill">赤ちゃんカール（1500年生）</div></div>',
       a: ['祖父マクシミリアン', '祖母マリー', '祖母イサベル', '祖父フェルナンド'], extra: ['ルイ12世', 'ルドヴィーコ'],
       hints: ['ハプスブルク家の当主で、ローマ王でもある祖父は？', 'ブルゴーニュの女公だった、亡き祖母は？', 'カスティーリャ女王で、コロンブスを援助した祖母は？', 'アラゴン王で、南イタリアにも領地を持つ祖父は？'],
       ok: 'オーストリア、ネーデルラント、スペイン、南イタリア、そして新大陸。4つの家の遺産が、ひとりの赤ちゃんに流れこもうとしていた。' },

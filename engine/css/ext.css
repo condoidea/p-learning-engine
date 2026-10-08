@@ -257,3 +257,10 @@ html.scene-map #bg3d { display: none; }
 .legend b { background: linear-gradient(transparent 60%, color-mix(in srgb, var(--accent) 40%, transparent) 60%); }
 /* 用語カードの「たとえるなら」も覚え方のヒント（💡）として見せる */
 .term-ex > span:first-child::before { content: '💡'; margin-right: 3px; }
+/* 図の縦矢印に言葉をそえるとき（.ar.v は回転するので、文字入りは .ar.vl を使う） */
+.ar.vl { font-size: 13px; transform: none; line-height: 1.5; text-align: center; }
+/* 旅（route）の記録：本文の太字色（朱など）に負けないよう、地名は金で固定 */
+.ls-body .rt-log li b { color: var(--gold) !important; background: none !important; }
+.rt-pin text.lb-l { text-anchor: end; }
+.rt-pin text.lb-c { text-anchor: middle; }
+.rt-how { display: block; margin-top: 2px; font-size: 12px; opacity: .8; }
