@@ -480,7 +480,8 @@
   var STEP = {};
   STEP.say = function (s, body) {
     if (s.viz) body.innerHTML = '<div class="vz vz-anim">' + mviz(s.viz) + '</div>';
-    if (s.ask) { whenTyped(function () { askBlock(body, s.ask, function (r) { revealInto(r, s.reveal, s.rviz); setReady(true); }); }); return; }
+    if (s.ask) { whenTyped(function () { askBlock(body, s.ask, function (r) { revealInto(r, s.reveal, s.rviz); moreInto(r, s.more); setReady(true); }); }); return; }
+    moreInto(body, s.more);
     setReady(true);
   };
   STEP.term = function (s, body) {
@@ -925,8 +926,9 @@
     var W = LE.widgets && LE.widgets[s.w];
     if (!W) { body.innerHTML = '<p>（ウィジェット ' + esc(s.w) + ' がありません）</p>'; setReady(true); return; }
     /* ミッションの文言（図の上）はウィジェットが api.goal で書きかえる */
-    body.innerHTML = '<p class="bits-goal wg-goal">' + (s.goal ? '🎯 ' + fmt(s.goal) : '') + '</p><div class="wg wg-' + esc(s.w) + '"></div>';
+    body.innerHTML = '<p class="bits-goal wg-goal">' + (s.goal ? '🎯 ' + fmt(s.goal) : '') + '</p><div class="wg wg-' + esc(s.w) + '"></div><div class="wg-more"></div>';
     var el = $('.wg', body), miss = 0, done = false;
+    moreInto($('.wg-more', body), s.more);
     var api = {
       el: el, fmt: fmt, tex: tex, esc: esc, html: mviz,   // html：HTML はそのまま、$…$ だけ数式にする
       ok: function (msg, title) { if (done) return; done = true; solved(el, miss === 0, msg || s.ok, title); },
@@ -1025,7 +1027,7 @@
         else nx.style.display = '';
       }
       nx.style.display = 'none';
-      var go = function () { if (f.ask && nw) askBlock(nw, f.ask, function (r) { revealInto(r, f.reveal, f.rviz); fin(); }); else fin(); };
+      var go = function () { if (f.ask && nw) askBlock(nw, f.ask, function (r) { revealInto(r, f.reveal, f.rviz); moreInto(r, f.more); fin(); }); else { if (nw) moreInto(nw, f.more); fin(); } };
       if (typed) typeIn(bub, go); else whenTyped(go);
     }
     nx.addEventListener('click', function () { if (k < n - 1) frame(k + 1); });
@@ -1068,6 +1070,22 @@
       });
     });
     return wrap;
+  }
+  /* 「なぜ？」：飛ばしたくない途中の説明を、見たいときだけ開けるようにする（more: '本文' または {label, text, viz}）
+   *  数学が苦手な子が置いていかれやすい「一足飛び」のところに付ける。本文を長くしすぎずに、段階を省かない */
+  function moreInto(box, more) {
+    if (!more || !box) return;
+    if (typeof more === 'string') more = { text: more };
+    var w = document.createElement('div'); w.className = 'more';
+    w.innerHTML = '<button class="more-btn" type="button">🤔 ' + fmt(more.label || 'なぜ？') + '<i>＋</i></button><div class="more-body" hidden>' +
+      (more.text ? '<div class="more-text">' + fmtG(more.text) + '</div>' : '') + (more.viz ? '<div class="vz">' + mviz(more.viz) + '</div>' : '') + '</div>';
+    box.appendChild(w);
+    var btn = $('.more-btn', w), bd = $('.more-body', w);
+    btn.addEventListener('click', function () {
+      var open = bd.hidden; bd.hidden = !open; w.classList.toggle('open', open);
+      $('i', btn).textContent = open ? '−' : '＋';
+      if (open) { gsap.fromTo(bd, { opacity: 0, y: -6 }, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }); Sfx.tap(); }
+    });
   }
   /* 答えのあとに出す説明（reveal）とおまけの図（rviz） */
   function revealInto(r, html, viz) {

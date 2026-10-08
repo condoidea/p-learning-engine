@@ -5,11 +5,13 @@ LE.defLesson('u4', {
   steps: [
     { t: 'say', text: 'ここからは三角形 ABC。**角 A の向かいの辺を $a$、B の向かいを $b$、C の向かいを $c$ と書く**（数学の共通ルール）。\n面積＝½×底辺×高さ。底辺を $c$ にすると、高さは C から下ろした[[垂線]]。', viz: LE.figs.cosProof({ q: true }),
       ask: { q: '斜辺 $b$、角 $A$ の直角三角形で、高さ（A の向かいの辺）は？', o: ['$b\\S A$', '$b\\C A$', '$\\dfrac{b}{\\S A}$'], why: ['', 'それは となりの辺（よこ）。', '$\\sin A=\\dfrac{向かいの辺}{b}$ だから…'] },
-      reveal: '高さ＝$b\\S A$。だから $S=\\dfrac12bc\\S A$。\n__「2辺と、はさむ角の sin」__', rviz: LE.figs.cosProof() },
+      reveal: '高さ＝$b\\S A$。だから $S=\\dfrac12bc\\S A$。\n__「2辺と、はさむ角の sin」__', rviz: LE.figs.cosProof(),
+      more: { label: 'なぜ高さが $b\\S A$ なの？', text: '左の直角三角形で、$\\S A=\\dfrac{\\text{向かいの辺（高さ）}}{\\text{斜辺 }b}$。\n両辺に $b$ をかけると、高さ ＝ $b\\S A$。\n面積 ＝ $\\dfrac12$ × 底辺 $c$ × 高さ $b\\S A$ ＝ $\\dfrac12bc\\S A$。' } },
     { t: 'widget', w: 'area', text: '辺 b と c はそのまま。角 A を動かして、面積の変化を見よう。' },
     { t: 'say', text: 'もう1つの式。三角形の3辺すべてにふれる**内接円**（半径 $r$）の中心が**内心**＝**各内角の二等分線の交点**。__「ナイ・カク」で内心__。\n内心から3つの三角形に分けると…', viz: LE.figs.incir(),
       ask: { q: '3つの三角形の高さは？', o: ['どれも $r$', 'どれも $R$', 'ばらばら'], why: ['', '$R$ は外接円の半径。', '内心から3辺までの距離は同じ。'] },
-      reveal: '$S=\\dfrac12ar+\\dfrac12br+\\dfrac12cr=\\dfrac r2(a+b+c)$' },
+      reveal: '$S=\\dfrac12ar+\\dfrac12br+\\dfrac12cr=\\dfrac r2(a+b+c)$',
+      more: { label: 'この式をくわしく', text: '内心から3つの頂点に線を引くと、三角形が3つに分かれる。\nそれぞれ、底辺が $a$・$b$・$c$、高さはどれも内接円の半径 $r$（内心から各辺までの距離）。\n面積は $\\dfrac12ar$、$\\dfrac12br$、$\\dfrac12cr$。全部たして、共通の $\\dfrac r2$ でくくると $\\dfrac r2(a+b+c)$。' } },
     { t: 'recap', points: [
       { q: '2辺 $b,\\ c$ と、はさむ角 $A$ から面積は？', a: '$S=\\dfrac12bc\\S A$' },
       { q: '内接円の半径 $r$ と3辺から面積は？', a: '$S=\\dfrac r2(a+b+c)$' },
@@ -55,15 +57,18 @@ LE.defLesson('u4', {
       ask: { q: 'もし $A=90^\\circ$ なら、$a^2$ は？', o: ['$b^2+c^2$', '$b^2-c^2$', '$2bc$'], why: ['', '三平方の定理を思い出そう。', '三平方の定理を思い出そう。'] },
       reveal: '直角じゃないときは、そこに __「補正」__ がつく。プリントの証明で見てみよう。' },
     { t: 'show', frames: [
-      { say: 'C から垂線を下ろすと、高さ ＝ $b\\sin A$、右の部分 ＝ $c-b\\cos A$。右の直角三角形で三平方：', viz: LE.figs.cosProof() },
+      { say: 'C から垂線を下ろすと、高さ ＝ $b\\sin A$、右の部分 ＝ $c-b\\cos A$。右の直角三角形で三平方：', viz: LE.figs.cosProof(),
+        more: { label: 'なぜ $c-b\\cos A$ なの？', text: '左の直角三角形（斜辺 $b$、角 $A$）で、$\\C A=\\dfrac{\\text{よこ}}{b}$ なので、よこ ＝ $b\\cos A$。\n底辺 AB 全体は $c$。そこから左のよこ $b\\cos A$ を引いた残りが、右の部分 $c-b\\cos A$。\n高さも同じように、$\\S A=\\dfrac{\\text{高さ}}{b}$ から 高さ ＝ $b\\sin A$。' } },
       { say: '展開して $\\sin^2A+\\cos^2A=1$ でまとめると…', viz: '<div class="fx-big">$$a^2=(b\\sin A)^2+(c-b\\cos A)^2$$</div>',
         ask: { q: '最後に残る補正の項は？', o: ['$-2bc\\cos A$', '$+2bc\\cos A$', '$-2bc\\sin A$'], why: ['', '$(c-b\\cos A)^2$ を展開すると、マイナスが出る。', 'cos の項だよ。'] },
-        reveal: '$$a^2=b^2+c^2-2bc\\C A$$' }
+        reveal: '$$a^2=b^2+c^2-2bc\\C A$$',
+        more: { label: '展開をくわしく', text: '① $(b\\sin A)^2=b^2\\sin^2A$\n② $(c-b\\cos A)^2=c^2-2bc\\cos A+b^2\\cos^2A$\n①＋② ＝ $b^2\\sin^2A+b^2\\cos^2A+c^2-2bc\\cos A$\n$b^2$ でくくると $b^2(\\sin^2A+\\cos^2A)+c^2-2bc\\cos A$\n$\\sin^2A+\\cos^2A=1$ なので ＝ $b^2+c^2-2bc\\cos A$' } }
     ] },
     { t: 'widget', w: 'cosine', text: '角 A を動かして、補正の部分（シアン）を見よう。' },
     { t: 'say', text: '移項すると、**3辺から角**が分かる形になる。',
       ask: { q: '$\\C A=\\dfrac{\\ ?\\ }{2bc}$ の分子は？', o: ['$b^2+c^2-a^2$', '$a^2-b^2-c^2$', '$a^2+b^2+c^2$'], why: ['', '移項の符号に注意。', '移項すると…？'] },
-      reveal: '$$\\C A=\\dfrac{b^2+c^2-a^2}{2bc}$$' },
+      reveal: '$$\\C A=\\dfrac{b^2+c^2-a^2}{2bc}$$',
+      more: { label: '移項をくわしく', text: '$a^2=b^2+c^2-2bc\\C A$\n$2bc\\C A$ を左へ、$a^2$ を右へ移す（移すと符号が反対）：$2bc\\C A=b^2+c^2-a^2$\n両辺を $2bc$ で割る：$\\C A=\\dfrac{b^2+c^2-a^2}{2bc}$' } },
     { t: 'recap', points: [
       { q: '余弦定理（$a^2$ を $b,\\ c,\\ A$ で表す）は？', a: '$a^2=b^2+c^2-2bc\\C A$' },
       { q: '3辺から $\\C A$ を求める形は？', a: '$\\C A=\\dfrac{b^2+c^2-a^2}{2bc}$' },

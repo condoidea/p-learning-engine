@@ -293,3 +293,11 @@ html { overflow-x: hidden; }
   .vz-tbl th, .vz-tbl td { padding: 5px 6px; }
 }
 .node-disc .nd-no { display: inline-block; white-space: nowrap; }
+/* 「なぜ？」（more）：見たいときだけ開く途中の説明 */
+.more { margin-top: 10px; }
+.more-btn { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 99px; border: 1px dashed color-mix(in srgb, var(--gold) 70%, transparent); background: color-mix(in srgb, var(--gold) 10%, transparent); color: var(--gold); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.more-btn i { font-style: normal; font-size: 16px; line-height: 1; }
+.more.open .more-btn { border-style: solid; }
+.more-body { margin-top: 8px; padding: 12px 14px; border-radius: 12px; background: rgba(8,10,26,.85); border-left: 4px solid var(--gold); line-height: 1.85; font-size: 15px; }
+.more-body .vz { margin-top: 10px; }
+.wg-more:empty { display: none; }

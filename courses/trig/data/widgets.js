@@ -607,6 +607,9 @@
     el('path', { d: 'M' + (O.x + R) + ',' + O.y + ' A' + R + ',' + R + ' 0 0,0 ' + O.x + ',' + (O.y - R), fill: 'none', stroke: K.dim, 'stroke-width': 1.5 }, st.svg);
     var cosL = line(st.svg, O, O, K.cos, 4), sinL = line(st.svg, O, O, K.sin, 4), hyp = line(st.svg, O, O, K.ink, 2.5);
     var t1 = text(st.svg, 0, 0, '1', K.ink, 14);
+    /* 辺の長さ（cos θ・sin θ）と、正方形の面積（cos²θ・sin²θ）を図に書く：「2乗＝その辺でできる正方形の面積」が見えるように */
+    var tc = text(st.svg, 0, 0, 'cos θ', K.cos, 12), ts = text(st.svg, 0, 0, 'sin θ', K.sin, 12);
+    var ac = text(st.svg, 0, 0, '面積 cos²θ', K.cos, 12), as = text(st.svg, 0, 0, 'sin²θ', K.sin, 11);
     var minT = 90, maxT = 0;
     function poly(pts) { return pts.map(function (p) { return p.x.toFixed(1) + ',' + p.y.toFixed(1); }).join(' '); }
     function draw() {
@@ -618,6 +621,9 @@
       var vx = P.x - O.x, vy = P.y - O.y; // 斜辺の外側（左上）に正方形
       set(sq1, { points: poly([O, P, { x: P.x + vy, y: P.y - vx }, { x: O.x + vy, y: O.y - vx }]) });
       mvText(t1, (O.x + P.x) / 2 + 8, (O.y + P.y) / 2 + 10);
+      mvText(tc, (O.x + F.x) / 2, O.y - 6); mvText(ts, F.x - 22, (F.y + P.y) / 2 + 4);
+      mvText(ac, (O.x + F.x) / 2, O.y + R * c / 2 + 4); mvText(as, F.x + R * s / 2, (F.y + P.y) / 2 + 4);
+      set(as, { opacity: s > 0.35 ? 1 : 0 });
       h.pos(P.x, P.y);
       readout(api, st, '$\\textcolor{#38d9ff}{\\cos^2\\theta}+\\textcolor{#ff5fa2}{\\sin^2\\theta}=' + f(c * c, 3) + '+' + f(s * s, 3) + '=\\mathbf{1.000}$');
     }

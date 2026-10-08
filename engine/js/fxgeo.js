@@ -78,6 +78,9 @@
     line(cx - R * 1.35, cy, W, cy, COL.ink, 1);
     line(cx, cy - R * 1.35, cx, cy + R * 1.35, COL.ink, 1);
     ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.strokeStyle = 'rgba(200,220,255,.35)'; ctx.lineWidth = 1.5; ctx.stroke();
+    /* 文字を読む画面（レッスン・問題）では、色のついた三角形・グラフ・点は描かない。
+     *  うすくしても、ピンク・シアンの太線と光は文字や枠の上で目立ってしまう（「飾りが文字をじゃまする」の再発防止） */
+    if (st.mode === 'lesson' || st.mode === 'quiz') { ctx.globalAlpha = 1; return; }
     /* 角θの弧 */
     ctx.beginPath(); ctx.arc(cx, cy, R * 0.18, 0, -st.th, true); ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 1.5; ctx.stroke();
 

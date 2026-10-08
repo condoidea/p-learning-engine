@@ -78,8 +78,13 @@ LE.defLesson('u1', {
       ask: { q: 'P の座標を三角比で書くと？', o: ['$(\\C\\theta,\\ \\S\\theta)$', '$(\\S\\theta,\\ \\C\\theta)$', '$(\\T\\theta,\\ 1)$'], why: ['', 'さっき $\\sin\\theta=y$ だったよね。', 'x は cos、y は sin。'] },
       reveal: 'P$(\\C\\theta,\\ \\S\\theta)$：**cos θ は P の x座標、sin θ は y座標**。__(x, y) と同じアルファベット順（c が先、s があと）__。\n**tan θ ＝ OP の傾き**（$\\dfrac{y}{x}$）。' },
     { t: 'widget', w: 'unit', tasks: ['neg', 't90'], text: '点 P を動かしてみよう。' },
+    { t: 'say', text: 'もうひとつ大事な関係。tan θ は「たて ÷ よこ」＝ $\\dfrac{y}{x}$ だった。\nそして単位円では $y=\\S\\theta$、$x=\\C\\theta$。', viz: LE.figs.unit(50),
+      ask: { q: '$\\T\\theta=\\dfrac{y}{x}$ の $y$ と $x$ を、sin・cos に置きかえると？', o: ['$\\T\\theta=\\dfrac{\\S\\theta}{\\C\\theta}$', '$\\T\\theta=\\dfrac{\\C\\theta}{\\S\\theta}$', '$\\T\\theta=\\S\\theta\\times\\C\\theta$'], why: ['', '分子は y（たて）＝ sin だよ。', 'tan は「たて ÷ よこ」の割り算。'] },
+      reveal: '$\\T\\theta=\\dfrac{\\S\\theta}{\\C\\theta}$　**tan は sin ÷ cos**。次のレッスンで使うよ。',
+      more: { label: 'なぜ $\\dfrac{y}{x}$ が tan なの？', text: 'tan θ は「向かいの辺 ÷ となりの辺」＝「たて ÷ よこ」。\n単位円の三角形では、たて＝P の y座標、よこ＝P の x座標。\nだから $\\T\\theta=\\dfrac{y}{x}$。ここに $y=\\S\\theta$、$x=\\C\\theta$ を入れると $\\T\\theta=\\dfrac{\\S\\theta}{\\C\\theta}$。' } },
     { t: 'recap', points: [
       { q: '単位円の点 P の座標を、cos と sin で書くと？', a: 'P$(\\C\\theta,\\ \\S\\theta)$：**cos θ＝x座標、sin θ＝y座標**' },
+      { q: 'tan θ を sin と cos で書くと？', a: '$\\T\\theta=\\dfrac{\\S\\theta}{\\C\\theta}$（**tan は sin ÷ cos**）' },
       { q: '単位円で、tan θ は何を表す？', a: '**tan θ ＝ OP の傾き**（90° では存在しない）' },
       '__(x, y) と同じアルファベット順__'
     ] }
@@ -95,14 +100,26 @@ LE.addTo('u1-3', 'unitc', [
 LE.defLesson('u1', {
   id: 'u1-4', title: '相互関係（三平方の定理より）', goal: '$\\cos^2\\theta+\\sin^2\\theta=1$ と $1+\\tan^2\\theta=\\dfrac{1}{\\cos^2\\theta}$ を言える',
   steps: [
-    { t: 'say', text: '単位円の中の直角三角形は、斜辺 1、よこ cos θ、たて sin θ。', viz: LE.figs.unit(40),
-      ask: { q: '[[三平方の定理]]を使うと？', o: ['$\\cos^2\\theta+\\sin^2\\theta=1$', '$\\cos\\theta+\\sin\\theta=1$', '$\\cos^2\\theta-\\sin^2\\theta=1$'], why: ['', '三平方は2乗どうし。', 'たし算だよ。'] },
-      reveal: '$\\cos^2\\theta+\\sin^2\\theta=1$　これが1つめの公式。' },
-    { t: 'widget', w: 'pyth', text: 'シアン（cos²）とピンク（sin²）の正方形。P を動かしても、面積の和は…？' },
+    { t: 'say', text: 'はじめに書き方の約束。$\\cos^2\\theta$ は **$(\\cos\\theta)^2$ のこと**（cos θ を2回かける）。\nθ を2乗するのではないよ。', viz: '<div class="fx-big">$$\\cos^2\\theta=(\\cos\\theta)^2=\\cos\\theta\\times\\cos\\theta$$</div>',
+      ask: { q: '$\\sin^2\\theta$ の意味は？', o: ['$\\S\\theta\\times\\S\\theta$', '$\\sin(\\theta\\times\\theta)$', '$2\\times\\S\\theta$'], why: ['', 'θ を2乗するのではないよ。', '2倍ではなく、2回かける。'] },
+      reveal: '$\\sin^2\\theta=\\S\\theta\\times\\S\\theta$。__「2」は sin のすぐ右に書くのが約束__（$\\sin\\theta^2$ と書くと θ の2乗とまぎらわしいから）。' },
+    { t: 'say', text: '単位円の中の直角三角形は、**斜辺 1、よこ cos θ、たて sin θ**。', viz: LE.figs.unit(40),
+      ask: { q: '[[三平方の定理]]（よこ² ＋ たて² ＝ 斜辺²）に当てはめると？', o: ['$\\cos^2\\theta+\\sin^2\\theta=1$', '$\\cos\\theta+\\sin\\theta=1$', '$\\cos^2\\theta-\\sin^2\\theta=1$'], why: ['', '三平方は2乗どうし。', 'たし算だよ。'] },
+      reveal: '$\\cos^2\\theta+\\sin^2\\theta=1$　これが1つめの公式。',
+      more: { label: '三平方の定理をおさらい', text: '直角三角形では、**よこ² ＋ たて² ＝ 斜辺²**（斜辺は直角の向かいの辺）。\n例：3・4・5 の三角形なら $3^2+4^2=9+16=25=5^2$。\n単位円の三角形に当てはめると、よこ＝$\\C\\theta$、たて＝$\\S\\theta$、斜辺＝1 なので\n$(\\C\\theta)^2+(\\S\\theta)^2=1^2$ → $\\cos^2\\theta+\\sin^2\\theta=1$。' } },
+    { t: 'say', text: '「2乗」は図にすると**正方形の面積**。1辺が cos θ の正方形の面積は $\\cos\\theta\\times\\cos\\theta=\\cos^2\\theta$。', viz: '<div class="vz-row"><div class="bx c1">1辺 cos θ の正方形<small>面積 cos²θ</small></div><div class="bx c5">1辺 sin θ の正方形<small>面積 sin²θ</small></div><div class="bx">1辺 1 の正方形<small>面積 1</small></div></div>',
+      ask: { q: '1辺が sin θ の正方形の面積は？', o: ['$\\sin^2\\theta$', '$2\\S\\theta$', '$\\S\\theta$'], why: ['', '正方形の面積は「1辺 × 1辺」。', '面積は1辺を2回かける。'] },
+      reveal: '$\\sin^2\\theta$。だから $\\cos^2\\theta+\\sin^2\\theta=1$ は「**よこの正方形 ＋ たての正方形 ＝ 斜辺の正方形（面積1）**」という意味。' },
+    { t: 'widget', w: 'pyth', text: 'シアンは1辺 cos θ の正方形（面積 cos²θ）、ピンクは1辺 sin θ の正方形（面積 sin²θ）。点線は斜辺 1 の正方形。P を動かしても、2つの面積の和は…？',
+      more: { label: 'どうして正方形が出てくるの？', text: '三平方の定理は「直角をはさむ2辺の上に作った正方形の面積の和が、斜辺の上の正方形の面積に等しい」という定理。\nこの図では、よこ（cos θ）の上にシアン、たて（sin θ）の上にピンク、斜辺（1）の上に点線の正方形がある。' } },
     { t: 'show', frames: [
-      { say: '2つめの公式は、1つめの両辺を $\\cos^2\\theta$ で割るだけ（プリントの「÷cos²θ」の矢印）。', viz: '<div class="fx-big">$$\\dfrac{\\cos^2\\theta}{\\cos^2\\theta}+\\dfrac{\\sin^2\\theta}{\\cos^2\\theta}=\\dfrac{1}{\\cos^2\\theta}$$</div>',
+      { say: '2つめの公式は、1つめの式の**両辺を $\\cos^2\\theta$ で割る**（プリントの「÷cos²θ」の矢印）。\nたし算の式を割るときは、**1つ1つの項をぜんぶ割る**。', viz: '<div class="fx-big">$$\\dfrac{\\cos^2\\theta}{\\cos^2\\theta}+\\dfrac{\\sin^2\\theta}{\\cos^2\\theta}=\\dfrac{1}{\\cos^2\\theta}$$</div>',
+        ask: { q: 'まず左の $\\dfrac{\\cos^2\\theta}{\\cos^2\\theta}$ は？', o: ['$1$', '$0$', '$\\cos\\theta$'], why: ['', '同じものどうしの割り算は 1。', '同じものどうしの割り算は 1。'] },
+        reveal: '同じものを同じもので割ると **1**。' },
+      { say: '次は $\\dfrac{\\sin^2\\theta}{\\cos^2\\theta}$。前のレッスンの **tan は sin ÷ cos** を思い出そう。', viz: '<div class="fx-big">$$1+\\dfrac{\\sin^2\\theta}{\\cos^2\\theta}=\\dfrac{1}{\\cos^2\\theta}$$</div>',
         ask: { q: '$\\dfrac{\\sin^2\\theta}{\\cos^2\\theta}$ をまとめると？', o: ['$\\tan^2\\theta$', '$1$', '$\\sin^2\\theta$'], why: ['', '$\\dfrac{\\sin\\theta}{\\cos\\theta}=\\tan\\theta$ だよ。', '$\\dfrac{\\sin\\theta}{\\cos\\theta}=\\tan\\theta$ だよ。'] },
-        reveal: '$1+\\tan^2\\theta=\\dfrac{1}{\\cos^2\\theta}$　__忘れても「÷cos²θ」で作り直せる__' }
+        reveal: '$1+\\tan^2\\theta=\\dfrac{1}{\\cos^2\\theta}$　__忘れても「÷cos²θ」で作り直せる__',
+        more: { label: 'なぜ $\\tan^2\\theta$ になるの？', text: '2乗は「2回かける」だから、分子も分母も2つに分けられる。\n$\\dfrac{\\sin^2\\theta}{\\cos^2\\theta}=\\dfrac{\\S\\theta\\times\\S\\theta}{\\C\\theta\\times\\C\\theta}=\\dfrac{\\S\\theta}{\\C\\theta}\\times\\dfrac{\\S\\theta}{\\C\\theta}$\nそして $\\dfrac{\\S\\theta}{\\C\\theta}=\\T\\theta$ だから、$\\T\\theta\\times\\T\\theta=\\tan^2\\theta$。' } }
     ] },
     { t: 'build', text: '2つめの公式を組み立てよう。', ans: ['1', '+', '\\tan^2\\theta', '=', '\\dfrac{1}{\\cos^2\\theta}'], extra: ['\\dfrac{1}{\\sin^2\\theta}', '\\cos^2\\theta'],
       hint: '「÷cos²θ」で作ったから、右辺の分母は cos²θ。' },
