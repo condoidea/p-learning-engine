@@ -277,3 +277,18 @@ html.scene-map #bg3d { display: none; }
 .rc-tap li.rv-q .rc-a { filter: blur(7px); user-select: none; }
 .rc-tap li.open .rc-a { filter: none; }
 .rc-qs { display: block; font-size: .85em; color: var(--muted); }
+/* ロードマップの番号：本の節番号（1-02・11-10）のように長いときは小さくして、1行に収める */
+.node-disc { white-space: nowrap; }
+.node-disc.lb-l { font-size: 19px; letter-spacing: -.02em; }
+.node-disc.lb-xl { font-size: 16px; letter-spacing: -.03em; }
+/* 横スクロールの安全網（iPhone の古い Safari は overflow:clip を知らないので、まず hidden、使えるなら clip） */
+/*  html だけに付ける（body にも付けると body がスクロールの箱になり、上部の固定ヘッダ（sticky）が効かなくなる） */
+html { overflow-x: hidden; }
+@supports (overflow: clip) { html { overflow-x: clip; } }
+@supports not (overflow: clip) { .ls-step, .ls-body { overflow-x: hidden; } }
+/* スマホでは表を少し詰めて、画面幅に収まりやすく */
+@media (max-width: 420px) {
+  .vz { padding: 12px 10px; }
+  .vz-tbl { font-size: 12.5px; }
+  .vz-tbl th, .vz-tbl td { padding: 5px 6px; }
+}

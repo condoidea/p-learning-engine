@@ -208,7 +208,8 @@
         n.className = 'node ' + st;
         n.style.setProperty('--off', Math.round(Math.sin(i * 1.15) * 34) + '%');
         n.dataset.id = L.id;
-        n.innerHTML = '<span class="node-disc">' + (st.indexOf('done') === 0 ? '✓' : st.indexOf('locked') === 0 ? '🔒' : label(L)) + '</span>' +
+        var lb = label(L), showLb = st.indexOf('done') !== 0 && st.indexOf('locked') !== 0, lbCls = !showLb ? '' : String(lb).length >= 5 ? ' lb-xl' : String(lb).length >= 4 ? ' lb-l' : '';   // 「1-02」「11-10」など長い番号は小さめに（折り返さない）
+        n.innerHTML = '<span class="node-disc' + lbCls + '">' + (st.indexOf('done') === 0 ? '✓' : st.indexOf('locked') === 0 ? '🔒' : lb) + '</span>' +
           '<span class="node-stars">' + [1, 2, 3].map(function (k) { return '<i class="' + (k <= stars ? 'on' : '') + '">★</i>'; }).join('') + '</span>' +
           '<span class="node-label">' + (L.year ? '<em class="node-year">' + esc(L.year) + '</em>' : '') + esc(L.title) + '</span>' + (nx && nx.id === L.id ? '<span class="node-start">START</span>' : '');
         n.addEventListener('click', function () { preview(L); });
