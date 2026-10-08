@@ -292,3 +292,4 @@ html { overflow-x: hidden; }
   .vz-tbl { font-size: 12.5px; }
   .vz-tbl th, .vz-tbl td { padding: 5px 6px; }
 }
+.node-disc .nd-no { display: inline-block; white-space: nowrap; }
