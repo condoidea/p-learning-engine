@@ -264,3 +264,10 @@ html.scene-map #bg3d { display: none; }
 .rt-pin text.lb-l { text-anchor: end; }
 .rt-pin text.lb-c { text-anchor: middle; }
 .rt-how { display: block; margin-top: 2px; font-size: 12px; opacity: .8; }
+/* 横はみ出しの安全網（iPhone はページが横にはみ出すと文字を勝手に拡大するので、絶対に画面幅を超えさせない）
+ *  - 図や吹き出しは flex の子なので、min-width:0 にしないと中身の幅まで広がる
+ *  - それでも広い図は、切らずに横スクロール（.vz は overflow-x:auto）
+ *  - 画面全体は横だけ clip（縦スクロールや吹き出しのアニメーションには影響しない） */
+#lsStage, .ls-step, .ls-body { max-width: 100%; min-width: 0; overflow-x: clip; }
+.ls-body > *, .vz, .bubble { min-width: 0; max-width: 100%; }
+.bubble { overflow-wrap: anywhere; }
