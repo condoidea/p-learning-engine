@@ -8,7 +8,7 @@ LE.defLesson('u3', {
       reveal: '動かして確かめよう！' },
     { t: 'widget', w: 'inscribed', text: 'P や B を動かしてみよう。' },
     { t: 'show', frames: [
-      { say: 'プリントの3つの図。\n① **同じ弧に対する円周角は等しい**', viz: LE.figs.ins('same', { p: '●', q: '●' }) },
+      { say: '円周角の3つのルール。\n① **同じ弧に対する円周角は等しい**', viz: LE.figs.ins('same', { p: '●', q: '●' }) },
       { say: '② 中心角と円周角', viz: LE.figs.ins('center', { p: 'θ', o: '?' }),
         ask: { q: '円周角が θ なら、中心角は？', o: ['$2\\theta$', '$\\theta$', '$\\dfrac{\\theta}{2}$'], why: ['', '中心角のほうが大きいよ。', '逆。中心角のほうが大きい。'] },
         reveal: '**中心角は円周角の2倍**',
@@ -35,7 +35,7 @@ LE.defLesson('u3', {
   steps: [
     { t: 'say', text: '4つの頂点がすべて円の上にある四角形（円に[[内接する]]四角形）。', viz: LE.figs.cyc({ A: '?', C: '?' }),
       ask: { q: '向かい合う角 ∠A と ∠C の和は、何度だと思う？', o: ['$180^\\circ$', '$360^\\circ$', '$90^\\circ$'], why: ['', '360° は4つの角の合計。', 'もっと大きいよ。'] },
-      reveal: '**円に内接する四角形の、向かい合う角の和は 180°**。プリントの「$180^\\circ-\\theta$」と「$\\theta$」のペア。', rviz: LE.figs.cyc({ A: '180°−θ', C: 'θ' }),
+      reveal: '**円に内接する四角形の、向かい合う角の和は 180°**。片方が $\\theta$ なら、向かいは $180^\\circ-\\theta$。', rviz: LE.figs.cyc({ A: '180°−θ', C: 'θ' }),
       more: { label: 'なぜ 180° になるの？', text: '∠A と ∠C は、どちらも円周角。∠A は弧 BCD の上、∠C は弧 BAD の上に立っている。\nこの2つの弧を合わせると円1周なので、中心角の合計は 360°。\n円周角は中心角の半分だから、∠A ＋ ∠C ＝ 360° ÷ 2 ＝ 180°。' } },
     { t: 'widget', w: 'cyclic', text: '頂点を動かしてみよう。' },
     { t: 'say', text: '次は**接弦定理**。円の接線と、接点を通る[[弦]]がつくる角（黄色）。', viz: LE.figs.tan({ t: '●', p: '?' }),
@@ -58,12 +58,12 @@ LE.addTo('u3-2', 'circle', [
 LE.defLesson('u3', {
   id: 'u3-3', title: '方べきの定理', goal: '方べきの定理の3つの形を言える',
   steps: [
-    { t: 'say', text: '点 P を通る2本の直線が、円と交わる。形は3つ（プリントの3つの図）。((点の名前 P・A・B・C・D・T はプリントの図のとおり))', viz: '<div class="vz-row">' + LE.figs.pow(1) + LE.figs.pow(2) + LE.figs.pow(3) + '</div>',
+    { t: 'say', text: '点 P を通る2本の直線が、円と交わる。形は3つ（下の3つの図）。((点の名前 P・A・B・C・D・T は図のとおり))', viz: '<div class="vz-row">' + LE.figs.pow(1) + LE.figs.pow(2) + LE.figs.pow(3) + '</div>',
       ask: { q: 'P から見て、2本の線で等しくなるのはどれだと思う？', o: ['手前の長さ × 奥の長さ', '手前の長さ ＋ 奥の長さ', '奥の長さ − 手前の長さ'], why: ['', '動かして確かめよう。', '動かして確かめよう。'] },
       reveal: '__「手前 × 奥」は、どの線でも同じ__。' },
     { t: 'widget', w: 'power', text: 'タブで形を切りかえて、P を動かそう。' },
     { t: 'show', frames: [
-      { say: 'なぜ？ プリントのとおり、円周角が等しいので **△PAC ∽ △PDB**（[[相似]]）。', viz: LE.figs.pow(1),
+      { say: 'なぜ？ 同じ弧に対する円周角が等しいので **△PAC ∽ △PDB**（[[相似]]）。', viz: LE.figs.pow(1),
         ask: { q: '相似なので、辺の比は PA : PD ＝ PC : ？', o: ['PB', 'PA', 'AB'], why: ['', '対応する辺を考えよう。', '対応する辺を考えよう。'] },
         reveal: '比の「外側どうし・内側どうし」をかけると $PA\\cdot PB=PC\\cdot PD$。',
         more: { label: 'なぜかけ算になるの？', text: '$PA:PD=PC:PB$ を分数で書くと $\\dfrac{PA}{PD}=\\dfrac{PC}{PB}$。\n両辺に $PD$ と $PB$ をかけて分母を払うと $PA\\cdot PB=PC\\cdot PD$。\n比の式で「外側（PA と PB）の積 ＝ 内側（PD と PC）の積」になるのは、いつもこの計算をしているから。' } },

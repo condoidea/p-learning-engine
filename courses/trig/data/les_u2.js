@@ -4,7 +4,7 @@ LE.defLesson('u2', {
   id: 'u2-1', title: '90°−θ：名前が入れかわる', goal: '$90^\\circ-\\theta$ の3つの式を言える',
   steps: [
     { t: 'widget', w: 'scribe', text: '直角三角形の、もうひとつの鋭角は $90^\\circ-\\theta$。\n__三角定規の 60° のときと同じように、裏返して__その角を左下に置いてみよう。',
-      intro: '角 θ の直角三角形（辺の名前 a・b・c はプリントの図のとおり）',
+      intro: '角 θ の直角三角形（辺の名前は 1-1 と同じ：たて a・よこ b・斜辺 c）',
       stages: [
         { deg: 32, name: '\\theta', th: 'θ', lab: { a: 'a', b: 'b', c: 'c' }, tex: { a: 'a', b: 'b', c: 'c' }, ask: ['sin'], goal: 'まず θ の **sin** を書こう' },
         { tr: 'flip', deg: 58, name: '(90^\\circ-\\theta)', th: '90°−θ', lab: { a: 'b', b: 'a', c: 'c' }, tex: { a: 'b', b: 'a', c: 'c' }, ask: ['sin'], val: { sin: '\\C\\theta' },
@@ -14,7 +14,7 @@ LE.defLesson('u2', {
       ask: { q: 'では $\\C(90^\\circ-\\theta)$ は？', o: ['$\\S\\theta$', '$\\C\\theta$', '$-\\S\\theta$'], why: ['', 'となりの辺も入れかわるよ。', 'マイナスはつかない。'] },
       reveal: '__90°−θ は「名前チェンジ」__：sin ↔ cos。\ntan は逆数になる：$\\T(90^\\circ-\\theta)=\\dfrac{1}{\\T\\theta}$',
       more: { label: 'なぜ tan は逆数になるの？', text: 'θ から見ると、tan は 向かい a ÷ となり b ＝ $\\dfrac{a}{b}$。\n裏返して 90°−θ から見ると、向かいが b、となりが a に入れかわるので $\\T(90^\\circ-\\theta)=\\dfrac{b}{a}$。\n$\\dfrac{b}{a}$ は $\\dfrac{a}{b}$ の上下をひっくり返したもの（逆数）＝ $\\dfrac{1}{\\T\\theta}$。' } },
-    { t: 'fill', text: 'プリントの3つの式を完成させよう。',
+    { t: 'fill', text: '90°−θ の3つの式を完成させよう。',
       viz: '<div class="fx-rows"><div>$\\S(90^\\circ-\\theta)=$ {{0}}</div><div>$\\C(90^\\circ-\\theta)=$ {{1}}</div><div>$\\T(90^\\circ-\\theta)=$ {{2}}</div></div>',
       a: ['$\\C\\theta$', '$\\S\\theta$', '$\\dfrac{1}{\\T\\theta}$'], extra: ['$-\\C\\theta$', '$\\T\\theta$'], hint: '名前チェンジ：sin↔cos、tan は逆数。' },
     { t: 'recap', points: [
@@ -40,7 +40,7 @@ LE.defLesson('u2', {
       ask: { q: '$\\T(180^\\circ-\\theta)$（＝$\\dfrac{y}{x}$）は？', o: ['$-\\T\\theta$', '$\\T\\theta$', '$\\dfrac{1}{\\T\\theta}$'], why: ['', 'x の符号が反対になると…？', 'それは 90°−θ。'] },
       reveal: '$\\T(180^\\circ-\\theta)=-\\T\\theta$\n__180°−θ は「名前そのまま、sin だけ生き残る」__（ほかはマイナス）。',
       more: { label: 'なぜ tan はマイナスになるの？', text: 'tan は $\\dfrac{y}{x}$（たて ÷ よこ）。左右に映すと、y はそのまま、x だけ符号が反対（$-x$）になる。\nだから $\\T(180^\\circ-\\theta)=\\dfrac{y}{-x}=-\\dfrac{y}{x}=-\\T\\theta$。' } },
-    { t: 'fill', text: 'プリントの3つの式を完成させよう。',
+    { t: 'fill', text: '180°−θ の3つの式を完成させよう。',
       viz: '<div class="fx-rows"><div>$\\S(180^\\circ-\\theta)=$ {{0}}</div><div>$\\C(180^\\circ-\\theta)=$ {{1}}</div><div>$\\T(180^\\circ-\\theta)=$ {{2}}</div></div>',
       a: ['$\\S\\theta$', '$-\\C\\theta$', '$-\\T\\theta$'], extra: ['$-\\S\\theta$', '$\\C\\theta$'], hint: '名前そのまま、sin だけプラス。' },
     { t: 'recap', points: [

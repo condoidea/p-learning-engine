@@ -66,7 +66,7 @@ LE.cardDefs = {
     traps: ['たし算ではなくかけ算'] },
   'u5-2': { ana: 'メネラウスきつね🦊。式の形はチェバと同じ、図がちがう。', vizFind: FG,
     how: ['$\\dfrac{AR}{RB}\\cdot\\dfrac{BP}{PC}\\cdot\\dfrac{CQ}{QA}=1$（P は BC の延長上）'],
-    extra: [{ t: 'プリントの式', b: '$\\dfrac{BC}{CP}\\cdot\\dfrac{PS}{SA}\\cdot\\dfrac{AR}{RB}=1$ は別の図で同じなぞり方をしたもの。' }],
+    extra: [{ t: '別の文字で書いた式', b: '$\\dfrac{BC}{CP}\\cdot\\dfrac{PS}{SA}\\cdot\\dfrac{AR}{RB}=1$ は別の図で同じなぞり方をしたもの。' }],
     traps: ['チェバ（中の1点）とメネラウス（横切る直線）の図を見分ける'] },
   'u5-3': { ana: 'となりの2辺の比で、底辺が分かれる。', vizFind: FG,
     how: ['$BD:DC=AB:AC$'],

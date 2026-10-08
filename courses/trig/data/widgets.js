@@ -552,7 +552,7 @@
    * ========================================================= */
   LE.widgets.unit = function (api, s) {
     var st = stage(api, 320, 210);
-    var O = { x: 160, y: 168 }, R = 128, th = 50;
+    var O = { x: 160, y: 168 }, R = 128, th = s.start != null ? s.start : 50;   // start：P の最初の角度（ミッションの答えから離しておく）
     el('line', { x1: 14, y1: O.y, x2: 306, y2: O.y, stroke: K.dim, 'stroke-width': 1.5 }, st.svg);
     el('line', { x1: O.x, y1: 196, x2: O.x, y2: 12, stroke: K.dim, 'stroke-width': 1.5 }, st.svg);
     el('path', { d: 'M' + (O.x - R) + ',' + O.y + ' A' + R + ',' + R + ' 0 0,1 ' + (O.x + R) + ',' + O.y, fill: 'none', stroke: 'rgba(232,238,255,.5)', 'stroke-width': 2 }, st.svg);
@@ -587,12 +587,15 @@
       eq: { goal: '$\\S\\theta=\\C\\theta$ になる角度へ（ピンクとシアンが同じ長さ）', test: function (t) { return Math.round(t) === 45; }, yay: '45°！' },
       t90: { goal: '$\\T\\theta$ が<b>存在しない</b>角度へ動かそう', test: function (t) { return Math.round(t) === 90; }, yay: 'tan 90° はなし！', msg: 'θ=90° では OP がたてになり、傾き（tan）が決められない。' },
       s150: { goal: '$\\S\\theta=\\dfrac12$ になる<b>鈍角</b>を探そう', test: function (t) { return Math.round(t) === 150; }, yay: '150°！' },
-      c120: { goal: '$\\C\\theta=-\\dfrac12$ になる角度を探そう', test: function (t) { return Math.round(t) === 120; }, yay: '120°！' }
+      c120: { goal: '$\\C\\theta=-\\dfrac12$ になる角度を探そう', test: function (t) { return Math.round(t) === 120; }, yay: '120°！' },
+      /* cos² ＝ 9/25 の ± を目で見る：鋭角なら右（＋）、鈍角なら左（−） */
+      c35p: { goal: '<b>鋭角</b>で $\\C\\theta=\\dfrac35$（0.6）になるところへ P を動かそう', test: function (t) { return t < 90 && Math.abs(Math.cos(t * D2R) - 0.6) < 0.05; }, yay: '鋭角：cos はプラス！' },
+      c35n: { goal: '今度は<b>鈍角</b>で、$\\cos^2\\theta$ が同じ $\\dfrac{9}{25}$ になるところへ（cos は −0.6）', test: function (t) { return t > 90 && Math.abs(Math.cos(t * D2R) + 0.6) < 0.05; }, yay: '鈍角：cos はマイナス！' }
     };
     var m = missions(api, st, tasks.map(function (k) { return T[k]; }));
     m.check = (function (orig) { return function (t) { orig(t); }; })(m.check);
     draw();
-    return { solve: function () { tasks.forEach(function (k) { th = { neg: 120, eq: 45, t90: 90, s150: 150, c120: 120 }[k]; draw(); m.check(th); }); } };
+    return { solve: function () { tasks.forEach(function (k) { th = { neg: 120, eq: 45, t90: 90, s150: 150, c120: 120, c35p: 53.13, c35n: 126.87 }[k]; draw(); m.check(th); }); } };
   };
 
   /* =========================================================
