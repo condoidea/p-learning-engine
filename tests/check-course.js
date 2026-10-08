@@ -27,7 +27,13 @@ const run = (s) => vm.runInContext(fs.readFileSync(path.join(root, s), 'utf8'), 
 run(courseDir + 'course.js');
 run('engine/js/terms.js');
 run('engine/js/api.js');
-for (const f of sandbox.COURSE.files) run(courseDir + f);
+/* ONLY=ch03,ch04 … 章ごとのファイル（data/chNN.js）のうち、指定したものだけ読む（何人かで章を分けて作るとき用。ほかの章の書きかけに影響されない） */
+const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null;
+for (const f of sandbox.COURSE.files) {
+  const m = /data\/(ch\d\d)\.js$/.exec(f);
+  if (ONLY && m && !ONLY.includes(m[1])) continue;
+  run(courseDir + f);
+}
 run('engine/js/core.js');
 const LE = sandbox.LE;
 const Core = sandbox.Core;

@@ -146,6 +146,7 @@
   }
   function isDone(id) { var r = S().lessons[id]; return !!(r && r.done); }
   function isOpen(L) {
+    if (window.COURSE && COURSE.openAll) return true;   // 本の進み具合に合わせて、どこからでも復習できるコース
     var u = LE.units.find(function (x) { return x.id === L.unit; });
     var i = u.lessons.indexOf(L.id);
     return i === 0 || isDone(u.lessons[i - 1]);
@@ -154,6 +155,7 @@
   function lessonNo(L) { return allLessons().indexOf(L) + 1; }
   /* ロードマップ・カード・問題で共通の番号「ユニット-レッスン」 */
   function label(L) {
+    if (L.no) return L.no;                               // 本の節番号（例：1-01）をそのまま使うコース
     var ui = LE.units.findIndex(function (u) { return u.id === L.unit; });
     return LE_UNO(ui + 1) + '-' + (LE.units[ui].lessons.indexOf(L.id) + 1);
   }
