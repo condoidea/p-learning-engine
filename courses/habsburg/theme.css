@@ -119,7 +119,7 @@ body {
 
 /* 用語カード（封蝋つき） */
 .term-card h2 { color: var(--ink); font-family: var(--f-display); }
-.term-card small, .term-ex span { color: var(--ink-2) !important; }
+.term-card small, .term-ex > span:first-child { color: var(--ink-2) !important; }
 .term-ex { background: rgba(120, 80, 30, 0.08) !important; color: var(--ink); }
 .term-stamp, .kc-new, .unit-stamp, .mem-stamp, .node-start, .lc-cg-head + .mcard .mc-new {
   font-family: var(--f-display) !important;
@@ -286,3 +286,8 @@ body {
 .fl-b.act { color: var(--rubric); border-color: var(--rubric); }
 .fl-b.ok { background: #fff3cf; border-color: #b8892c; color: var(--ink); }
 .rt-log li b { font-family: var(--f-display); color: var(--gold) !important; background: none !important; }
+/* 書き分け（羊皮紙の上で読みやすい色に） */
+.legend b { background: none !important; color: var(--rubric) !important; font-weight: 700; }
+.legend { border-color: var(--parch-edge); }
+.bubble .aside, .ask-reveal .aside, .recap .aside, .vz .aside { color: var(--ink-2) !important; }
+.bubble .hook, .vz .hook, .recap .hook { text-decoration-color: #b07a1e; }

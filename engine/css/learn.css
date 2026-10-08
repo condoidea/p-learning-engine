@@ -87,7 +87,7 @@ span.t-holo { background: linear-gradient(90deg, #ff3fa4, #ffd84d, #5cff9d, #38e
 .kc-table td { padding: 6px 10px; border-top: 1px solid var(--line); vertical-align: top; }
 .kc-tip { position: relative; z-index: 3; margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: rgba(255,216,77,.09); border: 1px solid rgba(255,216,77,.35); font-size: 13.5px; line-height: 1.7; }
 .kc-tip:empty { display: none; }
-.kc-tip span { display: block; font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: .1em; }
+.kc-tip > span:first-child { display: block; font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: .1em; }
 .kc-evo { position: relative; z-index: 3; margin-top: 10px; }
 .kc-evo:empty { display: none; }
 .evo-l { font-size: 12px; color: var(--muted); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }

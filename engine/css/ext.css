@@ -252,3 +252,8 @@ html.scene-map #bg3d { display: none; }
 .aside { color: var(--muted); font-size: .92em; }
 .aside::before { content: '📎'; font-size: .8em; margin-right: 2px; opacity: .8; }
 .tw .hook::before, .tw .aside::before { opacity: 1; }
+/* 書き分けの凡例（コースの最初の画面で使う） */
+.legend { display: grid; gap: 6px; margin: 10px auto 0; padding: 10px 14px; max-width: 340px; border-radius: 12px; border: 1px dashed var(--line); font-size: 13.5px; text-align: left; }
+.legend b { background: linear-gradient(transparent 60%, color-mix(in srgb, var(--accent) 40%, transparent) 60%); }
+/* 用語カードの「たとえるなら」も覚え方のヒント（💡）として見せる */
+.term-ex > span:first-child::before { content: '💡'; margin-right: 3px; }

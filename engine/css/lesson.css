@@ -127,7 +127,7 @@ body[data-screen=lesson] #topbar { display: none; }
 .term-card h2 { margin: 0 0 8px; font-family: var(--f-display); font-weight: 400; font-size: clamp(24px, 4vw, 32px); line-height: 1.3; color: #fff; }
 .term-short { margin: 0; font-size: 16px; line-height: 1.8; }
 .term-ex { margin: 12px 0 0; padding: 10px 12px; border-radius: 10px; background: rgba(255,255,255,.05); font-size: 14.5px; line-height: 1.8; }
-.term-ex span { display: block; font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: .15em; }
+.term-ex > span:first-child { display: block; font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: .15em; }
 .term-stamp { position: absolute; top: -12px; right: 14px; padding: 2px 12px; border: 3px solid var(--gold); border-radius: 8px; color: var(--gold); background: #0b0e24; font-weight: 900; font-size: 14px; transform: rotate(-12deg); }
 
 /* まとめ */
