@@ -301,3 +301,9 @@ html { overflow-x: hidden; }
 .more-body { margin-top: 8px; padding: 12px 14px; border-radius: 12px; background: rgba(8,10,26,.85); border-left: 4px solid var(--gold); line-height: 1.85; font-size: 15px; }
 .more-body .vz { margin-top: 10px; }
 .wg-more:empty { display: none; }
+/* カードの「なぜ？」 */
+.ex-why { margin-top: 6px; }
+.ex-why summary { display: inline-block; cursor: pointer; padding: 3px 10px; border-radius: 99px; border: 1px dashed color-mix(in srgb, var(--gold) 70%, transparent); color: var(--gold); font-size: 12.5px; font-weight: 700; list-style: none; }
+.ex-why summary::-webkit-details-marker { display: none; }
+.ex-why[open] summary { border-style: solid; }
+.ex-why p { margin: 6px 0 0; padding: 8px 10px; border-left: 3px solid var(--gold); background: rgba(0,0,0,.25); border-radius: 6px; font-size: 13.5px; line-height: 1.75; }

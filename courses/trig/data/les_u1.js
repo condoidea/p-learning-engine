@@ -123,9 +123,16 @@ LE.defLesson('u1', {
     ] },
     { t: 'build', text: '2つめの公式を組み立てよう。', ans: ['1', '+', '\\tan^2\\theta', '=', '\\dfrac{1}{\\cos^2\\theta}'], extra: ['\\dfrac{1}{\\sin^2\\theta}', '\\cos^2\\theta'],
       hint: '「÷cos²θ」で作ったから、右辺の分母は cos²θ。' },
+    { t: 'steps', text: '公式の使い道：sin がわかれば cos が出せる。', q: 'θ は鋭角、$\\S\\theta=\\dfrac45$ のとき $\\C\\theta$ は？',
+      steps: ['$\\cos^2\\theta+\\sin^2\\theta=1$ に $\\S\\theta=\\dfrac45$ を入れる', '$\\cos^2\\theta=1-\\dfrac{16}{25}=\\dfrac{9}{25}$', '2乗して $\\dfrac{9}{25}$ になる数は $\\dfrac35$ と $-\\dfrac35$ の **2つ**', 'θ は鋭角 → P は単位円の右側（x がプラス）→ $\\C\\theta=\\dfrac35$'] },
+    { t: 'say', text: '**± は角の大きさで決める**。単位円で、鋭角なら P は右側（cos ＞ 0）、鈍角なら左側（cos ＜ 0）。\nsin（高さ）は 0°〜180° ならいつもプラス。', viz: LE.figs.unit(130),
+      ask: { q: 'θ が鈍角で $\\cos^2\\theta=\\dfrac{9}{25}$ なら、$\\C\\theta$ は？', o: ['$-\\dfrac35$', '$\\dfrac35$', '$\\pm\\dfrac35$'], why: ['', '鈍角の P は単位円の左側。x座標は？', '角が決まれば、符号も1つに決まる。'] },
+      reveal: '鈍角なので $\\C\\theta=-\\dfrac35$。__鋭角は全部プラス、鈍角は cos と tan がマイナス__',
+      more: { label: 'なぜ答えが2つ（±）出るの？', text: '$x^2=\\dfrac{9}{25}$ になる $x$ は、$\\dfrac35$ と $-\\dfrac35$ の2つ（$\\left(-\\dfrac35\\right)^2$ も $\\dfrac{9}{25}$）。\n2乗すると符号（＋か−か）の情報が消えてしまう。だから元に戻すときは、「どっちの符号か」を別の情報＝**角の大きさ**で決める。' } },
     { t: 'recap', points: [
       { q: '単位円の三平方から出る式は？', a: '$\\cos^2\\theta+\\sin^2\\theta=1$' },
       { q: 'その式を $\\cos^2\\theta$ で割ると？', a: '$1+\\tan^2\\theta=\\dfrac{1}{\\cos^2\\theta}$' },
+      { q: '$\\cos^2\\theta$ を出したあと、cos の符号はどう決める？', a: '**鋭角ならプラス、鈍角ならマイナス**（sin は 0°〜180° でいつもプラス）' },
       '__単位円の三平方／1つめを ÷cos²θ__'
     ] }
   ]

@@ -929,6 +929,8 @@
   function totalCards() { return Core.ALL_CARDS.length; }
   function readCount() { return Core.ALL_CARDS.filter(Core.owned).length; }
 
+  /* カードの補足・ひっかけに「なぜ？」を付ける（why）。理由がわからない tips は「無視しよう」となってもったいないので、見たいときだけ開ける */
+  function cardWhy(w) { return w ? '<details class="ex-why"><summary>🤔 なぜ？</summary><p>' + fmtC(w) + '</p></details>' : ''; }
   function miniCard(c, extraCls) {
     var t = Core.cardTier(c);
     var isNew = t !== 'locked' && !S.cardSeen[c.id];
@@ -1024,8 +1026,8 @@
       '<p class="mast-note">この範囲の問題 <b>' + qs.length + '問</b> を解いて記憶に定着させると <b>' + TIER_JA[nt] + '</b> に進化。忘れかけると下がることもあるよ。</p>'
       : '<p class="mast-note">最終進化！ この範囲は完全にあなたのもの。忘れないよう時々復習しよう。</p>');
     var back = '<div class="kc-face kc-back"><div class="kc-shine"></div>' + head('裏：補足・ひっかけ') + '<div class="kc-scroll">' +
-      (d.extra && d.extra.length ? '<section class="kc-sec extra"><h4>＋α 補足 <small>レッスン外だけど試験に出る</small></h4>' + d.extra.map(function (x) { return '<div class="ex-item"><b>' + esc(x.t) + '</b><p>' + fmtC(x.b) + '</p></div>'; }).join('') + '</section>' : '') +
-      (d.traps && d.traps.length ? '<section class="kc-sec trap"><h4>⚠ ひっかけ注意</h4><ul>' + d.traps.map(function (x) { return '<li>' + fmtC(x) + '</li>'; }).join('') + '</ul></section>' : '') +
+      (d.extra && d.extra.length ? '<section class="kc-sec extra"><h4>＋α 補足 <small>レッスン外だけど試験に出る</small></h4>' + d.extra.map(function (x) { return '<div class="ex-item"><b>' + esc(x.t) + '</b><p>' + fmtC(x.b) + '</p>' + cardWhy(x.why) + '</div>'; }).join('') + '</section>' : '') +
+      (d.traps && d.traps.length ? '<section class="kc-sec trap"><h4>⚠ ひっかけ注意</h4><ul>' + d.traps.map(function (x) { return typeof x === 'object' ? '<li>' + fmtC(x.t) + cardWhy(x.why) + '</li>' : '<li>' + fmtC(x) + '</li>'; }).join('') + '</ul></section>' : '') +
       '<section class="kc-sec mast"><h4>📈 マスター度</h4>' + mast + '</section>' +
       '</div><div class="kc-flip-hint">↻ タップで表面へ</div></div>';
     return front + back;
@@ -1116,7 +1118,7 @@
     });
     stage.addEventListener('click', function (e) {
       if (moved) return;
-      if (e.target.closest('.gl, button, a')) return;
+      if (e.target.closest('.gl, button, a, details')) return;   // なぜ？を開くときはカードを裏返さない
       flipCard();
     });
   }
