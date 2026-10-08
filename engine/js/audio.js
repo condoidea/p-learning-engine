@@ -6,7 +6,36 @@
   var SCALE = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21, 24, 26, 28, 31]; // ペンタトニック：コンボで音階が上がる
 
   function on() { return window.Core && Core.S.settings.sound; }
+
+  /* ---- iPhone：マナーモード（消音スイッチ）でも音を出す ----
+   *  iOS の Safari は、WebAudio を「環境音」扱いにするので、消音スイッチが入っていると鳴らない（音量が0でなくても）。
+   *  ① Safari 17 以降：navigator.audioSession.type = 'playback' で「再生」扱いにする
+   *  ② それより前：無音の <audio> をループ再生しておくと、ページ全体が「再生」扱いになり WebAudio も鳴る
+   *  （どちらも、ほかのアプリの音楽は止まる。Duolingo などのアプリと同じふるまい） */
+  var silentEl = null;
+  function silentWavUrl() {
+    var n = 800, buf = new ArrayBuffer(44 + n), v = new DataView(buf), i;   // 8kHz・8bit・0.1秒の無音
+    function str(o, t) { for (var k = 0; k < t.length; k++) v.setUint8(o + k, t.charCodeAt(k)); }
+    str(0, 'RIFF'); v.setUint32(4, 36 + n, true); str(8, 'WAVE'); str(12, 'fmt ');
+    v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, 8000, true); v.setUint32(28, 8000, true);
+    v.setUint16(32, 1, true); v.setUint16(34, 8, true); str(36, 'data'); v.setUint32(40, n, true);
+    for (i = 0; i < n; i++) v.setUint8(44 + i, 128);
+    return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
+  }
+  function playbackSession() {
+    try { if (navigator.audioSession) { navigator.audioSession.type = 'playback'; return; } } catch (e) { /* 古い Safari */ }
+    var ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (!ios) return;
+    try {
+      if (!silentEl) { silentEl = document.createElement('audio'); silentEl.src = silentWavUrl(); silentEl.loop = true; silentEl.setAttribute('playsinline', ''); silentEl.volume = 0.01; }
+      if (silentEl.paused) { var pr = silentEl.play(); if (pr && pr.catch) pr.catch(function () {}); }
+    } catch (e) { /* 再生できない環境 */ }
+  }
+  /* 画面を離れたら無音の再生も止める（ほかのアプリの音をじゃましない） */
+  document.addEventListener('visibilitychange', function () { if (silentEl) { if (document.hidden) silentEl.pause(); else if (on()) playbackSession(); } });
+
   function ensure() {
+    playbackSession();
     if (ctx) { if (ctx.state === 'suspended') ctx.resume(); return ctx; }
     var AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return null;
@@ -47,7 +76,33 @@
     src.start(t0);
   }
   function play(fn) { if (!on() || !ensure()) return; fn(ctx.currentTime); }
-  function buzz(p) { try { if (on() && navigator.vibrate) navigator.vibrate(p); } catch (e) { /* 非対応端末 */ } }
+  /* ---- 振動 ----
+   *  Android など：Vibration API（navigator.vibrate）
+   *  iPhone：Safari は Vibration API に対応していない。iOS 18 以降は「スイッチ型のチェックボックス」を切りかえると
+   *  本体が「コツッ」と触覚フィードバックを返すので、見えないスイッチをタップしたことにして代わりに使う（パターンの長さは表せない） */
+  var hapticEl = null;
+  function iosTick() {
+    try {
+      if (!hapticEl) {
+        hapticEl = document.createElement('label');
+        hapticEl.setAttribute('aria-hidden', 'true');
+        hapticEl.style.cssText = 'position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none';
+        var inp = document.createElement('input'); inp.type = 'checkbox'; inp.setAttribute('switch', ''); inp.tabIndex = -1;
+        hapticEl.appendChild(inp); document.body.appendChild(hapticEl);
+      }
+      hapticEl.click();
+    } catch (e) { /* 非対応 */ }
+  }
+  function buzz(p) {
+    if (!on()) return;
+    try {
+      if (navigator.vibrate) { navigator.vibrate(p); return; }
+      /* 1回目はタップの最中に鳴らす（iOS はタップの処理中でないと触覚を返さない）。パターンの2回目以降は少しずらして（鳴らない端末もある） */
+      iosTick();
+      var n = Array.isArray(p) ? Math.ceil(p.length / 2) : 1;
+      for (var i = 1; i < n; i++) setTimeout(iosTick, i * 110);
+    } catch (e) { /* 非対応端末 */ }
+  }
 
   window.Sfx = {
     unlock: function () { if (on()) ensure(); },
