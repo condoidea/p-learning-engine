@@ -491,7 +491,9 @@
   };
   STEP.recap = function (s, body) {
     if (window.COURSE && COURSE.recapTap) { recapTap(s, body); return; }
-    body.innerHTML = '<ul class="recap">' + s.points.map(function (p) { return '<li><i>✔</i><span>' + fmtG(p) + '</span></li>'; }).join('') + '</ul>';
+    body.innerHTML = '<ul class="recap">' + s.points.map(function (p) {
+      return '<li><i>✔</i><span>' + (typeof p === 'object' ? '<span class="rc-qs">' + fmtG(p.q) + '</span>' + fmtG(p.a) : fmtG(p)) + '</span></li>';
+    }).join('') + '</ul>';
     gsap.from($$('.recap li', body), { x: -30, opacity: 0, stagger: 0.12, duration: 0.4, delay: 0.3, ease: 'back.out(2)', onComplete: function () { } });
     setReady(true);
   };
@@ -1082,8 +1084,10 @@
 
   /* まとめを「思い出してから答え合わせ」に：太字のキーワードをぼかし、タップでくっきり */
   function recapTap(s, body) {
-    body.innerHTML = '<p class="rc-lead">ぼかした所を<b>頭の中で言ってから</b>タップ！</p><ul class="recap rc-tap">' + s.points.map(function (p) {
-      /* 太字があれば太字を、なければ数式をぼかす */
+    body.innerHTML = '<p class="rc-lead">問いの答えを<b>頭の中で言ってから</b>タップ！</p><ul class="recap rc-tap">' + s.points.map(function (p) {
+      /* {q:'思い出すための問い', a:'答え'}：問いを見せて、答えをぼかす（ヒントなしで全部ぼかすと、何を思い出すのか分からない） */
+      if (typeof p === 'object') return '<li class="rv rv-q"><i>?</i><span><span class="rc-q">' + fmtG(p.q) + '</span><span class="rc-a">' + fmtG(p.a) + '</span></span></li>';
+      /* 文字列だけのとき：太字があれば太字を、なければ数式をぼかす */
       var h = fmtG(p), cls = /<b>/.test(h) ? 'rv rv-b' : /class="katex"/.test(h) ? 'rv rv-k' : 'open';
       return '<li class="' + cls + '"><i>✔</i><span>' + h + '</span></li>';
     }).join('') + '</ul>';
@@ -1093,7 +1097,8 @@
       li.addEventListener('click', function () {
         if (!li.classList.contains('rv')) return;
         li.classList.remove('rv'); li.classList.add('open');
-        gsap.fromTo($$('b, .katex', li), { scale: 1.25 }, { scale: 1, duration: 0.4, ease: 'back.out(3)' });
+        var mark = li.querySelector('i'); if (mark) mark.textContent = '✔';
+        gsap.fromTo($$('.rc-a', li).length ? $$('.rc-a', li) : $$('b, .katex', li), { scale: 1.08 }, { scale: 1, duration: 0.4, ease: 'back.out(3)' });
         Sfx.coin(); left--;
         if (!left) setReady(true);
       });

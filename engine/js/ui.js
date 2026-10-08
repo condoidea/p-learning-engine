@@ -1013,7 +1013,7 @@
     };
     var front = '<div class="kc-face kc-front"><div class="kc-shine"></div>' + head('表：要点') + '<div class="kc-scroll">' +
       '<section class="kc-sec ana"><h4>💭 思い出そう</h4><p>' + fmtC(d.ana || L.goal) + '</p>' + (vizStep ? '<div class="vz">' + Lesson.mviz(vizStep.viz) + '</div>' : '') + '</section>' +
-      '<section class="kc-sec pts"><h4>✅ 要点 <small>レッスンのまとめ</small></h4><ul>' + (recap.points || []).map(function (p) { return '<li>' + fmtC(p) + '</li>'; }).join('') + '</ul></section>' +
+      '<section class="kc-sec pts"><h4>✅ 要点 <small>レッスンのまとめ</small></h4><ul>' + (recap.points || []).map(function (p) { return '<li>' + (typeof p === 'object' ? '<span class="rc-qs">' + fmtC(p.q) + '</span>' + fmtC(p.a) : fmtC(p)) + '</li>'; }).join('') + '</ul></section>' +
       (d.how && d.how.length ? '<section class="kc-sec how"><h4>🧮 公式・手順</h4><ol>' + d.how.map(function (h) { return '<li>' + fmtC(h) + '</li>'; }).join('') + '</ol></section>' : '') +
       '</div><div class="kc-flip-hint">↻ タップで裏面へ（補足・ひっかけ・マスター度）</div><div class="kc-new" id="kcNew">NEW!</div></div>';
     var qs = Core.CARD2Q[c.id] || [];

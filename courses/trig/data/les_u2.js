@@ -17,7 +17,7 @@ LE.defLesson('u2', {
       viz: '<div class="fx-rows"><div>$\\S(90^\\circ-\\theta)=$ {{0}}</div><div>$\\C(90^\\circ-\\theta)=$ {{1}}</div><div>$\\T(90^\\circ-\\theta)=$ {{2}}</div></div>',
       a: ['$\\C\\theta$', '$\\S\\theta$', '$\\dfrac{1}{\\T\\theta}$'], extra: ['$-\\C\\theta$', '$\\T\\theta$'], hint: '名前チェンジ：sin↔cos、tan は逆数。' },
     { t: 'recap', points: [
-      '$\\S(90^\\circ-\\theta)=\\C\\theta$、$\\C(90^\\circ-\\theta)=\\S\\theta$、$\\T(90^\\circ-\\theta)=\\dfrac{1}{\\T\\theta}$',
+      { q: '$\\S(90^\\circ-\\theta)$、$\\C(90^\\circ-\\theta)$、$\\T(90^\\circ-\\theta)$ は？', a: '$\\C\\theta$、$\\S\\theta$、$\\dfrac{1}{\\T\\theta}$' },
       '__名前チェンジ（tan は逆数）__'
     ] }
   ]
@@ -42,7 +42,7 @@ LE.defLesson('u2', {
       viz: '<div class="fx-rows"><div>$\\S(180^\\circ-\\theta)=$ {{0}}</div><div>$\\C(180^\\circ-\\theta)=$ {{1}}</div><div>$\\T(180^\\circ-\\theta)=$ {{2}}</div></div>',
       a: ['$\\S\\theta$', '$-\\C\\theta$', '$-\\T\\theta$'], extra: ['$-\\S\\theta$', '$\\C\\theta$'], hint: '名前そのまま、sin だけプラス。' },
     { t: 'recap', points: [
-      '$\\S(180^\\circ-\\theta)=\\S\\theta$、$\\C(180^\\circ-\\theta)=-\\C\\theta$、$\\T(180^\\circ-\\theta)=-\\T\\theta$',
+      { q: '$\\S(180^\\circ-\\theta)$、$\\C(180^\\circ-\\theta)$、$\\T(180^\\circ-\\theta)$ は？', a: '$\\S\\theta$、$-\\C\\theta$、$-\\T\\theta$' },
       '__名前そのまま、sin だけ生き残る__'
     ] }
   ]

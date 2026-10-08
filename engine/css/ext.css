@@ -271,3 +271,9 @@ html.scene-map #bg3d { display: none; }
 #lsStage, .ls-step, .ls-body { max-width: 100%; min-width: 0; overflow-x: clip; }
 .ls-body > *, .vz, .bubble { min-width: 0; max-width: 100%; }
 .bubble { overflow-wrap: anywhere; }
+/* まとめの答え合わせ：問い（見える）＋答え（ぼかす） */
+.rc-q { display: block; font-size: .92em; color: var(--muted); margin-bottom: 4px; }
+.rc-a { display: block; transition: filter .3s; }
+.rc-tap li.rv-q .rc-a { filter: blur(7px); user-select: none; }
+.rc-tap li.open .rc-a { filter: none; }
+.rc-qs { display: block; font-size: .85em; color: var(--muted); }
