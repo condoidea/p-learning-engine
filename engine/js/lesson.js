@@ -17,9 +17,15 @@
   }
   function withMath(t, rest) {
     if (!MATH) return rest(t);
-    return String(t == null ? '' : t).split(/(\$\$[^$]+\$\$|\$[^$]+\$)/g).map(function (p, i) {
+    var parts = String(t == null ? '' : t).split(/(\$\$[^$]+\$\$|\$[^$]+\$)/g);
+    return parts.map(function (p, i) {
       if (!(i % 2)) return rest(p);
-      return p.charAt(1) === '$' ? tex(p.slice(2, -2), true) : tex(p.slice(1, -1));
+      if (p.charAt(1) === '$') return tex(p.slice(2, -2), true);
+      // 数式のすぐ後の句読点が行頭に泣き別れしないよう、数式といっしょにまとめる
+      var m = /^[。、，．！？」』）]+/.exec(parts[i + 1] || '');
+      if (!m) return tex(p.slice(1, -1));
+      parts[i + 1] = parts[i + 1].slice(m[0].length);
+      return '<span class="nobr">' + tex(p.slice(1, -1)) + m[0] + '</span>';
     }).join('');
   }
   /* 図（HTML）の中の $…$ も数式にする */
@@ -33,7 +39,7 @@
       .replace(/__(.+?)__/g, '<span class="hook">$1</span>')
       .replace(/\(\((.+?)\)\)/g, '<span class="aside">$1</span>')
       .replace(/`(.+?)`/g, '<code>$1</code>')
-      .replace(/\[\[(.+?)(?:\|(.+?))?\]\]/g, function (m, term, label) { return '<button class="gl" data-t="' + term + '">' + (label || term) + '</button>'; })
+      .replace(/\[\[(.+?)(?:\|(.+?))?\]\]/g, function (m, term, label) { return '<span class="gl" role="button" tabindex="0" data-t="' + term + '">' + (label || term) + '</span>'; })
       .replace(/\n/g, '<br>');
   }
   /* =========================================================
@@ -98,7 +104,8 @@
     }
     function bounce(b) {
       b.classList.add('tw-hl');
-      gsap.fromTo(b, { y: -7, scale: 1.18 }, { y: 0, scale: 1, duration: 0.6, ease: 'elastic.out(1, 0.45)' });
+      // inline のまま跳ねさせる（inline-block や scale にすると長い太字が折り返せず、行が崩れる）
+      gsap.fromTo(b, { top: -6 }, { top: 0, duration: 0.6, ease: 'elastic.out(1, 0.45)', clearProps: 'top' });
     }
     function step() {
       if (fin) return;
@@ -121,6 +128,13 @@
     el.addEventListener('click', onTap);
     timer = setTimeout(step, 180);
     return { skip: finish };
+  }
+  /* 彩飾頭文字（テーマ側で .bubble.dropcap::first-letter を使う）をつけてよい文か：
+   *  文字で始まり（数字・記号・書式・用語ボタン・数式で始まらない）、2行以上ある長さのときだけ。短い文に大きな頭文字をつけると行が崩れる */
+  function dropCapOk(t) {
+    t = String(t || '');
+    if (!/^[ぁ-んァ-ヶ一-龠々ーA-Za-z]/.test(t)) return false;
+    return t.replace(/\[\[(.+?)(?:\|(.+?))?\]\]/g, '$1').replace(/\*\*|__|\(\(|\)\)|`/g, '').length >= 36;
   }
   /* 吹き出しの文字が出きってから実行（問い・選択肢を出すタイミング合わせ） */
   function whenTyped(fn) { if (P && P.typing) P.typingQ.push(fn); else fn(); }
@@ -422,7 +436,7 @@
     setReady(false);
     var html = '<div class="ls-step t-' + s.t + '">';
     var bubble = s.t === 'show' ? (s.frames[0].say || '') : s.t === 'say' ? s.text : s.t === 'term' ? 'あたらしい用語だよ！' : s.t === 'recap' ? (window.COURSE && COURSE.recapTap ? 'まとめ！ 思い出せるかな？' : 'ここまでのまとめ！') : s.text || s.q;
-    if (s.t !== 'quiz') html += '<div class="ls-talk">' + pico(s.t === 'recap' ? 'happy' : '') + '<div class="bubble' + (/^[*\s]*[0-9０-９]/.test(bubble || '') ? ' num-start' : '') + '">' + fmtG(bubble) + '</div></div>';
+    if (s.t !== 'quiz') html += '<div class="ls-talk">' + pico(s.t === 'recap' ? 'happy' : '') + '<div class="bubble' + (/^[*\s]*[0-9０-９]/.test(bubble || '') ? ' num-start' : '') + (dropCapOk(bubble) ? ' dropcap' : '') + '">' + fmtG(bubble) + '</div></div>';
     html += '<div class="ls-body"></div></div>';
     st.innerHTML = html;
     var body = $('.ls-body', st);
@@ -1228,6 +1242,10 @@
   /* =========================================================
    * 用語ポップアップ
    * ========================================================= */
+  // 用語ボタンは <span role="button">（<button> だと行の中で1つの箱になり、前後の句読点が泣き別れする）。キーボードでも開ける
+  document.addEventListener('keydown', function (e) {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('gl')) { e.preventDefault(); e.target.click(); }
+  });
   document.addEventListener('click', function (e) {
     var tip = $('#glossTip');
     var g = e.target.closest && e.target.closest('.gl');

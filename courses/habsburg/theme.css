@@ -108,8 +108,8 @@ body {
 }
 .bubble code, .kc-sec code, .recap code { background: rgba(80, 50, 20, 0.12); color: var(--ink); }
 .gl { color: var(--rubric) !important; border-bottom-color: var(--rubric) !important; }
-/* 彩飾頭文字（説明の最初の1文字） */
-.t-say .bubble:not(.num-start)::first-letter {
+/* 彩飾頭文字（説明の最初の1文字。2行以上ある文だけ：lesson.js の dropCapOk） */
+.t-say .bubble.dropcap::first-letter {
   float: left; font-family: 'Shippori Mincho B1', serif; font-weight: 800; font-size: 2.7em; line-height: 1;
   margin: 2px 8px 0 0; padding: 2px 6px; color: var(--rubric);
   background: linear-gradient(160deg, #f6e3a1, #d8b45a); border: 1px solid #a87b25; border-radius: 2px;
