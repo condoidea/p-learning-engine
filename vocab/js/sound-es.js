@@ -7,7 +7,8 @@
 (function () {
   'use strict';
   var R = window.Sfx && Sfx.raw;
-  if (!R) { window.Snd = {}; return; }
+  window.SndPacks = window.SndPacks || {};
+  if (!R) { window.Snd = window.Snd || {}; return; }
 
   /* スペインらしい音階（フリジア旋法：ミ・ファ・ソ#・ラ・シ・ド・レ） */
   var SCALE = [0, 1, 4, 5, 7, 8, 10, 12, 13, 16, 17, 19, 20, 22, 24];
@@ -49,7 +50,8 @@
 
   function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-  window.Snd = {
+  /* サウンドパックとして登録（ui.js がデッキの sound で選ぶ）。既定はこのパック */
+  window.Snd = window.SndPacks.es = {
     tap: function () { R.play(function (t) { pluck(t, f(24), 0.12, 0.3, 0.98); }); },
     flip: function () { R.play(function (t) { R.noise(t, 0.12, 0.08, 3000, 800); pluck(t + 0.03, f(19), 0.16, 0.6); }); },
     /* 予想を選んだ（採点しない） */

@@ -34,5 +34,11 @@ window.LE_COURSES = [
     title: 'スペイン語 単語', brand: '¡VAMOS!', icon: '💃',
     desc: '西検5級→4級の単語と動詞の活用を、予想して出会い、捕まえて図鑑で育てる。1分・5分・10分、気分でも選べる。参考書に合わせた単語のデッキも、アプリの中から読み込める。',
     color: '#ff7a59', color2: '#f2a541', words: 78
+  },
+  {
+    id: 'juku-1009', kind: 'vocab', entry: 'vocab.html?deck=juku-1009', storageKey: 'vocab.juku-1009.v1',
+    title: '英単語　塾プリント10月9日', brand: 'WORD AVENUE', icon: '🗽',
+    desc: '塾プリント Lesson 7 の英単語・熟語。英英の説明から意味を予想し、捕まえて図鑑で育てる。',
+    color: '#8fb8de', color2: '#e0a83b', words: 47
   }
 ];

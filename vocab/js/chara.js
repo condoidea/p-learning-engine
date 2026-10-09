@@ -112,13 +112,20 @@
     return '<svg class="chara pos-' + w.pos + ' mood-' + mood + '" viewBox="0 0 100 100" aria-hidden="true">' + s + '</svg>';
   }
 
-  /* 自キャラ（スキンごとに衣装を変える。España はつばの平らな帽子と赤いスカーフ） */
+  /* 自キャラ（スキンごとに衣装を変える）
+   *  España：つばの平らな帽子と赤いスカーフ／Avenue：紺のキャップと、マスタード色のマフラー */
   function me(opt) {
     opt = opt || {};
+    var avenue = document.documentElement.getAttribute('data-skin') === 'avenue';
     var s = '<ellipse cx="50" cy="94" rx="24" ry="4" fill="rgba(0,0,0,.14)"/>';
     s += '<path d="M24 64 C24 40 36 30 50 30 C64 30 76 40 76 64 C76 84 66 92 50 92 C34 92 24 84 24 64Z" fill="#ffd9a8" stroke="#6b3b1c" stroke-width="2.6"/>';
-    s += '<path d="M30 74 q20 12 40 0 l-4 10 q-16 6 -32 0z" fill="#d6283a" stroke="#6b3b1c" stroke-width="2.2" stroke-linejoin="round"/>';
-    s += '<ellipse cx="50" cy="33" rx="34" ry="6" fill="#2b1d14"/><path d="M34 32 q0 -14 16 -14 q16 0 16 14z" fill="#2b1d14"/><path d="M34 29 h32" stroke="#d6283a" stroke-width="3"/>';
+    if (avenue) {
+      s += '<path d="M30 74 q20 12 40 0 l-4 10 q-16 6 -32 0z" fill="#e0a83b" stroke="#6b3b1c" stroke-width="2.2" stroke-linejoin="round"/><path d="M60 80 l4 12 l6 -2 l-3 -11z" fill="#e0a83b" stroke="#6b3b1c" stroke-width="1.8" stroke-linejoin="round"/>';
+      s += '<path d="M27 38 q0 -20 23 -20 q23 0 23 20 z" fill="#274c77" stroke="#1c2433" stroke-width="2.2"/><path d="M50 38 q22 -2 34 6 q-14 2 -34 0z" fill="#1c3a5c" stroke="#1c2433" stroke-width="2"/><circle cx="50" cy="18" r="2.6" fill="#b23a48"/>';
+    } else {
+      s += '<path d="M30 74 q20 12 40 0 l-4 10 q-16 6 -32 0z" fill="#d6283a" stroke="#6b3b1c" stroke-width="2.2" stroke-linejoin="round"/>';
+      s += '<ellipse cx="50" cy="33" rx="34" ry="6" fill="#2b1d14"/><path d="M34 32 q0 -14 16 -14 q16 0 16 14z" fill="#2b1d14"/><path d="M34 29 h32" stroke="#d6283a" stroke-width="3"/>';
+    }
     s += face(50, 56, opt.mood || 'happy', function () { return 0.3; }, '#4a2a14');
     return '<svg class="chara me" viewBox="0 0 100 100" aria-hidden="true">' + s + '</svg>';
   }

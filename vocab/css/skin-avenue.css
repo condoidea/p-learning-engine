@@ -1,0 +1,45 @@
+/* =========================================================
+ * スキン「Avenue」（WORD AVENUE・英語）：ニューヨークの大通りの、雑誌のようなおしゃれさ
+ *  クリーム色の紙・紺（ネイビー）・れんが色・マスタード。書体はセリフ体
+ *  （英語＝Playfair Display、日本語＝しっぽり明朝）。端末のダークモードには合わせない
+ * ========================================================= */
+html[data-skin="avenue"] {
+  --bg: #f7f2e7;
+  --card: #fffdf8;
+  --ink: #1c2433;
+  --muted: #6b6f78;
+  --line: rgba(28, 36, 51, .12);
+  --line-strong: rgba(28, 36, 51, .24);
+  --accent: #b23a48;        /* れんが色 */
+  --accent-d: #7e2531;
+  --on-accent: #fffaf0;
+  --accent2: #274c77;       /* ネイビー */
+  --sel-bg: rgba(39, 76, 119, .1);
+  --clue-bg: rgba(224, 168, 59, .16);
+  --warn-bg: rgba(224, 168, 59, .26);
+  --mark: rgba(224, 168, 59, .42);
+  --ok: #2d7d5a; --ok-bg: rgba(45, 125, 90, .12);
+  --ng: #b23a48; --ng-bg: rgba(178, 58, 72, .1);
+  --male: #274c77; --female: #b23a48;
+  --shadow: 0 10px 24px -14px rgba(28, 36, 51, .45);
+  --f-es: 'Playfair Display', Georgia, 'Times New Roman', serif;   /* 見出し・単語 */
+  --f-text: 'Source Serif 4', Georgia, 'Times New Roman', serif;    /* 英英定義・例文など、読む文章 */
+  --f-ja: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif;
+  --fx1: #b23a48; --fx2: #e0a83b; --fx3: #274c77; --fx4: #8fb8de;
+  --plaza-near: #dfe8c8; --plaza-far: #c9d8a8;
+  --plaza-sky: linear-gradient(#cfe3f2, rgba(207, 227, 242, 0));
+}
+/* 画面の上に、細いストライプ（アメリカ東海岸のオーニング風）。うすく、上の帯だけ */
+html[data-skin="avenue"] body {
+  background-image:
+    linear-gradient(to bottom, transparent 0, var(--bg) 120px),
+    repeating-linear-gradient(90deg, rgba(39, 76, 119, .07) 0 14px, transparent 14px 28px);
+  background-size: 100% 120px, 100% 120px;
+  background-repeat: no-repeat, no-repeat;
+}
+/* 明朝は細く見えやすいので、本文を少し太めに */
+html[data-skin="avenue"] body { font-weight: 500; }
+html[data-skin="avenue"] .brand b { font-style: italic; letter-spacing: .02em; }
+html[data-skin="avenue"] .q-word, html[data-skin="avenue"] .cj-verb b { letter-spacing: .01em; }
+/* 例文も「読む文章」なので本文用のセリフ体で（見出し用の Playfair は単語とタイトルだけ） */
+html[data-skin="avenue"] .exp-box .ex, html[data-skin="avenue"] .clue .ex, html[data-skin="avenue"] .q-ex { font-family: var(--f-text); font-weight: 600; letter-spacing: 0; }

@@ -4,7 +4,7 @@
  *  意味の色（固定）：正解 --ok／まちがい --ng／男性 --male／女性 --female／ランクの枠
  * ========================================================= */
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; background: var(--bg); }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; background: var(--bg); color-scheme: light; }   /* 端末のダークモードに左右されない */
 body { margin: 0; min-height: 100vh; min-height: 100dvh; background: var(--bg); color: var(--ink); font-family: var(--f-ja); font-size: 16px; line-height: 1.65; overflow-x: hidden; }
 button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; touch-action: manipulation; }
 button:disabled { cursor: default; }
@@ -362,6 +362,15 @@ mark { background: var(--mark); color: inherit; padding: 0 3px; border-radius: 4
 .fchip.lock { opacity: .4; }
 .stage2:empty { display: none; }
 .stage2 { display: flex; flex-direction: column; gap: 8px; }
+
+/* ---- 英英定義 ---- */
+/* 定義は文章なので、見出し用の書体ではなく本文用のセリフ体を、斜体にせずに（読みやすさ優先） */
+.q-def { font-family: var(--f-text, var(--f-es)); font-style: normal; font-weight: 400; font-size: 18px; line-height: 1.55; margin: 0; letter-spacing: 0; }
+.q-card.def .q-def { font-size: 20px; padding: 0 4px; }
+.clue .q-def { font-size: 17px; }
+.memo .q-def { font-size: 15px; }
+.choices.one { grid-template-columns: 1fr; }
+.choices.defs .ch { font-family: var(--f-text, var(--f-es)); font-style: normal; font-weight: 400; font-size: 16px; line-height: 1.45; text-align: left; padding: 10px 14px; }
 
 /* ---- 使い方の型 ---- */
 .use { display: block; margin-top: 2px; font-family: var(--f-es); font-size: 15px; font-weight: 600; color: var(--accent2); }

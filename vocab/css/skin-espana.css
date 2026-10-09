@@ -1,5 +1,6 @@
 /* =========================================================
- * スキン「España」：昼は陽ざしとタイル（アズレージョ）、夜はタブラオ
+ * スキン「España」：陽ざしとタイル（アズレージョ）
+ *  端末のダークモードには合わせない（作った色のまま表示する）
  *  背景のタイル柄は四隅だけ・うすく（文字の邪魔をしない）
  * ========================================================= */
 html[data-skin="espana"] {
@@ -35,31 +36,5 @@ html[data-skin="espana"] body {
   background-size: 100% 150px, 36px 36px, 36px 36px;
   background-repeat: no-repeat, repeat-x, repeat-x;
 }
-@media (prefers-color-scheme: dark) {
-  html[data-skin="espana"] {
-    --bg: #1c1210;
-    --card: #2a1c18;
-    --ink: #f6e8d6;
-    --muted: #b49a86;
-    --line: rgba(246, 220, 190, .12);
-    --line-strong: rgba(246, 220, 190, .24);
-    --accent: #ff7a59;
-    --accent-d: #b3452c;
-    --on-accent: #1c1210;
-    --accent2: #5cc3e0;
-    --sel-bg: rgba(92, 195, 224, .14);
-    --clue-bg: rgba(242, 165, 65, .12);
-    --warn-bg: rgba(242, 165, 65, .2);
-    --mark: rgba(242, 165, 65, .35);
-    --ok: #5fd896; --ok-bg: rgba(95, 216, 150, .12);
-    --ng: #ff6b6b; --ng-bg: rgba(255, 107, 107, .12);
-    --male: #79a8ff; --female: #ff7d9b;
-    --shadow: 0 8px 22px -12px rgba(0, 0, 0, .7);
-    --tile: rgba(92, 195, 224, .07);
-  }
-}
-/* 広場の色（昼：陽ざしの中庭／夜：ランプの灯り） */
+/* 広場の色（陽ざしの中庭） */
 html[data-skin="espana"] { --plaza-near: #f3d9a8; --plaza-far: #e9c78c; --plaza-sky: linear-gradient(#bfe3ef, rgba(191, 227, 239, 0)); }
-@media (prefers-color-scheme: dark) {
-  html[data-skin="espana"] { --plaza-near: #4a2d1e; --plaza-far: #2a1a14; --plaza-sky: linear-gradient(#141030, rgba(20, 16, 48, 0)); }
-}

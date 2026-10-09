@@ -20,7 +20,8 @@
     { id: 'holo', name: 'ホロ', rel: '相棒', mark: 'H', need: 160 }
   ];
   /* コンディションが半分くらいになるまでの日数（レベルが上がるほど長持ち） */
-  var KEEP = [1.5, 4, 9, 20];
+  /* 野生戦のサイクルは少し短め（2026-10-09：1.5/4/9/20 → 約2割短く） */
+  var KEEP = [1.2, 3.2, 7, 16];
   var FRESH = 0.75, WILD = 0.45;    // これ未満で「しおれ」、さらに未満で「野生に戻りかけ」
 
   function fresh() {
@@ -44,7 +45,10 @@
   var SEC = {}; D.sections.forEach(function (s) { SEC[s.id] = s; });
 
   /* 冠詞：g が mf（el/la estudiante のように男女で形が同じ）なら el/la */
-  function art(w) { return w.art || (w.pos === 'n' ? (w.g === 'f' ? 'la' : w.g === 'mf' ? 'el/la' : 'el') : ''); }
+  function art(w) {
+    if (D.lang && D.lang !== 'es') return w.art || '';   /* 冠詞を自動でつけるのはスペイン語だけ */
+    return w.art || (w.pos === 'n' ? (w.g === 'f' ? 'la' : w.g === 'mf' ? 'el/la' : 'el') : '');
+  }
   function card(id) { return S.cards[id] || null; }
   function rankOf(exp) { var r = 0; RANKS.forEach(function (R, i) { if (exp >= R.need) r = i; }); return r; }
 

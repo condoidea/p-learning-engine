@@ -27,8 +27,8 @@
     var syn = window.speechSynthesis, voice = null;
     function find() {
       if (!syn) return null;
-      var vs = syn.getVoices() || [], L = D.lang;
-      voice = vs.filter(function (v) { return /^es[-_]ES/i.test(v.lang); })[0] ||
+      var vs = syn.getVoices() || [], L = D.lang || 'es', VL = (D.voice || (L === 'en' ? 'en-US' : 'es-ES')).toLowerCase();
+      voice = vs.filter(function (v) { return v.lang && v.lang.replace('_', '-').toLowerCase() === VL; })[0] ||
               vs.filter(function (v) { return v.lang && v.lang.toLowerCase().indexOf(L) === 0; })[0] || null;
       return voice;
     }
@@ -120,7 +120,16 @@
       shake: function (el) { if (G && el) G.fromTo(el, { x: -10 }, { x: 0, duration: 0.45, ease: 'elastic.out(1.2,0.3)' }); }
     };
   })();
-  var PRAISE = ['¡Bien!', '¡Muy bien!', '¡Eso es!', '¡Perfecto!', '¡Olé!', '¡Genial!'];
+  /* デッキの言語ごとのことば（ほめ言葉・捕獲・進化・あいさつ） */
+  var T = D.lang === 'en' ? {
+    praise: ['Nice!', 'Great!', 'Awesome!', 'Perfect!', 'Brilliant!', 'Outstanding!'], cap: 'Got it!', evo: ['LEVEL UP!', 'BRAVO!', 'SWEET!'],
+    hi: 'Hi!', yes: 'Yes!', newForm: 'NEW FORM!', titleA: 'Great job!', titleB: 'Nice work!', inLang: '英語では？'
+  } : {
+    praise: ['¡Bien!', '¡Muy bien!', '¡Eso es!', '¡Perfecto!', '¡Olé!', '¡Genial!'], cap: '¡Capturado!', evo: ['¡EVOLUCIÓN!', '¡OLÉ!', '¡ARRIBA!'],
+    hi: '¡Hola!', yes: '¡Sí!', newForm: '¡NUEVA FORMA!', titleA: '¡Muy bien!', titleB: '¡Buen trabajo!', inLang: 'スペイン語では？'
+  };
+  var PRAISE = T.praise;
+  if (window.SndPacks && SndPacks[D.sound]) window.Snd = SndPacks[D.sound];
 
   /* =========================================================
    * 画面の切りかえ
@@ -134,7 +143,7 @@
   }
 
   /* ---- カード（見出し） ---- */
-  function gcls(w) { return w.pos === 'n' ? ' g-' + (w.g || 'm') : ''; }
+  function gcls(w) { return w.pos === 'n' && w.g ? ' g-' + w.g : ''; }
   function headHtml(w) {
     var a = V.art(w);
     return (a ? '<span class="art">' + a + '</span> ' : '') + '<span class="w">' + esc(w.w) + '</span>';
@@ -170,7 +179,7 @@
   function ringOf(c) { return c >= 0.85 ? 0 : c >= 0.6 ? 1 : c >= 0.36 ? 2 : c >= 0.16 ? 3 : 4; }
   function renderPlaza() {
     var box = $('#plaza'), ids = Object.keys(S.cards).filter(function (id) { return V.word(id); });
-    if (!ids.length) { box.innerHTML = '<span class="p-me">' + Chara.me() + '</span><p class="p-empty">まだ仲間がいない。👀 や 🌱 で単語と出会おう</p>'; return; }
+    if (!ids.length) { box.innerHTML = '<span class="p-me">' + Chara.me() + '</span><p class="p-empty">まだ仲間がいない。' + (V.faceList().length ? '👀 や 🌱' : '🌱 出会い') + ' で単語と出会おう</p>'; return; }
     var rings = [[], [], [], [], []], CAP = [6, 8, 10, 12, 12], shown = 0;
     ids.map(function (id) { return { id: id, c: nowClose(id), st: V.state(id), h: Chara.hash(id) }; })
       .sort(function (a, b) { var fa = famOf(V.word(a.id)) || '~', fb = famOf(V.word(b.id)) || '~'; return fa < fb ? -1 : fa > fb ? 1 : a.h - b.h; })
@@ -320,10 +329,11 @@
 
   /* ---- 選択肢 ---- */
   function others(w, n, key) {
-    var val = function (x) { return key === 'head' ? V.head(x) : key === 'form' ? formOf(x) : x.ja; };
+    var val = function (x) { return key === 'head' ? V.head(x) : key === 'form' ? formOf(x) : key === 'def' ? x.def : x.ja; };
+    var fit = function (x) { return x !== w && (key === 'ja' || x.ja !== w.ja) && (key !== 'def' || x.def); };
     var mine = val(w), seen = {}; seen[mine] = 1;
-    var same = shuffle(D.words.filter(function (x) { return x !== w && x.pos === w.pos; }));
-    var rest = shuffle(D.words.filter(function (x) { return x !== w && x.pos !== w.pos; }));
+    var same = shuffle(D.words.filter(function (x) { return fit(x) && x.pos === w.pos; }));
+    var rest = shuffle(D.words.filter(function (x) { return fit(x) && x.pos !== w.pos; }));
     var out = [];
     same.concat(rest).forEach(function (x) { var v = val(x); if (out.length < n && !seen[v]) { seen[v] = 1; out.push(v); } });
     return out;
@@ -338,14 +348,20 @@
     var tag = opt.tag || '';
     if (type === 'spell') return askSpell(w, opt, done);
     if (type === 'form') return askForm(w, opt, done);
-    if (type === 'es2ja') {
+    if (type === 'def2w') {
+      prompt = '<div class="q-card def' + rankCls(w.id) + '">' + tag + '<p class="q-def">' + esc(w.def) + '</p><small class="pos">' + POS[w.pos] + '・📖 英英辞典の説明</small></div><p class="q-ask">この説明の単語は？</p>';
+      right = V.head(w); list = shuffle([right].concat(others(w, 3, 'head'))).map(esc);
+    } else if (type === 'w2def') {
+      prompt = '<div class="q-card' + gcls(w) + rankCls(w.id) + '">' + tag + '<div class="q-word">' + headHtml(w) + '</div>' + useHtml(w) + sayBtn(V.head(w)) + '</div><p class="q-ask">📖 英英辞典の説明は？</p>';
+      right = w.def; list = shuffle([right].concat(others(w, 3, 'def'))).map(esc);
+    } else if (type === 'es2ja') {
       prompt = '<div class="q-card' + gcls(w) + rankCls(w.id) + '">' + tag + '<div class="q-word">' + headHtml(w) + '</div>' + sayBtn(V.head(w)) + '</div><p class="q-ask">意味は？</p>';
       right = w.ja; list = shuffle([right].concat(others(w, 3, 'ja'))).map(esc);
     } else if (type === 'listen') {
       prompt = '<div class="q-card listen' + rankCls(w.id) + '">' + tag + '<button class="big-say" data-say="' + esc(V.head(w)) + '">🔊</button><button class="say slow" data-say="' + esc(V.head(w)) + '">🐢</button></div><p class="q-ask">聞こえた単語の意味は？</p>';
       right = w.ja; list = shuffle([right].concat(others(w, 3, 'ja'))).map(esc);
     } else if (type === 'ja2es') {
-      prompt = '<div class="q-card ja' + rankCls(w.id) + '">' + tag + '<div class="q-ja">' + esc(w.ja) + '</div><small class="pos">' + POS[w.pos] + '</small></div><p class="q-ask">スペイン語では？</p>';
+      prompt = '<div class="q-card ja' + rankCls(w.id) + '">' + tag + '<div class="q-ja">' + esc(w.ja) + '</div><small class="pos">' + POS[w.pos] + '</small></div><p class="q-ask">' + T.inLang + '</p>';
       right = V.head(w); list = shuffle([right].concat(others(w, 3, 'head'))).map(esc);
     } else if (type === 'cloze') {
       prompt = '<div class="q-card cloze' + rankCls(w.id) + '">' + tag + '<div class="q-ex">' + esc(w.ex[0]).replace(/\{[^}]+\}/, '<span class="blank">？</span>') + '</div><small class="q-exja">' + esc(w.ex[1]) + '</small></div><p class="q-ask">？に入るのは？</p>';
@@ -354,8 +370,8 @@
       var cs = function (x) { return top ? x.charAt(0).toUpperCase() + x.slice(1) : x.charAt(0).toLowerCase() + x.slice(1); };
       right = formOf(w); list = shuffle([right].concat(others(w, 3, 'form').map(cs))).map(esc);
     }
-    var s = stage('<div class="q">' + (opt.track || '') + prompt + choiceHtml(list, type === 'ja2es' || type === 'cloze' ? 'es' : '') + '<div class="after"></div></div>');
-    if (type === 'es2ja' || type === 'listen') setTimeout(function () { Speech.say(V.head(w)); }, 250);
+    var s = stage('<div class="q">' + (opt.track || '') + prompt + choiceHtml(list, type === 'w2def' ? 'one defs' : type === 'ja2es' || type === 'cloze' || type === 'def2w' ? 'es' : '') + '<div class="after"></div></div>');
+    if (type === 'es2ja' || type === 'listen' || type === 'w2def') setTimeout(function () { Speech.say(V.head(w)); }, 250);
     var answered = false, ri = list.indexOf(esc(right));
     $$('.ch', s).forEach(function (b) {
       b.addEventListener('click', function () {
@@ -366,6 +382,7 @@
         var card = $('.q-card', s);
         if (type === 'listen') card.insertAdjacentHTML('beforeend', '<div class="q-word reveal' + gcls(w) + '">' + headHtml(w) + '</div>');
         if (type === 'cloze') { var bl = $('.blank', s); if (bl) { bl.textContent = right; bl.classList.add('filled'); } }
+        if (type === 'def2w') Speech.say(V.head(w));
         if (type === 'ja2es' || type === 'cloze') Speech.say(type === 'cloze' ? w.ex[0] : V.head(w));
         feedback(ok, b, card);
         done(ok, s);
@@ -446,11 +463,12 @@
   }
   function memoHtml(w) {
     return '<div class="exp-box"><div class="ex">' + exHtml(w.ex[0]) + ' ' + sayBtn(w.ex[0]) + '</div><small>' + esc(w.ex[1]) + '</small>' +
+      (w.def ? '<p class="memo">📖 <span class="q-def">' + esc(w.def) + '</span></p>' : '') +
       (w.memo ? '<p class="memo">💡 ' + esc(w.memo) + '</p>' : '') + verbHtml(w) + (CU ? famHtml(w) : '') + '</div>';
   }
   /* 動詞：活用のくせと、大事な3つの形（現在 yo・点過去 yo・過去分詞） */
   function verbHtml(w) {
-    if (w.pos !== 'v' || !window.Conj) return '';
+    if (w.pos !== 'v' || !window.Conj || !CU) return '';
     return '<p class="memo">🔁 ' + esc(Conj.kind(w.w)) + '：' + esc(Conj.form(w.w, 'pres', 0)) + '（現在）・' + esc(Conj.form(w.w, 'pret', 0)) + '（点過去）・' + esc(Conj.form(w.w, 'perf', 0).replace(/^(me |)he /, '')) + '（過去分詞）</p>';
   }
 
@@ -467,7 +485,7 @@
     fly.style.left = (a.left + a.width / 2) + 'px'; fly.style.top = (a.top + a.height / 2) + 'px';
     document.body.appendChild(fly);
     FX.burst(src, null, 22);
-    FX.float(src, '¡Capturado!', 'cap');
+    FX.float(src, T.cap, 'cap');
     var end = function () { fly.remove(); $('#pDex').textContent = V.caughtCount(); tw($('#pDexBox'), { scale: 1.5 }, { scale: 1, duration: 0.5, ease: 'back.out(3)' }); };
     if (!G) return end();
     G.timeline({ onComplete: end })
@@ -478,7 +496,7 @@
     ses.ups.push(w.id);
     setTimeout(function () {
       if (window.Snd) Snd.levelUp(up);
-      FX.slam(pick(['¡EVOLUCIÓN!', '¡OLÉ!', '¡ARRIBA!']), w.w + ' と ' + V.RANKS[up].rel + 'に！（' + V.RANKS[up].name + '）');
+      FX.slam(pick(T.evo), w.w + ' と ' + V.RANKS[up].rel + 'に！（' + V.RANKS[up].name + '）');
       FX.rain(up >= 3 ? 'petal' : null);
     }, 350);
   }
@@ -499,7 +517,7 @@
       function settle(ok, el) {
         if (answered) return; answered = true;
         $$('.ch, .dunno', s).forEach(function (x) { x.disabled = true; if (x.classList.contains('ch') && +x.dataset.i === ri) x.classList.add('right'); });
-        if (ok) { feedback(true, el, $('.q-card', s)); moveTrack(s, w, REL_C[0], 'happy', '¡Hola!'); captureFx(w, $('.q-card', s), true); setTimeout(one, 1300); }
+        if (ok) { feedback(true, el, $('.q-card', s)); moveTrack(s, w, REL_C[0], 'happy', T.hi); captureFx(w, $('.q-card', s), true); setTimeout(one, 1300); }
         else {
           if (el.classList.contains('ch')) { el.classList.add('wrong'); feedback(false, el, $('.q-card', s)); } else ses.combo = 0;
           V.toMeet(w.id); moveTrack(s, w, 0.02, 'meh');
@@ -515,7 +533,7 @@
   /* =========================================================
    * 🌱 出会い：予想 → 説明 → 見分ける → 捕獲
    * ========================================================= */
-  var CLUE = { cog: '🔗 英語と似ている', trap: '⚠️ 英語と似ているけど…', parts: '🧩 部品に分けると', ctx: '🎬 こんな場面' };
+  var CLUE = { def: '📖 英英辞典では', cog: '🔗 英語と似ている', trap: '⚠️ 英語と似ているけど…', parts: '🧩 部品に分けると', ctx: '🎬 こんな場面' };
   function blockMeet(b, next) {
     var words = V.meetList().slice(0, b.n), k = 0;
     function meetOne() {
@@ -526,8 +544,8 @@
       if (c.lure) opts.push(c.lure);
       opts = shuffle(opts.concat(others(w, 3 - opts.length, 'ja').filter(function (x) { return x !== c.lure; }).slice(0, 3 - opts.length)));
       var s = stage('<div class="q meet">' + trackHtml(w, 0.04, 'wow') + '<div class="q-card big' + gcls(w) + '"><span class="qtag">🌱 出会い ' + k + ' / ' + words.length + '</span>' +
-        '<div class="q-word">' + headHtml(w) + '</div>' + useHtml(w) + sayBtn(V.head(w)) + '<small class="pos">' + POS[w.pos] + (w.pos === 'n' ? (w.g === 'f' ? '・女性' : w.g === 'mf' ? '・男女同形' : w.fem ? '・男性（女性形あり）' : '・男性') : '') + '</small>' + refHtml(w) + '</div>' +
-        '<div class="clue"><b>' + CLUE[c.t] + '</b><p>' + esc(c.text) + '</p>' + (c.t === 'ctx' ? '<div class="ex">' + exHtml(w.ex[0]) + '</div>' : '') + '</div>' +
+        '<div class="q-word">' + headHtml(w) + '</div>' + useHtml(w) + sayBtn(V.head(w)) + '<small class="pos">' + POS[w.pos] + (w.pos === 'n' && w.g ? (w.g === 'f' ? '・女性' : w.g === 'mf' ? '・男女同形' : w.fem ? '・男性（女性形あり）' : '・男性') : '') + '</small>' + refHtml(w) + '</div>' +
+        '<div class="clue"><b>' + CLUE[c.t] + '</b>' + (c.t === 'def' ? '<p class="q-def">' + esc(w.def || '') + '</p>' : '<p>' + esc(c.text) + '</p>') + (c.t === 'ctx' ? '<div class="ex">' + exHtml(w.ex[0]) + '</div>' : '') + '</div>' +
         '<p class="q-ask">🤔 どんな意味だと思う？<small>（予想なので、まちがえても大丈夫）</small></p>' + choiceHtml(opts.map(esc)) + '<div class="after"></div></div>');
       setTimeout(function () { Speech.say(V.head(w)); }, 300);
       var done = false, ri = opts.indexOf(w.ja);
@@ -539,7 +557,7 @@
           if (!ok) x.classList.add('miss');
           if (window.Snd) (ok ? Snd.ok(0) : Snd.flip());
           if (ok) FX.burst(x, 'petal', 16);
-          moveTrack(s, w, 0.11, 'happy', ok ? '¡Sí!' : '');
+          moveTrack(s, w, 0.11, 'happy', ok ? T.yes : '');
           var head = ok ? '🎯 予想的中！' : c.t === 'trap' && opts[+x.dataset.i] === c.lure ? '😆 ひっかかった！ 英語とはちがう意味' : '💡 正解は…';
           after(s, '<p class="reveal-h">' + head + '</p><div class="meaning' + gcls(w) + '">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b>' + useHtml(w) + '</div>' + memoHtml(w), meetOne);
           if (ses.met.indexOf(w.id) < 0) ses.met.push(w.id);
@@ -552,7 +570,7 @@
       var need = {}, q = [];
       var close = {};
       words.forEach(function (w) { need[w.id] = 2; close[w.id] = 0.11; q.push([w, Speech.ok() && Math.random() < 0.5 ? 'listen' : 'es2ja']); });
-      q = shuffle(q).concat(shuffle(words.map(function (w) { return [w, 'ja2es']; })));
+      q = shuffle(q).concat(shuffle(words.map(function (w) { return [w, w.def && Math.random() < 0.5 ? 'def2w' : 'ja2es']; })));
       var total = q.length, n = 0;
       function one() {
         var it = q.shift(); if (!it) return next();
@@ -581,7 +599,9 @@
     if (Speech.ok()) t.push('listen');
     if (easy) return pick(t);
     if (lv >= 1) t.push('ja2es');
-    if (lv >= 2 && !/\s/.test(w.w)) t.push('spell');   /* 2語以上の表現（contento de）はつづりの組み立てに出さない */
+    if (lv >= 1 && w.def) t.push('def2w');
+    if (lv >= 2 && !/\s/.test(w.w)) t.push('spell');
+    if (lv >= 2 && w.def) t.push('w2def');   /* 2語以上の表現（contento de）はつづりの組み立てに出さない */
     if (lv >= 3) t.push('cloze');
     if (w.pos === 'v' && CU && learned(w).length && Math.random() < 0.45) return 'form';
     return Math.random() < 0.5 ? t[t.length - 1] : pick(t);   // 半分は、いまのレベルのいちばん難しい問い方
@@ -595,7 +615,7 @@
     setTimeout(function () {
       ask(w, typesFor(w), { tag: tag, track: trackHtml(w, c0, m0) }, function (ok, s) {
         var r = V.answer(w.id, ok);
-        if (ok) moveTrack(s, w, Chara.closeness(V.card(w.id).lv, 1), 'happy', r.back ? 'おかえり！' : r.up ? V.RANKS[r.up].rel + 'に！' : '¡Hola!');
+        if (ok) moveTrack(s, w, Chara.closeness(V.card(w.id).lv, 1), 'happy', r.back ? 'おかえり！' : r.up ? V.RANKS[r.up].rel + 'に！' : T.hi);
         else moveTrack(s, w, Math.max(0.03, c0 - 0.12), 'sleep', '…');
         if (ok) {
           ses.exp += r.exp;
@@ -818,7 +838,7 @@
           if (!ok) x.classList.add('miss');
           if (window.Snd) (ok ? Snd.ok(0) : Snd.flip());
           Speech.say(right);
-          moveTrack(s, w, 0.11, 'happy', ok ? '¡Sí!' : '');
+          moveTrack(s, w, 0.11, 'happy', ok ? T.yes : '');
           S.cjSeen[U.id] = 1; V.save();
           after(s, '<p class="reveal-h">' + (ok ? '🎯 予想的中！' : '💡 正解は ' + esc(right)) + '</p><div class="u-model"><p class="u-cap"><b>' + esc(w.w) + '</b>（' + esc(w.ja) + '）<small>' + esc(Conj.kind(w.w)) + '</small></p>' + conjTable(w.w, t, p) + '</div>', practice);
         });
@@ -866,7 +886,7 @@
     ses.caught.push(id); ses.exp += r.exp;
     if (window.Snd) Snd.capture();
     FX.burst(el, null, 22);
-    FX.float(el, '¡Lo tengo!', 'cap');
+    FX.float(el, T.cap, 'cap');
   }
   /* 野生戦：しおれた活用カード */
   function fightCj(id, tagText, cb) {
@@ -878,7 +898,7 @@
       askConj({ w: w, t: t, p: p }, pick(['pick', 'cue', 'build', 'which']), { tag: '<span class="qtag">' + tagText + '</span>', track: trackHtml(w, c0, m0) }, function (ok, s) {
         var r = V.answer(id, ok);
         if (ok) {
-          moveTrack(s, w, Chara.closeness(V.card(id).lv, 1), 'happy', r.back ? 'おかえり！' : '¡Hola!');
+          moveTrack(s, w, Chara.closeness(V.card(id).lv, 1), 'happy', r.back ? 'おかえり！' : T.hi);
           ses.exp += r.exp;
           FX.float($('.q-card', s), '+' + r.exp + ' EXP', 'exp');
           if (r.back) { ses.backs++; ses.backIds.push(id); }
@@ -1056,7 +1076,7 @@
           if (!ok) x.classList.add('miss');
           if (window.Snd) (ok ? Snd.ok(0) : Snd.flip());
           Speech.say(right);
-          moveTrack(s3, w, nowClose(w.id), 'happy', ok ? '¡Sí!' : '');
+          moveTrack(s3, w, nowClose(w.id), 'happy', ok ? T.yes : '');
           after(s3, '<p class="reveal-h">' + (ok ? '🎯 予想的中！' : '💡 正解は ' + esc(right)) + '</p>' + conjTable(w.w, t, p), practice);
         });
       });
@@ -1075,7 +1095,7 @@
               got = true; capCj(id, $('.q-card', s4));
               moveTrack(s4, w, nowClose(w.id), 'happy', '新しいフォルム！');
               var bud = $('.t-bud', s4); if (bud) bud.firstChild.outerHTML = cs(w, { mood: 'happy' });
-              FX.slam('¡NUEVA FORMA!', w.w + ' が ' + TN[t].name + ' を覚えた');
+              FX.slam(T.newForm, w.w + ' が ' + TN[t].name + ' を覚えた');
             }
             after(s4, conjTable(w.w, t, p), one, got ? 0 : 1500);
           } else { q.push(ty); total++; after(s4, '<p class="note">' + esc(U.rule) + '</p>' + conjTable(w.w, t, p), one); }
@@ -1130,16 +1150,17 @@
    *  同じ id のデッキがあれば「足す（課ごとに追加）」か「全部入れかえ」を選べる。
    *  進み具合は単語の id で記録しているので、どちらでも引き継がれる。
    * ========================================================= */
-  var BUILTIN_ID = 'spanish';
-  function deckName() { return D.brand + (D.book ? '（' + D.book + '）' : ''); }
+  var APP = D.app || D.lang || 'es';
+  function deckName() { return D.title; }
   function openDecks(msg) {
-    var box = $('#sheetBody'), list = window.VocabDecks ? VocabDecks.list() : [];
+    var box = $('#sheetBody'), list = (window.VocabDecks ? VocabDecks.list() : []).filter(function (d) { return (d.lang || 'es') === APP; });
+    var builtin = (window.VocabDecks && VocabDecks.builtin || []).filter(function (b) { return b.app === APP; });
     var cur = D.id;
     var item = function (id, name, sub, href) {
       return '<a class="deck-item' + (id === cur ? ' cur' : '') + '" href="' + href + '"><b>' + esc(name) + '</b><small>' + esc(sub) + '</small>' + (id === cur ? '<span class="dcur">いま使っている</span>' : '') + '</a>';
     };
     box.innerHTML = '<p class="u-title">📚 デッキ</p>' +
-      item(BUILTIN_ID, '¡VAMOS!', 'アプリに入っている単語（西検 5級 → 4級）', 'vocab.html') +
+      builtin.map(function (b) { return item(b.id, b.brand + '　' + b.title, 'アプリに入っている単語（' + b.sub + '・' + b.words + '語）', 'vocab.html?deck=' + b.id); }).join('') +
       list.map(function (d) { return item(d.id, d.brand + '　' + d.title, (d.book ? '📗 ' + d.book + '・' : '') + d.words + '語（この端末に読み込んだデッキ）', 'vocab.html?deck=' + encodeURIComponent(d.id)); }).join('') +
       '<div class="deck-imp"><p class="u-cap"><b>＋ 参考書のデッキを読み込む</b></p>' +
       '<p class="note">参考書に合わせて作った単語のファイル（.json）を、この端末に読み込みます。端末の中だけに保存され、公開されません。数百語でも大丈夫です。<br>同じデッキに、課ごとのファイルを足していくこともできます。</p>' +
@@ -1200,7 +1221,7 @@
     if (window.Snd) Snd.finish();
     go('done');
     var grown = []; ses.caught.concat(ses.ups, ses.backIds).forEach(function (id) { if (grown.indexOf(id) < 0) grown.push(id); });
-    $('#dTitle').textContent = ses.caught.length || ses.ups.length ? '¡Muy bien!' : '¡Buen trabajo!';
+    $('#dTitle').textContent = ses.caught.length || ses.ups.length ? T.titleA : T.titleB;
     var lines = [];
     var cWords = ses.caught.filter(function (id) { return !V.isCj(id); }).length, cCj = ses.caught.length - cWords;
     if (cWords) lines.push('📖 図鑑に <b>' + cWords + '枚</b> 追加');
@@ -1294,7 +1315,7 @@
    * ========================================================= */
   function bind() {
     if (window.VOCAB_DECK_MISSING) {
-      document.getElementById('app').innerHTML = '<div class="interlude"><p class="big-t">📗 デッキが見つからない</p><p>「' + esc(window.VOCAB_DECK_MISSING) + '」は、この端末にまだ読み込まれていません。<br>¡VAMOS! の「📚 デッキ」から読み込んでください。</p><a class="next" href="vocab.html">¡VAMOS! へ</a></div>';
+      document.getElementById('app').innerHTML = '<div class="interlude"><p class="big-t">📗 デッキが見つからない</p><p>「' + esc(window.VOCAB_DECK_MISSING) + '」は、この端末にまだ読み込まれていません。<br>アプリの「📚 デッキ」から読み込んでください。</p><a class="next" href="index.html">コース一覧へ</a></div>';
       return;
     }
     document.title = D.brand + '｜' + D.title;
