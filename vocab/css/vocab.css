@@ -24,7 +24,7 @@ button:disabled { cursor: default; }
 /* ---- ホーム ---- */
 .h-head { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
 .back { color: var(--muted); font-size: 13px; text-decoration: none; }
-.brand b { display: block; font-family: var(--f-es); font-weight: 800; font-style: italic; font-size: 40px; line-height: 1.1; color: var(--accent); letter-spacing: -.01em; }
+.brand b { display: block; font-family: var(--f-es); font-weight: 800; font-style: italic; font-size: clamp(24px, 9vw, 40px); overflow-wrap: anywhere; line-height: 1.1; color: var(--accent); letter-spacing: -.01em; }
 .brand small { color: var(--muted); font-size: 14px; }
 .stats { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
 .st { padding: 10px 12px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); text-align: left; min-width: 0; }
