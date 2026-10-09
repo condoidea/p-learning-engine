@@ -18,7 +18,7 @@
   function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
   var G = window.gsap || null;
   function tw(el, from, to) { if (!G || !el) return; G.fromTo(el, from, to); }
-  var POS = { n: '名詞', v: '動詞', adj: '形容詞', adv: '副詞' };
+  var POS = { n: '名詞', v: '動詞', adj: '形容詞', adv: '副詞', phr: '表現' };
 
   /* =========================================================
    * 読み上げ（標準の音声合成。学ぶ言語の声を自動で選ぶ。声がなければ出さない）
@@ -210,7 +210,7 @@
       { id: 'face', ico: '👀', name: '顔見知りチェック', sub: face ? '5級の語 残り ' + face + '語' : '', off: !face, hide: !face },
       { id: 'meet', ico: '🌱', name: '出会い', sub: meet ? '新しい単語を3つ' : 'ぜんぶ出会った！', off: !meet },
       { id: 'wild', ico: '⚔', name: '野生戦', sub: wild ? 'しおれた単語 ' + wild + '体' : untilWild(), off: !wild },
-      { id: 'conj', ico: '🔁', name: '活用', sub: conjSub() },
+      { id: 'conj', ico: '🔁', name: '活用', sub: conjSub(), hide: !CU || !D.words.some(function (w) { return w.pos === 'v'; }) },
       { id: 'dex', ico: '📖', name: '図鑑', sub: wild ? 'しおれ ' + wild + '枚' : got + '枚' }
     ];
     $('#alacarte').innerHTML = tiles.filter(function (t) { return !t.hide; }).map(function (t) {
@@ -220,6 +220,8 @@
     $('#hWant').hidden = !wl.length;
     if (wl.length) $('#hWant').innerHTML = '<span class="wb">' + cs(wl[0].w, { mood: 'wow' }) + '</span><span>💬 <b>' + esc(wl[0].w.w) + '</b> が <b>' + TN[wl[0].t].name + '</b> を覚えたがっている！' +
       (wl.length > 1 ? '<small>ほかに ' + (wl.length - 1) + '体</small>' : '') + '</span>';
+    $('#hRange').hidden = D.sections.length < 2;
+    $('#hRange').innerHTML = '📗 範囲：<b>' + esc(rangeText()) + '</b><small>変える ›</small>';
     $('#hWild').hidden = !wild;
     $('#hWild').textContent = '🥀 しおれかけの単語が ' + wild + ' 枚。野生に戻る前に助けよう';
     $('#tgSound').checked = S.settings.sound;
@@ -232,6 +234,28 @@
     if (!CU) return '';
     var got = 0, total = 0; CU.units.forEach(function (u) { var d = unitDone(u); got += d.got; total += d.total; });
     return '動詞の形 ' + got + ' / ' + total + '　次：' + nextUnit().name;
+  }
+  function rangeText() {
+    var r = S.settings.range;
+    if (!r || !r.length) return 'すべて';
+    var names = D.sections.filter(function (x) { return r.indexOf(x.id) >= 0; }).map(function (x) { return x.name; });
+    return names.length <= 2 ? names.join('・') : names[0] + ' ほか' + (names.length - 1);
+  }
+  function openRange() {
+    var r = (S.settings.range || []).slice(), box = $('#sheetBody');
+    function draw() {
+      box.innerHTML = '<p class="u-title">📗 範囲をえらぶ</p><p class="note">えらんだ範囲の単語だけで、出会い・野生戦・活用をする</p><div class="rng">' +
+        D.sections.map(function (x) {
+          var ws = D.words.filter(function (w) { return w.s === x.id; }), got = ws.filter(function (w) { return V.card(w.id); }).length;
+          return '<button class="rchip' + (r.indexOf(x.id) >= 0 ? ' on' : '') + '" data-sec="' + esc(x.id) + '"><b>' + esc(x.name) + '</b><small>' + (x.ref ? esc(x.ref) + '　' : '') + got + ' / ' + ws.length + '</small></button>';
+        }).join('') + '</div><div class="d-btns"><button class="next" id="rOk">この範囲にする</button><button class="ghost" id="rAll">すべてにする</button></div>';
+      $$('.rchip', box).forEach(function (b) { b.addEventListener('click', function () { var i = r.indexOf(b.dataset.sec); if (i >= 0) r.splice(i, 1); else r.push(b.dataset.sec); draw(); }); });
+      $('#rOk', box).addEventListener('click', function () { S.settings.range = r.length === D.sections.length ? [] : r; V.save(); closeSheet(); renderHome(); });
+      $('#rAll', box).addEventListener('click', function () { S.settings.range = []; V.save(); closeSheet(); renderHome(); });
+    }
+    draw();
+    $('#sheet').hidden = false;
+    tw($('#sheet .sh'), { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' });
   }
   /* 次の野生まで（再会は翌日から。出会った当日は「あと○時間」と見せる） */
   function untilWild() {
@@ -409,6 +433,11 @@
     $('.next', box).addEventListener('click', nx);
     if (auto) setTimeout(nx, auto);
   }
+  function refHtml(w) {
+    if (!D.book) return '';
+    var sec = V.SEC[w.s];
+    return '<small class="ref">📗 ' + esc(sec ? sec.name : w.s) + (w.ref ? '・' + esc(w.ref) : '') + '</small>';
+  }
   function memoHtml(w) {
     return '<div class="exp-box"><div class="ex">' + exHtml(w.ex[0]) + ' ' + sayBtn(w.ex[0]) + '</div><small>' + esc(w.ex[1]) + '</small>' +
       (w.memo ? '<p class="memo">💡 ' + esc(w.memo) + '</p>' : '') + verbHtml(w) + (CU ? famHtml(w) : '') + '</div>';
@@ -491,7 +520,7 @@
       if (c.lure) opts.push(c.lure);
       opts = shuffle(opts.concat(others(w, 3 - opts.length, 'ja').filter(function (x) { return x !== c.lure; }).slice(0, 3 - opts.length)));
       var s = stage('<div class="q meet">' + trackHtml(w, 0.04, 'wow') + '<div class="q-card big' + gcls(w) + '"><span class="qtag">🌱 出会い ' + k + ' / ' + words.length + '</span>' +
-        '<div class="q-word">' + headHtml(w) + '</div>' + sayBtn(V.head(w)) + '<small class="pos">' + POS[w.pos] + (w.pos === 'n' ? (w.g === 'f' ? '・女性' : '・男性') : '') + '</small></div>' +
+        '<div class="q-word">' + headHtml(w) + '</div>' + sayBtn(V.head(w)) + '<small class="pos">' + POS[w.pos] + (w.pos === 'n' ? (w.g === 'f' ? '・女性' : '・男性') : '') + '</small>' + refHtml(w) + '</div>' +
         '<div class="clue"><b>' + CLUE[c.t] + '</b><p>' + esc(c.text) + '</p>' + (c.t === 'ctx' ? '<div class="ex">' + exHtml(w.ex[0]) + '</div>' : '') + '</div>' +
         '<p class="q-ask">🤔 どんな意味だと思う？<small>（予想なので、まちがえても大丈夫）</small></p>' + choiceHtml(opts.map(esc)) + '<div class="after"></div></div>');
       setTimeout(function () { Speech.say(V.head(w)); }, 300);
@@ -600,7 +629,9 @@
    *  練習の問い方：組み立てる（語幹＋語尾）／形をえらぶ／誰の形？／文の手がかりから時制をえらぶ
    *  動詞×時制ごとにカード（cj:動詞:時制）。2回正解で覚えた（ブロンズ）。成長・しおれは単語と同じ
    * ========================================================= */
-  var CU = window.VOCAB_CONJ || null, TN = window.Conj ? Conj.TENSES : {};
+  var CU = (!D.lang || D.lang === 'es') && window.Conj ? window.VOCAB_CONJ || null : null, TN = window.Conj ? Conj.TENSES : {};
+  /* お手本・予想の動詞（デッキになければ、活用レッスンの辞書 lex から） */
+  function mw(id) { return V.word(id) || { id: 'lex-' + id, w: id, ja: (CU && CU.lex && CU.lex[id]) || '', pos: 'v', i: 0 }; }
   var PRON_SHOW = ['yo', 'tú', 'él', 'nosotros', 'vosotros', 'ellos'];
   function pronOf(p, t) { return t === 'imp' ? (p === 1 ? 'tú' : 'usted') : PRON_SHOW[p]; }
   function pjOf(p, t) { return t === 'imp' ? (p === 1 ? '君に' : 'あなたに') : Conj.PRON_JA[p]; }
@@ -609,7 +640,10 @@
   function unitOf(id) { return CU.units.filter(function (u) { return u.id === id; })[0]; }
   function unitCards(u) {
     var out = [];
-    u.verbs.forEach(function (vid) { var w = V.word(vid); if (!w) return; (u.tenses || [u.tense]).forEach(function (t) { if (personsOf(w, t).length) out.push(V.cjId(vid, t)); }); });
+    D.words.forEach(function (w) {
+      if (w.pos !== 'v' || !V.inRange(w)) return;
+      (u.tenses || [u.tense]).forEach(function (t) { if (unitFor(w, t) === u.id && personsOf(w, t).length) out.push(V.cjId(w.id, t)); });
+    });
     return out;
   }
   function unitDone(u) { var c = unitCards(u); return { got: c.filter(function (id) { return V.card(id); }).length, total: c.length }; }
@@ -756,7 +790,7 @@
     S.cjSeen = S.cjSeen || {};
     if (!S.cjSeen[U.id] || b.intro) intro(); else practice();
     function intro() {
-      var m = V.word(U.model), t = U.tense;
+      var m = mw(U.model), t = U.tense;
       var s = stage('<div class="q unit-intro"><p class="u-eyebrow">🔁 活用のくせ</p><h2 class="u-title">' + esc(U.name) + '</h2>' + tBadge(t) +
         '<div class="u-model"><p class="u-cap">お手本：<b>' + esc(m.w) + '</b>（' + esc(m.ja) + '）<small>' + esc(Conj.kind(m.w)) + '</small></p>' + conjTable(m.w, t, -1) +
         (tenses.length > 1 ? '<p class="u-cap">' + TN[tenses[1]].name + '</p>' + conjTable(m.w, tenses[1], -1) : '') + '</div>' +
@@ -765,7 +799,7 @@
       $('.go', s).addEventListener('click', predict);
     }
     function predict() {
-      var w = V.word(U.predict.verb), p = U.predict.p, t = U.tense, right = Conj.form(w.w, t, p);
+      var w = mw(U.predict.verb), p = U.predict.p, t = U.tense, right = Conj.form(w.w, t, p);
       var ds = uniq([Conj.regularForm(w.w, t, p)].concat(personsOf(w, t).map(function (q) { return Conj.form(w.w, t, q); }), [Conj.form(w.w, 'pres', p), Conj.form(w.w, 'subj', p)]));
       var list = shuffle([right].concat(shuffle(ds.filter(function (x) { return x !== right; })).slice(0, 3)));
       var s = stage('<div class="q">' + trackHtml(w, 0.06, 'wow') + cjCard(w, t, p, '<span class="qtag">🤔 予想</span>') + '<p class="q-ask">いまの決まりを使うと？<small>（予想なので、まちがえても大丈夫）</small></p>' + choiceHtml(list.map(esc), 'es') + '<div class="after"></div></div>');
@@ -859,6 +893,7 @@
       var d = unitDone(u), cards = unitCards(u), rc = [0, 0, 0, 0];
       cards.forEach(function (id) { var c = V.card(id); if (c) rc[c.lv]++; });
       var wilt = cards.filter(function (id) { return V.card(id) && V.state(id) !== 'fresh'; }).length;
+      if (!d.total) return '<div class="cunit off">' + tBadge(u.tenses ? u.tenses[0] : u.tense) + '<b>' + esc(u.name) + '</b><small>この範囲には、このくせの動詞がない</small></div>';
       return '<button class="cunit" data-unit="' + u.id + '">' + tBadge(u.tenses ? u.tenses[0] : u.tense) + (u === nx ? '<span class="u-rec">おすすめ</span>' : '') +
         '<b>' + esc(u.name) + '</b><span class="bar stack">' + rc.map(function (n, i) { return n ? '<i class="r-' + V.RANKS[i].id + '" style="width:' + (n / d.total * 100) + '%"></i>' : ''; }).join('') + '</span>' +
         '<small>' + d.got + ' / ' + d.total + ' 形' + (wilt ? '　🥀 ' + wilt : '') + (S.cjSeen && S.cjSeen[u.id] ? '' : '　🆕') + '</small></button>';
@@ -925,7 +960,7 @@
     return null;
   }
   function wantsList() {
-    return D.words.filter(function (w) { return wantOf(w); }).sort(function (a, b) { return V.card(b.id).lv - V.card(a.id).lv || a.i - b.i; })
+    return D.words.filter(function (w) { return V.inRange(w) && wantOf(w); }).sort(function (a, b) { return V.card(b.id).lv - V.card(a.id).lv || a.i - b.i; })
       .map(function (w) { return { w: w, t: wantOf(w) }; });
   }
   /* その動詞・時制のくせを教えるユニット */
@@ -989,7 +1024,7 @@
     if (window.Snd) Snd.appear();
     $('.go', s).addEventListener('click', seen ? predict : lesson);
     function lesson() {
-      var m = V.word(U.model), tt = U.tense;
+      var m = mw(U.model), tt = U.tense;
       var s2 = stage('<div class="q unit-intro"><p class="u-eyebrow">🔁 くせの教室</p><h2 class="u-title">' + esc(U.name) + '</h2>' + tBadge(tt) +
         '<div class="u-model"><p class="u-cap">お手本：<b>' + esc(m.w) + '</b>（' + esc(m.ja) + '）<small>' + esc(Conj.kind(m.w)) + '</small></p>' + conjTable(m.w, tt, -1) + '</div>' +
         '<div class="u-rule">💡 ' + esc(U.rule) + '</div><details class="u-why"><summary>🤔 なぜ？</summary><p>' + esc(U.why) + '</p></details>' +
@@ -1150,7 +1185,7 @@
     } else {
       var st = V.state(id), cond = Math.round(V.condition(id) * 100);
       box.innerHTML = '<div class="q-card big' + gcls(w) + ' r-' + V.RANKS[c.lv].id + '"><span class="qtag">No.' + (w.i + 1) + '</span><div class="q-word">' + headHtml(w) + '</div>' + sayBtn(V.head(w)) +
-        '<small class="pos">' + POS[w.pos] + '</small></div><div class="meaning">' + esc(w.ja) + '</div>' + trackHtml(w, nowClose(id), Chara.moodOf(st)) + formsHtml(w) + memoHtml(w) + gaugeHtml(w) +
+        '<small class="pos">' + POS[w.pos] + '</small>' + refHtml(w) + '</div><div class="meaning">' + esc(w.ja) + '</div>' + trackHtml(w, nowClose(id), Chara.moodOf(st)) + formsHtml(w) + memoHtml(w) + gaugeHtml(w) +
         '<div class="cond"><span>コンディション</span><div class="gbar c"><i style="width:' + cond + '%"></i></div><b>' + (st === 'fresh' ? '元気' : st === 'wilt' ? '🥀 しおれかけ' : '🍂 野生に戻りかけ') + '</b></div>' +
         (st !== 'fresh' ? '<button class="next rescue" data-id="' + id + '">🚑 救出する</button>' : '');
       var rb = $('.rescue', box);
@@ -1174,8 +1209,12 @@
    * つなぎこみ
    * ========================================================= */
   function bind() {
+    if (window.VOCAB_DECK_MISSING) {
+      document.getElementById('app').innerHTML = '<div class="interlude"><p class="big-t">📗 デッキが見つからない</p><p>「' + esc(window.VOCAB_DECK_MISSING) + '」は、この端末にまだ読み込まれていません。<br>コース一覧の「＋ 単語デッキを読み込む」から読み込んでください。</p><a class="next" href="index.html">コース一覧へ</a></div>';
+      return;
+    }
     document.title = D.brand + '｜' + D.title;
-    document.documentElement.dataset.skin = D.skin;
+    document.documentElement.dataset.skin = D.skin || 'espana';
     $$('[data-min]').forEach(function (b) { b.addEventListener('click', function () { start(makePlan(+b.dataset.min), b.dataset.min + '分'); }); });
     $$('.mood button').forEach(function (b) { b.addEventListener('click', function () { S.settings.mood = b.dataset.mood; V.save(); renderHome(); if (window.Snd) Snd.tap(); }); });
     $('#alacarte').addEventListener('click', function (e) {
@@ -1188,6 +1227,7 @@
     $('#quit').addEventListener('click', function () { if (window.speechSynthesis) speechSynthesis.cancel(); finish(); });
     $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { go(b.dataset.go); }); });
     $('#dMore').addEventListener('click', function () { start(makePlan(5), '5分'); });
+    $('#hRange').addEventListener('click', openRange);
     $('#hWant').addEventListener('click', function () { var wl = wantsList(); if (wl.length) start([{ type: 'learn', verb: wl[0].w.id, tense: wl[0].t }]); });
     $('#plaza').addEventListener('click', function (e) { var m = e.target.closest('.p-bud'); if (m) openSheet(m.dataset.id); });
     $('#xBody').addEventListener('click', function (e) {

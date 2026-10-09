@@ -71,7 +71,8 @@
 
   function parse(inf) {
     var refl = /se$/.test(inf) && inf.length > 4, base = refl ? inf.slice(0, -2) : inf;
-    return { inf: inf, base: base, refl: refl, cls: base.slice(-2), stem: base.slice(0, -2), x: IRR[base] || {} };
+    /* oír・reír のように -ír と書く動詞も -ir 動詞として扱う */
+    return { inf: inf, base: base, refl: refl, cls: base.slice(-2).replace('í', 'i'), stem: base.slice(0, -2), x: IRR[base] || {} };
   }
   /* 語幹の最後の母音を変える */
   function change(stem, kind) {
@@ -163,6 +164,22 @@
     if (x.stem) return '語幹が変わる（' + (x.stem === 'ie' ? 'e→ie' : x.stem === 'i' ? 'e→i' : v.base === 'jugar' ? 'u→ue' : 'o→ue') + '）';
     return '規則（-' + v.cls + '）';
   }
-  window.Conj = { form: form, table: table, parse: parse, kind: kind, regularForm: regularForm, part: function (inf) { return part(parse(inf)); },
+  /* デッキに書かれた動詞のくせ（単語の cj）を足す。アプリが知っているくせより、デッキの指定を優先 */
+  function addIrr(inf, x) { var v = parse(inf); IRR[v.base] = x; }
+  /* くせの書き方が正しいか（チェック用） */
+  var KEYS = { stem: ['ie', 'ue', 'i'], ir: ['i', 'u'], yo: 's', pretS: 's', futS: 's', part: 's', tu: 's', noImp: 'b', pres: 6, pret: 6, impf: 6, subj: 6 };
+  function checkIrr(x) {
+    var bad = [];
+    Object.keys(x).forEach(function (k) {
+      var r = KEYS[k];
+      if (!r) bad.push('知らない項目 ' + k);
+      else if (Array.isArray(r)) { if (r.indexOf(x[k]) < 0) bad.push(k + ' は ' + r.join('/') + ' のどれか'); }
+      else if (r === 6) { if (!Array.isArray(x[k]) || x[k].length !== 6) bad.push(k + ' は6つの形の配列'); }
+      else if (r === 's') { if (typeof x[k] !== 'string' || !x[k]) bad.push(k + ' は文字列'); }
+      else if (r === 'b') { if (typeof x[k] !== 'boolean') bad.push(k + ' は true/false'); }
+    });
+    return bad;
+  }
+  window.Conj = { form: form, addIrr: addIrr, checkIrr: checkIrr, known: function (inf) { return !!IRR[parse(inf).base]; }, table: table, parse: parse, kind: kind, regularForm: regularForm, part: function (inf) { return part(parse(inf)); },
     PRON: PRON, PRON_JA: PRON_JA, TENSES: TENSES, END: END, FUT: FUT, COND: COND, STRONG: STRONG, HABER: HABER, IRR: IRR };
 })();

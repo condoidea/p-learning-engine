@@ -1,0 +1,50 @@
+{
+  "id": "sample-book",
+  "title": "スペイン語（参考書連動・サンプル）",
+  "brand": "📗 SAMPLE",
+  "sub": "読み込みのお試し用",
+  "book": "（サンプル）スペイン語の教科書",
+  "lang": "es",
+  "skin": "espana",
+  "sections": [
+    { "id": "L01", "name": "第1課 あいさつ", "ref": "p.10–15" },
+    { "id": "L02", "name": "第2課 家族", "ref": "p.16–21" }
+  ],
+  "words": [
+    { "id": "hola", "s": "L01", "ref": "p.10", "w": "hola", "pos": "phr", "ja": "こんにちは",
+      "ex": ["¡{Hola}! ¿Qué tal?", "こんにちは！元気？"],
+      "clue": { "t": "ctx", "text": "👋 朝でも昼でも夜でも使える、いちばん気軽なあいさつ" } },
+    { "id": "gracias", "s": "L01", "ref": "p.11", "w": "gracias", "pos": "phr", "ja": "ありがとう",
+      "ex": ["Muchas {gracias}.", "どうもありがとう。"],
+      "clue": { "t": "cog", "text": "英語の grace・gratitude と同じ祖先" } },
+    { "id": "nombre", "s": "L01", "ref": "p.12", "w": "nombre", "pos": "n", "g": "m", "ja": "名前",
+      "ex": ["¿Cuál es tu {nombre}?", "君の名前は？"],
+      "clue": { "t": "cog", "text": "英語の name・nominate と同じ祖先" } },
+    { "id": "traer", "s": "L01", "ref": "p.14", "w": "traer", "pos": "v", "ja": "持ってくる",
+      "cj": { "yo": "traigo", "pretS": "traj" },
+      "ex": ["¿Me {traes} un vaso de agua?", "水を1杯持ってきてくれる？"],
+      "clue": { "t": "cog", "text": "英語の tractor・attract と同じ祖先（引っぱる）" },
+      "memo": "私は＝traigo、点過去は traje（-go 族）" },
+    { "id": "hermano", "s": "L02", "ref": "p.16", "w": "hermano", "pos": "n", "g": "m", "ja": "兄弟",
+      "ex": ["Mi {hermano} vive en Madrid.", "兄はマドリードに住んでいる。"],
+      "clue": { "t": "ctx", "text": "👦👦 同じ両親から生まれた男の子どうし" },
+      "memo": "姉妹は hermana" },
+    { "id": "abuela", "s": "L02", "ref": "p.17", "w": "abuela", "pos": "n", "g": "f", "ja": "祖母",
+      "ex": ["Mi {abuela} tiene ochenta años.", "祖母は80歳だ。"],
+      "clue": { "t": "ctx", "text": "👵 お母さんのお母さん" },
+      "memo": "祖父は abuelo" },
+    { "id": "oir", "s": "L02", "ref": "p.19", "w": "oír", "pos": "v", "ja": "聞こえる・聞く",
+      "cj": {
+        "pres": ["oigo", "oyes", "oye", "oímos", "oís", "oyen"],
+        "pret": ["oí", "oíste", "oyó", "oímos", "oísteis", "oyeron"],
+        "subj": ["oiga", "oigas", "oiga", "oigamos", "oigáis", "oigan"],
+        "futS": "oir"
+      },
+      "ex": ["¿Me {oyes}?", "聞こえる？"],
+      "clue": { "t": "ctx", "text": "📞 電話の電波が悪いとき「¿Me oyes?」" },
+      "memo": "形がよく変わる：oigo, oyes, oye…" },
+    { "id": "simpatico", "s": "L02", "ref": "p.20", "w": "simpático", "pos": "adj", "ja": "感じがいい",
+      "ex": ["Tu padre es muy {simpático}.", "君のお父さんはとても感じがいい。"],
+      "clue": { "t": "trap", "text": "英語の sympathetic に似ているけど…？", "lure": "同情的な" } }
+  ]
+}

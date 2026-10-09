@@ -37,6 +37,14 @@
   .soon::before { display: none; }
   .soon:hover { transform: none; box-shadow: none; }
   .soon b { font-size: 15px; color: var(--text); }
+  .course .del { position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); background: rgba(0,0,0,.3); color: var(--muted); font-size: 13px; cursor: pointer; }
+  .import { gap: 10px; }
+  .import .pick { cursor: pointer; align-self: center; }
+  .import details { width: 100%; text-align: left; font-size: 13px; }
+  .import summary { cursor: pointer; color: var(--muted); text-align: center; }
+  .import textarea { width: 100%; margin-top: 6px; padding: 8px; border-radius: 10px; border: 1px solid var(--line); background: rgba(0,0,0,.3); color: var(--text); font: 12px/1.5 monospace; }
+  .import details .go { display: block; margin: 6px auto 0; border: 0; cursor: pointer; font: inherit; font-weight: 700; }
+  .import .imsg { min-height: 1em; font-size: 12px; color: var(--text); text-align: left; overflow-wrap: anywhere; }
 </style>
 </head>
 <body>
@@ -54,7 +62,10 @@
   <div class="grid" id="grid"></div>
 </div>
 
-<script src="courses/registry.js?v=12"></script>
+<script src="courses/registry.js?v=13"></script>
+<script src="vocab/js/conj-es.js?v=13"></script>
+<script src="vocab/js/deck-check.js?v=13"></script>
+<script src="vocab/js/decks.js?v=13"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>
 (function () {
@@ -68,7 +79,13 @@
   document.getElementById('pfStreak').textContent = (P.streak && P.streak.count) || 0;
 
   var grid = document.getElementById('grid');
-  (window.LE_COURSES || []).forEach(function (c) {
+  /* 端末に読み込んだ単語デッキ（参考書連動版など）も並べる */
+  var imported = (window.VocabDecks ? VocabDecks.list() : []).map(function (d) {
+    return { id: d.id, kind: 'vocab', imported: true, entry: 'vocab.html?deck=' + encodeURIComponent(d.id), storageKey: 'vocab.' + d.id + '.v1',
+      title: d.title, brand: d.brand, icon: '📗', desc: (d.book ? '『' + d.book + '』と連動。' : '') + (d.sub || '') + '（この端末に読み込んだデッキ）',
+      color: '#5cc3e0', color2: '#f2a541', words: d.words };
+  });
+  (window.LE_COURSES || []).concat(imported).forEach(function (c) {
     var S = read(c.storageKey) || {};
     var vocab = c.kind === 'vocab';
     var done = vocab ? Object.keys(S.cards || {}).length : Object.keys(S.lessons || {}).filter(function (k) { return S.lessons[k] && S.lessons[k].done; }).length;
@@ -85,9 +102,48 @@
       '<h2>' + esc(c.title) + '</h2><p>' + esc(c.desc || '') + '</p>' +
       '<div class="bar"><i data-w="' + pct + '"></i></div>' +
       '<div class="meta"><span>' + (vocab ? '図鑑 ' : 'レッスン ') + done + ' / ' + (all || '?') + '</span><span>' + (last ? '最終学習 ' + new Date(last).toLocaleDateString('ja-JP') : '未開始') + '</span></div>' +
-      '<span class="go">' + (done ? 'つづける ▶' : 'はじめる ▶') + '</span>';
+      '<span class="go">' + (done ? 'つづける ▶' : 'はじめる ▶') + '</span>' +
+      (c.imported ? '<button class="del" data-del="' + esc(c.id) + '" aria-label="端末から消す">✕</button>' : '');
     grid.appendChild(a);
   });
+  grid.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-del]'); if (!b) return;
+    e.preventDefault();
+    var id = b.dataset.del;
+    if (!confirm('デッキ「' + id + '」をこの端末から消しますか？')) return;
+    var withP = confirm('進み具合（図鑑・経験値）も消しますか？\n［キャンセル］なら進み具合は残り、同じデッキを読み込み直すと続きから使えます。');
+    VocabDecks.remove(id, withP);
+    location.reload();
+  });
+
+  /* ---- 単語デッキを読み込む（.json）。公開リポジトリには入れず、この端末にだけ保存 ---- */
+  var imp = document.createElement('div');
+  imp.className = 'course soon import';
+  imp.innerHTML = '<b>＋ 単語デッキを読み込む</b><p>参考書連動版などのデッキ（.json）を、この端末に読み込みます。<br>端末の中だけに保存され、公開されません。</p>' +
+    '<label class="go pick">ファイルをえらぶ<input type="file" accept=".json,application/json" hidden></label>' +
+    '<details><summary>テキストを貼りつける</summary><textarea rows="5" placeholder="{ &quot;id&quot;: &quot;...&quot;, ... }"></textarea><button class="go" type="button">読み込む</button></details><p class="imsg"></p>';
+  grid.appendChild(imp);
+  function importText(text) {
+    var msg = imp.querySelector('.imsg'), D;
+    try { D = JSON.parse(text.charCodeAt(0) === 0xFEFF ? text.slice(1) : text); } catch (e) { msg.textContent = '✖ JSON として読めません：' + e.message; return; }
+    if (window.Conj && D && Array.isArray(D.words)) D.words.forEach(function (w) { if (w && w.pos === 'v' && w.cj && !Conj.checkIrr(w.cj).length) Conj.addIrr(w.w, w.cj); });
+    var r = DeckCheck.check(D, window.Conj);
+    if (r.errors.length) { msg.innerHTML = '✖ 直してから読み込んでください（' + r.errors.length + '件）<br>' + r.errors.slice(0, 6).map(esc).join('<br>'); return; }
+    if (r.warnings.length && !confirm('注意が ' + r.warnings.length + ' 件あります（例：' + r.warnings[0] + '）。\nこのまま読み込みますか？')) return;
+    var old = VocabDecks.get(D.id);
+    if (old && !confirm('「' + D.title + '」はもう読み込まれています。新しいデータに入れかえますか？\n（進み具合はそのまま引き継ぎます）')) return;
+    try { VocabDecks.save(D); } catch (e) { msg.textContent = '✖ 保存できませんでした（端末の保存領域がいっぱい、またはプライベートブラウズ）'; return; }
+    msg.textContent = '✔ 「' + D.title + '」を読み込みました（' + D.words.length + '語）';
+    setTimeout(function () { location.reload(); }, 900);
+  }
+  imp.querySelector('input[type=file]').addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0]; if (!f) return;
+    var rd = new FileReader();
+    rd.onload = function () { importText(String(rd.result)); };
+    rd.readAsText(f, 'utf-8');
+    e.target.value = '';
+  });
+  imp.querySelector('details .go').addEventListener('click', function () { importText(imp.querySelector('textarea').value); });
   var soon = document.createElement('div');
   soon.className = 'course soon';
   soon.innerHTML = '<b>＋ 新しいコース</b><p>courses/ にコースを追加すると、ここに並びます。<br>作り方は docs/コースの作り方.md</p>';

@@ -39,6 +39,8 @@
   rollDay();
 
   var W = {}; D.words.forEach(function (w, i) { w.i = i; W[w.id] = w; });
+  /* 動詞のくせ（cj）がデッキに書かれていれば、活用エンジンに足す */
+  if (window.Conj) D.words.forEach(function (w) { if (w.pos === 'v' && w.cj) Conj.addIrr(w.w, w.cj); });
   var SEC = {}; D.sections.forEach(function (s) { SEC[s.id] = s; });
 
   function art(w) { return w.art || (w.pos === 'n' ? (w.g === 'f' ? 'la' : 'el') : ''); }
@@ -71,6 +73,8 @@
   }
 
   /* 活用カード：id は 'cj:動詞のid:時制'（例 cj:tener:pret）。成長のしかたは単語と同じ */
+  /* 範囲（参考書の課など）。settings.range が空なら全部 */
+  function inRange(w) { var r = S.settings.range; return !w || !r || !r.length || r.indexOf(w.s) >= 0; }
   function isCj(id) { return id.indexOf('cj:') === 0; }
   function cj(id) { var a = id.split(':'); return { id: id, verb: W[a[1]], tense: a[2] }; }
 
@@ -117,18 +121,18 @@
 
     /* ---- 出題の候補 ---- */
     faceList: function () {
-      return D.words.filter(function (w) { return SEC[w.s].known && !S.cards[w.id] && S.meet.indexOf(w.id) < 0; });
+      return D.words.filter(function (w) { return SEC[w.s].known && !S.cards[w.id] && S.meet.indexOf(w.id) < 0 && inRange(w); });
     },
     meetList: function () {
-      var first = S.meet.map(function (id) { return W[id]; }).filter(Boolean);
-      var rest = D.words.filter(function (w) { return !SEC[w.s].known && !S.cards[w.id]; });
+      var first = S.meet.map(function (id) { return W[id]; }).filter(function (w) { return w && inRange(w); });
+      var rest = D.words.filter(function (w) { return !SEC[w.s].known && !S.cards[w.id] && inRange(w); });
       return first.concat(rest);
     },
     /* しおれた・野生に戻りかけのカード（コンディションの低い順） */
     wildList: function () {
       var now = Date.now();
       return Object.keys(S.cards).map(function (id) { return { w: W[id], r: condition(id, now) }; })
-        .filter(function (x) { return x.w && x.r < FRESH; })
+        .filter(function (x) { return x.w && x.r < FRESH && inRange(x.w); })
         .sort(function (a, b) { return a.r - b.r; })
         .map(function (x) { return x.w; });
     },
@@ -145,12 +149,12 @@
     },
     /* ランクごとの枚数 [ブロンズ, シルバー, ゴールド, ホロ] */
     rankCounts: function () { var n = [0, 0, 0, 0]; Object.keys(S.cards).forEach(function (id) { if (W[id]) n[S.cards[id].lv]++; }); return n; },
-    isCj: isCj, cj: cj,
+    isCj: isCj, cj: cj, inRange: inRange,
     cjId: function (verbId, tense) { return 'cj:' + verbId + ':' + tense; },
     /* しおれた活用カード（コンディションの低い順） */
     cjWildList: function () {
       var now = Date.now();
-      return Object.keys(S.cards).filter(function (id) { return isCj(id) && W[id.split(':')[1]]; })
+      return Object.keys(S.cards).filter(function (id) { return isCj(id) && W[id.split(':')[1]] && inRange(W[id.split(':')[1]]); })
         .map(function (id) { return { id: id, r: condition(id, now) }; })
         .filter(function (x) { return x.r < FRESH; }).sort(function (a, b) { return a.r - b.r; })
         .map(function (x) { return x.id; });

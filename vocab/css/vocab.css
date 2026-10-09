@@ -361,3 +361,16 @@ mark { background: var(--mark); color: inherit; padding: 0 3px; border-radius: 4
 .fchip.lock { opacity: .4; }
 .stage2:empty { display: none; }
 .stage2 { display: flex; flex-direction: column; gap: 8px; }
+
+/* ---- 参考書との対応・範囲 ---- */
+.ref { display: block; margin-top: 2px; font-size: 11px; color: var(--accent2); font-weight: 700; }
+.range-btn { display: flex; align-items: baseline; gap: 6px; width: 100%; margin: 0 0 8px; padding: 8px 12px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); text-align: left; font-size: 14px; }
+.range-btn[hidden] { display: none; }
+.range-btn b { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.range-btn small { color: var(--accent2); font-weight: 700; }
+.rng { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.rchip { padding: 8px 10px; border-radius: 12px; border: 2px solid var(--line-strong); background: var(--card); text-align: left; }
+.rchip b { display: block; font-size: 14px; }
+.rchip small { color: var(--muted); font-size: 11px; }
+.rchip.on { border-color: var(--accent2); background: var(--sel-bg); }
+.cunit.off { opacity: .5; }

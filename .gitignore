@@ -13,3 +13,4 @@ Thumbs.db
 
 # 単語アプリ：本から取り出したデータ（私的利用のみ・公開しない）
 vocab/decks/database/
+vocab/decks/private/
