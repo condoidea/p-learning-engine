@@ -601,7 +601,7 @@
     if (lv >= 1) t.push('ja2es');
     if (lv >= 1 && w.def) t.push('def2w');
     if (lv >= 2 && !/\s/.test(w.w)) t.push('spell');
-    if (lv >= 2 && w.def) t.push('w2def');   /* 2語以上の表現（contento de）はつづりの組み立てに出さない */
+    /* 単語 → 英英の説明（定義が選択肢）は、高校生には難しすぎるので出さない（2026-10-09）。英英は「説明 → 単語」で使う */   /* 2語以上の表現（contento de）はつづりの組み立てに出さない */
     if (lv >= 3) t.push('cloze');
     if (w.pos === 'v' && CU && learned(w).length && Math.random() < 0.45) return 'form';
     return Math.random() < 0.5 ? t[t.length - 1] : pick(t);   // 半分は、いまのレベルのいちばん難しい問い方
