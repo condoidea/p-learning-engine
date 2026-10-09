@@ -70,6 +70,10 @@
     return { exp: n, up: c.lv > before ? c.lv : 0 };
   }
 
+  /* 活用カード：id は 'cj:動詞のid:時制'（例 cj:tener:pret）。成長のしかたは単語と同じ */
+  function isCj(id) { return id.indexOf('cj:') === 0; }
+  function cj(id) { var a = id.split(':'); return { id: id, verb: W[a[1]], tense: a[2] }; }
+
   var V = {
     D: D, S: S, W: W, SEC: SEC, RANKS: RANKS, save: save, art: art, card: card, condition: condition, state: state,
     word: function (id) { return W[id]; },
@@ -132,7 +136,7 @@
     nextWild: function () {
       var t = null;
       Object.keys(S.cards).forEach(function (id) {
-        var c = S.cards[id]; if (!W[id]) return;
+        var c = S.cards[id]; if (!W[id] && !isCj(id)) return;
         var keep = KEEP[c.lv] * (1 + 0.4 * Math.min(c.streak || 0, 4));
         var at = c.ok + keep * Math.log(1 / FRESH) / Math.LN2 * DAY;
         if (t === null || at < t) t = at;
@@ -141,6 +145,16 @@
     },
     /* ランクごとの枚数 [ブロンズ, シルバー, ゴールド, ホロ] */
     rankCounts: function () { var n = [0, 0, 0, 0]; Object.keys(S.cards).forEach(function (id) { if (W[id]) n[S.cards[id].lv]++; }); return n; },
+    isCj: isCj, cj: cj,
+    cjId: function (verbId, tense) { return 'cj:' + verbId + ':' + tense; },
+    /* しおれた活用カード（コンディションの低い順） */
+    cjWildList: function () {
+      var now = Date.now();
+      return Object.keys(S.cards).filter(function (id) { return isCj(id) && W[id.split(':')[1]]; })
+        .map(function (id) { return { id: id, r: condition(id, now) }; })
+        .filter(function (x) { return x.r < FRESH; }).sort(function (a, b) { return a.r - b.r; })
+        .map(function (x) { return x.id; });
+    },
     caughtCount: function () { return Object.keys(S.cards).filter(function (id) { return W[id]; }).length; },
     /* 次の進化まで */
     toNext: function (id) { var c = card(id); if (!c || c.lv >= 3) return null; return { now: c.exp - RANKS[c.lv].need, need: RANKS[c.lv + 1].need - RANKS[c.lv].need }; },

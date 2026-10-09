@@ -32,7 +32,7 @@ window.LE_COURSES = [
   {
     id: 'spanish', kind: 'vocab', entry: 'vocab.html', storageKey: 'vocab.spanish.v1',
     title: 'スペイン語 単語', brand: '¡VAMOS!', icon: '💃',
-    desc: '西検5級→4級の単語を、予想して出会い、捕まえて図鑑で育てる。1分・5分・10分、気分でも選べる。',
-    color: '#ff7a59', color2: '#f2a541', words: 63
+    desc: '西検5級→4級の単語と動詞の活用を、予想して出会い、捕まえて図鑑で育てる。1分・5分・10分、気分でも選べる。',
+    color: '#ff7a59', color2: '#f2a541', words: 78
   }
 ];

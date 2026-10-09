@@ -130,6 +130,7 @@
     window.scrollTo(0, 0);
     if (id === 'home') renderHome();
     if (id === 'dex') renderDex();
+    if (id === 'conj') renderConjMenu();
   }
 
   /* ---- カード（見出し） ---- */
@@ -209,6 +210,7 @@
       { id: 'face', ico: '👀', name: '顔見知りチェック', sub: face ? '5級の語 残り ' + face + '語' : '', off: !face, hide: !face },
       { id: 'meet', ico: '🌱', name: '出会い', sub: meet ? '新しい単語を3つ' : 'ぜんぶ出会った！', off: !meet },
       { id: 'wild', ico: '⚔', name: '野生戦', sub: wild ? 'しおれた単語 ' + wild + '体' : untilWild(), off: !wild },
+      { id: 'conj', ico: '🔁', name: '活用', sub: conjSub() },
       { id: 'dex', ico: '📖', name: '図鑑', sub: wild ? 'しおれ ' + wild + '枚' : got + '枚' }
     ];
     $('#alacarte').innerHTML = tiles.filter(function (t) { return !t.hide; }).map(function (t) {
@@ -222,6 +224,11 @@
     if (G) G.fromTo('#home .anim', { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, stagger: 0.05, ease: 'power3.out' });
   }
 
+  function conjSub() {
+    if (!CU) return '';
+    var got = 0, total = 0; CU.units.forEach(function (u) { var d = unitDone(u); got += d.got; total += d.total; });
+    return '動詞の形 ' + got + ' / ' + total + '　次：' + nextUnit().name;
+  }
   /* 次の野生まで（再会は翌日から。出会った当日は「あと○時間」と見せる） */
   function untilWild() {
     var t = V.nextWild(); if (t === null) return 'まだカードがない';
@@ -232,19 +239,20 @@
   /* おまかせ：その日の状態からブロックを組む */
   function makePlan(min) {
     var easy = S.settings.mood === 'easy';
-    var wild = V.wildList().length, face = V.faceList().length, meet = V.meetList().length, plan = [];
+    var wild = wildAll().length, face = V.faceList().length, meet = V.meetList().length, plan = [];
     function add(type, n, have) { if (have > 0) plan.push({ type: type, n: Math.min(n, have) }); }
     if (min === 1) {
       if (wild) add('wild', 3, wild); else if (face) add('face', 5, face); else if (!easy) add('meet', 1, meet);
     } else if (min === 5) {
       add('wild', easy ? 6 : 4, wild);
       add('face', easy ? (wild ? 6 : 10) : 5, face);
-      if (!easy) add('meet', 3, meet);
+      if (!easy) { if (meet) add('meet', 3, meet); else if (CU) plan.push({ type: 'conj', unit: nextUnit().id, n: 3 }); }
       if (!plan.length) add('meet', 3, meet);
     } else {
       add('wild', easy ? 10 : 8, wild);
       add('face', easy ? 12 : 8, face);
       if (!easy) add('meet', 3, meet);
+      if (!easy && CU) plan.push({ type: 'conj', unit: nextUnit().id, n: 3 });
       if (!plan.length) add('meet', 3, meet);
     }
     return plan;
@@ -254,7 +262,7 @@
    * セッション（ブロックを順に回す）
    * ========================================================= */
   var ses = null;
-  var BNAME = { face: '👀 顔見知りチェック', meet: '🌱 出会い', wild: '⚔ 野生戦', rescue: '🚑 救出' };
+  var BNAME = { face: '👀 顔見知りチェック', meet: '🌱 出会い', wild: '⚔ 野生戦', rescue: '🚑 救出', conj: '🔁 活用' };
   function start(plan, label) {
     if (!plan.length) { toast('いまは、やることがありません', '図鑑を眺めたり、別のメニューを選んだりしてみよう'); return; }
     if (window.Sfx) Sfx.unlock();
@@ -273,7 +281,7 @@
     renderSteps();
     var b = ses.plan[ses.bi];
     if (!b) return finish();
-    ({ face: blockFace, meet: blockMeet, wild: blockWild, rescue: blockRescue })[b.type](b, nextBlock);
+    ({ face: blockFace, meet: blockMeet, wild: blockWild, rescue: blockRescue, conj: blockConj })[b.type](b, nextBlock);
   }
   function stage(html) { var s = $('#stage'); s.innerHTML = html; tw(s.firstElementChild, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' }); return s; }
 
@@ -394,7 +402,12 @@
   }
   function memoHtml(w) {
     return '<div class="exp-box"><div class="ex">' + exHtml(w.ex[0]) + ' ' + sayBtn(w.ex[0]) + '</div><small>' + esc(w.ex[1]) + '</small>' +
-      (w.memo ? '<p class="memo">💡 ' + esc(w.memo) + '</p>' : '') + '</div>';
+      (w.memo ? '<p class="memo">💡 ' + esc(w.memo) + '</p>' : '') + verbHtml(w) + '</div>';
+  }
+  /* 動詞：活用のくせと、大事な3つの形（現在 yo・点過去 yo・過去分詞） */
+  function verbHtml(w) {
+    if (w.pos !== 'v' || !window.Conj) return '';
+    return '<p class="memo">🔁 ' + esc(Conj.kind(w.w)) + '：' + esc(Conj.form(w.w, 'pres', 0)) + '（現在）・' + esc(Conj.form(w.w, 'pret', 0)) + '（点過去）・' + esc(Conj.form(w.w, 'perf', 0).replace(/^(me |)he /, '')) + '（過去分詞）</p>';
   }
 
   /* ---- 捕獲の演出：カードが図鑑（右上）へ飛ぶ ---- */
@@ -557,10 +570,324 @@
       (nx ? '<div class="gbar"><i style="width:' + Math.min(100, Math.round(nx.now / nx.need * 100)) + '%"></i></div><small>進化まで ' + Math.max(0, nx.need - nx.now) + ' EXP</small>' : '<small>最高ランク！</small>') + '</div>';
   }
   function blockWild(b, next) {
-    var list = V.wildList().slice(0, b.n), i = 0;
-    (function one() { var w = list[i++]; if (!w) return next(); fight(w, '⚔ ' + i + ' / ' + list.length, one); })();
+    var list = wildAll().slice(0, b.n), i = 0;
+    (function one() {
+      var id = list[i++]; if (!id) return next();
+      var tg = '⚔ ' + i + ' / ' + list.length;
+      if (V.isCj(id)) fightCj(id, tg, one); else fight(V.word(id), tg, one);
+    })();
   }
-  function blockRescue(b, next) { fight(V.word(b.id), '🚑 救出', next); }
+  /* 単語と活用のしおれたカードを、コンディションの低い順に */
+  function wildAll() {
+    return V.wildList().map(function (w) { return w.id; }).concat(V.cjWildList())
+      .sort(function (a, b) { return V.condition(a) - V.condition(b); });
+  }
+  function blockRescue(b, next) { if (V.isCj(b.id)) fightCj(b.id, '🚑 救出', next); else fight(V.word(b.id), '🚑 救出', next); }
+
+  /* =========================================================
+   * 🔁 活用（動詞の形）
+   *  ユニット＝1つのくせ。はじめは「お手本の表 → 予想 → 説明」、それから練習
+   *  練習の問い方：組み立てる（語幹＋語尾）／形をえらぶ／誰の形？／文の手がかりから時制をえらぶ
+   *  動詞×時制ごとにカード（cj:動詞:時制）。2回正解で覚えた（ブロンズ）。成長・しおれは単語と同じ
+   * ========================================================= */
+  var CU = window.VOCAB_CONJ || null, TN = window.Conj ? Conj.TENSES : {};
+  var PRON_SHOW = ['yo', 'tú', 'él', 'nosotros', 'vosotros', 'ellos'];
+  function pronOf(p, t) { return t === 'imp' ? (p === 1 ? 'tú' : 'usted') : PRON_SHOW[p]; }
+  function pjOf(p, t) { return t === 'imp' ? (p === 1 ? '君に' : 'あなたに') : Conj.PRON_JA[p]; }
+  function personsOf(w, t) { return [0, 1, 2, 3, 4, 5].filter(function (p) { return Conj.form(w.w, t, p); }); }
+  function tBadge(t) { var L = CU.look[t]; return '<span class="tbadge" style="--tc:' + L.color + '">' + L.ico + ' ' + TN[t].name + '</span>'; }
+  function unitOf(id) { return CU.units.filter(function (u) { return u.id === id; })[0]; }
+  function unitCards(u) {
+    var out = [];
+    u.verbs.forEach(function (vid) { var w = V.word(vid); if (!w) return; (u.tenses || [u.tense]).forEach(function (t) { if (personsOf(w, t).length) out.push(V.cjId(vid, t)); }); });
+    return out;
+  }
+  function unitDone(u) { var c = unitCards(u); return { got: c.filter(function (id) { return V.card(id); }).length, total: c.length }; }
+  function nextUnit() { return CU.units.filter(function (u) { var d = unitDone(u); return d.got < d.total; })[0] || CU.units[0]; }
+
+  /* 語幹｜語尾 に分ける（組み立て問題と、表の色分けに使う）。分けられない形は null */
+  function endingsFor(v, t, p) {
+    var E = Conj.END, c = v.cls;
+    if (t === 'fut') return Conj.FUT;
+    if (t === 'cond') return Conj.COND;
+    if (t === 'imp') return p === 1 ? E.pres[c] : E.subj[c];
+    if (t === 'pret' && v.x.pretS) return Conj.STRONG.concat(['eron']);
+    return E[t] ? E[t][c] : [];
+  }
+  function splitForm(inf, t, p) {
+    var f = Conj.form(inf, t, p); if (!f) return null;
+    var v = Conj.parse(inf), pre = '';
+    if (t === 'perf') { var a = f.split(' '); if (v.refl) pre = a.shift() + ' '; return { pre: pre, a: a[0], b: a[1], perf: true, full: f }; }
+    if (t === 'imp' && v.refl) return null;
+    if (v.refl) { pre = f.split(' ')[0] + ' '; f = f.slice(pre.length); }
+    var x = v.x;
+    if ((t === 'pres' && x.pres) || (t === 'pret' && x.pret) || (t === 'impf' && x.impf) || (t === 'subj' && x.subj)) return null;
+    if (t === 'imp' && (p === 1 ? x.tu : x.subj)) return null;
+    if (t === 'pres' && p === 0 && x.yo) return null;
+    if (t === 'pret' && x.pretS === 'hic' && p === 2) return null;
+    var best = '';
+    endingsFor(v, t, p).forEach(function (e) { if (e.length > best.length && f.length > e.length && f.slice(-e.length) === e) best = e; });
+    if (!best) return null;
+    return { pre: pre, a: f.slice(0, -best.length), b: best, full: pre + f };
+  }
+  /* 活用表（その人称を強調。語幹と語尾を色分け） */
+  function conjTable(inf, t, hi) {
+    var ps = t === 'imp' ? [1, 2] : [0, 1, 2, 3, 4, 5];
+    return '<table class="ctab">' + ps.map(function (p) {
+      var f = Conj.form(inf, t, p); if (!f) return '';
+      var sp = splitForm(inf, t, p), cell;
+      if (sp && sp.perf) cell = esc(sp.pre) + '<span class="c-aux">' + esc(sp.a) + '</span> <span class="c-st">' + esc(sp.b) + '</span>';
+      else if (sp) cell = (sp.pre ? '<span class="c-pre">' + esc(sp.pre) + '</span>' : '') + '<span class="c-st">' + stemDiff(sp.a, Conj.parse(inf), t) + '</span><span class="c-end">' + esc(sp.b) + '</span>';
+      else cell = '<span class="c-irr">' + esc(f) + '</span>';
+      return '<tr' + (p === hi ? ' class="hi"' : '') + '><th>' + pronOf(p, t) + '</th><td>' + cell + '</td><td class="c-say">' + sayBtn(f) + '</td></tr>';
+    }).join('') + '</table>';
+  }
+  /* 語幹の、原形から変わった所に印（pens → pi<u>e</u>ns） */
+  function stemDiff(stem, v, t) {
+    var base = t === 'fut' || t === 'cond' ? v.base : v.stem;
+    if (stem === base) return esc(stem);
+    var i = 0; while (i < stem.length && i < base.length && stem[i] === base[i]) i++;
+    var j = 0; while (j < stem.length - i && j < base.length - i && stem[stem.length - 1 - j] === base[base.length - 1 - j]) j++;
+    return esc(stem.slice(0, i)) + '<u class="c-chg">' + esc(stem.slice(i, stem.length - j)) + '</u>' + esc(stem.slice(stem.length - j));
+  }
+  function cjCard(w, t, p, tag) {
+    return '<div class="q-card cj">' + (tag || '') + '<div class="cj-top">' + tBadge(t) + '</div>' +
+      '<div class="cj-verb"><b>' + esc(w.w) + '</b><small>' + esc(w.ja) + '</small></div>' +
+      '<div class="pchip">' + pronOf(p, t) + '<small>' + pjOf(p, t) + '</small></div></div>';
+  }
+  function uniq(a) { var o = []; a.forEach(function (x) { if (x && o.indexOf(x) < 0) o.push(x); }); return o; }
+
+  /* ---- 活用の1問。type: build | pick | which | cue。done(ok, s) ---- */
+  function askConj(it, type, opt, done) {
+    var w = it.w, t = it.t, p = it.p, right = Conj.form(w.w, t, p), tag = opt.tag || '';
+    VUI.cur = { w: w.w, t: t, p: p, right: right };   /* 自動テスト用 */
+    var sp = splitForm(w.w, t, p);
+    if (type === 'build' && !sp) type = 'pick';
+    if (type === 'which') {
+      var same = personsOf(w, t).filter(function (q) { return Conj.form(w.w, t, q) === right; });
+      if (same.length > 1 || personsOf(w, t).length < 3) type = 'pick';
+    }
+    var html, list, ri, isRight;
+    if (type === 'build') return askBuild(it, sp, opt, done);
+    if (type === 'pick') {
+      var ds = [Conj.regularForm(w.w, t, p)].concat(shuffle(personsOf(w, t).map(function (q) { return Conj.form(w.w, t, q); })),
+        shuffle(['pres', 'pret', 'subj', 'fut'].filter(function (x) { return x !== t; }).map(function (x) { return Conj.form(w.w, x, p); })));
+      list = shuffle([right].concat(uniq(ds).filter(function (x) { return x !== right; }).slice(0, 3)));
+      html = cjCard(w, t, p, tag) + '<p class="q-ask">この形は？</p>' + choiceHtml(list.map(esc), 'es');
+      isRight = function (i) { return list[i] === right; };
+    } else if (type === 'which') {
+      var others2 = shuffle(personsOf(w, t).filter(function (q) { return q !== p && Conj.form(w.w, t, q) !== right; })).slice(0, 3);
+      var ps = shuffle([p].concat(others2));
+      list = ps.map(function (q) { return pronOf(q, t) + '<small>' + pjOf(q, t) + '</small>'; });
+      html = '<div class="q-card cj"><div class="cj-top">' + tBadge(t) + '</div><div class="cj-form">' + esc(right) + '</div><small class="pos">' + esc(w.w) + '（' + esc(w.ja) + '）</small>' + sayBtn(right) + '</div><p class="q-ask">誰の形？</p>' + choiceHtml(list);
+      isRight = function (i) { return ps[i] === p; };
+    } else {
+      var cue = pick(CU.cues[t]); if (t === 'subj' && p === 0) cue = ['Ojalá que', '〜だといいな'];
+      var sent = t === 'imp' ? cue[0] + ' <span class="blank">？</span>!' : cue[0] + ' (' + pronOf(p, t) + ') <span class="blank">？</span>.';
+      var ts = shuffle(['pres', 'pret', 'impf', 'fut', 'subj', 'perf', 'cond'].filter(function (x) { return x !== t; }));
+      list = shuffle([right].concat(uniq(ts.map(function (x) { return Conj.form(w.w, x, p); })).filter(function (x) { return x !== right; }).slice(0, 3)));
+      html = '<div class="q-card cj cue"><div class="q-ex">' + sent + '</div><small class="q-exja">' + esc(cue[0].replace(/[¡,]/g, '')) + '＝' + esc(cue[1]) + '　／　' + esc(w.w) + '（' + esc(w.ja) + '）' + (t === 'imp' ? '　／　' + pronOf(p, t) + 'に' : '') + '</small></div>' +
+        '<p class="q-ask">？に入る形は？<small>（手がかりの言葉から時制を決める）</small></p>' + choiceHtml(list.map(esc), 'es');
+      isRight = function (i) { return list[i] === right; };
+    }
+    var s = stage('<div class="q">' + (opt.track || '') + html + '<div class="after"></div></div>');
+    var answered = false;
+    $$('.ch', s).forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (answered) return; answered = true;
+        var i = +b.dataset.i, ok = isRight(i);
+        $$('.ch', s).forEach(function (x) { x.disabled = true; if (isRight(+x.dataset.i)) x.classList.add('right'); });
+        if (!ok) b.classList.add('wrong');
+        var bl = $('.blank', s); if (bl) { bl.textContent = right; bl.classList.add('filled'); }
+        Speech.say(right);
+        feedback(ok, b, $('.q-card', s));
+        done(ok, s);
+      });
+    });
+  }
+  /* 組み立て：① 語幹（または haber）→ ② 語尾（または過去分詞） */
+  function askBuild(it, sp, opt, done) {
+    var w = it.w, t = it.t, p = it.p, v = Conj.parse(w.w), A, B;
+    if (sp.perf) {
+      A = shuffle(Conj.HABER.slice());
+      var reg = v.cls === 'ar' ? v.stem + 'ado' : v.stem + 'ido', wrong = v.stem + (v.cls === 'ar' ? 'ido' : 'ado');
+      B = shuffle(uniq([sp.b, reg, wrong, Conj.form(w.w, 'pret', 2)]));
+    } else {
+      var stems = [];
+      [t, 'pres'].forEach(function (tt) { [0, 1, 2, 3, 4, 5].forEach(function (q) { var x = splitForm(w.w, tt, q); if (x && !x.perf) stems.push(x.a); }); });
+      stems.push(v.stem, t === 'fut' || t === 'cond' ? v.base : '');
+      A = shuffle([sp.a].concat(shuffle(uniq(stems).filter(function (x) { return x !== sp.a; })).slice(0, 3)));
+      var ends = endingsFor(v, t, p), conf = t === 'subj' ? Conj.END.pres[v.cls] : t === 'pres' ? Conj.END.subj[v.cls] : t === 'pret' ? Conj.END.pres[v.cls] : t === 'cond' ? Conj.FUT : t === 'fut' ? Conj.COND : Conj.END.pret[v.cls];
+      B = shuffle([sp.b].concat(shuffle(uniq(ends.concat(conf)).filter(function (x) { return x !== sp.b; })).slice(0, 5)));
+    }
+    var oneA = A.length === 1;
+    var s = stage('<div class="q">' + (opt.track || '') + cjCard(w, t, p, opt.tag) +
+      '<p class="q-ask">組み立てよう</p><div class="spell build">' + (sp.pre ? '<span class="art">' + esc(sp.pre) + '</span>' : '') + '<span class="slot sa">' + (oneA ? esc(sp.a) : '') + '</span><span class="slot sb"></span></div>' +
+      '<p class="b-lab">① ' + (sp.perf ? 'haber の形' : '語幹') + '</p><div class="tiles ta">' + A.map(function (x, i) { return '<button class="tl" data-i="' + i + '">' + esc(x) + '</button>'; }).join('') + '</div>' +
+      '<p class="b-lab">② ' + (sp.perf ? '過去分詞' : '語尾') + '</p><div class="tiles tb">' + B.map(function (x, i) { return '<button class="tl" data-i="' + i + '">' + esc(x) + (sp.perf ? '' : '') + '</button>'; }).join('') + '</div><div class="after"></div></div>');
+    var a = oneA ? sp.a : null, b = null, fin = false;
+    if (oneA) $$('.ta .tl', s).forEach(function (x) { x.disabled = true; x.classList.add('sel'); });
+    function check() {
+      if (a === null || b === null) return;
+      fin = true; $$('.tl', s).forEach(function (x) { x.disabled = true; });
+      var got = sp.pre + a + (sp.perf ? ' ' : '') + b, ok = got === sp.full;
+      if (!ok) $('.spell', s).insertAdjacentHTML('beforeend', '<span class="fix">→ ' + esc(sp.full) + '</span>');
+      Speech.say(sp.full);
+      feedback(ok, $('.spell', s), $('.q-card', s));
+      done(ok, s);
+    }
+    $$('.ta .tl', s).forEach(function (x) { x.addEventListener('click', function () { if (fin) return; a = A[+x.dataset.i]; $('.sa', s).textContent = a; $$('.ta .tl', s).forEach(function (y) { y.classList.toggle('sel', y === x); }); if (window.Snd) Snd.tap(); check(); }); });
+    $$('.tb .tl', s).forEach(function (x) { x.addEventListener('click', function () { if (fin) return; b = B[+x.dataset.i]; $('.sb', s).textContent = (sp.perf ? ' ' : '') + b; $$('.tb .tl', s).forEach(function (y) { y.classList.toggle('sel', y === x); }); if (window.Snd) Snd.tap(); check(); }); });
+  }
+
+  /* ---- ユニット：お手本 → 予想 → 説明 → 練習 ---- */
+  function blockConj(b, next) {
+    var U = unitOf(b.unit) || nextUnit(), tenses = U.tenses || [U.tense];
+    S.cjSeen = S.cjSeen || {};
+    if (!S.cjSeen[U.id] || b.intro) intro(); else practice();
+    function intro() {
+      var m = V.word(U.model), t = U.tense;
+      var s = stage('<div class="q unit-intro"><p class="u-eyebrow">🔁 活用のくせ</p><h2 class="u-title">' + esc(U.name) + '</h2>' + tBadge(t) +
+        '<div class="u-model"><p class="u-cap">お手本：<b>' + esc(m.w) + '</b>（' + esc(m.ja) + '）<small>' + esc(Conj.kind(m.w)) + '</small></p>' + conjTable(m.w, t, -1) +
+        (tenses.length > 1 ? '<p class="u-cap">' + TN[tenses[1]].name + '</p>' + conjTable(m.w, tenses[1], -1) : '') + '</div>' +
+        '<div class="u-rule">💡 ' + esc(U.rule) + '</div><details class="u-why"><summary>🤔 なぜ？</summary><p>' + esc(U.why) + '</p></details>' +
+        '<button class="next go">予想してみる ▶</button></div>');
+      $('.go', s).addEventListener('click', predict);
+    }
+    function predict() {
+      var w = V.word(U.predict.verb), p = U.predict.p, t = U.tense, right = Conj.form(w.w, t, p);
+      var ds = uniq([Conj.regularForm(w.w, t, p)].concat(personsOf(w, t).map(function (q) { return Conj.form(w.w, t, q); }), [Conj.form(w.w, 'pres', p), Conj.form(w.w, 'subj', p)]));
+      var list = shuffle([right].concat(shuffle(ds.filter(function (x) { return x !== right; })).slice(0, 3)));
+      var s = stage('<div class="q">' + trackHtml(w, 0.06, 'wow') + cjCard(w, t, p, '<span class="qtag">🤔 予想</span>') + '<p class="q-ask">いまの決まりを使うと？<small>（予想なので、まちがえても大丈夫）</small></p>' + choiceHtml(list.map(esc), 'es') + '<div class="after"></div></div>');
+      var done2 = false;
+      $$('.ch', s).forEach(function (x) {
+        x.addEventListener('click', function () {
+          if (done2) return; done2 = true;
+          var ok = list[+x.dataset.i] === right;
+          $$('.ch', s).forEach(function (y) { y.disabled = true; if (list[+y.dataset.i] === right) y.classList.add('right'); });
+          if (!ok) x.classList.add('miss');
+          if (window.Snd) (ok ? Snd.ok(0) : Snd.flip());
+          Speech.say(right);
+          moveTrack(s, w, 0.11, 'happy', ok ? '¡Sí!' : '');
+          S.cjSeen[U.id] = 1; V.save();
+          after(s, '<p class="reveal-h">' + (ok ? '🎯 予想的中！' : '💡 正解は ' + esc(right)) + '</p><div class="u-model"><p class="u-cap"><b>' + esc(w.w) + '</b>（' + esc(w.ja) + '）<small>' + esc(Conj.kind(w.w)) + '</small></p>' + conjTable(w.w, t, p) + '</div>', practice);
+        });
+      });
+    }
+    function practice() {
+      /* 練習するカード：まだ覚えていない→しおれた→ほか の順に4枚。1枚につき2問（作る問題 → 見分ける問題） */
+      var cards = unitCards(U);
+      var fresh = shuffle(cards.filter(function (id) { return !V.card(id); }));
+      var weak = cards.filter(function (id) { return V.card(id) && V.state(id) !== 'fresh'; });
+      var rest = shuffle(cards.filter(function (id) { return V.card(id) && V.state(id) === 'fresh'; }));
+      var pickC = fresh.concat(weak, rest).slice(0, b.n || 4), need = {}, close = {}, q = [];
+      pickC.forEach(function (id) { need[id] = 2; close[id] = V.card(id) ? nowClose(id) : 0.11; });
+      var firstT = shuffle(pickC.map(function (id) { return [id, pick(['build', 'build', 'pick'])]; }));
+      var secondT = shuffle(pickC.map(function (id) { return [id, pick(['cue', 'which', 'cue'])]; }));
+      q = firstT.concat(secondT);
+      var total = q.length, n = 0;
+      stage('<div class="interlude"><p class="big-t">🔁 ' + esc(U.name) + '</p><p>' + esc(U.rule) + '</p><button class="next go">練習 ▶</button><button class="ghost again">📖 お手本をもう一度</button></div>');
+      $('#stage .go').addEventListener('click', one);
+      $('#stage .again').addEventListener('click', intro);
+      function one() {
+        var x = q.shift(); if (!x) return next();
+        n++;
+        var c = V.cj(x[0]), w = c.verb, t = c.tense, p = pick(personsOf(w, t));
+        askConj({ w: w, t: t, p: p }, x[1], { tag: '<span class="qtag">🔁 ' + Math.min(n, total) + ' / ' + total + '</span>', track: trackHtml(w, close[x[0]], 'happy') }, function (ok, s) {
+          var id = x[0], had = !!V.card(id);
+          if (ok) {
+            need[id]--;
+            if (had) { var r = V.answer(id, true); ses.exp += r.exp; if (r.up) levelFx({ id: id, w: w.w + '（' + TN[t].short + '）' }, r.up); }
+            if (need[id] <= 0 && !had) { close[id] = REL_C[0]; moveTrack(s, w, close[id], 'happy', '覚えた！'); capCj(id, $('.q-card', s)); }
+            else { close[id] = Math.min(REL_C[0], close[id] + 0.07); moveTrack(s, w, close[id], 'happy'); }
+            after(s, conjTable(w.w, t, p), one, 1500);
+          } else {
+            if (had) V.answer(id, false);
+            close[id] = Math.max(0.04, close[id] - 0.04); moveTrack(s, w, close[id], 'meh');
+            q.push(x); total++;
+            after(s, '<p class="note">' + esc(Conj.kind(w.w)) + '</p>' + conjTable(w.w, t, p), one);
+          }
+        });
+      }
+    }
+  }
+  function capCj(id, el) {
+    var r = V.capture(id, false);
+    ses.caught.push(id); ses.exp += r.exp;
+    if (window.Snd) Snd.capture();
+    FX.burst(el, null, 22);
+    FX.float(el, '¡Lo tengo!', 'cap');
+  }
+  /* 野生戦：しおれた活用カード */
+  function fightCj(id, tagText, cb) {
+    var c = V.cj(id), w = c.verb, t = c.tense, p = pick(personsOf(w, t));
+    var c0 = nowClose(id), m0 = Chara.moodOf(V.state(id));
+    stage('<div class="appear"><p>' + tBadge(t) + '</p><div class="ap-bud">' + Chara.svg(w, { mood: m0 }) + '</div><p>' + esc(w.w) + ' の' + TN[t].short + 'が 遠くに いる！</p></div>');
+    if (window.Snd) Snd.appear();
+    setTimeout(function () {
+      askConj({ w: w, t: t, p: p }, pick(['pick', 'cue', 'build', 'which']), { tag: '<span class="qtag">' + tagText + '</span>', track: trackHtml(w, c0, m0) }, function (ok, s) {
+        var r = V.answer(id, ok);
+        if (ok) {
+          moveTrack(s, w, Chara.closeness(V.card(id).lv, 1), 'happy', r.back ? 'おかえり！' : '¡Hola!');
+          ses.exp += r.exp;
+          FX.float($('.q-card', s), '+' + r.exp + ' EXP', 'exp');
+          if (r.back) { ses.backs++; ses.backIds.push(id); }
+          if (r.up) levelFx({ id: id, w: w.w + '（' + TN[t].short + '）' }, r.up);
+          after(s, conjTable(w.w, t, p) + gaugeHtml({ id: id }), cb, r.up ? 0 : 1800);
+        } else {
+          moveTrack(s, w, Math.max(0.03, c0 - 0.12), 'sleep', '…');
+          after(s, '<p class="note">' + esc(Conj.kind(w.w)) + '</p>' + conjTable(w.w, t, p), cb);
+        }
+      });
+    }, 900);
+  }
+
+  /* ---- 活用のメニュー（ユニット一覧） ---- */
+  function renderConjMenu() {
+    var nx = nextUnit();
+    $('#cjList').innerHTML = CU.units.map(function (u) {
+      var d = unitDone(u), cards = unitCards(u), rc = [0, 0, 0, 0];
+      cards.forEach(function (id) { var c = V.card(id); if (c) rc[c.lv]++; });
+      var wilt = cards.filter(function (id) { return V.card(id) && V.state(id) !== 'fresh'; }).length;
+      return '<button class="unit" data-unit="' + u.id + '">' + tBadge(u.tenses ? u.tenses[0] : u.tense) + (u === nx ? '<span class="u-rec">おすすめ</span>' : '') +
+        '<b>' + esc(u.name) + '</b><span class="bar stack">' + rc.map(function (n, i) { return n ? '<i class="r-' + V.RANKS[i].id + '" style="width:' + (n / d.total * 100) + '%"></i>' : ''; }).join('') + '</span>' +
+        '<small>' + d.got + ' / ' + d.total + ' 形' + (wilt ? '　🥀 ' + wilt : '') + (S.cjSeen && S.cjSeen[u.id] ? '' : '　🆕') + '</small></button>';
+    }).join('');
+  }
+  /* ---- 図鑑：活用の表（動詞 × 時制） ---- */
+  var CJ_T = ['pres', 'pret', 'impf', 'perf', 'fut', 'cond', 'subj', 'imp'];
+  function cjMatrix() {
+    var verbs = [];
+    CU.units.forEach(function (u) { u.verbs.forEach(function (v) { if (verbs.indexOf(v) < 0) verbs.push(v); }); });
+    var inUnit = {}; CU.units.forEach(function (u) { unitCards(u).forEach(function (id) { inUnit[id] = 1; }); });
+    verbs.sort(function (a, b) { return V.word(a).i - V.word(b).i; });
+    return '<table class="cjm"><tr><th></th>' + CJ_T.map(function (t) { return '<th title="' + TN[t].name + '">' + CU.look[t].ico + '<small>' + TN[t].short + '</small></th>'; }).join('') + '</tr>' +
+      verbs.map(function (vid) {
+        return '<tr><th>' + esc(V.word(vid).w) + '</th>' + CJ_T.map(function (t) {
+          var id = V.cjId(vid, t), c = V.card(id);
+          if (!inUnit[id]) return '<td></td>';
+          if (!c) return '<td><button class="cjc none" data-cj="' + id + '"></button></td>';
+          var st = V.state(id);
+          return '<td><button class="cjc r-' + V.RANKS[c.lv].id + ' st-' + st + '" data-cj="' + id + '">' + V.RANKS[c.lv].mark + (st !== 'fresh' ? '<i>' + (st === 'wild' ? '🍂' : '🥀') + '</i>' : '') + '</button></td>';
+        }).join('') + '</tr>';
+      }).join('') + '</table>';
+  }
+  function cjMini(id) {
+    var c = V.cj(id), k = V.card(id);
+    return '<button class="mini cjmini r-' + V.RANKS[k.lv].id + '" data-id="' + id + '"><span class="no">' + CU.look[c.tense].ico + '</span>' + Chara.svg(c.verb, { mood: 'happy' }) +
+      '<span class="mw">' + esc(c.verb.w) + '</span><span class="mj">' + TN[c.tense].name + '</span><span class="rb">' + V.RANKS[k.lv].rel + '</span></button>';
+  }
+  function openCjSheet(id) {
+    var c = V.cj(id), w = c.verb, t = c.tense, k = V.card(id), box = $('#sheetBody');
+    var st = k ? V.state(id) : 'none';
+    box.innerHTML = '<div class="q-card cj"><div class="cj-top">' + tBadge(t) + '</div><div class="cj-verb"><b>' + esc(w.w) + '</b><small>' + esc(w.ja) + '</small></div><small class="pos">' + esc(Conj.kind(w.w)) + '</small></div>' +
+      (k ? trackHtml(w, nowClose(id), Chara.moodOf(st)) : '<p class="note">まだ覚えていない形。🔁 活用の練習で出てくるよ</p>') + conjTable(w.w, t, -1) +
+      (k ? gaugeHtml({ id: id }) : '') + (k && st !== 'fresh' ? '<button class="next rescue">🚑 救出する</button>' : '');
+    var rb = $('.rescue', box);
+    if (rb) rb.addEventListener('click', function () { closeSheet(); start([{ type: 'rescue', id: id }]); });
+    $('#sheet').hidden = false;
+    tw($('#sheet .sh'), { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' });
+  }
 
   /* =========================================================
    * 結果
@@ -573,15 +900,17 @@
     var grown = []; ses.caught.concat(ses.ups, ses.backIds).forEach(function (id) { if (grown.indexOf(id) < 0) grown.push(id); });
     $('#dTitle').textContent = ses.caught.length || ses.ups.length ? '¡Muy bien!' : '¡Buen trabajo!';
     var lines = [];
-    if (ses.caught.length) lines.push('📖 図鑑に <b>' + ses.caught.length + '枚</b> 追加');
+    var cWords = ses.caught.filter(function (id) { return !V.isCj(id); }).length, cCj = ses.caught.length - cWords;
+    if (cWords) lines.push('📖 図鑑に <b>' + cWords + '枚</b> 追加');
+    if (cCj) lines.push('🔁 活用を <b>' + cCj + '形</b> 覚えた');
     if (ses.ups.length) lines.push('✨ <b>' + ses.ups.length + '枚</b> が進化');
     if (ses.backs) lines.push('🤝 野生から <b>' + ses.backs + '枚</b> 取り返した');
     if (ses.met.length) lines.push('🌱 <b>' + ses.met.length + '語</b> と出会った');
     lines.push('⭐ <b>+' + ses.exp + ' EXP</b>（今日 +' + S.day.exp + '）');
     var rc = V.rankCounts();
-    lines.push('🤝 いま　出会い <b>' + (rc[0] + rc[1]) + '</b>・定着 <b>' + (rc[2] + rc[3]) + '</b>（仲間・相棒）');
+    if (cWords || rc[0] + rc[1] + rc[2] + rc[3]) lines.push('🤝 単語は いま　出会い <b>' + (rc[0] + rc[1]) + '</b>・定着 <b>' + (rc[2] + rc[3]) + '</b>（仲間・相棒）');
     $('#dLines').innerHTML = lines.map(function (l) { return '<li>' + l + '</li>'; }).join('');
-    $('#dCards').innerHTML = grown.map(function (id) { return miniCard(V.word(id)); }).join('');
+    $('#dCards').innerHTML = grown.map(function (id) { return V.isCj(id) ? cjMini(id) : miniCard(V.word(id)); }).join('');
     /* 次回予告 */
     var soon = Object.keys(S.cards).filter(function (id) { return V.state(id) === 'fresh' && V.condition(id, Date.now() + 24 * 3600e3) < 0.75; }).length;
     var wilt = V.wildList().length;
@@ -604,7 +933,11 @@
       '<span class="no">' + V.RANKS[c.lv].mark + ' ' + (w.i + 1) + '</span>' + (st !== 'fresh' ? '<span class="stb">' + (st === 'wild' ? '🍂' : '🥀') + '</span>' : '') +
       Chara.svg(w, { mood: Chara.moodOf(st), holo: c.lv === 3 }) + '<span class="mw">' + headHtml(w) + '</span><span class="mj">' + esc(w.ja) + '</span><span class="rb">' + V.RANKS[c.lv].rel + '</span></button>';
   }
+  var dexTab = 'words';
   function renderDex() {
+    $$('.x-tabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === dexTab); });
+    $('#xLegend').hidden = dexTab !== 'words';
+    if (dexTab === 'conj') { $('#xBody').innerHTML = '<p class="x-legend">色＝ランク（B・S・G・H）。点線＝まだ覚えていない形。タップで活用表</p>' + cjMatrix(); return; }
     var got = V.caughtCount();
     $('#xCount').textContent = got + ' / ' + D.words.length;
     $('#xBody').innerHTML = D.sections.map(function (sec) {
@@ -615,6 +948,7 @@
     if (G) G.fromTo('#xBody .mini', { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, stagger: 0.012, ease: 'back.out(2)' });
   }
   function openSheet(id) {
+    if (V.isCj(id)) return openCjSheet(id);
     var w = V.word(id), c = V.card(id), box = $('#sheetBody');
     if (!c) {
       box.innerHTML = '<div class="sh-none"><div class="sh-sil">' + Chara.svg(w, { mood: 'none' }) + '</div><p>No.' + (w.i + 1) + '　まだ出会っていない単語</p><p class="note">' + (V.SEC[w.s].known ? '👀 顔見知りチェック' : '🌱 出会い') + 'で会えるよ</p></div>';
@@ -651,13 +985,19 @@
       var t = e.target.closest('.tile'); if (!t || t.disabled) return;
       var id = t.dataset.block;
       if (id === 'dex') return go('dex');
+      if (id === 'conj') return go('conj');
       start([{ type: id, n: id === 'meet' ? 3 : id === 'face' ? 10 : 6 }]);
     });
     $('#quit').addEventListener('click', function () { if (window.speechSynthesis) speechSynthesis.cancel(); finish(); });
     $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { go(b.dataset.go); }); });
     $('#dMore').addEventListener('click', function () { start(makePlan(5), '5分'); });
     $('#plaza').addEventListener('click', function (e) { var m = e.target.closest('.p-bud'); if (m) openSheet(m.dataset.id); });
-    $('#xBody').addEventListener('click', function (e) { var m = e.target.closest('.mini'); if (m) openSheet(m.dataset.id); });
+    $('#xBody').addEventListener('click', function (e) {
+      var m = e.target.closest('.mini'); if (m) return openSheet(m.dataset.id);
+      var c = e.target.closest('.cjc'); if (c) openCjSheet(c.dataset.cj);
+    });
+    $$('.x-tabs button').forEach(function (b) { b.addEventListener('click', function () { dexTab = b.dataset.tab; renderDex(); }); });
+    $('#cjList').addEventListener('click', function (e) { var u = e.target.closest('.unit'); if (u) start([{ type: 'conj', unit: u.dataset.unit, n: 4 }]); });
     $('#dCards').addEventListener('click', function (e) { var m = e.target.closest('.mini'); if (m) openSheet(m.dataset.id); });
     $('#sheet').addEventListener('click', function (e) { if (e.target.id === 'sheet' || e.target.closest('.sh-close')) closeSheet(); });
     $('#tgSound').addEventListener('change', function (e) { S.settings.sound = e.target.checked; V.save(); });

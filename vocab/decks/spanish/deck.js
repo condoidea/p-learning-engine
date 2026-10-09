@@ -104,6 +104,21 @@ window.VOCAB_DECK = {
     { id: 'amigo', s: 'k5', w: 'amigo', pos: 'n', g: 'm', ja: '友だち', ex: ['Pedro es mi mejor {amigo}.', 'ペドロは私のいちばんの友だちだ。'],
       clue: { t: 'cog', text: '英語の amicable（友好的な）と同じ祖先' }, memo: '女性の友だちは amiga' },
 
+    /* 5級：基本の動詞（活用の練習にも使う） */
+    { id: 'ser', s: 'k5', w: 'ser', pos: 'v', ja: '〜である（性質・身元）', ex: ['{Soy} japonés.', '私は日本人です。'],
+      clue: { t: 'ctx', text: '🪪 自己紹介で、国籍や職業を言うときの動詞' },
+      memo: '変わらない性質・身元は ser、いまの状態・場所は estar。活用は完全な不規則（soy, eres, es…）' },
+    { id: 'estar', s: 'k5', w: 'estar', pos: 'v', ja: '〜にいる・〜の状態だ', ex: ['¿Dónde {estás}?', 'どこにいるの？'],
+      clue: { t: 'cog', text: '英語の state（状態）、station と同じ祖先' }, memo: '場所と、いまの状態（cansado など）は estar' },
+    { id: 'hacer', s: 'k5', w: 'hacer', pos: 'v', ja: 'する・作る', ex: ['¿Qué {haces}?', '何してるの？'],
+      clue: { t: 'ctx', text: '📞 電話で「いま何◯◯の？」と聞く' }, memo: '天気も hacer：Hace calor.（暑い）。私は＝hago' },
+    { id: 'querer', s: 'k5', w: 'querer', pos: 'v', ja: '欲しい・〜したい', ex: ['{Quiero} un café, por favor.', 'コーヒーをください。'],
+      clue: { t: 'ctx', text: '☕ カフェで注文するときの決まり文句' }, memo: 'e→ie に変わる（quiero）。Te quiero.＝愛してる' },
+    { id: 'poder', s: 'k5', w: 'poder', pos: 'v', ja: '〜できる', ex: ['¿{Puedo} pasar?', '入ってもいいですか？'],
+      clue: { t: 'cog', text: '英語の potential（可能性）・power と同じ祖先' }, memo: 'o→ue に変わる（puedo）' },
+    { id: 'ver', s: 'k5', w: 'ver', pos: 'v', ja: '見る', ex: ['{Veo} la tele por la noche.', '夜はテレビを見る。'],
+      clue: { t: 'cog', text: '英語の video（ラテン語で「私は見る」）と同じ祖先' }, memo: '私は＝veo。過去分詞は visto' },
+
     /* ---------------- 4級 ---------------- */
     { id: 'biblioteca', s: 'k4', w: 'biblioteca', pos: 'n', g: 'f', ja: '図書館', ex: ['Estudio en la {biblioteca}.', '図書館で勉強する。'],
       clue: { t: 'parts', text: 'biblio（本：英語の Bible と同じ）＋ teca（しまっておく所）' },
@@ -178,6 +193,25 @@ window.VOCAB_DECK = {
     { id: 'temprano', s: 'k4', w: 'temprano', pos: 'adv', ja: '（時間が）早く', ex: ['Mañana me levanto {temprano}.', '明日は早く起きる。'],
       clue: { t: 'cog', text: '英語の temporary・tempo（時間）と同じ祖先' }, memo: '速さの「速く」は rápido。時間の「早く」が temprano' },
     { id: 'todavia', s: 'k4', w: 'todavía', pos: 'adv', ja: 'まだ', ex: ['{Todavía} estoy en casa.', 'まだ家にいる。'],
-      clue: { t: 'ctx', text: '⏳ 「もう出た？」と聞かれて「いや、◯◯家にいる」' } }
+      clue: { t: 'ctx', text: '⏳ 「もう出た？」と聞かれて「いや、◯◯家にいる」' } },
+    /* 4級：活用の練習で大事な動詞 */
+    { id: 'decir', s: 'k4', w: 'decir', pos: 'v', ja: '言う', ex: ['¿Qué {dices}?', '何て言ってるの？'],
+      clue: { t: 'cog', text: '英語の dictionary・predict の dict（言う）と同じ祖先' }, memo: '私は＝digo、点過去は dije、過去分詞は dicho' },
+    { id: 'venir', s: 'k4', w: 'venir', pos: 'v', ja: '来る', ex: ['¿{Vienes} a la fiesta?', 'パーティーに来る？'],
+      clue: { t: 'cog', text: '英語の event・convention の ven（来る）と同じ祖先' }, memo: '私は＝vengo、点過去は vine' },
+    { id: 'poner', s: 'k4', w: 'poner', pos: 'v', ja: '置く', ex: ['{Pongo} el libro en la mesa.', '本をテーブルに置く。'],
+      clue: { t: 'cog', text: '英語の position・post（置く）と同じ祖先' }, memo: '私は＝pongo、過去分詞は puesto' },
+    { id: 'dar', s: 'k4', w: 'dar', pos: 'v', ja: 'あげる・与える', ex: ['Te {doy} un regalo.', '君にプレゼントをあげる。'],
+      clue: { t: 'cog', text: '英語の donate（寄付する）と同じ祖先' }, memo: '私は＝doy。点過去は di, diste, dio（-er 動詞の語尾）' },
+    { id: 'pedir', s: 'k4', w: 'pedir', pos: 'v', ja: '頼む・注文する', ex: ['{Pido} una paella.', 'パエリアを注文する。'],
+      clue: { t: 'ctx', text: '🍽️ レストランで、店員さんに料理を…' }, memo: 'e→i に変わる（pido）。点過去の3人称も pidió' },
+    { id: 'dormir', s: 'k4', w: 'dormir', pos: 'v', ja: '眠る', ex: ['{Duermo} ocho horas.', '8時間眠る。'],
+      clue: { t: 'cog', text: '英語の dormitory（寮＝眠る所）と同じ祖先' }, memo: 'o→ue に変わる（duermo）。点過去の3人称は durmió' },
+    { id: 'pensar', s: 'k4', w: 'pensar', pos: 'v', ja: '考える・思う', ex: ['{Pienso} en ti.', '君のことを考えている。'],
+      clue: { t: 'ctx', text: '🤔 ロダンの「考える人」のポーズ' }, memo: 'e→ie に変わる（pienso）' },
+    { id: 'escribir', s: 'k4', w: 'escribir', pos: 'v', ja: '書く', ex: ['{Escribo} una carta a mi abuela.', '祖母に手紙を書く。'],
+      clue: { t: 'cog', text: '英語の script・describe の scrib（書く）と同じ祖先' }, memo: '過去分詞は escrito（不規則）' },
+    { id: 'jugar', s: 'k4', w: 'jugar', pos: 'v', ja: '遊ぶ・（スポーツを）する', ex: ['{Juego} al fútbol los domingos.', '日曜日はサッカーをする。'],
+      clue: { t: 'ctx', text: '⚽ 公園でボールを蹴って…' }, memo: 'u→ue に変わる（juego）。u→ue はこの動詞だけ' }
   ]
 };
