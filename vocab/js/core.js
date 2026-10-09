@@ -13,10 +13,10 @@
   var HOUR = 3600e3, DAY = 24 * HOUR;
 
   var RANKS = [
-    { id: 'bronze', name: 'ブロンズ', need: 0 },
-    { id: 'silver', name: 'シルバー', need: 30 },
-    { id: 'gold', name: 'ゴールド', need: 80 },
-    { id: 'holo', name: 'ホロ', need: 160 }
+    { id: 'bronze', name: 'ブロンズ', mark: 'B', need: 0 },
+    { id: 'silver', name: 'シルバー', mark: 'S', need: 30 },
+    { id: 'gold', name: 'ゴールド', mark: 'G', need: 80 },
+    { id: 'holo', name: 'ホロ', mark: 'H', need: 160 }
   ];
   /* コンディションが半分くらいになるまでの日数（レベルが上がるほど長持ち） */
   var KEEP = [1.5, 4, 9, 20];

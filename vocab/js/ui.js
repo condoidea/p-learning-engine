@@ -534,8 +534,8 @@
     if (!c) return '<button class="mini none" data-id="' + w.id + '"><span class="no">' + (w.i + 1) + '</span><span class="q">？</span></button>';
     var st = V.state(w.id);
     return '<button class="mini' + gcls(w) + ' r-' + V.RANKS[c.lv].id + ' st-' + st + '" data-id="' + w.id + '" style="--cond:' + V.condition(w.id).toFixed(2) + '">' +
-      '<span class="no">' + (w.i + 1) + '</span>' + (st !== 'fresh' ? '<span class="stb">' + (st === 'wild' ? '🍂' : '🥀') + '</span>' : '') +
-      '<span class="mw">' + headHtml(w) + '</span><span class="mj">' + esc(w.ja) + '</span></button>';
+      '<span class="no">' + V.RANKS[c.lv].mark + ' ' + (w.i + 1) + '</span>' + (st !== 'fresh' ? '<span class="stb">' + (st === 'wild' ? '🍂' : '🥀') + '</span>' : '') +
+      '<span class="mw">' + headHtml(w) + '</span><span class="mj">' + esc(w.ja) + '</span><span class="rb">' + V.RANKS[c.lv].name + '</span></button>';
   }
   function renderDex() {
     var got = V.caughtCount();
