@@ -78,6 +78,7 @@ button:disabled { cursor: default; }
 .q-word .art, .spell .art, .meaning .art, .mini .art, .fly-card .art { font-weight: 600; font-style: italic; opacity: .95; }
 .g-m .art { color: var(--male); }
 .g-f .art { color: var(--female); }
+.g-mf .art { color: var(--accent2); }
 .q-card.g-m::after, .q-card.g-f::after { content: ''; position: absolute; left: 50%; bottom: 8px; width: 34px; height: 4px; margin-left: -17px; border-radius: 9px; background: var(--male); }
 .q-card.g-f::after { background: var(--female); }
 .q-ja { font-size: 26px; font-weight: 900; }

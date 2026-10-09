@@ -46,7 +46,9 @@
       else if (/[～〜~＋+…()（）]|動詞|原形|不定詞|algo|alguien/.test(w.w)) warn(at, 'w には、そのまま言う形だけを書く（例 "contento de"）。「＋動詞の原形」などの型は use に書く');
       if (w.use != null && (typeof w.use !== 'string' || !w.use)) err(at, 'use は文字列（例 "estar contento de ＋ 動詞の原形"）');
       if (POS.indexOf(w.pos) < 0) err(at, 'pos は ' + POS.join('/') + ' のどれか');
-      if (w.pos === 'n' && w.g !== 'm' && w.g !== 'f') err(at, '名詞は g（m＝男性・f＝女性）が必須');
+      if (w.pos === 'n' && ['m', 'f', 'mf'].indexOf(w.g) < 0) err(at, '名詞は g（m＝男性・f＝女性・mf＝el/la どちらも同じ形）が必須');
+      if (w.w && /,\s*-|\/\s*-|\(-/.test(w.w)) warn(at, 'w には男性形だけを書く（例 "ingeniero"）。女性形は fem に（"ingeniera"）。形容詞の「-ta」などは書かなくてよい');
+      if (w.fem != null) { if (typeof w.fem !== 'string' || !w.fem || /\s|-/.test(w.fem)) err(at, 'fem は女性形のつづり（例 "ingeniera"）'); else if (w.pos !== 'n') warn(at, 'fem は名詞だけ（形容詞の女性形は書かなくてよい）'); }
       if (w.art && ['el', 'la', 'los', 'las'].indexOf(w.art) < 0) err(at, 'art は el/la/los/las');
       if (typeof w.ja !== 'string' || !w.ja) err(at, 'ja（意味）が必須');
       if (w.w && spell[w.w]) warn(at, '同じつづりが ' + spell[w.w] + ' にもある（同じ語なら1つにまとめ、ref に両方のページを書く）');

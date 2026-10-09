@@ -43,7 +43,8 @@
   if (window.Conj) D.words.forEach(function (w) { if (w.pos === 'v' && w.cj) Conj.addIrr(w.w, w.cj); });
   var SEC = {}; D.sections.forEach(function (s) { SEC[s.id] = s; });
 
-  function art(w) { return w.art || (w.pos === 'n' ? (w.g === 'f' ? 'la' : 'el') : ''); }
+  /* 冠詞：g が mf（el/la estudiante のように男女で形が同じ）なら el/la */
+  function art(w) { return w.art || (w.pos === 'n' ? (w.g === 'f' ? 'la' : w.g === 'mf' ? 'el/la' : 'el') : ''); }
   function card(id) { return S.cards[id] || null; }
   function rankOf(exp) { var r = 0; RANKS.forEach(function (R, i) { if (exp >= R.need) r = i; }); return r; }
 

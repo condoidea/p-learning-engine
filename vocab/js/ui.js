@@ -435,7 +435,10 @@
     if (auto) setTimeout(nx, auto);
   }
   /* 使い方の型（例 contento de ＋ 動詞の原形） */
-  function useHtml(w) { return w.use ? '<small class="use">' + esc(w.use) + '</small>' : ''; }
+  /* 女性形（ingeniero → la ingeniera）も同じ場所に */
+  function useHtml(w) {
+    return (w.fem ? '<small class="use">女性：la ' + esc(w.fem) + '</small>' : '') + (w.use ? '<small class="use">' + esc(w.use) + '</small>' : '');
+  }
   function refHtml(w) {
     if (!D.book) return '';
     var sec = V.SEC[w.s];
@@ -523,7 +526,7 @@
       if (c.lure) opts.push(c.lure);
       opts = shuffle(opts.concat(others(w, 3 - opts.length, 'ja').filter(function (x) { return x !== c.lure; }).slice(0, 3 - opts.length)));
       var s = stage('<div class="q meet">' + trackHtml(w, 0.04, 'wow') + '<div class="q-card big' + gcls(w) + '"><span class="qtag">🌱 出会い ' + k + ' / ' + words.length + '</span>' +
-        '<div class="q-word">' + headHtml(w) + '</div>' + useHtml(w) + sayBtn(V.head(w)) + '<small class="pos">' + POS[w.pos] + (w.pos === 'n' ? (w.g === 'f' ? '・女性' : '・男性') : '') + '</small>' + refHtml(w) + '</div>' +
+        '<div class="q-word">' + headHtml(w) + '</div>' + useHtml(w) + sayBtn(V.head(w)) + '<small class="pos">' + POS[w.pos] + (w.pos === 'n' ? (w.g === 'f' ? '・女性' : w.g === 'mf' ? '・男女同形' : w.fem ? '・男性（女性形あり）' : '・男性') : '') + '</small>' + refHtml(w) + '</div>' +
         '<div class="clue"><b>' + CLUE[c.t] + '</b><p>' + esc(c.text) + '</p>' + (c.t === 'ctx' ? '<div class="ex">' + exHtml(w.ex[0]) + '</div>' : '') + '</div>' +
         '<p class="q-ask">🤔 どんな意味だと思う？<small>（予想なので、まちがえても大丈夫）</small></p>' + choiceHtml(opts.map(esc)) + '<div class="after"></div></div>');
       setTimeout(function () { Speech.say(V.head(w)); }, 300);
