@@ -54,7 +54,7 @@
   <div class="grid" id="grid"></div>
 </div>
 
-<script src="courses/registry.js?v=10"></script>
+<script src="courses/registry.js?v=11"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>
 (function () {
@@ -70,9 +70,12 @@
   var grid = document.getElementById('grid');
   (window.LE_COURSES || []).forEach(function (c) {
     var S = read(c.storageKey) || {};
-    var done = Object.keys(S.lessons || {}).filter(function (k) { return S.lessons[k] && S.lessons[k].done; }).length;
-    var pct = c.lessons ? Math.round(done / c.lessons * 100) : 0;
-    var last = P.courses && P.courses[c.id] && P.courses[c.id].last;
+    var vocab = c.kind === 'vocab';
+    var done = vocab ? Object.keys(S.cards || {}).length : Object.keys(S.lessons || {}).filter(function (k) { return S.lessons[k] && S.lessons[k].done; }).length;
+    var all = vocab ? c.words : c.lessons;
+    var pct = all ? Math.round(done / all * 100) : 0;
+    var last = vocab ? Object.keys(S.cards || {}).reduce(function (m, k) { return Math.max(m, S.cards[k].last || 0); }, 0)
+                     : P.courses && P.courses[c.id] && P.courses[c.id].last;
     var a = document.createElement('a');
     a.className = 'course';
     a.href = c.entry;
@@ -81,7 +84,7 @@
     a.innerHTML = '<span class="ico">' + esc(c.icon || '📘') + '</span><span class="brand">' + esc(c.brand || '') + '</span>' +
       '<h2>' + esc(c.title) + '</h2><p>' + esc(c.desc || '') + '</p>' +
       '<div class="bar"><i data-w="' + pct + '"></i></div>' +
-      '<div class="meta"><span>レッスン ' + done + ' / ' + (c.lessons || '?') + '</span><span>' + (last ? '最終学習 ' + new Date(last).toLocaleDateString('ja-JP') : '未開始') + '</span></div>' +
+      '<div class="meta"><span>' + (vocab ? '図鑑 ' : 'レッスン ') + done + ' / ' + (all || '?') + '</span><span>' + (last ? '最終学習 ' + new Date(last).toLocaleDateString('ja-JP') : '未開始') + '</span></div>' +
       '<span class="go">' + (done ? 'つづける ▶' : 'はじめる ▶') + '</span>';
     grid.appendChild(a);
   });

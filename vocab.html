@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja" data-skin="espana">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¡VAMOS!｜スペイン語 単語</title>
+<meta name="theme-color" content="#f6ead6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600;1,9..144,800&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vocab/css/vocab.css?v=2">
+<link rel="stylesheet" href="vocab/css/skin-espana.css?v=2">
+</head>
+<body>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div id="app">
+
+  <!-- ============ ホーム ============ -->
+  <section id="home" class="screen">
+    <header class="h-head anim">
+      <a class="back" href="index.html">← コース一覧</a>
+      <div class="brand"><b id="hBrand"></b><small id="hSub"></small></div>
+    </header>
+
+    <div class="stats anim">
+      <button class="st dex-st" data-go="dex"><small>📖 図鑑</small><b id="hDex"></b><span class="bar"><i id="hDexBar"></i></span></button>
+      <div class="st"><small>今日</small><b id="hExp"></b><span class="unit">EXP</span></div>
+      <div class="st"><small>今日 育った</small><b id="hGrown"></b><span class="unit">枚</span></div>
+    </div>
+    <p class="wild-note anim" id="hWild" hidden></p>
+
+    <h2 class="sec anim">おまかせ<small>時間と気分で選ぶ</small></h2>
+    <div class="omakase anim">
+      <button data-min="1"><b>1</b><span>分</span><small>すきま時間</small></button>
+      <button data-min="5"><b>5</b><span>分</span><small>いつもの</small></button>
+      <button data-min="10"><b>10</b><span>分</span><small>じっくり</small></button>
+    </div>
+    <div class="mood anim">
+      <button data-mood="firm">🧠 しっかり<small>新しい単語・つづり</small></button>
+      <button data-mood="easy">😌 ゆるく<small>知っている単語だけ</small></button>
+    </div>
+
+    <h2 class="sec anim">アラカルト<small>やりたいものを直接</small></h2>
+    <div class="alacarte anim" id="alacarte"></div>
+
+    <div class="settings anim">
+      <label><input type="checkbox" id="tgSound"> 🔈 効果音</label>
+      <label id="tgSpeakRow"><input type="checkbox" id="tgSpeak"> 🗣 発音を読み上げ</label>
+    </div>
+  </section>
+
+  <!-- ============ 学習中 ============ -->
+  <section id="play" class="screen" hidden>
+    <header class="p-head">
+      <button id="quit" aria-label="やめる">✕</button>
+      <div class="p-mid"><span id="phase"></span><div id="steps"></div></div>
+      <div id="pDexBox" class="p-dex">📖 <b id="pDex">0</b></div>
+    </header>
+    <main id="stage"></main>
+  </section>
+
+  <!-- ============ 結果 ============ -->
+  <section id="done" class="screen" hidden>
+    <h1 id="dTitle" class="anim"></h1>
+    <ul id="dLines" class="anim"></ul>
+    <div id="dCards" class="grid"></div>
+    <p id="dNext" class="next-note anim"></p>
+    <div class="d-btns anim">
+      <button class="next" id="dMore">もう5分 ▶</button>
+      <button class="ghost" data-go="home">ホームへ</button>
+    </div>
+  </section>
+
+  <!-- ============ 図鑑 ============ -->
+  <section id="dex" class="screen" hidden>
+    <header class="x-head">
+      <button class="ghost" data-go="home">← ホーム</button>
+      <b>📖 図鑑</b><span id="xCount"></span>
+    </header>
+    <p class="x-legend">🥀 しおれかけ ／ 🍂 野生に戻りかけ（タップして救出）</p>
+    <div id="xBody"></div>
+    <button class="ghost danger" id="xReset">記録をリセット</button>
+  </section>
+</div>
+
+<div id="sheet" hidden><div class="sh"><button class="sh-close" aria-label="閉じる">✕</button><div id="sheetBody"></div></div></div>
+<div id="slam" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="vocab/decks/spanish/deck.js?v=2"></script>
+<script src="vocab/js/core.js?v=2"></script>
+<script src="engine/js/audio.js?v=2"></script>
+<script src="vocab/js/sound-es.js?v=2"></script>
+<script src="vocab/js/ui.js?v=2"></script>
+</body>
+</html>

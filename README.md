@@ -23,6 +23,7 @@ index.html              コース選択（タイトル画面）
 fe.html                 基本情報コースの入口（中身は数行。engine/js/boot.js が組み立てる）
 habsburg.html           ハプスブルク年代記コースの入口
 trig.html               三角比・平面図形コースの入口
+vocab.html              単語アプリ（スペイン語）の入口。中身は vocab/（設計は docs/単語アプリ設計.md）
 engine/
   js/boot.js            起動処理（スタイル・画面・スクリプトを順に読み込む）
   js/fxmap.js, fxgeo.js 背景（古地図／方眼ノートと単位円）。scene.preset で切りかえ

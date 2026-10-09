@@ -27,5 +27,12 @@ window.LE_COURSES = [
     title: '三角比・平面図形の公式', brand: 'TRIG RUSH', icon: '📐',
     desc: '三角比・平面図形の公式を、図を動かして覚える。sin・cos・tan から正弦定理・余弦定理・メネラウスまで。',
     color: '#ff5fa2', color2: '#38d9ff', lessons: 15
+  },
+  /* 単語アプリ（vocab/）：kind: 'vocab'。words＝デッキの語数（図鑑の進み具合の表示に使う） */
+  {
+    id: 'spanish', kind: 'vocab', entry: 'vocab.html', storageKey: 'vocab.spanish.v1',
+    title: 'スペイン語 単語', brand: '¡VAMOS!', icon: '💃',
+    desc: '西検5級→4級の単語を、予想して出会い、捕まえて図鑑で育てる。1分・5分・10分、気分でも選べる。',
+    color: '#ff7a59', color2: '#f2a541', words: 63
   }
 ];

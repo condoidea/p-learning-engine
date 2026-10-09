@@ -5,7 +5,8 @@
   var ctx = null, master = null;
   var SCALE = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21, 24, 26, 28, 31]; // ペンタトニック：コンボで音階が上がる
 
-  function on() { return window.Core && Core.S.settings.sound; }
+  /* 音のオン・オフ：学習アプリは Core の設定。単語アプリなど別のアプリは window.SfxOn() を用意する */
+  function on() { if (window.SfxOn) return SfxOn(); return window.Core && Core.S.settings.sound; }
 
   /* ---- iPhone：マナーモード（消音スイッチ）でも音を出す ----
    *  iOS の Safari は、WebAudio を「環境音」扱いにするので、消音スイッチが入っていると鳴らない（音量が0でなくても）。
@@ -155,6 +156,11 @@
         if (tier === 'legendary') [0, 7, 12, 19, 24].forEach(function (s, k) { tone(hz(s + 12), t + 0.7 + k * 0.08, 0.8, 'sine', 0.1); });
       });
     },
-    whoosh: function () { play(function (t) { noise(t, 0.25, 0.12, 6000, 500); }); }
+    whoosh: function () { play(function (t) { noise(t, 0.25, 0.12, 6000, 500); }); },
+    /* 別のサウンドパック（単語アプリなど）が、同じ音の出口（iPhone のマナーモード対策・振動）を使うための部品 */
+    raw: {
+      play: play, tone: tone, noise: noise, buzz: buzz, hz: hz,
+      ctx: function () { return ctx; }, out: function () { return master; }
+    }
   };
 })();
