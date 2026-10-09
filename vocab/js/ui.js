@@ -197,6 +197,7 @@
   function renderHome() {
     var total = D.words.length, got = V.caughtCount(), wild = V.wildList().length, face = V.faceList().length, meet = V.meetList().length;
     $('#hBrand').textContent = D.brand;
+    $('#hDeck').innerHTML = '📚 デッキ：<b>' + esc(deckName()) + '</b><small>切りかえ・読み込み ›</small>';
     $('#hSub').textContent = D.sub;
     $('#hDex').textContent = got + ' / ' + total;
     var rc = V.rankCounts();
@@ -1119,6 +1120,73 @@
   }
 
   /* =========================================================
+   * 📚 デッキの切りかえ・読み込み（参考書連動版など）
+   *  読み込んだデッキは端末の中だけに保存（vocab/js/decks.js）。公開されない。
+   *  同じ id のデッキがあれば「足す（課ごとに追加）」か「全部入れかえ」を選べる。
+   *  進み具合は単語の id で記録しているので、どちらでも引き継がれる。
+   * ========================================================= */
+  var BUILTIN_ID = 'spanish';
+  function deckName() { return D.brand + (D.book ? '（' + D.book + '）' : ''); }
+  function openDecks(msg) {
+    var box = $('#sheetBody'), list = window.VocabDecks ? VocabDecks.list() : [];
+    var cur = D.id;
+    var item = function (id, name, sub, href) {
+      return '<a class="deck-item' + (id === cur ? ' cur' : '') + '" href="' + href + '"><b>' + esc(name) + '</b><small>' + esc(sub) + '</small>' + (id === cur ? '<span class="dcur">いま使っている</span>' : '') + '</a>';
+    };
+    box.innerHTML = '<p class="u-title">📚 デッキ</p>' +
+      item(BUILTIN_ID, '¡VAMOS!', 'アプリに入っている単語（西検 5級 → 4級）', 'vocab.html') +
+      list.map(function (d) { return item(d.id, d.brand + '　' + d.title, (d.book ? '📗 ' + d.book + '・' : '') + d.words + '語（この端末に読み込んだデッキ）', 'vocab.html?deck=' + encodeURIComponent(d.id)); }).join('') +
+      '<div class="deck-imp"><p class="u-cap"><b>＋ 参考書のデッキを読み込む</b></p>' +
+      '<p class="note">参考書に合わせて作った単語のファイル（.json）を、この端末に読み込みます。端末の中だけに保存され、公開されません。数百語でも大丈夫です。<br>同じデッキに、課ごとのファイルを足していくこともできます。</p>' +
+      '<button class="next" id="dkFile">📂 ファイルをえらぶ</button>' +
+      '<details><summary>テキストを貼りつける（少しのとき）</summary><textarea id="dkText" rows="5" placeholder="{ &quot;id&quot;: &quot;...&quot;, &quot;words&quot;: [ ... ] }"></textarea><button class="ghost" id="dkPaste">読み込む</button></details>' +
+      '<div class="dk-msg" id="dkMsg">' + (msg || '') + '</div></div>';
+    $('#dkFile', box).addEventListener('click', function () { $('#deckFile').click(); });
+    $('#dkPaste', box).addEventListener('click', function () { importDeck($('#dkText', box).value); });
+    $('#sheet').hidden = false;
+    tw($('#sheet .sh'), { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' });
+  }
+  function dkMsg(html) { var m = $('#dkMsg'); if (m) { m.innerHTML = html; m.scrollIntoView({ block: 'nearest' }); } }
+  /* 課ごとのファイルを足す：区間は後ろに追加（同じ id は新しい名前に）、単語は同じ id なら新しい内容に */
+  function mergeDeck(old, add) {
+    var out = JSON.parse(JSON.stringify(old));
+    ['title', 'brand', 'sub', 'book', 'lang', 'skin'].forEach(function (k) { if (add[k]) out[k] = add[k]; });
+    var si = {}; out.sections.forEach(function (x, i) { si[x.id] = i; });
+    (add.sections || []).forEach(function (x) { if (x.id in si) out.sections[si[x.id]] = x; else { si[x.id] = out.sections.length; out.sections.push(x); } });
+    var wi = {}; out.words.forEach(function (x, i) { wi[x.id] = i; });
+    (add.words || []).forEach(function (x) { if (x.id in wi) out.words[wi[x.id]] = x; else { wi[x.id] = out.words.length; out.words.push(x); } });
+    return out;
+  }
+  function importDeck(text) {
+    var N;
+    try { N = JSON.parse(text.charCodeAt(0) === 0xFEFF ? text.slice(1) : text); } catch (e) { return dkMsg('✖ JSON として読めません：' + esc(e.message)); }
+    if (!N || !N.id) return dkMsg('✖ デッキの id がありません');
+    var old = window.VocabDecks && VocabDecks.get(N.id);
+    if (!old) return finishImport(N, '読み込みました');
+    var addN = (N.words || []).filter(function (w) { return !old.words.some(function (o) { return o.id === w.id; }); }).length;
+    dkMsg('<p>「' + esc(old.title) + '」（' + old.words.length + '語）はもう読み込まれています。</p>' +
+      '<button class="next" id="dkAdd">足す（新しい単語 ' + addN + '語・同じ単語は新しい内容に）</button>' +
+      '<button class="ghost" id="dkRep">全部入れかえる（' + (N.words || []).length + '語に）</button><button class="ghost" id="dkNo">やめる</button>' +
+      '<p class="note">どちらでも、育てたカードはそのまま引き継ぎます</p>');
+    $('#dkAdd').addEventListener('click', function () { finishImport(mergeDeck(old, N), addN + '語を足しました'); });
+    $('#dkRep').addEventListener('click', function () { finishImport(N, '入れかえました'); });
+    $('#dkNo').addEventListener('click', function () { dkMsg(''); });
+  }
+  function finishImport(N, done, force) {
+    if (window.Conj && Array.isArray(N.words)) N.words.forEach(function (w) { if (w && w.pos === 'v' && w.cj && !Conj.checkIrr(w.cj).length) Conj.addIrr(w.w, w.cj); });
+    var r = window.DeckCheck ? DeckCheck.check(N, window.Conj) : { errors: [], warnings: [] };
+    if (r.errors.length) return dkMsg('<p>✖ 直してから読み込んでください（' + r.errors.length + '件）</p><ul class="dk-list">' + r.errors.slice(0, 8).map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') + '</ul>');
+    if (r.warnings.length && !force) {
+      dkMsg('<p>⚠ 注意が ' + r.warnings.length + ' 件あります（読み込みはできます）</p><ul class="dk-list">' + r.warnings.slice(0, 5).map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') + '</ul><button class="next" id="dkGo">このまま読み込む</button>');
+      $('#dkGo').addEventListener('click', function () { finishImport(N, done, true); });
+      return;
+    }
+    try { VocabDecks.save(N); } catch (e) { return dkMsg('✖ 保存できませんでした（端末の保存領域がいっぱい、またはプライベートブラウズ）'); }
+    dkMsg('✔ 「' + esc(N.title) + '」を' + esc(done) + '（' + N.words.length + '語）。開きます…');
+    setTimeout(function () { location.href = 'vocab.html?deck=' + encodeURIComponent(N.id); }, 900);
+  }
+
+  /* =========================================================
    * 結果
    * ========================================================= */
   function finish() {
@@ -1170,12 +1238,23 @@
     if (dexTab === 'conj') { $('#xBody').innerHTML = '<p class="x-legend">色＝ランク（B・S・G・H）。点線＝まだ覚えていない形。タップで活用表</p>' + cjMatrix(); return; }
     var got = V.caughtCount();
     $('#xCount').textContent = got + ' / ' + D.words.length;
+    /* 大きなデッキ（参考書連動版など）は課ごとにたたみ、開いた課だけカードを描く */
+    var big = D.words.length > 120, r = S.settings.range || [], firstOpen = null;
+    if (big && !r.length) D.sections.some(function (sec) { var ws = D.words.filter(function (w) { return w.s === sec.id; }); if (ws.some(function (w) { return !V.card(w.id); })) { firstOpen = sec.id; return true; } return false; });
     $('#xBody').innerHTML = D.sections.map(function (sec) {
       var ws = D.words.filter(function (w) { return w.s === sec.id; });
       var g = ws.filter(function (w) { return V.card(w.id); }).length;
-      return '<h3>' + esc(sec.name) + '<small>' + g + ' / ' + ws.length + '</small></h3><div class="grid">' + ws.map(miniCard).join('') + '</div>';
+      var open = !big || r.indexOf(sec.id) >= 0 || sec.id === firstOpen;
+      return '<details class="xsec" data-sec="' + esc(sec.id) + '"' + (open ? ' open' : '') + '><summary><h3>' + esc(sec.name) + (sec.ref ? '<i>' + esc(sec.ref) + '</i>' : '') + '<small>' + g + ' / ' + ws.length + '</small></h3></summary>' +
+        '<div class="grid">' + (open ? ws.map(miniCard).join('') : '') + '</div></details>';
     }).join('');
-    if (G) G.fromTo('#xBody .mini', { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, stagger: 0.012, ease: 'back.out(2)' });
+    $$('#xBody .xsec').forEach(function (d) {
+      d.addEventListener('toggle', function () {
+        var grid = $('.grid', d);
+        if (d.open && !grid.firstChild) grid.innerHTML = D.words.filter(function (w) { return w.s === d.dataset.sec; }).map(miniCard).join('');
+      });
+    });
+    if (G) G.fromTo($$('#xBody .mini').slice(0, 40), { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, stagger: 0.012, ease: 'back.out(2)' });
   }
   function openSheet(id) {
     if (V.isCj(id)) return openCjSheet(id);
@@ -1210,7 +1289,7 @@
    * ========================================================= */
   function bind() {
     if (window.VOCAB_DECK_MISSING) {
-      document.getElementById('app').innerHTML = '<div class="interlude"><p class="big-t">📗 デッキが見つからない</p><p>「' + esc(window.VOCAB_DECK_MISSING) + '」は、この端末にまだ読み込まれていません。<br>コース一覧の「＋ 単語デッキを読み込む」から読み込んでください。</p><a class="next" href="index.html">コース一覧へ</a></div>';
+      document.getElementById('app').innerHTML = '<div class="interlude"><p class="big-t">📗 デッキが見つからない</p><p>「' + esc(window.VOCAB_DECK_MISSING) + '」は、この端末にまだ読み込まれていません。<br>¡VAMOS! の「📚 デッキ」から読み込んでください。</p><a class="next" href="vocab.html">¡VAMOS! へ</a></div>';
       return;
     }
     document.title = D.brand + '｜' + D.title;
@@ -1228,6 +1307,16 @@
     $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { go(b.dataset.go); }); });
     $('#dMore').addEventListener('click', function () { start(makePlan(5), '5分'); });
     $('#hRange').addEventListener('click', openRange);
+    $('#hDeck').addEventListener('click', function () { openDecks(); });
+    $('#deckFile').addEventListener('change', function (e) {
+      var f = e.target.files && e.target.files[0]; if (!f) return;
+      dkMsg('読み込み中…（' + Math.round(f.size / 1024) + 'KB）');
+      var rd = new FileReader();
+      rd.onload = function () { importDeck(String(rd.result)); };
+      rd.onerror = function () { dkMsg('✖ ファイルを読めませんでした'); };
+      rd.readAsText(f, 'utf-8');
+      e.target.value = '';
+    });
     $('#hWant').addEventListener('click', function () { var wl = wantsList(); if (wl.length) start([{ type: 'learn', verb: wl[0].w.id, tense: wl[0].t }]); });
     $('#plaza').addEventListener('click', function (e) { var m = e.target.closest('.p-bud'); if (m) openSheet(m.dataset.id); });
     $('#xBody').addEventListener('click', function (e) {
