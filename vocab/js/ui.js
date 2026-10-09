@@ -148,7 +148,43 @@
     var a = V.art(w);
     return (a ? '<span class="art">' + a + '</span> ' : '') + '<span class="w">' + esc(w.w) + '</span>';
   }
-  function exHtml(s) { return esc(s).replace(/\{([^}]+)\}/g, '<mark>$1</mark>'); }
+  /* 難しめの語（デッキの gloss にある語）に点線を付け、タップで意味をバルーンで見せる。見出し語は対象外 */
+  var HEADS = {}; D.words.forEach(function (w) { HEADS[String(w.w).toLowerCase()] = 1; });
+  function glossify(text) {
+    var G = D.gloss;
+    if (!G) return esc(text);
+    return esc(text).replace(/[A-Za-zÀ-ÿ]+/g, function (m) {
+      var k = m.toLowerCase();
+      return G[k] && !HEADS[k] ? '<span class="gl" data-gl="' + esc(k) + '" role="button">' + m + '</span>' : m;
+    });
+  }
+  /* 例文：{ } は印、ほかは難しめの語にバルーン。hole を渡すと { } を穴に */
+  function exHtml(s, hole) {
+    return String(s).split(/(\{[^}]+\})/).map(function (seg) {
+      if (seg.charAt(0) === '{') return hole != null ? hole : '<mark>' + esc(seg.slice(1, -1)) + '</mark>';
+      return glossify(seg);
+    }).join('');
+  }
+  var glTip = null;
+  function hideGloss() { if (glTip) { glTip.remove(); glTip = null; } }
+  document.addEventListener('click', function (e) {
+    var g = e.target.closest && e.target.closest('.gl');
+    hideGloss();
+    if (!g) return;
+    e.stopPropagation();
+    var k = g.getAttribute('data-gl'), r = g.getBoundingClientRect();
+    glTip = document.createElement('div');
+    glTip.className = 'gl-tip';
+    glTip.innerHTML = '<b>' + esc(g.textContent) + '</b>' + esc(D.gloss[k]);
+    document.body.appendChild(glTip);
+    var tw2 = glTip.offsetWidth, th = glTip.offsetHeight;
+    var x = Math.max(8, Math.min(innerWidth - tw2 - 8, r.left + r.width / 2 - tw2 / 2));
+    var y = r.top - th - 8 < 8 ? r.bottom + 8 : r.top - th - 8;
+    glTip.style.left = x + 'px'; glTip.style.top = y + 'px';
+    glTip.classList.toggle('below', y > r.top);
+    if (G) G.fromTo(glTip, { y: 6, opacity: 0 }, { y: 0, opacity: 1, duration: 0.18 });
+  }, true);
+  addEventListener('scroll', hideGloss, { passive: true });
   function rankCls(id) { var c = V.card(id); return c ? ' r-' + V.RANKS[c.lv].id : ''; }
 
   /* =========================================================
@@ -349,7 +385,7 @@
     if (type === 'spell') return askSpell(w, opt, done);
     if (type === 'form') return askForm(w, opt, done);
     if (type === 'def2w') {
-      prompt = '<div class="q-card def' + rankCls(w.id) + '">' + tag + '<p class="q-def">' + esc(w.def) + '</p><small class="pos">' + POS[w.pos] + '・📖 英英辞典の説明</small></div><p class="q-ask">この説明の単語は？</p>';
+      prompt = '<div class="q-card def' + rankCls(w.id) + '">' + tag + '<p class="q-def">' + glossify(w.def) + '</p><small class="pos">' + POS[w.pos] + '・📖 英英辞典の説明</small>' + sayBtn(w.def) + '</div><p class="q-ask">この説明の単語は？</p>';
       right = V.head(w); list = shuffle([right].concat(others(w, 3, 'head'))).map(esc);
     } else if (type === 'w2def') {
       prompt = '<div class="q-card' + gcls(w) + rankCls(w.id) + '">' + tag + '<div class="q-word">' + headHtml(w) + '</div>' + useHtml(w) + sayBtn(V.head(w)) + '</div><p class="q-ask">📖 英英辞典の説明は？</p>';
@@ -364,7 +400,7 @@
       prompt = '<div class="q-card ja' + rankCls(w.id) + '">' + tag + '<div class="q-ja">' + esc(w.ja) + '</div><small class="pos">' + POS[w.pos] + '</small></div><p class="q-ask">' + T.inLang + '</p>';
       right = V.head(w); list = shuffle([right].concat(others(w, 3, 'head'))).map(esc);
     } else if (type === 'cloze') {
-      prompt = '<div class="q-card cloze' + rankCls(w.id) + '">' + tag + '<div class="q-ex">' + esc(w.ex[0]).replace(/\{[^}]+\}/, '<span class="blank">？</span>') + '</div><small class="q-exja">' + esc(w.ex[1]) + '</small></div><p class="q-ask">？に入るのは？</p>';
+      prompt = '<div class="q-card cloze' + rankCls(w.id) + '">' + tag + '<div class="q-ex">' + exHtml(w.ex[0], '<span class="blank">？</span>') + '</div><small class="q-exja">' + esc(w.ex[1]) + '</small></div><p class="q-ask">？に入るのは？</p>';
       /* 選択肢の大文字・小文字をそろえる（文頭の空欄だけ大文字、だと答えがばれる） */
       var top = /^[¿¡]?\{/.test(w.ex[0]);
       var cs = function (x) { return top ? x.charAt(0).toUpperCase() + x.slice(1) : x.charAt(0).toLowerCase() + x.slice(1); };
@@ -382,7 +418,11 @@
         var card = $('.q-card', s);
         if (type === 'listen') card.insertAdjacentHTML('beforeend', '<div class="q-word reveal' + gcls(w) + '">' + headHtml(w) + '</div>');
         if (type === 'cloze') { var bl = $('.blank', s); if (bl) { bl.textContent = right; bl.classList.add('filled'); } }
-        if (type === 'def2w') Speech.say(V.head(w));
+        if (type === 'def2w') {
+          Speech.say(V.head(w));
+          $('.q-card', s).insertAdjacentHTML('beforeend', '<div class="def-after">' + (w.defJa ? '<p class="def-ja">📖 訳：' + esc(w.defJa) + '</p>' : '') +
+            '<p class="def-ans">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b></p></div>');
+        }
         if (type === 'ja2es' || type === 'cloze') Speech.say(type === 'cloze' ? w.ex[0] : V.head(w));
         feedback(ok, b, card);
         done(ok, s);
@@ -426,6 +466,8 @@
     $('.undo', s).addEventListener('click', function () { if (!fin) { got.pop(); draw(); } });
   }
 
+  /* 読む時間が要る問題（英英の説明）は、正解しても自動で次へ進まない */
+  function holdOf(s) { return !!$('.q-card.def', s); }
   function feedback(ok, el, card) {
     if (ok) {
       ses.ok++; ses.combo++;
@@ -463,7 +505,7 @@
   }
   function memoHtml(w) {
     return '<div class="exp-box"><div class="ex">' + exHtml(w.ex[0]) + ' ' + sayBtn(w.ex[0]) + '</div><small>' + esc(w.ex[1]) + '</small>' +
-      (w.def ? '<p class="memo">📖 <span class="q-def">' + esc(w.def) + '</span></p>' : '') +
+      (w.def ? '<p class="memo">📖 <span class="q-def">' + glossify(w.def) + '</span> ' + sayBtn(w.def, 'inl') + (w.defJa ? '<span class="def-ja">訳：' + esc(w.defJa) + '</span>' : '') + '</p>' : '') +
       (w.memo ? '<p class="memo">💡 ' + esc(w.memo) + '</p>' : '') + verbHtml(w) + (CU ? famHtml(w) : '') + '</div>';
   }
   /* 動詞：活用のくせと、大事な3つの形（現在 yo・点過去 yo・過去分詞） */
@@ -545,7 +587,7 @@
       opts = shuffle(opts.concat(others(w, 3 - opts.length, 'ja').filter(function (x) { return x !== c.lure; }).slice(0, 3 - opts.length)));
       var s = stage('<div class="q meet">' + trackHtml(w, 0.04, 'wow') + '<div class="q-card big' + gcls(w) + '"><span class="qtag">🌱 出会い ' + k + ' / ' + words.length + '</span>' +
         '<div class="q-word">' + headHtml(w) + '</div>' + useHtml(w) + sayBtn(V.head(w)) + '<small class="pos">' + POS[w.pos] + (w.pos === 'n' && w.g ? (w.g === 'f' ? '・女性' : w.g === 'mf' ? '・男女同形' : w.fem ? '・男性（女性形あり）' : '・男性') : '') + '</small>' + refHtml(w) + '</div>' +
-        '<div class="clue"><b>' + CLUE[c.t] + '</b>' + (c.t === 'def' ? '<p class="q-def">' + esc(w.def || '') + '</p>' : '<p>' + esc(c.text) + '</p>') + (c.t === 'ctx' ? '<div class="ex">' + exHtml(w.ex[0]) + '</div>' : '') + '</div>' +
+        '<div class="clue"><b>' + CLUE[c.t] + '</b>' + (c.t === 'def' ? '<p class="q-def">' + glossify(w.def || '') + ' ' + sayBtn(w.def || '', 'inl') + '</p>' : '<p>' + esc(c.text) + '</p>') + (c.t === 'ctx' ? '<div class="ex">' + exHtml(w.ex[0]) + '</div>' : '') + '</div>' +
         '<p class="q-ask">🤔 どんな意味だと思う？<small>（予想なので、まちがえても大丈夫）</small></p>' + choiceHtml(opts.map(esc)) + '<div class="after"></div></div>');
       setTimeout(function () { Speech.say(V.head(w)); }, 300);
       var done = false, ri = opts.indexOf(w.ja);
@@ -580,8 +622,9 @@
           if (ok) {
             need[w.id]--;
             close[w.id] = need[w.id] <= 0 ? REL_C[0] : close[w.id] + 0.07;
-            if (need[w.id] <= 0) { moveTrack(s, w, close[w.id], 'happy', '出会った！'); captureFx(w, $('.q-card', s), false); setTimeout(one, 1400); }
-            else { moveTrack(s, w, close[w.id], 'happy'); setTimeout(one, 900); }
+            var hold = holdOf(s);
+            if (need[w.id] <= 0) { moveTrack(s, w, close[w.id], 'happy', '出会った！'); captureFx(w, $('.q-card', s), false); if (hold) after(s, '', one); else setTimeout(one, 1400); }
+            else { moveTrack(s, w, close[w.id], 'happy'); if (hold) after(s, '', one); else setTimeout(one, 900); }
           } else { close[w.id] = Math.max(0.04, close[w.id] - 0.04); moveTrack(s, w, close[w.id], 'meh'); q.push(it); total++; after(s, '<div class="meaning' + gcls(w) + '">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b></div>', one); }
         });
       }
@@ -622,7 +665,7 @@
           FX.float($('.q-card', s), '+' + r.exp + ' EXP', 'exp');
           if (r.back) { ses.backs++; ses.backIds.push(w.id); setTimeout(function () { if (window.Snd) Snd.back(); FX.float($('.q-card', s), 'おかえり！', 'cap'); }, 500); }
           if (r.up) levelFx(w, r.up);
-          after(s, gaugeHtml(w), cb, r.up ? 0 : 1400);
+          after(s, gaugeHtml(w), cb, r.up || holdOf(s) ? 0 : 1400);
         } else {
           after(s, '<div class="meaning' + gcls(w) + '">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b></div><p class="note">にげられた… また出てくるので、そのとき取り返そう</p>', cb);
         }

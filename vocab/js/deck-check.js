@@ -24,6 +24,10 @@
     ['title', 'brand'].forEach(function (k) { if (typeof D[k] !== 'string' || !D[k]) err(k, '文字列で必須'); });
     var ES = !D.lang || D.lang === 'es';
     if (D.lang && ['es', 'en'].indexOf(D.lang) < 0) warn('lang', 'いまは es（スペイン語）と en（英語）だけ');
+    if (D.gloss != null) {
+      if (typeof D.gloss !== 'object' || Array.isArray(D.gloss)) err('gloss', '{ "語": "意味" } の形');
+      else Object.keys(D.gloss).forEach(function (k) { if (k !== k.toLowerCase() || typeof D.gloss[k] !== 'string' || !D.gloss[k]) err('gloss', '「' + k + '」：語は小文字、意味は文字列'); });
+    }
     var secs = {};
     if (!Array.isArray(D.sections) || !D.sections.length) err('sections', '区間（参考書の課）を1つ以上');
     else D.sections.forEach(function (s, i) {
@@ -50,6 +54,8 @@
       if (ES && w.pos === 'n' && ['m', 'f', 'mf'].indexOf(w.g) < 0) err(at, '名詞は g（m＝男性・f＝女性・mf＝el/la どちらも同じ形）が必須');
       if (!ES && w.w && /\s(A|B|do|sb|sth|\.\.\.|…)$/.test(w.w)) warn(at, 'w には、そのまま言う形だけを書く（"look into"）。「A」「do」「…」などの型は use に（"look into A"）');
       if (w.def != null && (typeof w.def !== 'string' || !w.def)) err(at, 'def は英英定義の文字列');
+      if (w.defJa != null && (typeof w.defJa !== 'string' || !w.defJa)) err(at, 'defJa は英英定義の日本語訳（文字列）');
+      if (w.def && !w.defJa) warn(at, 'defJa（英英定義の日本語訳）があると、答えたあとに訳を読める');
       if (w.w && /,\s*-|\/\s*-|\(-/.test(w.w)) warn(at, 'w には男性形だけを書く（例 "ingeniero"）。女性形は fem に（"ingeniera"）。形容詞の「-ta」などは書かなくてよい');
       if (w.fem != null) { if (typeof w.fem !== 'string' || !w.fem || /\s|-/.test(w.fem)) err(at, 'fem は女性形のつづり（例 "ingeniera"）'); else if (w.pos !== 'n') warn(at, 'fem は名詞だけ（形容詞の女性形は書かなくてよい）'); }
       if (w.art && ['el', 'la', 'los', 'las'].indexOf(w.art) < 0) err(at, 'art は el/la/los/las');
