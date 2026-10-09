@@ -310,11 +310,11 @@ mark { background: var(--mark); color: inherit; padding: 0 3px; border-radius: 4
 .u-why summary { cursor: pointer; font-weight: 700; color: var(--accent2); }
 .u-why p { margin: 6px 0 0; }
 .units { display: flex; flex-direction: column; gap: 8px; }
-.unit { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 14px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); text-align: left; }
-.unit b { font-size: 16px; }
-.unit small { color: var(--muted); font-size: 12px; }
-.unit .bar { display: flex; width: 100%; height: 6px; border-radius: 9px; background: var(--line); overflow: hidden; }
-.unit .bar i { display: block; height: 100%; background: var(--rk); }
+.cunit { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 14px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); text-align: left; }
+.cunit b { font-size: 16px; }
+.cunit small { color: var(--muted); font-size: 12px; }
+.cunit .bar { display: flex; width: 100%; height: 6px; border-radius: 9px; background: var(--line); overflow: hidden; }
+.cunit .bar i { display: block; height: 100%; background: var(--rk); }
 .u-rec { position: absolute; right: 12px; top: 10px; padding: 1px 8px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-size: 11px; font-weight: 900; }
 .x-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 4px 0 8px; }
 .x-tabs button { padding: 8px; border-radius: 12px; border: 2px solid var(--line); font-weight: 700; }
@@ -333,3 +333,31 @@ mark { background: var(--mark); color: inherit; padding: 0 3px; border-radius: 4
 
 .c-chg { text-decoration: none; background: var(--mark); border-radius: 3px; padding: 0 1px; }
 .unit-intro .tbadge { align-self: flex-start; }
+
+/* =========================================================
+ * 動詞の一生（フォルム・覚えたがる・くせの族）
+ * ========================================================= */
+.want-note { display: flex; align-items: center; gap: 10px; width: 100%; margin: 0 0 8px; padding: 8px 12px; border-radius: 16px; background: var(--sel-bg); border: 2px solid var(--accent2); text-align: left; font-size: 14px; }
+.want-note[hidden] { display: none; }
+.want-note .wb { flex: none; width: 46px; }
+.want-note small { display: block; color: var(--muted); font-size: 11px; }
+.interlude.want .ap-bud { width: 110px; }
+.interlude.want .big-t { font-size: 21px; line-height: 1.4; }
+.fam { margin: 8px 0 0; padding-top: 8px; border-top: 1px dashed var(--line-strong); font-size: 13px; text-align: left; }
+.famb { display: inline-block; margin-right: 6px; padding: 1px 10px; border-radius: 999px; background: var(--clue-bg); font-weight: 900; }
+.fam .mates { display: block; margin-top: 4px; font-family: var(--f-es); font-size: 13px; color: var(--muted); }
+.fam .mates i { font-style: normal; margin-right: 4px; opacity: .55; }
+.fam .mates i.met { opacity: 1; color: var(--ink); font-weight: 700; }
+.fpips { display: flex; gap: 2px; justify-content: center; margin: 2px 0 1px; }
+.fpips i { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--tc); opacity: .5; }
+.fpips i.on { background: var(--tc); opacity: 1; }
+.forms { display: flex; flex-direction: column; gap: 4px; }
+.fchips { display: flex; flex-wrap: wrap; gap: 6px; }
+.fchip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px; font-size: 13px; font-weight: 700; border: 2px solid var(--line-strong); background: var(--card); }
+.fchip.on { border-color: transparent; background: linear-gradient(var(--card), var(--card)) padding-box, var(--rk) border-box; }
+.fchip.on b { font-family: var(--f-es); font-size: 11px; padding: 0 5px; border-radius: 6px; background: var(--rk); color: #1b1208; }
+.fchip.on.r-bronze b { color: #fff4ea; }
+.fchip.want { border-color: var(--accent2); background: var(--sel-bg); animation: bob 1.6s ease-in-out infinite; }
+.fchip.lock { opacity: .4; }
+.stage2:empty { display: none; }
+.stage2 { display: flex; flex-direction: column; gap: 8px; }

@@ -98,6 +98,16 @@
     }
     if (mood === 'none') s += '<text x="50" y="' + (faceY + 8) + '" text-anchor="middle" font-size="26" font-weight="900" font-family="sans-serif" fill="rgba(255,255,255,.75)">?</text>';
     else { s += extra(Math.floor(R() * 4), cx, top, P); s += face(cx, faceY, mood, R, P.dark); }
+    /* 動詞の衣装：覚えた時制（フォルム）の色のしましまスカーフ。フォルムが増えるほど色が増える */
+    if (opt.forms && opt.forms.length && mood !== 'none') {
+      var n = opt.forms.length, y0 = w.pos === 'v' ? 68 : 72, H = 8;
+      var at = function (t, dy) { return r1(31 + 38 * t) + ' ' + r1(y0 + 14 * t * (1 - t) + dy); };   /* 首にそった曲線 */
+      for (var k = 0; k < n; k++) {
+        var t0 = k / n, t1 = (k + 1) / n;
+        s += '<path d="M' + at(t0, 0) + ' L' + at(t1, 0) + ' L' + at(t1, H) + ' L' + at(t0, H) + 'Z" fill="' + opt.forms[k] + '" stroke="' + P.dark + '" stroke-width="1.3" stroke-linejoin="round"/>';
+      }
+      s += '<path d="M' + at(0.86, H - 2) + ' l5 12 l-8 0z" fill="' + opt.forms[n - 1] + '" stroke="' + P.dark + '" stroke-width="1.3" stroke-linejoin="round"/>';
+    }
     if (opt.holo) s += '<g class="spark"><path d="M14 20 l2 -6 l2 6 l6 2 l-6 2 l-2 6 l-2 -6 l-6 -2z" fill="#fff6a8"/><path d="M84 30 l1.5 -4 l1.5 4 l4 1.5 l-4 1.5 l-1.5 4 l-1.5 -4 l-4 -1.5z" fill="#c8f7ff"/></g>';
     return '<svg class="chara pos-' + w.pos + ' mood-' + mood + '" viewBox="0 0 100 100" aria-hidden="true">' + s + '</svg>';
   }

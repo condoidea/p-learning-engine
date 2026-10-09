@@ -152,12 +152,12 @@
   function trackHtml(w, c, mood) {
     var ticks = V.RANKS.map(function (R, i) { return '<i class="tick r-' + R.id + '" style="left:' + tLeft(REL_C[i]) + '%"><span>' + R.rel + '</span></i>'; }).join('');
     return '<div class="track"><div class="t-line"></div>' + ticks + '<span class="t-me">' + Chara.me() + '</span>' +
-      '<span class="t-bud" style="left:' + tLeft(c) + '%">' + Chara.svg(w, { mood: mood || 'happy' }) + '<b class="t-say"></b></span></div>';
+      '<span class="t-bud" style="left:' + tLeft(c) + '%">' + cs(w, { mood: mood || 'happy' }) + '<b class="t-say"></b></span></div>';
   }
   function moveTrack(s, w, c, mood, say) {
     var b = $('.t-bud', s); if (!b) return;
     b.style.left = tLeft(c) + '%';
-    if (mood) b.firstChild.outerHTML = Chara.svg(w, { mood: mood });
+    if (mood) b.firstChild.outerHTML = cs(w, { mood: mood });
     b.classList.remove('hop'); void b.offsetWidth; b.classList.add('hop');
     var t = $('.t-say', b);
     if (t) { t.textContent = say || ''; t.classList.toggle('on', !!say); }
@@ -173,7 +173,7 @@
     if (!ids.length) { box.innerHTML = '<span class="p-me">' + Chara.me() + '</span><p class="p-empty">まだ仲間がいない。👀 や 🌱 で単語と出会おう</p>'; return; }
     var rings = [[], [], [], [], []], CAP = [6, 8, 10, 12, 12], shown = 0;
     ids.map(function (id) { return { id: id, c: nowClose(id), st: V.state(id), h: Chara.hash(id) }; })
-      .sort(function (a, b) { return a.h - b.h; })
+      .sort(function (a, b) { var fa = famOf(V.word(a.id)) || '~', fb = famOf(V.word(b.id)) || '~'; return fa < fb ? -1 : fa > fb ? 1 : a.h - b.h; })
       .forEach(function (x) { var k = ringOf(x.c); if (rings[k].length < CAP[k]) { rings[k].push(x); shown++; } });
     var html = '';
     rings.forEach(function (list, k) {
@@ -184,7 +184,7 @@
         var left = 50 + Math.cos(ang) * r * 46, bottom = 6 + -Math.sin(ang) * r * 74;
         var w = V.word(x.id);
         html += '<button class="p-bud st-' + x.st + '" data-id="' + x.id + '" aria-label="' + esc(w.w) + '" style="left:' + left.toFixed(1) + '%;bottom:' + bottom.toFixed(1) + '%;width:' + RSIZE[k] + 'px;z-index:' + Math.round(100 - bottom) + '">' +
-          Chara.svg(w, { mood: Chara.moodOf(x.st), holo: V.card(x.id).lv === 3 }) + (x.st !== 'fresh' ? '<span class="p-st">' + (x.st === 'wild' ? '🍂' : '🥀') + '</span>' : '') + '</button>';
+          cs(w, { mood: Chara.moodOf(x.st), holo: V.card(x.id).lv === 3 }) + (x.st !== 'fresh' ? '<span class="p-st">' + (x.st === 'wild' ? '🍂' : '🥀') + '</span>' : CU && wantOf(w) ? '<span class="p-st">💬</span>' : '') + '</button>';
       });
     });
     var more = ids.length - shown;
@@ -216,6 +216,10 @@
     $('#alacarte').innerHTML = tiles.filter(function (t) { return !t.hide; }).map(function (t) {
       return '<button class="tile' + (t.off ? ' off' : '') + '" data-block="' + t.id + '"' + (t.off ? ' disabled' : '') + '><span class="ti">' + t.ico + '</span><b>' + t.name + '</b><small>' + esc(t.sub) + '</small></button>';
     }).join('');
+    var wl = CU ? wantsList() : [];
+    $('#hWant').hidden = !wl.length;
+    if (wl.length) $('#hWant').innerHTML = '<span class="wb">' + cs(wl[0].w, { mood: 'wow' }) + '</span><span>💬 <b>' + esc(wl[0].w.w) + '</b> が <b>' + TN[wl[0].t].name + '</b> を覚えたがっている！' +
+      (wl.length > 1 ? '<small>ほかに ' + (wl.length - 1) + '体</small>' : '') + '</span>';
     $('#hWild').hidden = !wild;
     $('#hWild').textContent = '🥀 しおれかけの単語が ' + wild + ' 枚。野生に戻る前に助けよう';
     $('#tgSound').checked = S.settings.sound;
@@ -241,18 +245,21 @@
     var easy = S.settings.mood === 'easy';
     var wild = wildAll().length, face = V.faceList().length, meet = V.meetList().length, plan = [];
     function add(type, n, have) { if (have > 0) plan.push({ type: type, n: Math.min(n, have) }); }
+    var wl = CU ? wantsList() : [], wantN = wl.length;
+    function addLearn(k) { wl.slice(0, k).forEach(function (x) { plan.push({ type: 'learn', verb: x.w.id, tense: x.t }); }); }
     if (min === 1) {
       if (wild) add('wild', 3, wild); else if (face) add('face', 5, face); else if (!easy) add('meet', 1, meet);
     } else if (min === 5) {
       add('wild', easy ? 6 : 4, wild);
       add('face', easy ? (wild ? 6 : 10) : 5, face);
-      if (!easy) { if (meet) add('meet', 3, meet); else if (CU) plan.push({ type: 'conj', unit: nextUnit().id, n: 3 }); }
+      if (!easy && wantN) addLearn(1);
+      if (!easy) { if (meet) add('meet', 3, meet); else if (CU && !wantN) plan.push({ type: 'conj', unit: nextUnit().id, n: 3 }); }
       if (!plan.length) add('meet', 3, meet);
     } else {
       add('wild', easy ? 10 : 8, wild);
       add('face', easy ? 12 : 8, face);
       if (!easy) add('meet', 3, meet);
-      if (!easy && CU) plan.push({ type: 'conj', unit: nextUnit().id, n: 3 });
+      if (!easy && wantN) addLearn(2); else if (!easy && CU) plan.push({ type: 'conj', unit: nextUnit().id, n: 3 });
       if (!plan.length) add('meet', 3, meet);
     }
     return plan;
@@ -262,11 +269,12 @@
    * セッション（ブロックを順に回す）
    * ========================================================= */
   var ses = null;
-  var BNAME = { face: '👀 顔見知りチェック', meet: '🌱 出会い', wild: '⚔ 野生戦', rescue: '🚑 救出', conj: '🔁 活用' };
+  var BNAME = { face: '👀 顔見知りチェック', meet: '🌱 出会い', wild: '⚔ 野生戦', rescue: '🚑 救出', conj: '🔁 活用', learn: '💬 新しいフォルム' };
   function start(plan, label) {
     if (!plan.length) { toast('いまは、やることがありません', '図鑑を眺めたり、別のメニューを選んだりしてみよう'); return; }
     if (window.Sfx) Sfx.unlock();
-    ses = { plan: plan, bi: -1, label: label || '', caught: [], ups: [], exp: 0, ok: 0, ng: 0, combo: 0, backs: 0, backIds: [], met: [] };
+    var w0 = CU ? wantsList().map(function (x) { return x.w.id + ':' + x.t; }) : [];
+    ses = { wants0: w0, plan: plan, bi: -1, label: label || '', caught: [], ups: [], exp: 0, ok: 0, ng: 0, combo: 0, backs: 0, backIds: [], met: [] };
     go('play');
     renderSteps();
     nextBlock();
@@ -281,7 +289,7 @@
     renderSteps();
     var b = ses.plan[ses.bi];
     if (!b) return finish();
-    ({ face: blockFace, meet: blockMeet, wild: blockWild, rescue: blockRescue, conj: blockConj })[b.type](b, nextBlock);
+    ({ face: blockFace, meet: blockMeet, wild: blockWild, rescue: blockRescue, conj: blockConj, learn: blockLearn })[b.type](b, nextBlock);
   }
   function stage(html) { var s = $('#stage'); s.innerHTML = html; tw(s.firstElementChild, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' }); return s; }
 
@@ -304,6 +312,7 @@
     var right, list, body, prompt;
     var tag = opt.tag || '';
     if (type === 'spell') return askSpell(w, opt, done);
+    if (type === 'form') return askForm(w, opt, done);
     if (type === 'es2ja') {
       prompt = '<div class="q-card' + gcls(w) + rankCls(w.id) + '">' + tag + '<div class="q-word">' + headHtml(w) + '</div>' + sayBtn(V.head(w)) + '</div><p class="q-ask">意味は？</p>';
       right = w.ja; list = shuffle([right].concat(others(w, 3, 'ja'))).map(esc);
@@ -402,7 +411,7 @@
   }
   function memoHtml(w) {
     return '<div class="exp-box"><div class="ex">' + exHtml(w.ex[0]) + ' ' + sayBtn(w.ex[0]) + '</div><small>' + esc(w.ex[1]) + '</small>' +
-      (w.memo ? '<p class="memo">💡 ' + esc(w.memo) + '</p>' : '') + verbHtml(w) + '</div>';
+      (w.memo ? '<p class="memo">💡 ' + esc(w.memo) + '</p>' : '') + verbHtml(w) + (CU ? famHtml(w) : '') + '</div>';
   }
   /* 動詞：活用のくせと、大事な3つの形（現在 yo・点過去 yo・過去分詞） */
   function verbHtml(w) {
@@ -418,7 +427,7 @@
     var src = from || $('#stage');
     var fly = document.createElement('div');
     fly.className = 'fly-card' + gcls(w) + ' r-bronze';
-    fly.innerHTML = Chara.svg(w, { mood: 'happy' }) + headHtml(w);
+    fly.innerHTML = cs(w, { mood: 'happy' }) + headHtml(w);
     var a = src.getBoundingClientRect(), b = $('#pDexBox').getBoundingClientRect();
     fly.style.left = (a.left + a.width / 2) + 'px'; fly.style.top = (a.top + a.height / 2) + 'px';
     document.body.appendChild(fly);
@@ -539,13 +548,14 @@
     if (lv >= 1) t.push('ja2es');
     if (lv >= 2) t.push('spell');
     if (lv >= 3) t.push('cloze');
+    if (w.pos === 'v' && CU && learned(w).length && Math.random() < 0.45) return 'form';
     return Math.random() < 0.5 ? t[t.length - 1] : pick(t);   // 半分は、いまのレベルのいちばん難しい問い方
   }
   function fight(w, tagText, cb) {
     var wasWild = V.state(w.id) === 'wild';
     var tag = '<span class="qtag">' + tagText + '</span><span class="wild-badge">' + (wasWild ? '🍂 野生に戻りかけ' : '🥀 しおれかけ') + '</span>';
     var c0 = nowClose(w.id), m0 = Chara.moodOf(V.state(w.id));
-    stage('<div class="appear"><p>' + (wasWild ? '野生に戻りかけの' : 'しおれかけの') + '</p><div class="ap-bud">' + Chara.svg(w, { mood: m0 }) + '</div><p>が 遠くに いる！</p></div>');
+    stage('<div class="appear"><p>' + (wasWild ? '野生に戻りかけの' : 'しおれかけの') + '</p><div class="ap-bud">' + cs(w, { mood: m0 }) + '</div><p>が 遠くに いる！</p></div>');
     if (window.Snd) Snd.appear();
     setTimeout(function () {
       ask(w, typesFor(w), { tag: tag, track: trackHtml(w, c0, m0) }, function (ok, s) {
@@ -822,7 +832,7 @@
   function fightCj(id, tagText, cb) {
     var c = V.cj(id), w = c.verb, t = c.tense, p = pick(personsOf(w, t));
     var c0 = nowClose(id), m0 = Chara.moodOf(V.state(id));
-    stage('<div class="appear"><p>' + tBadge(t) + '</p><div class="ap-bud">' + Chara.svg(w, { mood: m0 }) + '</div><p>' + esc(w.w) + ' の' + TN[t].short + 'が 遠くに いる！</p></div>');
+    stage('<div class="appear"><p>' + tBadge(t) + '</p><div class="ap-bud">' + cs(w, { mood: m0 }) + '</div><p>' + esc(w.w) + ' の' + TN[t].short + 'が 遠くに いる！</p></div>');
     if (window.Snd) Snd.appear();
     setTimeout(function () {
       askConj({ w: w, t: t, p: p }, pick(['pick', 'cue', 'build', 'which']), { tag: '<span class="qtag">' + tagText + '</span>', track: trackHtml(w, c0, m0) }, function (ok, s) {
@@ -849,7 +859,7 @@
       var d = unitDone(u), cards = unitCards(u), rc = [0, 0, 0, 0];
       cards.forEach(function (id) { var c = V.card(id); if (c) rc[c.lv]++; });
       var wilt = cards.filter(function (id) { return V.card(id) && V.state(id) !== 'fresh'; }).length;
-      return '<button class="unit" data-unit="' + u.id + '">' + tBadge(u.tenses ? u.tenses[0] : u.tense) + (u === nx ? '<span class="u-rec">おすすめ</span>' : '') +
+      return '<button class="cunit" data-unit="' + u.id + '">' + tBadge(u.tenses ? u.tenses[0] : u.tense) + (u === nx ? '<span class="u-rec">おすすめ</span>' : '') +
         '<b>' + esc(u.name) + '</b><span class="bar stack">' + rc.map(function (n, i) { return n ? '<i class="r-' + V.RANKS[i].id + '" style="width:' + (n / d.total * 100) + '%"></i>' : ''; }).join('') + '</span>' +
         '<small>' + d.got + ' / ' + d.total + ' 形' + (wilt ? '　🥀 ' + wilt : '') + (S.cjSeen && S.cjSeen[u.id] ? '' : '　🆕') + '</small></button>';
     }).join('');
@@ -857,10 +867,8 @@
   /* ---- 図鑑：活用の表（動詞 × 時制） ---- */
   var CJ_T = ['pres', 'pret', 'impf', 'perf', 'fut', 'cond', 'subj', 'imp'];
   function cjMatrix() {
-    var verbs = [];
-    CU.units.forEach(function (u) { u.verbs.forEach(function (v) { if (verbs.indexOf(v) < 0) verbs.push(v); }); });
-    var inUnit = {}; CU.units.forEach(function (u) { unitCards(u).forEach(function (id) { inUnit[id] = 1; }); });
-    verbs.sort(function (a, b) { return V.word(a).i - V.word(b).i; });
+    var verbs = D.words.filter(function (w) { return w.pos === 'v'; }).map(function (w) { return w.id; });
+    var inUnit = {}; verbs.forEach(function (vid) { TSTEPS.forEach(function (t) { if (hasForms(V.word(vid), t)) inUnit[V.cjId(vid, t)] = 1; }); });
     return '<table class="cjm"><tr><th></th>' + CJ_T.map(function (t) { return '<th title="' + TN[t].name + '">' + CU.look[t].ico + '<small>' + TN[t].short + '</small></th>'; }).join('') + '</tr>' +
       verbs.map(function (vid) {
         return '<tr><th>' + esc(V.word(vid).w) + '</th>' + CJ_T.map(function (t) {
@@ -874,7 +882,7 @@
   }
   function cjMini(id) {
     var c = V.cj(id), k = V.card(id);
-    return '<button class="mini cjmini r-' + V.RANKS[k.lv].id + '" data-id="' + id + '"><span class="no">' + CU.look[c.tense].ico + '</span>' + Chara.svg(c.verb, { mood: 'happy' }) +
+    return '<button class="mini cjmini r-' + V.RANKS[k.lv].id + '" data-id="' + id + '"><span class="no">' + CU.look[c.tense].ico + '</span>' + cs(c.verb, { mood: 'happy' }) +
       '<span class="mw">' + esc(c.verb.w) + '</span><span class="mj">' + TN[c.tense].name + '</span><span class="rb">' + V.RANKS[k.lv].rel + '</span></button>';
   }
   function openCjSheet(id) {
@@ -887,6 +895,192 @@
     if (rb) rb.addEventListener('click', function () { closeSheet(); start([{ type: 'rescue', id: id }]); });
     $('#sheet').hidden = false;
     tw($('#sheet .sh'), { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' });
+  }
+
+  /* =========================================================
+   * 動詞の一生：出会い（意味）→ フォルム（時制の形）が増えていく
+   *  A フォルム：覚えた時制の印（カード）としましまスカーフ（衣装）
+   *  B 覚えたがる：前のフォルムが「顔なじみ」以上になると、次の時制を覚えたがる → くせの教室
+   *  C 野生では活用した形で現れる（tuvimos → 元の動詞は？ 誰が・いつ？）
+   *  D くせの族：同じくせの動詞のグループ（-go 族 など）
+   * ========================================================= */
+  var TSTEPS = ['pres', 'pret', 'impf', 'perf', 'fut', 'cond', 'subj', 'imp'];
+  var NEED = { pres: null, pret: ['pres'], impf: ['pret'], perf: ['pret'], fut: ['impf', 'perf'], cond: ['impf', 'perf'], subj: ['fut', 'cond'], imp: ['subj'] };
+  function hasForms(w, t) { return personsOf(w, t).length > 0; }
+  function formCard(w, t) { return V.card(V.cjId(w.id, t)); }
+  function learned(w) { return TSTEPS.filter(function (t) { return formCard(w, t); }); }
+  function formColors(w) { return learned(w).map(function (t) { return CU.look[t].color; }); }
+  /* 単語キャラ（動詞は衣装つき） */
+  function cs(w, o) { o = o || {}; if (w.pos === 'v' && CU && window.Conj) o.forms = formColors(w); return Chara.svg(w, o); }
+  /* 次に覚えたがっている時制（なければ null） */
+  function wantOf(w) {
+    if (w.pos !== 'v' || !V.card(w.id) || !CU) return null;
+    for (var i = 0; i < TSTEPS.length; i++) {
+      var t = TSTEPS[i];
+      if (formCard(w, t) || !hasForms(w, t)) continue;
+      var need = NEED[t];
+      var ok = need === null ? V.card(w.id).lv >= 1 : need.some(function (n) { var c = formCard(w, n); return c && c.lv >= 1; });
+      return ok ? t : null;
+    }
+    return null;
+  }
+  function wantsList() {
+    return D.words.filter(function (w) { return wantOf(w); }).sort(function (a, b) { return V.card(b.id).lv - V.card(a.id).lv || a.i - b.i; })
+      .map(function (w) { return { w: w, t: wantOf(w) }; });
+  }
+  /* その動詞・時制のくせを教えるユニット */
+  function unitFor(w, t) {
+    var v = Conj.parse(w.w), x = v.x;
+    if (t === 'pres') return v.refl ? 'refl' : x.pres ? 'pres-irr' : x.yo ? 'pres-yo' : x.stem ? 'pres-stem' : 'pres-reg';
+    if (t === 'pret') return x.pretS || x.pret || x.ir ? 'pret-irr' : 'pret-reg';
+    return { impf: 'impf', perf: 'perf', fut: 'fut', cond: 'fut', subj: 'subj', imp: 'imp' }[t];
+  }
+  /* くせの族 */
+  var FAM = {
+    go: { name: '-go 族', ico: '🎸', desc: 'yo が -go で終わる（tengo, pongo, salgo…）' },
+    zco: { name: '-zco 族', ico: '🦓', desc: 'yo が -zco で終わる（conozco）' },
+    ie: { name: 'ie 族', ico: '🌿', desc: '強く読む e が ie に（pienso, quiero）' },
+    ue: { name: 'ue 族', ico: '🌊', desc: '強く読む o（u）が ue に（puedo, vuelvo, juego）' },
+    i: { name: 'i 族', ico: '🕯', desc: '強く読む e が i に（pido）' },
+    sp: { name: '特別な子', ico: '🎭', desc: '形ごと覚える（soy, voy, estoy, doy, veo, sé）' },
+    ar: { name: '-ar 族', ico: '🍊', desc: '規則どおり（-o, -as, -a…）' },
+    er: { name: '-er 族', ico: '🫒', desc: '規則どおり（-o, -es, -e…）' },
+    ir: { name: '-ir 族', ico: '🌻', desc: '規則どおり（-o, -es, -e, -imos…）' }
+  };
+  function famOf(w) {
+    if (w.pos !== 'v' || !window.Conj) return null;
+    var v = Conj.parse(w.w), x = v.x;
+    if (x.pres || (x.yo && !/(go|zco)$/.test(x.yo))) return 'sp';
+    if (x.yo) return /zco$/.test(x.yo) ? 'zco' : 'go';
+    if (x.stem) return x.stem;
+    return v.cls;
+  }
+  function famHtml(w) {
+    var f = famOf(w); if (!f) return '';
+    var mates = D.words.filter(function (x) { return x !== w && famOf(x) === f; });
+    return '<p class="fam"><span class="famb">' + FAM[f].ico + ' ' + FAM[f].name + '</span>' + esc(FAM[f].desc) +
+      (mates.length ? '<span class="mates">仲間：' + mates.map(function (x) { return '<i class="' + (V.card(x.id) ? 'met' : '') + '">' + esc(x.w) + '</i>'; }).join(' ') + '</span>' : '') + '</p>';
+  }
+  /* フォルムの印（カード用の小さな点・シート用の札） */
+  function pipsHtml(w) {
+    if (w.pos !== 'v' || !CU) return '';
+    return '<span class="fpips">' + TSTEPS.filter(function (t) { return hasForms(w, t); }).map(function (t) {
+      var c = formCard(w, t); return '<i style="--tc:' + CU.look[t].color + '" class="' + (c ? 'on' : '') + '"></i>';
+    }).join('') + '</span>';
+  }
+  function formsHtml(w) {
+    if (w.pos !== 'v' || !CU) return '';
+    var want = wantOf(w);
+    return '<div class="forms"><p class="u-cap">🔁 フォルム（覚えた時制）</p><div class="fchips">' + TSTEPS.filter(function (t) { return hasForms(w, t); }).map(function (t) {
+      var c = formCard(w, t), id = V.cjId(w.id, t);
+      if (c) return '<button class="fchip on r-' + V.RANKS[c.lv].id + '" data-cj="' + id + '">' + CU.look[t].ico + ' ' + TN[t].short + '<b>' + V.RANKS[c.lv].mark + '</b></button>';
+      if (t === want) return '<button class="fchip want" data-learn="' + w.id + ':' + t + '">💬 ' + TN[t].short + '</button>';
+      return '<span class="fchip lock">' + CU.look[t].ico + ' ' + TN[t].short + '</span>';
+    }).join('') + '</div>' + (want ? '' : V.card(w.id) && V.card(w.id).lv < 1 && !learned(w).length ? '<p class="note">顔なじみ（シルバー）になると、現在形を覚えたがるよ</p>' : '') + '</div>';
+  }
+
+  /* ---- B 覚えたがる → くせの教室 → この動詞のフォルムを練習 ---- */
+  function blockLearn(b, next) {
+    var w = V.word(b.verb), t = b.tense, U = unitOf(unitFor(w, t)), id = V.cjId(w.id, t), f = famOf(w);
+    S.cjSeen = S.cjSeen || {};
+    var seen = !!S.cjSeen[U.id];
+    var s = stage('<div class="interlude want"><div class="ap-bud">' + cs(w, { mood: 'wow' }) + '</div><p class="big-t">💬 ' + esc(w.w) + ' が<br>' + TN[t].name + 'を覚えたがっている！</p>' +
+      tBadge(t) + famHtml(w) + '<p>くせ：<b>' + esc(U.name) + '</b>' + (seen ? '（前に習った）' : '（はじめて）') + '</p><button class="next go">' + (seen ? 'やってみる ▶' : 'くせの教室へ ▶') + '</button></div>');
+    if (window.Snd) Snd.appear();
+    $('.go', s).addEventListener('click', seen ? predict : lesson);
+    function lesson() {
+      var m = V.word(U.model), tt = U.tense;
+      var s2 = stage('<div class="q unit-intro"><p class="u-eyebrow">🔁 くせの教室</p><h2 class="u-title">' + esc(U.name) + '</h2>' + tBadge(tt) +
+        '<div class="u-model"><p class="u-cap">お手本：<b>' + esc(m.w) + '</b>（' + esc(m.ja) + '）<small>' + esc(Conj.kind(m.w)) + '</small></p>' + conjTable(m.w, tt, -1) + '</div>' +
+        '<div class="u-rule">💡 ' + esc(U.rule) + '</div><details class="u-why"><summary>🤔 なぜ？</summary><p>' + esc(U.why) + '</p></details>' +
+        '<button class="next go">' + esc(w.w) + ' で予想してみる ▶</button></div>');
+      S.cjSeen[U.id] = 1; V.save();
+      $('.go', s2).addEventListener('click', predict);
+    }
+    /* D：族の決まりを使って予想（現在形なら「この子は -go 族。yo は？」） */
+    function predict() {
+      var p = t === 'imp' ? 1 : t === 'pres' && (f === 'go' || f === 'zco' || f === 'sp') ? 0 : pick(personsOf(w, t).filter(function (q) { return q !== 4; }));
+      var right = Conj.form(w.w, t, p);
+      var ds = uniq([Conj.regularForm(w.w, t, p)].concat(personsOf(w, t).map(function (q) { return Conj.form(w.w, t, q); }), [Conj.form(w.w, 'pres', p), Conj.form(w.w, 'subj', p), Conj.form(w.w, 'pret', p)]));
+      var list = shuffle([right].concat(shuffle(ds.filter(function (x) { return x !== right; })).slice(0, 3)));
+      var hint = t === 'pres' && f ? FAM[f].ico + ' この子は ' + FAM[f].name + '。' + FAM[f].desc : '💡 ' + U.rule;
+      var s3 = stage('<div class="q">' + trackHtml(w, nowClose(w.id), 'wow') + cjCard(w, t, p, '<span class="qtag">🤔 予想</span>') + '<div class="clue"><p>' + esc(hint) + '</p></div>' +
+        '<p class="q-ask">' + esc(w.w) + ' だと？<small>（予想なので、まちがえても大丈夫）</small></p>' + choiceHtml(list.map(esc), 'es') + '<div class="after"></div></div>');
+      var done2 = false;
+      $$('.ch', s3).forEach(function (x) {
+        x.addEventListener('click', function () {
+          if (done2) return; done2 = true;
+          var ok = list[+x.dataset.i] === right;
+          $$('.ch', s3).forEach(function (y) { y.disabled = true; if (list[+y.dataset.i] === right) y.classList.add('right'); });
+          if (!ok) x.classList.add('miss');
+          if (window.Snd) (ok ? Snd.ok(0) : Snd.flip());
+          Speech.say(right);
+          moveTrack(s3, w, nowClose(w.id), 'happy', ok ? '¡Sí!' : '');
+          after(s3, '<p class="reveal-h">' + (ok ? '🎯 予想的中！' : '💡 正解は ' + esc(right)) + '</p>' + conjTable(w.w, t, p), practice);
+        });
+      });
+    }
+    function practice() {
+      var q = shuffle(['build', 'pick']).slice(0, 1).concat(shuffle(['cue', 'which']).slice(0, 1), ['build']), need = 2, got = false, n = 0, total = 3;
+      (function one() {
+        var ty = q.shift();
+        if (!ty || got) return next();
+        n++;
+        var p = pick(personsOf(w, t));
+        askConj({ w: w, t: t, p: p }, ty, { tag: '<span class="qtag">🔁 ' + esc(w.w) + ' ' + n + ' / ' + total + '</span>', track: trackHtml(w, nowClose(w.id), 'happy') }, function (ok, s4) {
+          if (ok) {
+            need--;
+            if (need <= 0) {
+              got = true; capCj(id, $('.q-card', s4));
+              moveTrack(s4, w, nowClose(w.id), 'happy', '新しいフォルム！');
+              var bud = $('.t-bud', s4); if (bud) bud.firstChild.outerHTML = cs(w, { mood: 'happy' });
+              FX.slam('¡NUEVA FORMA!', w.w + ' が ' + TN[t].name + ' を覚えた');
+            }
+            after(s4, conjTable(w.w, t, p), one, got ? 0 : 1500);
+          } else { q.push(ty); total++; after(s4, '<p class="note">' + esc(U.rule) + '</p>' + conjTable(w.w, t, p), one); }
+        });
+      })();
+    }
+  }
+
+  /* ---- C 野生では活用した形で現れる：意味 → 誰が・いつ？ ---- */
+  function askForm(w, opt, done) {
+    var ts = learned(w), t = pick(ts), ps = personsOf(w, t), p = pick(ps), form = Conj.form(w.w, t, p);
+    var list = shuffle([w.ja].concat(others(w, 3, 'ja')));
+    var s = stage('<div class="q">' + (opt.track || '') + '<div class="q-card' + rankCls(w.id) + '">' + (opt.tag || '') + '<div class="q-word">' + esc(form) + '</div>' + sayBtn(form) + '<small class="pos">活用した形で現れた！</small></div>' +
+      '<p class="q-ask">① 元の動詞の意味は？</p>' + choiceHtml(list.map(esc)) + '<div class="stage2"></div><div class="after"></div></div>');
+    setTimeout(function () { Speech.say(form); }, 250);
+    var answered = false, ri = list.indexOf(w.ja);
+    $$('.choices .ch', s).forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (answered) return; answered = true;
+        var ok = +b.dataset.i === ri;
+        $$('.choices .ch', s).forEach(function (x) { x.disabled = true; if (+x.dataset.i === ri) x.classList.add('right'); });
+        if (!ok) b.classList.add('wrong');
+        feedback(ok, b, $('.q-card', s));
+        $('.q-card', s).insertAdjacentHTML('beforeend', '<small class="pos">← ' + esc(w.w) + '（' + esc(w.ja) + '）</small>');
+        if (!ok) return done(false, s);
+        /* ② 誰が・いつ？（覚えたフォルムの中から） */
+        var combos = [];
+        ts.forEach(function (tt) { personsOf(w, tt).forEach(function (q) { combos.push([tt, q]); }); });
+        var sameForm = function (c) { return Conj.form(w.w, c[0], c[1]) === form; };
+        var opts = shuffle([[t, p]].concat(shuffle(combos.filter(function (c) { return !sameForm(c); })).slice(0, 3)));
+        $('.stage2', s).innerHTML = '<p class="q-ask">② 誰が・いつ？</p><div class="choices">' + opts.map(function (c, i) { return '<button class="ch c2" data-i="' + i + '">' + pronOf(c[1], c[0]) + '<small>' + TN[c[0]].short + '</small></button>'; }).join('') + '</div>';
+        var a2 = false;
+        $$('.c2', s).forEach(function (x) {
+          x.addEventListener('click', function () {
+            if (a2) return; a2 = true;
+            var ok2 = sameForm(opts[+x.dataset.i]);
+            $$('.c2', s).forEach(function (y) { y.disabled = true; if (sameForm(opts[+y.dataset.i])) y.classList.add('right'); });
+            if (!ok2) x.classList.add('wrong');
+            var r2 = V.answer(V.cjId(w.id, t), ok2);
+            if (ok2) { ses.exp += r2.exp; if (window.Snd) Snd.ok(ses.combo); FX.float(x, '+' + r2.exp, 'exp'); } else { if (window.Snd) Snd.ng(); }
+            $('.stage2', s).insertAdjacentHTML('beforeend', conjTable(w.w, t, p));
+            done(true, s);
+          });
+        });
+      });
+    });
   }
 
   /* =========================================================
@@ -905,6 +1099,7 @@
     if (cCj) lines.push('🔁 活用を <b>' + cCj + '形</b> 覚えた');
     if (ses.ups.length) lines.push('✨ <b>' + ses.ups.length + '枚</b> が進化');
     if (ses.backs) lines.push('🤝 野生から <b>' + ses.backs + '枚</b> 取り返した');
+    if (CU) wantsList().forEach(function (x) { if (ses.wants0.indexOf(x.w.id + ':' + x.t) < 0) lines.push('💬 <b>' + esc(x.w.w) + '</b> が ' + TN[x.t].name + ' を覚えたがっている（ホームから）'); });
     if (ses.met.length) lines.push('🌱 <b>' + ses.met.length + '語</b> と出会った');
     lines.push('⭐ <b>+' + ses.exp + ' EXP</b>（今日 +' + S.day.exp + '）');
     var rc = V.rankCounts();
@@ -927,11 +1122,11 @@
    * ========================================================= */
   function miniCard(w) {
     var c = V.card(w.id);
-    if (!c) return '<button class="mini none" data-id="' + w.id + '"><span class="no">' + (w.i + 1) + '</span>' + Chara.svg(w, { mood: 'none' }) + '</button>';
+    if (!c) return '<button class="mini none" data-id="' + w.id + '"><span class="no">' + (w.i + 1) + '</span>' + cs(w, { mood: 'none' }) + '</button>';
     var st = V.state(w.id);
     return '<button class="mini' + gcls(w) + ' r-' + V.RANKS[c.lv].id + ' st-' + st + '" data-id="' + w.id + '" style="--cond:' + V.condition(w.id).toFixed(2) + '">' +
       '<span class="no">' + V.RANKS[c.lv].mark + ' ' + (w.i + 1) + '</span>' + (st !== 'fresh' ? '<span class="stb">' + (st === 'wild' ? '🍂' : '🥀') + '</span>' : '') +
-      Chara.svg(w, { mood: Chara.moodOf(st), holo: c.lv === 3 }) + '<span class="mw">' + headHtml(w) + '</span><span class="mj">' + esc(w.ja) + '</span><span class="rb">' + V.RANKS[c.lv].rel + '</span></button>';
+      cs(w, { mood: Chara.moodOf(st), holo: c.lv === 3 }) + '<span class="mw">' + headHtml(w) + '</span><span class="mj">' + esc(w.ja) + '</span>' + pipsHtml(w) + '<span class="rb">' + V.RANKS[c.lv].rel + '</span></button>';
   }
   var dexTab = 'words';
   function renderDex() {
@@ -951,15 +1146,17 @@
     if (V.isCj(id)) return openCjSheet(id);
     var w = V.word(id), c = V.card(id), box = $('#sheetBody');
     if (!c) {
-      box.innerHTML = '<div class="sh-none"><div class="sh-sil">' + Chara.svg(w, { mood: 'none' }) + '</div><p>No.' + (w.i + 1) + '　まだ出会っていない単語</p><p class="note">' + (V.SEC[w.s].known ? '👀 顔見知りチェック' : '🌱 出会い') + 'で会えるよ</p></div>';
+      box.innerHTML = '<div class="sh-none"><div class="sh-sil">' + cs(w, { mood: 'none' }) + '</div><p>No.' + (w.i + 1) + '　まだ出会っていない単語</p><p class="note">' + (V.SEC[w.s].known ? '👀 顔見知りチェック' : '🌱 出会い') + 'で会えるよ</p></div>';
     } else {
       var st = V.state(id), cond = Math.round(V.condition(id) * 100);
       box.innerHTML = '<div class="q-card big' + gcls(w) + ' r-' + V.RANKS[c.lv].id + '"><span class="qtag">No.' + (w.i + 1) + '</span><div class="q-word">' + headHtml(w) + '</div>' + sayBtn(V.head(w)) +
-        '<small class="pos">' + POS[w.pos] + '</small></div><div class="meaning">' + esc(w.ja) + '</div>' + trackHtml(w, nowClose(id), Chara.moodOf(st)) + memoHtml(w) + gaugeHtml(w) +
+        '<small class="pos">' + POS[w.pos] + '</small></div><div class="meaning">' + esc(w.ja) + '</div>' + trackHtml(w, nowClose(id), Chara.moodOf(st)) + formsHtml(w) + memoHtml(w) + gaugeHtml(w) +
         '<div class="cond"><span>コンディション</span><div class="gbar c"><i style="width:' + cond + '%"></i></div><b>' + (st === 'fresh' ? '元気' : st === 'wilt' ? '🥀 しおれかけ' : '🍂 野生に戻りかけ') + '</b></div>' +
         (st !== 'fresh' ? '<button class="next rescue" data-id="' + id + '">🚑 救出する</button>' : '');
       var rb = $('.rescue', box);
       if (rb) rb.addEventListener('click', function () { closeSheet(); start([{ type: 'rescue', id: id }]); });
+      $$('.fchip[data-cj]', box).forEach(function (b) { b.addEventListener('click', function () { openCjSheet(b.dataset.cj); }); });
+      $$('.fchip[data-learn]', box).forEach(function (b) { b.addEventListener('click', function () { var a = b.dataset.learn.split(':'); closeSheet(); start([{ type: 'learn', verb: a[0], tense: a[1] }]); }); });
     }
     $('#sheet').hidden = false;
     tw($('#sheet .sh'), { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' });
@@ -991,13 +1188,14 @@
     $('#quit').addEventListener('click', function () { if (window.speechSynthesis) speechSynthesis.cancel(); finish(); });
     $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { go(b.dataset.go); }); });
     $('#dMore').addEventListener('click', function () { start(makePlan(5), '5分'); });
+    $('#hWant').addEventListener('click', function () { var wl = wantsList(); if (wl.length) start([{ type: 'learn', verb: wl[0].w.id, tense: wl[0].t }]); });
     $('#plaza').addEventListener('click', function (e) { var m = e.target.closest('.p-bud'); if (m) openSheet(m.dataset.id); });
     $('#xBody').addEventListener('click', function (e) {
       var m = e.target.closest('.mini'); if (m) return openSheet(m.dataset.id);
       var c = e.target.closest('.cjc'); if (c) openCjSheet(c.dataset.cj);
     });
     $$('.x-tabs button').forEach(function (b) { b.addEventListener('click', function () { dexTab = b.dataset.tab; renderDex(); }); });
-    $('#cjList').addEventListener('click', function (e) { var u = e.target.closest('.unit'); if (u) start([{ type: 'conj', unit: u.dataset.unit, n: 4 }]); });
+    $('#cjList').addEventListener('click', function (e) { var u = e.target.closest('.cunit'); if (u) start([{ type: 'conj', unit: u.dataset.unit, n: 4 }]); });
     $('#dCards').addEventListener('click', function (e) { var m = e.target.closest('.mini'); if (m) openSheet(m.dataset.id); });
     $('#sheet').addEventListener('click', function (e) { if (e.target.id === 'sheet' || e.target.closest('.sh-close')) closeSheet(); });
     $('#tgSound').addEventListener('change', function (e) { S.settings.sound = e.target.checked; V.save(); });
