@@ -45,6 +45,10 @@
       "memo": "形がよく変わる：oigo, oyes, oye…" },
     { "id": "simpatico", "s": "L02", "ref": "p.20", "w": "simpático", "pos": "adj", "ja": "感じがいい",
       "ex": ["Tu padre es muy {simpático}.", "君のお父さんはとても感じがいい。"],
-      "clue": { "t": "trap", "text": "英語の sympathetic に似ているけど…？", "lure": "同情的な" } }
+      "clue": { "t": "trap", "text": "英語の sympathetic に似ているけど…？", "lure": "同情的な" } },
+    { "id": "contento_de", "s": "L02", "ref": "p.21", "w": "contento de", "use": "estar contento de ＋ 動詞の原形", "pos": "phr", "ja": "〜してうれしい",
+      "ex": ["Estoy {contento de} verte.", "君に会えてうれしい。"],
+      "clue": { "t": "cog", "text": "英語の be content with と同じ祖先" },
+      "memo": "主語が女性なら contenta de。de のあとは動詞の原形（verte＝ver＋te「君に会う」）" }
   ]
 }

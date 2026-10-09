@@ -434,6 +434,8 @@
     $('.next', box).addEventListener('click', nx);
     if (auto) setTimeout(nx, auto);
   }
+  /* 使い方の型（例 contento de ＋ 動詞の原形） */
+  function useHtml(w) { return w.use ? '<small class="use">' + esc(w.use) + '</small>' : ''; }
   function refHtml(w) {
     if (!D.book) return '';
     var sec = V.SEC[w.s];
@@ -521,7 +523,7 @@
       if (c.lure) opts.push(c.lure);
       opts = shuffle(opts.concat(others(w, 3 - opts.length, 'ja').filter(function (x) { return x !== c.lure; }).slice(0, 3 - opts.length)));
       var s = stage('<div class="q meet">' + trackHtml(w, 0.04, 'wow') + '<div class="q-card big' + gcls(w) + '"><span class="qtag">🌱 出会い ' + k + ' / ' + words.length + '</span>' +
-        '<div class="q-word">' + headHtml(w) + '</div>' + sayBtn(V.head(w)) + '<small class="pos">' + POS[w.pos] + (w.pos === 'n' ? (w.g === 'f' ? '・女性' : '・男性') : '') + '</small>' + refHtml(w) + '</div>' +
+        '<div class="q-word">' + headHtml(w) + '</div>' + useHtml(w) + sayBtn(V.head(w)) + '<small class="pos">' + POS[w.pos] + (w.pos === 'n' ? (w.g === 'f' ? '・女性' : '・男性') : '') + '</small>' + refHtml(w) + '</div>' +
         '<div class="clue"><b>' + CLUE[c.t] + '</b><p>' + esc(c.text) + '</p>' + (c.t === 'ctx' ? '<div class="ex">' + exHtml(w.ex[0]) + '</div>' : '') + '</div>' +
         '<p class="q-ask">🤔 どんな意味だと思う？<small>（予想なので、まちがえても大丈夫）</small></p>' + choiceHtml(opts.map(esc)) + '<div class="after"></div></div>');
       setTimeout(function () { Speech.say(V.head(w)); }, 300);
@@ -536,7 +538,7 @@
           if (ok) FX.burst(x, 'petal', 16);
           moveTrack(s, w, 0.11, 'happy', ok ? '¡Sí!' : '');
           var head = ok ? '🎯 予想的中！' : c.t === 'trap' && opts[+x.dataset.i] === c.lure ? '😆 ひっかかった！ 英語とはちがう意味' : '💡 正解は…';
-          after(s, '<p class="reveal-h">' + head + '</p><div class="meaning' + gcls(w) + '">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b></div>' + memoHtml(w), meetOne);
+          after(s, '<p class="reveal-h">' + head + '</p><div class="meaning' + gcls(w) + '">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b>' + useHtml(w) + '</div>' + memoHtml(w), meetOne);
           if (ses.met.indexOf(w.id) < 0) ses.met.push(w.id);
         });
       });
@@ -576,7 +578,7 @@
     if (Speech.ok()) t.push('listen');
     if (easy) return pick(t);
     if (lv >= 1) t.push('ja2es');
-    if (lv >= 2) t.push('spell');
+    if (lv >= 2 && !/\s/.test(w.w)) t.push('spell');   /* 2語以上の表現（contento de）はつづりの組み立てに出さない */
     if (lv >= 3) t.push('cloze');
     if (w.pos === 'v' && CU && learned(w).length && Math.random() < 0.45) return 'form';
     return Math.random() < 0.5 ? t[t.length - 1] : pick(t);   // 半分は、いまのレベルのいちばん難しい問い方
@@ -1264,7 +1266,7 @@
     } else {
       var st = V.state(id), cond = Math.round(V.condition(id) * 100);
       box.innerHTML = '<div class="q-card big' + gcls(w) + ' r-' + V.RANKS[c.lv].id + '"><span class="qtag">No.' + (w.i + 1) + '</span><div class="q-word">' + headHtml(w) + '</div>' + sayBtn(V.head(w)) +
-        '<small class="pos">' + POS[w.pos] + '</small>' + refHtml(w) + '</div><div class="meaning">' + esc(w.ja) + '</div>' + trackHtml(w, nowClose(id), Chara.moodOf(st)) + formsHtml(w) + memoHtml(w) + gaugeHtml(w) +
+        useHtml(w) + '<small class="pos">' + POS[w.pos] + '</small>' + refHtml(w) + '</div><div class="meaning">' + esc(w.ja) + '</div>' + trackHtml(w, nowClose(id), Chara.moodOf(st)) + formsHtml(w) + memoHtml(w) + gaugeHtml(w) +
         '<div class="cond"><span>コンディション</span><div class="gbar c"><i style="width:' + cond + '%"></i></div><b>' + (st === 'fresh' ? '元気' : st === 'wilt' ? '🥀 しおれかけ' : '🍂 野生に戻りかけ') + '</b></div>' +
         (st !== 'fresh' ? '<button class="next rescue" data-id="' + id + '">🚑 救出する</button>' : '');
       var rb = $('.rescue', box);

@@ -43,6 +43,8 @@
       if (!(w.s in secs)) err(at, 's「' + w.s + '」が sections にない');
       else secs[w.s]++;
       if (typeof w.w !== 'string' || !w.w) err(at, 'w（つづり）が必須');
+      else if (/[～〜~＋+…()（）]|動詞|原形|不定詞|algo|alguien/.test(w.w)) warn(at, 'w には、そのまま言う形だけを書く（例 "contento de"）。「＋動詞の原形」などの型は use に書く');
+      if (w.use != null && (typeof w.use !== 'string' || !w.use)) err(at, 'use は文字列（例 "estar contento de ＋ 動詞の原形"）');
       if (POS.indexOf(w.pos) < 0) err(at, 'pos は ' + POS.join('/') + ' のどれか');
       if (w.pos === 'n' && w.g !== 'm' && w.g !== 'f') err(at, '名詞は g（m＝男性・f＝女性）が必須');
       if (w.art && ['el', 'la', 'los', 'las'].indexOf(w.art) < 0) err(at, 'art は el/la/los/las');

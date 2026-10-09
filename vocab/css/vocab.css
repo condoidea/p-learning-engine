@@ -362,6 +362,10 @@ mark { background: var(--mark); color: inherit; padding: 0 3px; border-radius: 4
 .stage2:empty { display: none; }
 .stage2 { display: flex; flex-direction: column; gap: 8px; }
 
+/* ---- 使い方の型 ---- */
+.use { display: block; margin-top: 2px; font-family: var(--f-es); font-size: 15px; font-weight: 600; color: var(--accent2); }
+.meaning .use { font-size: 14px; }
+
 /* ---- 参考書との対応・範囲 ---- */
 .ref { display: block; margin-top: 2px; font-size: 11px; color: var(--accent2); font-weight: 700; }
 .range-btn { display: flex; align-items: baseline; gap: 6px; width: 100%; margin: 0 0 8px; padding: 8px 12px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); text-align: left; font-size: 14px; }
