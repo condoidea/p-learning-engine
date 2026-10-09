@@ -13,10 +13,11 @@
   var HOUR = 3600e3, DAY = 24 * HOUR;
 
   var RANKS = [
-    { id: 'bronze', name: 'ブロンズ', mark: 'B', need: 0 },
-    { id: 'silver', name: 'シルバー', mark: 'S', need: 30 },
-    { id: 'gold', name: 'ゴールド', mark: 'G', need: 80 },
-    { id: 'holo', name: 'ホロ', mark: 'H', need: 160 }
+    /* rel：単語キャラとの関係（＝距離）。ゴールド以上を「定着」とよぶ */
+    { id: 'bronze', name: 'ブロンズ', rel: '出会った', mark: 'B', need: 0 },
+    { id: 'silver', name: 'シルバー', rel: '顔なじみ', mark: 'S', need: 30 },
+    { id: 'gold', name: 'ゴールド', rel: '仲間', mark: 'G', need: 80 },
+    { id: 'holo', name: 'ホロ', rel: '相棒', mark: 'H', need: 160 }
   ];
   /* コンディションが半分くらいになるまでの日数（レベルが上がるほど長持ち） */
   var KEEP = [1.5, 4, 9, 20];
@@ -127,6 +128,19 @@
         .sort(function (a, b) { return a.r - b.r; })
         .map(function (x) { return x.w; });
     },
+    /* 次にしおれ始めるカードの時刻（なければ null） */
+    nextWild: function () {
+      var t = null;
+      Object.keys(S.cards).forEach(function (id) {
+        var c = S.cards[id]; if (!W[id]) return;
+        var keep = KEEP[c.lv] * (1 + 0.4 * Math.min(c.streak || 0, 4));
+        var at = c.ok + keep * Math.log(1 / FRESH) / Math.LN2 * DAY;
+        if (t === null || at < t) t = at;
+      });
+      return t;
+    },
+    /* ランクごとの枚数 [ブロンズ, シルバー, ゴールド, ホロ] */
+    rankCounts: function () { var n = [0, 0, 0, 0]; Object.keys(S.cards).forEach(function (id) { if (W[id]) n[S.cards[id].lv]++; }); return n; },
     caughtCount: function () { return Object.keys(S.cards).filter(function (id) { return W[id]; }).length; },
     /* 次の進化まで */
     toNext: function (id) { var c = card(id); if (!c || c.lv >= 3) return null; return { now: c.exp - RANKS[c.lv].need, need: RANKS[c.lv + 1].need - RANKS[c.lv].need }; },

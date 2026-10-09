@@ -58,3 +58,8 @@ html[data-skin="espana"] body {
     --tile: rgba(92, 195, 224, .07);
   }
 }
+/* 広場の色（昼：陽ざしの中庭／夜：ランプの灯り） */
+html[data-skin="espana"] { --plaza-near: #f3d9a8; --plaza-far: #e9c78c; --plaza-sky: linear-gradient(#bfe3ef, rgba(191, 227, 239, 0)); }
+@media (prefers-color-scheme: dark) {
+  html[data-skin="espana"] { --plaza-near: #4a2d1e; --plaza-far: #2a1a14; --plaza-sky: linear-gradient(#141030, rgba(20, 16, 48, 0)); }
+}

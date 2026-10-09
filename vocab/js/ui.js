@@ -142,6 +142,55 @@
   function rankCls(id) { var c = V.card(id); return c ? ' r-' + V.RANKS[c.lv].id : ''; }
 
   /* =========================================================
+   * 距離感（自キャラ ← → 単語キャラ）
+   *  近いほど関係が深い。ランクの目盛り：出会った／顔なじみ／仲間／相棒
+   *  その日のうちに近づけるのは「出会った」まで。そこから先は日を空けて思い出すと近づく
+   * ========================================================= */
+  var REL_C = [0.25, 0.5, 0.75, 1];
+  function tLeft(c) { return 19 + (1 - Math.max(0, Math.min(1, c))) * 69; }
+  function trackHtml(w, c, mood) {
+    var ticks = V.RANKS.map(function (R, i) { return '<i class="tick r-' + R.id + '" style="left:' + tLeft(REL_C[i]) + '%"><span>' + R.rel + '</span></i>'; }).join('');
+    return '<div class="track"><div class="t-line"></div>' + ticks + '<span class="t-me">' + Chara.me() + '</span>' +
+      '<span class="t-bud" style="left:' + tLeft(c) + '%">' + Chara.svg(w, { mood: mood || 'happy' }) + '<b class="t-say"></b></span></div>';
+  }
+  function moveTrack(s, w, c, mood, say) {
+    var b = $('.t-bud', s); if (!b) return;
+    b.style.left = tLeft(c) + '%';
+    if (mood) b.firstChild.outerHTML = Chara.svg(w, { mood: mood });
+    b.classList.remove('hop'); void b.offsetWidth; b.classList.add('hop');
+    var t = $('.t-say', b);
+    if (t) { t.textContent = say || ''; t.classList.toggle('on', !!say); }
+  }
+  function nowClose(id) { var c = V.card(id); return c ? Chara.closeness(c.lv, V.condition(id)) : 0.04; }
+
+  /* ---- 広場：自キャラのまわりに、仲間の単語キャラが関係の深さの距離で立つ ----
+   *  輪（リング）を5つ：相棒・仲間・顔なじみ・出会った・離れかけ。同じ輪の子は弧の上に等間隔で並ぶ */
+  var RING = [0.3, 0.48, 0.66, 0.84, 1.0], RSIZE = [52, 46, 40, 34, 30];
+  function ringOf(c) { return c >= 0.85 ? 0 : c >= 0.6 ? 1 : c >= 0.36 ? 2 : c >= 0.16 ? 3 : 4; }
+  function renderPlaza() {
+    var box = $('#plaza'), ids = Object.keys(S.cards).filter(function (id) { return V.word(id); });
+    if (!ids.length) { box.innerHTML = '<span class="p-me">' + Chara.me() + '</span><p class="p-empty">まだ仲間がいない。👀 や 🌱 で単語と出会おう</p>'; return; }
+    var rings = [[], [], [], [], []], CAP = [6, 8, 10, 12, 12], shown = 0;
+    ids.map(function (id) { return { id: id, c: nowClose(id), st: V.state(id), h: Chara.hash(id) }; })
+      .sort(function (a, b) { return a.h - b.h; })
+      .forEach(function (x) { var k = ringOf(x.c); if (rings[k].length < CAP[k]) { rings[k].push(x); shown++; } });
+    var html = '';
+    rings.forEach(function (list, k) {
+      list.forEach(function (x, i) {
+        var n = list.length, t = n === 1 ? 0.5 : i / (n - 1);
+        var ang = Math.PI * (1.1 + t * 0.8) + (k % 2 ? 0.05 : -0.05);   /* 自キャラの後ろ側の弧 */
+        var r = RING[k] - (n > 7 && i % 2 ? 0.07 : 0);
+        var left = 50 + Math.cos(ang) * r * 46, bottom = 6 + -Math.sin(ang) * r * 74;
+        var w = V.word(x.id);
+        html += '<button class="p-bud st-' + x.st + '" data-id="' + x.id + '" aria-label="' + esc(w.w) + '" style="left:' + left.toFixed(1) + '%;bottom:' + bottom.toFixed(1) + '%;width:' + RSIZE[k] + 'px;z-index:' + Math.round(100 - bottom) + '">' +
+          Chara.svg(w, { mood: Chara.moodOf(x.st), holo: V.card(x.id).lv === 3 }) + (x.st !== 'fresh' ? '<span class="p-st">' + (x.st === 'wild' ? '🍂' : '🥀') + '</span>' : '') + '</button>';
+      });
+    });
+    var more = ids.length - shown;
+    box.innerHTML = html + '<span class="p-me">' + Chara.me() + '</span>' + (more > 0 ? '<span class="p-more">ほか ' + more + '体</span>' : '');
+  }
+
+  /* =========================================================
    * ホーム
    * ========================================================= */
   function renderHome() {
@@ -149,14 +198,17 @@
     $('#hBrand').textContent = D.brand;
     $('#hSub').textContent = D.sub;
     $('#hDex').textContent = got + ' / ' + total;
-    $('#hDexBar').style.width = Math.round(got / total * 100) + '%';
+    var rc = V.rankCounts();
+    $('#hDexBar').innerHTML = rc.map(function (n, i) { return n ? '<i class="r-' + V.RANKS[i].id + '" style="width:' + (n / total * 100) + '%"></i>' : ''; }).join('');
+    $('#hRel').innerHTML = '出会い <b>' + (rc[0] + rc[1]) + '</b>　定着 <b>' + (rc[2] + rc[3]) + '</b>';
+    renderPlaza();
     $('#hExp').textContent = '+' + (S.day.date ? S.day.exp : 0);
     $('#hGrown').textContent = S.day.grown.length;
     $$('.mood button').forEach(function (b) { b.classList.toggle('on', b.dataset.mood === S.settings.mood); });
     var tiles = [
       { id: 'face', ico: '👀', name: '顔見知りチェック', sub: face ? '5級の語 残り ' + face + '語' : '', off: !face, hide: !face },
       { id: 'meet', ico: '🌱', name: '出会い', sub: meet ? '新しい単語を3つ' : 'ぜんぶ出会った！', off: !meet },
-      { id: 'wild', ico: '⚔', name: '野生戦', sub: wild ? 'しおれた単語 ' + wild + '体' : 'いまはみんな元気', off: !wild },
+      { id: 'wild', ico: '⚔', name: '野生戦', sub: wild ? 'しおれた単語 ' + wild + '体' : untilWild(), off: !wild },
       { id: 'dex', ico: '📖', name: '図鑑', sub: wild ? 'しおれ ' + wild + '枚' : got + '枚' }
     ];
     $('#alacarte').innerHTML = tiles.filter(function (t) { return !t.hide; }).map(function (t) {
@@ -168,6 +220,13 @@
     $('#tgSpeak').checked = S.settings.speak;
     $('#tgSpeakRow').hidden = !Speech.ok();
     if (G) G.fromTo('#home .anim', { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, stagger: 0.05, ease: 'power3.out' });
+  }
+
+  /* 次の野生まで（再会は翌日から。出会った当日は「あと○時間」と見せる） */
+  function untilWild() {
+    var t = V.nextWild(); if (t === null) return 'まだカードがない';
+    var h = (t - Date.now()) / 3600e3;
+    return h < 1 ? 'もうすぐ野生が出る' : '次の野生まで あと ' + Math.round(h) + '時間';
   }
 
   /* おまかせ：その日の状態からブロックを組む */
@@ -253,7 +312,7 @@
       var cs = function (x) { return top ? x.charAt(0).toUpperCase() + x.slice(1) : x.charAt(0).toLowerCase() + x.slice(1); };
       right = formOf(w); list = shuffle([right].concat(others(w, 3, 'form').map(cs))).map(esc);
     }
-    var s = stage('<div class="q">' + prompt + choiceHtml(list, type === 'ja2es' || type === 'cloze' ? 'es' : '') + '<div class="after"></div></div>');
+    var s = stage('<div class="q">' + (opt.track || '') + prompt + choiceHtml(list, type === 'ja2es' || type === 'cloze' ? 'es' : '') + '<div class="after"></div></div>');
     if (type === 'es2ja' || type === 'listen') setTimeout(function () { Speech.say(V.head(w)); }, 250);
     var answered = false, ri = list.indexOf(esc(right));
     $$('.ch', s).forEach(function (b) {
@@ -284,7 +343,7 @@
     if (parts.length < 3) { parts = w.w.split(''); decoy = pick(other.split('')); }   // 短い語は1文字ずつ
     var tiles = shuffle(parts.concat(parts.indexOf(decoy) < 0 ? [decoy] : []));
     var a = V.art(w);
-    var s = stage('<div class="q"><div class="q-card ja' + rankCls(w.id) + '">' + (opt.tag || '') + '<div class="q-ja">' + esc(w.ja) + '</div><small class="pos">' + POS[w.pos] + '</small></div>' +
+    var s = stage('<div class="q">' + (opt.track || '') + '<div class="q-card ja' + rankCls(w.id) + '">' + (opt.tag || '') + '<div class="q-ja">' + esc(w.ja) + '</div><small class="pos">' + POS[w.pos] + '</small></div>' +
       '<p class="q-ask">つづりを組み立てよう</p><div class="spell' + gcls(w) + '">' + (a ? '<span class="art">' + a + '</span>' : '') + '<span class="slot"></span></div>' +
       '<div class="tiles">' + tiles.map(function (t, i) { return '<button class="tl" data-i="' + i + '">' + esc(t) + '</button>'; }).join('') + '</div>' +
       '<div class="spell-ctl"><button class="undo">⌫ 1つ戻す</button></div><div class="after"></div></div>');
@@ -346,7 +405,7 @@
     var src = from || $('#stage');
     var fly = document.createElement('div');
     fly.className = 'fly-card' + gcls(w) + ' r-bronze';
-    fly.innerHTML = headHtml(w);
+    fly.innerHTML = Chara.svg(w, { mood: 'happy' }) + headHtml(w);
     var a = src.getBoundingClientRect(), b = $('#pDexBox').getBoundingClientRect();
     fly.style.left = (a.left + a.width / 2) + 'px'; fly.style.top = (a.top + a.height / 2) + 'px';
     document.body.appendChild(fly);
@@ -362,7 +421,7 @@
     ses.ups.push(w.id);
     setTimeout(function () {
       if (window.Snd) Snd.levelUp(up);
-      FX.slam(pick(['¡EVOLUCIÓN!', '¡OLÉ!', '¡ARRIBA!']), w.w + ' が ' + V.RANKS[up].name + ' に進化！');
+      FX.slam(pick(['¡EVOLUCIÓN!', '¡OLÉ!', '¡ARRIBA!']), w.w + ' と ' + V.RANKS[up].rel + 'に！（' + V.RANKS[up].name + '）');
       FX.rain(up >= 3 ? 'petal' : null);
     }, 350);
   }
@@ -376,17 +435,17 @@
       var w = list[i++]; if (!w) return next();
       var tag = '<span class="qtag">👀 ' + i + ' / ' + list.length + '</span>';
       var right = w.ja, opts = shuffle([right].concat(others(w, 3, 'ja')));
-      var s = stage('<div class="q"><div class="q-card' + gcls(w) + '">' + tag + '<div class="q-word">' + headHtml(w) + '</div>' + sayBtn(V.head(w)) + '</div>' +
+      var s = stage('<div class="q">' + trackHtml(w, 0.05, 'wow') + '<div class="q-card' + gcls(w) + '">' + tag + '<div class="q-word">' + headHtml(w) + '</div>' + sayBtn(V.head(w)) + '</div>' +
         '<p class="q-ask">知ってる？ 意味は？</p>' + choiceHtml(opts.map(esc)) + '<button class="dunno">🤔 わからない（出会いで覚える）</button><div class="after"></div></div>');
       setTimeout(function () { Speech.say(V.head(w)); }, 250);
       var answered = false, ri = opts.indexOf(right);
       function settle(ok, el) {
         if (answered) return; answered = true;
         $$('.ch, .dunno', s).forEach(function (x) { x.disabled = true; if (x.classList.contains('ch') && +x.dataset.i === ri) x.classList.add('right'); });
-        if (ok) { feedback(true, el, $('.q-card', s)); captureFx(w, $('.q-card', s), true); setTimeout(one, 1100); }
+        if (ok) { feedback(true, el, $('.q-card', s)); moveTrack(s, w, REL_C[0], 'happy', '¡Hola!'); captureFx(w, $('.q-card', s), true); setTimeout(one, 1300); }
         else {
           if (el.classList.contains('ch')) { el.classList.add('wrong'); feedback(false, el, $('.q-card', s)); } else ses.combo = 0;
-          V.toMeet(w.id);
+          V.toMeet(w.id); moveTrack(s, w, 0.02, 'meh');
           after(s, '<p class="note">「' + esc(w.ja) + '」。この単語は🌱出会いで、ゆっくり覚えよう。</p>', one);
         }
       }
@@ -409,7 +468,7 @@
       var opts = [w.ja];
       if (c.lure) opts.push(c.lure);
       opts = shuffle(opts.concat(others(w, 3 - opts.length, 'ja').filter(function (x) { return x !== c.lure; }).slice(0, 3 - opts.length)));
-      var s = stage('<div class="q meet"><div class="q-card big' + gcls(w) + '"><span class="qtag">🌱 出会い ' + k + ' / ' + words.length + '</span>' +
+      var s = stage('<div class="q meet">' + trackHtml(w, 0.04, 'wow') + '<div class="q-card big' + gcls(w) + '"><span class="qtag">🌱 出会い ' + k + ' / ' + words.length + '</span>' +
         '<div class="q-word">' + headHtml(w) + '</div>' + sayBtn(V.head(w)) + '<small class="pos">' + POS[w.pos] + (w.pos === 'n' ? (w.g === 'f' ? '・女性' : '・男性') : '') + '</small></div>' +
         '<div class="clue"><b>' + CLUE[c.t] + '</b><p>' + esc(c.text) + '</p>' + (c.t === 'ctx' ? '<div class="ex">' + exHtml(w.ex[0]) + '</div>' : '') + '</div>' +
         '<p class="q-ask">🤔 どんな意味だと思う？<small>（予想なので、まちがえても大丈夫）</small></p>' + choiceHtml(opts.map(esc)) + '<div class="after"></div></div>');
@@ -423,6 +482,7 @@
           if (!ok) x.classList.add('miss');
           if (window.Snd) (ok ? Snd.ok(0) : Snd.flip());
           if (ok) FX.burst(x, 'petal', 16);
+          moveTrack(s, w, 0.11, 'happy', ok ? '¡Sí!' : '');
           var head = ok ? '🎯 予想的中！' : c.t === 'trap' && opts[+x.dataset.i] === c.lure ? '😆 ひっかかった！ 英語とはちがう意味' : '💡 正解は…';
           after(s, '<p class="reveal-h">' + head + '</p><div class="meaning' + gcls(w) + '">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b></div>' + memoHtml(w), meetOne);
           if (ses.met.indexOf(w.id) < 0) ses.met.push(w.id);
@@ -433,22 +493,24 @@
     function discern() {
       if (!words.length) return next();
       var need = {}, q = [];
-      words.forEach(function (w) { need[w.id] = 2; q.push([w, Speech.ok() && Math.random() < 0.5 ? 'listen' : 'es2ja']); });
+      var close = {};
+      words.forEach(function (w) { need[w.id] = 2; close[w.id] = 0.11; q.push([w, Speech.ok() && Math.random() < 0.5 ? 'listen' : 'es2ja']); });
       q = shuffle(q).concat(shuffle(words.map(function (w) { return [w, 'ja2es']; })));
       var total = q.length, n = 0;
       function one() {
         var it = q.shift(); if (!it) return next();
         n++;
-        ask(it[0], it[1], { tag: '<span class="qtag">🌱 見分ける ' + Math.min(n, total) + ' / ' + total + '</span>' }, function (ok, s) {
+        ask(it[0], it[1], { tag: '<span class="qtag">🌱 見分ける ' + Math.min(n, total) + ' / ' + total + '</span>', track: trackHtml(it[0], close[it[0].id], 'happy') }, function (ok, s) {
           var w = it[0];
           if (ok) {
             need[w.id]--;
-            if (need[w.id] <= 0) { captureFx(w, $('.q-card', s), false); setTimeout(one, 1200); }
-            else setTimeout(one, 800);
-          } else { q.push(it); total++; after(s, '<div class="meaning' + gcls(w) + '">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b></div>', one); }
+            close[w.id] = need[w.id] <= 0 ? REL_C[0] : close[w.id] + 0.07;
+            if (need[w.id] <= 0) { moveTrack(s, w, close[w.id], 'happy', '出会った！'); captureFx(w, $('.q-card', s), false); setTimeout(one, 1400); }
+            else { moveTrack(s, w, close[w.id], 'happy'); setTimeout(one, 900); }
+          } else { close[w.id] = Math.max(0.04, close[w.id] - 0.04); moveTrack(s, w, close[w.id], 'meh'); q.push(it); total++; after(s, '<div class="meaning' + gcls(w) + '">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b></div>', one); }
         });
       }
-      stage('<div class="interlude"><p class="big-t">🌱 ' + words.length + '語と出会った！</p><p>見分けられたら、図鑑に入るよ</p><button class="next go">見分ける ▶</button></div>');
+      stage('<div class="interlude"><p class="big-t">🌱 ' + words.length + '語と出会った！</p><p>見分けられたら「出会った」の距離まで近づいて、図鑑に入るよ。<br>もっと近づく（顔なじみ・仲間）のは、日を空けて思い出せたとき</p><button class="next go">見分ける ▶</button></div>');
       $('#stage .go').addEventListener('click', one);
     }
     meetOne();
@@ -469,11 +531,14 @@
   function fight(w, tagText, cb) {
     var wasWild = V.state(w.id) === 'wild';
     var tag = '<span class="qtag">' + tagText + '</span><span class="wild-badge">' + (wasWild ? '🍂 野生に戻りかけ' : '🥀 しおれかけ') + '</span>';
-    stage('<div class="appear"><p>野生の</p><div class="q-card wild' + gcls(w) + rankCls(w.id) + '"><div class="q-word">？？？</div></div><p>が あらわれた！</p></div>');
+    var c0 = nowClose(w.id), m0 = Chara.moodOf(V.state(w.id));
+    stage('<div class="appear"><p>' + (wasWild ? '野生に戻りかけの' : 'しおれかけの') + '</p><div class="ap-bud">' + Chara.svg(w, { mood: m0 }) + '</div><p>が 遠くに いる！</p></div>');
     if (window.Snd) Snd.appear();
     setTimeout(function () {
-      ask(w, typesFor(w), { tag: tag }, function (ok, s) {
+      ask(w, typesFor(w), { tag: tag, track: trackHtml(w, c0, m0) }, function (ok, s) {
         var r = V.answer(w.id, ok);
+        if (ok) moveTrack(s, w, Chara.closeness(V.card(w.id).lv, 1), 'happy', r.back ? 'おかえり！' : r.up ? V.RANKS[r.up].rel + 'に！' : '¡Hola!');
+        else moveTrack(s, w, Math.max(0.03, c0 - 0.12), 'sleep', '…');
         if (ok) {
           ses.exp += r.exp;
           FX.float($('.q-card', s), '+' + r.exp + ' EXP', 'exp');
@@ -488,7 +553,7 @@
   }
   function gaugeHtml(w) {
     var c = V.card(w.id), nx = V.toNext(w.id);
-    return '<div class="gauge"><span class="rk r-' + V.RANKS[c.lv].id + '">' + V.RANKS[c.lv].name + '</span>' +
+    return '<div class="gauge"><span class="rk r-' + V.RANKS[c.lv].id + '">' + V.RANKS[c.lv].name + '・' + V.RANKS[c.lv].rel + '</span>' +
       (nx ? '<div class="gbar"><i style="width:' + Math.min(100, Math.round(nx.now / nx.need * 100)) + '%"></i></div><small>進化まで ' + Math.max(0, nx.need - nx.now) + ' EXP</small>' : '<small>最高ランク！</small>') + '</div>';
   }
   function blockWild(b, next) {
@@ -513,6 +578,8 @@
     if (ses.backs) lines.push('🤝 野生から <b>' + ses.backs + '枚</b> 取り返した');
     if (ses.met.length) lines.push('🌱 <b>' + ses.met.length + '語</b> と出会った');
     lines.push('⭐ <b>+' + ses.exp + ' EXP</b>（今日 +' + S.day.exp + '）');
+    var rc = V.rankCounts();
+    lines.push('🤝 いま　出会い <b>' + (rc[0] + rc[1]) + '</b>・定着 <b>' + (rc[2] + rc[3]) + '</b>（仲間・相棒）');
     $('#dLines').innerHTML = lines.map(function (l) { return '<li>' + l + '</li>'; }).join('');
     $('#dCards').innerHTML = grown.map(function (id) { return miniCard(V.word(id)); }).join('');
     /* 次回予告 */
@@ -531,11 +598,11 @@
    * ========================================================= */
   function miniCard(w) {
     var c = V.card(w.id);
-    if (!c) return '<button class="mini none" data-id="' + w.id + '"><span class="no">' + (w.i + 1) + '</span><span class="q">？</span></button>';
+    if (!c) return '<button class="mini none" data-id="' + w.id + '"><span class="no">' + (w.i + 1) + '</span>' + Chara.svg(w, { mood: 'none' }) + '</button>';
     var st = V.state(w.id);
     return '<button class="mini' + gcls(w) + ' r-' + V.RANKS[c.lv].id + ' st-' + st + '" data-id="' + w.id + '" style="--cond:' + V.condition(w.id).toFixed(2) + '">' +
       '<span class="no">' + V.RANKS[c.lv].mark + ' ' + (w.i + 1) + '</span>' + (st !== 'fresh' ? '<span class="stb">' + (st === 'wild' ? '🍂' : '🥀') + '</span>' : '') +
-      '<span class="mw">' + headHtml(w) + '</span><span class="mj">' + esc(w.ja) + '</span><span class="rb">' + V.RANKS[c.lv].name + '</span></button>';
+      Chara.svg(w, { mood: Chara.moodOf(st), holo: c.lv === 3 }) + '<span class="mw">' + headHtml(w) + '</span><span class="mj">' + esc(w.ja) + '</span><span class="rb">' + V.RANKS[c.lv].rel + '</span></button>';
   }
   function renderDex() {
     var got = V.caughtCount();
@@ -550,11 +617,11 @@
   function openSheet(id) {
     var w = V.word(id), c = V.card(id), box = $('#sheetBody');
     if (!c) {
-      box.innerHTML = '<div class="sh-none"><p class="big-t">？</p><p>No.' + (w.i + 1) + '　まだ出会っていない単語</p><p class="note">' + (V.SEC[w.s].known ? '👀 顔見知りチェック' : '🌱 出会い') + 'で会えるよ</p></div>';
+      box.innerHTML = '<div class="sh-none"><div class="sh-sil">' + Chara.svg(w, { mood: 'none' }) + '</div><p>No.' + (w.i + 1) + '　まだ出会っていない単語</p><p class="note">' + (V.SEC[w.s].known ? '👀 顔見知りチェック' : '🌱 出会い') + 'で会えるよ</p></div>';
     } else {
       var st = V.state(id), cond = Math.round(V.condition(id) * 100);
       box.innerHTML = '<div class="q-card big' + gcls(w) + ' r-' + V.RANKS[c.lv].id + '"><span class="qtag">No.' + (w.i + 1) + '</span><div class="q-word">' + headHtml(w) + '</div>' + sayBtn(V.head(w)) +
-        '<small class="pos">' + POS[w.pos] + '</small></div><div class="meaning">' + esc(w.ja) + '</div>' + memoHtml(w) + gaugeHtml(w) +
+        '<small class="pos">' + POS[w.pos] + '</small></div><div class="meaning">' + esc(w.ja) + '</div>' + trackHtml(w, nowClose(id), Chara.moodOf(st)) + memoHtml(w) + gaugeHtml(w) +
         '<div class="cond"><span>コンディション</span><div class="gbar c"><i style="width:' + cond + '%"></i></div><b>' + (st === 'fresh' ? '元気' : st === 'wilt' ? '🥀 しおれかけ' : '🍂 野生に戻りかけ') + '</b></div>' +
         (st !== 'fresh' ? '<button class="next rescue" data-id="' + id + '">🚑 救出する</button>' : '');
       var rb = $('.rescue', box);
@@ -589,6 +656,7 @@
     $('#quit').addEventListener('click', function () { if (window.speechSynthesis) speechSynthesis.cancel(); finish(); });
     $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { go(b.dataset.go); }); });
     $('#dMore').addEventListener('click', function () { start(makePlan(5), '5分'); });
+    $('#plaza').addEventListener('click', function (e) { var m = e.target.closest('.p-bud'); if (m) openSheet(m.dataset.id); });
     $('#xBody').addEventListener('click', function (e) { var m = e.target.closest('.mini'); if (m) openSheet(m.dataset.id); });
     $('#dCards').addEventListener('click', function (e) { var m = e.target.closest('.mini'); if (m) openSheet(m.dataset.id); });
     $('#sheet').addEventListener('click', function (e) { if (e.target.id === 'sheet' || e.target.closest('.sh-close')) closeSheet(); });

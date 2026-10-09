@@ -211,3 +211,62 @@ mark { background: var(--mark); color: inherit; padding: 0 3px; border-radius: 4
 .toast small { opacity: .8; }
 
 @media (prefers-reduced-motion: reduce) { .r-holo { animation: none; } .appear .q-card { animation: none; } }
+
+/* =========================================================
+ * キャラクターと距離感
+ * ========================================================= */
+.chara { display: block; overflow: visible; }
+.chara.pos-v .arm-l { transform-origin: 28px 58px; animation: wave 1.6s ease-in-out infinite; }
+.chara.pos-v .arm-r { transform-origin: 72px 58px; animation: wave 1.6s ease-in-out infinite reverse; }
+.chara.pos-adv .wing-l, .chara.pos-adv .wing-r { transform-box: fill-box; transform-origin: center; animation: flap .5s ease-in-out infinite alternate; }
+.chara .spark { animation: twinkle 1.4s ease-in-out infinite alternate; }
+.chara.mood-sleep { filter: grayscale(.6); }
+@keyframes wave { 50% { transform: rotate(10deg); } }
+@keyframes flap { to { transform: scaleY(.55); } }
+@keyframes twinkle { from { opacity: .3; } to { opacity: 1; } }
+@keyframes bob { 50% { transform: translateY(-4px); } }
+
+/* 距離のトラック：左に自キャラ、右へ行くほど遠い */
+.track { position: relative; height: 92px; margin: 0 2px; }
+.t-line { position: absolute; left: 6%; right: 2%; bottom: 22px; height: 4px; border-radius: 9px; background: repeating-linear-gradient(90deg, var(--line-strong) 0 8px, transparent 8px 14px); }
+.tick { position: absolute; bottom: 16px; width: 4px; height: 16px; margin-left: -2px; border-radius: 3px; background: var(--rk); }
+.tick span { position: absolute; top: 18px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 10px; font-weight: 700; color: var(--muted); font-style: normal; }
+.t-me { position: absolute; left: 0; bottom: 14px; width: 48px; }
+.t-bud { position: absolute; bottom: 20px; width: 50px; margin-left: -25px; transition: left .7s cubic-bezier(.3, 1.4, .5, 1); }
+.t-bud .chara { animation: bob 1.8s ease-in-out infinite; }
+.t-bud.hop .chara { animation: hop .5s ease-out; }
+@keyframes hop { 30% { transform: translateY(-16px) scale(1.08); } }
+.t-say { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) scale(.6); padding: 2px 8px; border-radius: 10px; background: var(--card); border: 1px solid var(--line-strong); font-size: 12px; white-space: nowrap; opacity: 0; transition: opacity .25s, transform .25s; pointer-events: none; }
+.t-say.on { opacity: 1; transform: translateX(-50%) scale(1); }
+#sheetBody .track { margin-top: 4px; }
+
+/* 出会い：遠くの子が現れる */
+.ap-bud { width: 120px; animation: wobble .6s ease-in-out infinite alternate; }
+
+/* ホームの広場 */
+.plaza { position: relative; height: 240px; margin: 4px 0 2px; border-radius: 22px; overflow: hidden;
+  background: radial-gradient(ellipse 70% 55% at 50% 100%, var(--plaza-near) 0 40%, var(--plaza-far) 100%); border: 1px solid var(--line); }
+.plaza::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 22%; background: var(--plaza-sky); }
+.p-me { position: absolute; left: 50%; bottom: 4px; width: 64px; margin-left: -32px; z-index: 200; }
+.p-bud { position: absolute; margin-left: 0; transform: translateX(-50%); padding: 0; }
+.p-bud .chara { width: 100%; animation: bob 2.2s ease-in-out infinite; }
+.p-bud:nth-child(3n) .chara { animation-delay: -.7s; } .p-bud:nth-child(3n+1) .chara { animation-delay: -1.4s; }
+.p-st { position: absolute; right: -6px; top: -4px; font-size: 13px; }
+.p-bud.st-wild { opacity: .75; }
+.p-empty { position: absolute; left: 0; right: 0; top: 36%; margin: 0; text-align: center; color: var(--muted); font-size: 14px; padding: 0 16px; }
+.p-more { position: absolute; right: 10px; top: 8px; font-size: 11px; color: var(--muted); }
+.plaza-note { margin: 0 0 8px; font-size: 11px; color: var(--muted); text-align: center; }
+
+/* 図鑑の帯：ランク別に色分け */
+.st .bar.stack { display: flex; }
+.st .bar.stack i { display: block; height: 100%; background: var(--rk); }
+.st .rel { margin-top: 3px; font-size: 11px; }
+.st .rel b { font-family: var(--f-es); font-size: 13px; color: var(--ink); }
+
+/* 図鑑のカードにもキャラ */
+.mini .chara { width: 46px; margin: 0 auto -2px; }
+.mini.none .chara { width: 50px; }
+.mini.st-wild .chara { opacity: .6; }
+.sh-sil { width: 120px; margin: 0 auto; }
+.fly-card { display: flex; align-items: center; gap: 6px; }
+.fly-card .chara { width: 40px; }
