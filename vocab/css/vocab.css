@@ -195,6 +195,7 @@ mark { background: var(--mark); color: inherit; padding: 0 3px; border-radius: 4
 .mini.st-wilt .mw, .mini.st-wilt .mj { opacity: .7; }
 .mini.st-wild .mw, .mini.st-wild .mj { opacity: .45; filter: blur(.4px); }
 .mini.st-wild { transform: rotate(-2deg); }
+.mini.st-nap .mw, .mini.st-nap .mj { opacity: .85; }
 #dCards { margin: 4px 0 8px; }
 
 /* ---- シート（カードの詳細） ---- */

@@ -32,7 +32,7 @@
   function face(cx, cy, mood, R, dark) {
     var eye = R() < 0.5 ? 'dot' : 'oval', gap = 9 + R() * 3, s = '';
     var ex1 = cx - gap, ex2 = cx + gap;
-    if (mood === 'sleep') {
+    if (mood === 'sleep' || mood === 'nap') {
       s += '<path d="M' + (ex1 - 4) + ' ' + cy + ' q4 3 8 0 M' + (ex2 - 4) + ' ' + cy + ' q4 3 8 0" stroke="' + dark + '" stroke-width="2.4" fill="none" stroke-linecap="round"/>';
       s += '<ellipse cx="' + cx + '" cy="' + (cy + 10) + '" rx="2.6" ry="2" fill="' + dark + '"/>';
       s += '<text x="' + (cx + 18) + '" y="' + (cy - 12) + '" font-size="10" font-family="sans-serif" fill="' + dark + '" opacity=".7">z</text>';

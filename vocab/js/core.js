@@ -40,6 +40,8 @@
     return fresh();
   }
   var S = load();
+  /* 久しぶりに開いたか（最後に答えてから何日か）。開いた時点で決める */
+  var AWAY = S.lastSeen ? (Date.now() - S.lastSeen) / (24 * 3600e3) : 0;
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* 保存できなくても学習は続ける */ } }
 
   function today() { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
@@ -125,6 +127,7 @@
       var i = S.meet.indexOf(id); if (i >= 0) S.meet.splice(i, 1);
       if (S.day.caught.indexOf(id) < 0) S.day.caught.push(id);
       var r = gain(id, known ? 10 : 5);
+      S.lastSeen = now;
       save();
       return r;
     },
@@ -152,7 +155,7 @@
         c.s = Math.max(S0, c.s * 0.4); c.j = 1;                          // 忘れていたら、強さを4割に
         c.ok = Math.min(c.ok, now - c.s * DAY);                          // コンディションを半分に（まだ敵として残る）
       }
-      c.last = now;
+      c.last = now; S.lastSeen = now;
       save();
       return r;
     },
@@ -208,6 +211,7 @@
         return wiltAt(c) <= lim && now - c.last > HOUR;     // さっき会ったばかりの子は除く
       }).sort(function (a, b) { return wiltAt(S.cards[a]) - wiltAt(S.cards[b]); });
     },
+    awayDays: AWAY,
     grad: function (id) { var c = card(id); return !!(c && c.grad); },
     gradCount: function () { return Object.keys(S.cards).filter(function (id) { return W[id] && S.cards[id].grad; }).length; },
     /* 記憶の強さ（日）と、次にしおれるまでの日数（表示用） */
