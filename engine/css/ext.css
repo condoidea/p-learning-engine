@@ -307,3 +307,10 @@ html { overflow-x: hidden; }
 .ex-why summary::-webkit-details-marker { display: none; }
 .ex-why[open] summary { border-style: solid; }
 .ex-why p { margin: 6px 0 0; padding: 8px 10px; border-left: 3px solid var(--gold); background: rgba(0,0,0,.25); border-radius: 6px; font-size: 13.5px; line-height: 1.75; }
+/* ホームの「ボス出現！」（未撃破のボスがいるときだけ） */
+.btn-mega[hidden] { display: none !important; }
+.btn-mega.boss-call { background: linear-gradient(120deg, #ff3f6b, #7a1d3a); color: #fff; padding: 12px 24px; box-shadow: 0 8px 30px -8px rgba(255, 63, 107, .8), inset 0 0 0 1px rgba(255, 255, 255, .25); animation: bossPulse 1.6s ease-in-out infinite; }
+.btn-mega.boss-call .mega-label { font-size: clamp(20px, 2.6vw, 26px); }
+.btn-mega.boss-call .mega-sub { color: #ffe0e6; font-weight: 600; }
+@keyframes bossPulse { 0%, 100% { box-shadow: 0 8px 30px -8px rgba(255, 63, 107, .8), inset 0 0 0 1px rgba(255, 255, 255, .25); } 50% { box-shadow: 0 8px 40px -4px rgba(255, 63, 107, 1), inset 0 0 0 1px rgba(255, 255, 255, .4); } }
+@media (prefers-reduced-motion: reduce) { .btn-mega.boss-call { animation: none; } }

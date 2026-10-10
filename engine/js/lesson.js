@@ -1355,7 +1355,7 @@
   }
 
   window.Lesson = {
-    renderMap: renderMap, start: start, stage: stage, tex: tex, mviz: mviz, math: withMath, fmtG: fmtG, next: nextLesson, isDone: isDone, all: allLessons, no: lessonNo, label: label, fmt: fmt, bind: bind,
+    renderMap: renderMap, bossPreview: bossPreview, start: start, stage: stage, tex: tex, mviz: mviz, math: withMath, fmtG: fmtG, next: nextLesson, isDone: isDone, all: allLessons, no: lessonNo, label: label, fmt: fmt, bind: bind,
     active: function () { return !!P; }
   };
 })();

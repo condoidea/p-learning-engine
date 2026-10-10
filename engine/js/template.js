@@ -58,6 +58,10 @@ window.LE_TEMPLATE = `
                 <span class="mega-label">{{t:review}}</span>
                 <span class="mega-sub" id="startSub">学んだ範囲の復習・演習</span>
               </button>
+              <button class="btn-mega boss-call" id="btnBoss" hidden>
+                <span class="mega-label"><span id="bossIco">👾</span> {{t:bossEn}}</span>
+                <span class="mega-sub" id="bossSub">ボスが出現！</span>
+              </button>
               <div class="chips">
                 <span class="chip"><i class="dot due"></i>復習 <b id="dueCount">0</b></span>
                 <span class="chip"><i class="dot new"></i>新規 <b id="newCount">0</b></span>

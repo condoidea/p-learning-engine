@@ -120,9 +120,22 @@
     Lesson.stage(nx);
     $('#learnSub').textContent = nx ? LE_T('lesson') + ' ' + Lesson.label(nx) + '：' + nx.title : '全レッスン制覇！' + LE_T('boss') + '戦と復習へ';
 
+    renderBossCall();
     renderQuests();
     renderPredict();
     renderCurve();
+  }
+  /* ボスが出現していて（ユニットの全レッスンをクリア）まだ倒していないときは、ホームで挑戦をうながす */
+  function renderBossCall() {
+    var b = $('#btnBoss'); if (!b) return;
+    var wait = LE.units.filter(function (u) { return Core.unitCleared(u.id) && !S.bosses[u.id]; });
+    b.hidden = !wait.length;
+    if (!wait.length) return;
+    var u = wait[0], ui = LE.units.indexOf(u), bi = LE.bosses[u.id] || { name: LE_T('bossEn'), ico: '👾' };
+    $('#bossIco').textContent = bi.ico;
+    $('#bossSub').textContent = LE_T('unit') + ' ' + LE_UNO(ui + 1) + ' の' + bi.name + 'が出現！' + (wait.length > 1 ? '（ほか ' + (wait.length - 1) + ' 体）' : '');
+    b.onclick = function () { Sfx.unlock(); Lesson.bossPreview(u, ui); };
+    gsap.fromTo(b, { scale: 0.92 }, { scale: 1, duration: 0.6, ease: 'elastic.out(1,0.4)' });
   }
   function renderQuests() {
     var ul = $('#questList');

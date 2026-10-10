@@ -7,7 +7,7 @@
  * ========================================================= */
 window.COURSE = {
   id: 'habsburg',
-  version: '3.2',
+  version: '3.3',
   title: 'ハプスブルク年代記｜鷹の城から帝冠へ',
   appName: 'ハプスブルク年代記',
   brand: ['HABSBURG', 'CHRONICLE'],

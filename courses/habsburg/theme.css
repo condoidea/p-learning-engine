@@ -291,3 +291,6 @@ body {
 .legend { border-color: var(--parch-edge); }
 .bubble .aside, .ask-reveal .aside, .recap .aside, .vz .aside { color: var(--ink-2) !important; }
 .bubble .hook, .vz .hook, .recap .hook { text-decoration-color: #b07a1e; }
+/* ホームの「ボス出現」：封蝋の赤に金のふち（となりの「復習」ボタンより目立つように） */
+.btn-mega.boss-call { border-radius: 4px; background: radial-gradient(circle at 30% 25%, #c43b35, #7a1414 70%); color: #f6e3a1; }
+.btn-mega.boss-call .mega-sub { color: #f6e3a1; }
