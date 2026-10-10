@@ -309,8 +309,22 @@ html { overflow-x: hidden; }
 .ex-why p { margin: 6px 0 0; padding: 8px 10px; border-left: 3px solid var(--gold); background: rgba(0,0,0,.25); border-radius: 6px; font-size: 13.5px; line-height: 1.75; }
 /* ホームの「ボス出現！」（未撃破のボスがいるときだけ） */
 .btn-mega[hidden] { display: none !important; }
-.btn-mega.boss-call { background: linear-gradient(120deg, #ff3f6b, #7a1d3a); color: #fff; padding: 12px 24px; box-shadow: 0 8px 30px -8px rgba(255, 63, 107, .8), inset 0 0 0 1px rgba(255, 255, 255, .25); animation: bossPulse 1.6s ease-in-out infinite; }
+.btn-mega.boss-call { position: relative; overflow: hidden; background: linear-gradient(120deg, #ff3f6b, #7a1d3a); color: #fff; padding: 12px 24px; box-shadow: 0 8px 30px -8px rgba(255, 63, 107, .8), inset 0 0 0 1px rgba(255, 255, 255, .25);
+  animation: bossPulse 1.6s ease-in-out infinite, bossShake 4.2s ease-in-out 1s infinite; }
+/* ときどき「ブルブルッ」と震える（4秒に1回、0.5秒だけ） */
+@keyframes bossShake {
+  0%, 84%, 100% { transform: translate(0, 0) rotate(0); }
+  86% { transform: translate(-3px, 1px) rotate(-1.5deg); } 88% { transform: translate(3px, -1px) rotate(1.5deg); }
+  90% { transform: translate(-3px, 0) rotate(-1deg); } 92% { transform: translate(2px, 1px) rotate(1deg); }
+  94% { transform: translate(-1px, 0) rotate(-.5deg); } 96% { transform: translate(1px, 0) rotate(0); }
+}
+/* 光がスッと走る */
+.btn-mega.boss-call::after { content: ''; position: absolute; top: -20%; bottom: -20%; left: -40%; width: 30%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .45), transparent); transform: skewX(-20deg); animation: bossShine 4.2s ease-in-out 1s infinite; pointer-events: none; }
+@keyframes bossShine { 0%, 60% { left: -40%; } 80%, 100% { left: 130%; } }
+/* ボスのアイコンは、震えに合わせてぴょこっと跳ねる */
+.btn-mega.boss-call #bossIco { display: inline-block; animation: bossIco 4.2s ease-in-out 1s infinite; }
+@keyframes bossIco { 0%, 82%, 100% { transform: scale(1) rotate(0); } 86% { transform: scale(1.35) rotate(-12deg); } 90% { transform: scale(1.2) rotate(10deg); } 95% { transform: scale(1.1) rotate(-4deg); } }
 .btn-mega.boss-call .mega-label { font-size: clamp(20px, 2.6vw, 26px); }
 .btn-mega.boss-call .mega-sub { color: #ffe0e6; font-weight: 600; }
 @keyframes bossPulse { 0%, 100% { box-shadow: 0 8px 30px -8px rgba(255, 63, 107, .8), inset 0 0 0 1px rgba(255, 255, 255, .25); } 50% { box-shadow: 0 8px 40px -4px rgba(255, 63, 107, 1), inset 0 0 0 1px rgba(255, 255, 255, .4); } }
-@media (prefers-reduced-motion: reduce) { .btn-mega.boss-call { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .btn-mega.boss-call, .btn-mega.boss-call::after, .btn-mega.boss-call #bossIco { animation: none; } }

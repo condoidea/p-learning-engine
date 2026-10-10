@@ -135,7 +135,7 @@
     $('#bossIco').textContent = bi.ico;
     $('#bossSub').textContent = LE_T('unit') + ' ' + LE_UNO(ui + 1) + ' の' + bi.name + 'が出現！' + (wait.length > 1 ? '（ほか ' + (wait.length - 1) + ' 体）' : '');
     b.onclick = function () { Sfx.unlock(); Lesson.bossPreview(u, ui); };
-    gsap.fromTo(b, { scale: 0.92 }, { scale: 1, duration: 0.6, ease: 'elastic.out(1,0.4)' });
+    gsap.fromTo(b, { scale: 0.92 }, { scale: 1, duration: 0.6, ease: 'elastic.out(1,0.4)', clearProps: 'transform' });   // あとは CSS のブルブル演出にまかせる
   }
   function renderQuests() {
     var ul = $('#questList');
