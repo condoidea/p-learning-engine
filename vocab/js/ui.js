@@ -258,7 +258,7 @@
     var tiles = [
       { id: 'face', ico: '👀', name: '顔見知りチェック', sub: face ? '5級の語 残り ' + face + '語' : '', off: !face, hide: !face },
       { id: 'meet', ico: '🌱', name: '出会い', sub: meet ? '新しい単語を3つ' : 'ぜんぶ出会った！', off: !meet },
-      { id: 'wild', ico: '⚔', name: '野生戦', sub: wild ? 'ひと区切り ' + Math.min(wild, chunkSize()) + '体（約' + Math.max(1, Math.round(Math.min(wild, chunkSize()) * 12 / 60)) + '分）' : untilWild(), off: !wild },
+      { id: 'wild', ico: '⚔', name: '野生戦', sub: wild ? 'ひと区切り ' + Math.min(wild, chunkSize()) + '体（約' + chunkMin(Math.min(wild, chunkSize())) + '分）' : untilWild(), off: !wild },
       { id: 'care', ico: '🤝', name: 'なつかせる', sub: soon ? 'もうすぐしおれる子 ' + soon + '体（しおれる前に会う）' : 'いまは大丈夫', off: !soon },
       { id: 'conj', ico: '🔁', name: '活用', sub: conjSub(), hide: !CU || !D.words.some(function (w) { return w.pos === 'v'; }) },
       { id: 'dex', ico: '📖', name: '図鑑', sub: got + '枚' }
@@ -714,13 +714,14 @@
   }
   /* =========================================================
    * ひと区切り（2026-10-11）
-   *  しおれた子が何体いても、見せるのは「ひと区切り」（8体・約1分半）だけ。残りの総数は出さない。
+   *  しおれた子が何体いても、見せるのは「ひと区切り」（約5分＝20体。1体15秒くらい）だけ。残りの総数は出さない。
    *  順番は、覚えたばかり・忘れかけの子が先。記憶の強い子（長持ち2週間以上）は少し待っても忘れにくいので後ろ（お昼寝中）。
    *  ひと区切り終わったら「今日はここまでで大丈夫」。続けたいときは「もうひと区切り」（上限ではない）。
-   *  1週間以上あいたら、最初のひと区切りは5体（おかえり）
+   *  1週間以上あいたら、最初のひと区切りは半分の10体（おかえり）
    * ========================================================= */
-  var CHUNK = 8;
-  function chunkSize() { return V.awayDays >= 7 && !(S.day.chunks > 0) ? 5 : CHUNK; }
+  var CHUNK = 20, SEC_PER = 15;   /* ひと区切り＝約5分（2026-10-11 ユーザー：5分を目安に） */
+  function chunkSize() { return V.awayDays >= 7 && !(S.day.chunks > 0) ? Math.round(CHUNK / 2) : CHUNK; }
+  function chunkMin(n) { return Math.max(1, Math.round(n * SEC_PER / 60)); }
   function wildQueue() {
     return wildAll().map(function (id) { var m = V.memory(id); return { id: id, r: V.condition(id), strong: m && m.s >= 14 }; })
       .sort(function (a, b) { return (a.strong - b.strong) || (a.r - b.r); })
