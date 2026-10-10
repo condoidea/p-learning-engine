@@ -212,6 +212,8 @@
       }).sort(function (a, b) { return wiltAt(S.cards[a]) - wiltAt(S.cards[b]); });
     },
     awayDays: AWAY,
+    /* ボス戦で勝ったおまけ：記憶の強さを少しだけ足す（卒業の手前まで） */
+    bonus: function (id, f) { var c = card(id); if (!c || c.grad) return; c.s = Math.min(c.s * f, 239); save(); },
     grad: function (id) { var c = card(id); return !!(c && c.grad); },
     gradCount: function () { return Object.keys(S.cards).filter(function (id) { return W[id] && S.cards[id].grad; }).length; },
     /* 記憶の強さ（日）と、次にしおれるまでの日数（表示用） */

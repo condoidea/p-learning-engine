@@ -251,6 +251,7 @@
     var gc = V.gradCount();
     $('#hRel').innerHTML = '出会い <b>' + (rc[0] + rc[1]) + '</b>　定着 <b>' + (rc[2] + rc[3]) + '</b>' + (gc ? '　🎓 <b>' + gc + '</b>' : '');
     refreshChunk();
+    renderBossBanner();
     renderPlaza();
     $('#hExp').textContent = '+' + (S.day.date ? S.day.exp : 0);
     $('#hGrown').textContent = S.day.grown.length;
@@ -1368,6 +1369,167 @@
       if (V.isCj(id)) fightCj(id, tg, one); else fight(V.word(id), tg, one, 'care');
     })();
   }
+
+  /* =========================================================
+   * ⚠ 緊急事態ボス（2026-10-11 ユーザーと決定）
+   *  ・3〜4日に1回、ホームを開いたときだけ現れる（学習の途中には割り込まない）。単語が10語以上そろった翌日から
+   *  ・ホームでは音を出さない。赤い警報の帯が、ときどき小刻みに揺れるだけ
+   *  ・その日のうちなら何度でも挑める。翌日には静かに去る（逃しても何も失わない）
+   *  ・ボスの体は、もうすぐしおれる子・しおれた子・弱い子 12語でできている（＝大きな「なつかせる」）
+   *  ・90秒。正解するとパーツが砕けて単語キャラを助け出す。3連続でクリティカル（＋3秒）。まちがえると反撃（−5秒）
+   *  ・正解はふだんの復習と同じに数える。勝ったら正解した語に長持ち＋15%のおまけ。まちがいでは記憶を下げない
+   * ========================================================= */
+  var BOSS_N = 12, BOSS_SEC = 90;
+  var BOSS_NAMES = D.lang === 'en'
+    ? [['忘却の魔物', 'オブリビオン'], ['霧の魔物', 'フォッグ'], ['居眠りの魔物', 'ドーズ'], ['迷子の魔物', 'ロスト']]
+    : [['忘却の魔物', 'オルビード'], ['霧の魔物', 'ニエブラ'], ['眠りの魔物', 'スエーニョ'], ['迷子の魔物', 'ペルディード']];
+  function dayStr() { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+  function bossPool() {
+    var seen = {}, out = [];
+    function add(id) { if (!seen[id] && V.word(id) && V.card(id) && !V.grad(id)) { seen[id] = 1; out.push(id); } }
+    V.soonList(72).forEach(function (id) { if (!V.isCj(id)) add(id); });
+    wildQueue().forEach(function (id) { if (!V.isCj(id)) add(id); });
+    Object.keys(S.cards).filter(function (id) { return V.word(id) && !S.cards[id].grad; })
+      .sort(function (a, b) { return (V.memory(a).s || 0) - (V.memory(b).s || 0); }).forEach(add);
+    return out;
+  }
+  /* 今日のボス（いなければ null）。出す日になっていたら、ここで呼び出す */
+  function todaysBoss() {
+    var now = Date.now(), b = S.boss;
+    if (b && b.day === dayStr()) return b;
+    var eligible = Object.keys(S.cards).filter(function (id) { return V.word(id) && !S.cards[id].grad; }).length >= 10;
+    if (!eligible) return null;
+    if (!S.bossNext) { S.bossNext = now + 20 * 3600e3; V.save(); return null; }   /* 最初のボスは翌日 */
+    if (now < S.bossNext) return null;
+    var ids = bossPool().slice(0, BOSS_N);
+    if (ids.length < 8) { S.bossNext = now + 24 * 3600e3; V.save(); return null; }
+    var nm = pick(BOSS_NAMES);
+    S.boss = { day: dayStr(), ids: ids, title: nm[0], name: nm[1], won: false, tries: 0 };
+    S.bossNext = now + (Math.random() < 0.5 ? 3 : 4) * 24 * 3600e3;
+    V.save();
+    return S.boss;
+  }
+  function renderBossBanner() {
+    var box = $('#hBoss'), b = todaysBoss();
+    if (!b) { box.hidden = true; return; }
+    box.hidden = false;
+    box.className = 'boss-alert anim' + (b.won ? ' won' : '');
+    box.innerHTML = b.won
+      ? '<span class="ba-ico">🏆</span><span><b>' + esc(b.title + ' ' + b.name) + ' を倒した！</b><small>今日のボスは撃破ずみ。また数日後に…</small></span>'
+      : '<span class="ba-ico">⚠</span><span><b>緊急事態！ ' + esc(b.title) + '「' + esc(b.name) + '」が現れた</b><small>あなたの単語 ' + b.ids.length + '語でできた体を、90秒で砕け（約2分）</small></span><span class="ba-go">挑む ▶</span>';
+  }
+
+  /* ボスの姿（単語のパーツは HTML で周りに並べる） */
+  function bossSvg() {
+    return '<svg class="boss-svg" viewBox="0 0 200 200" aria-hidden="true">' +
+      '<defs><radialGradient id="bg1" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#7a4fd0"/><stop offset="1" stop-color="#2b1850"/></radialGradient></defs>' +
+      '<path d="M40 70 L28 30 L62 56 Z M160 70 L172 30 L138 56 Z" fill="#2b1850"/>' +
+      '<path d="M100 36 C150 36 176 70 176 112 C176 160 142 184 100 184 C58 184 24 160 24 112 C24 70 50 36 100 36Z" fill="url(#bg1)" stroke="#1a0f33" stroke-width="4"/>' +
+      '<ellipse cx="74" cy="100" rx="13" ry="16" fill="#ffd84d"/><ellipse cx="126" cy="100" rx="13" ry="16" fill="#ffd84d"/>' +
+      '<ellipse class="boss-pupil" cx="76" cy="103" rx="5" ry="8" fill="#1a0f33"/><ellipse class="boss-pupil" cx="128" cy="103" rx="5" ry="8" fill="#1a0f33"/>' +
+      '<path d="M70 142 q30 22 60 0 l-8 8 l-8 -6 l-7 7 l-7 -7 l-7 7 l-7 -7 l-8 6z" fill="#ff8fa3" stroke="#1a0f33" stroke-width="3" stroke-linejoin="round"/></svg>';
+  }
+  function startBoss() {
+    var b = todaysBoss(); if (!b || b.won) return;
+    if (window.Sfx) Sfx.unlock();
+    b.tries++; V.save();
+    var words = b.ids.map(function (id) { return V.word(id); }).filter(Boolean);
+    var queue = shuffle(words.slice()), broken = {}, okIds = [], combo = 0, left = BOSS_SEC * 1000, last = Date.now(), over = false, cur = null;
+    go('bossScreen');
+    var scr = $('#bossScreen');
+    scr.innerHTML = '<header class="bs-head"><button class="bs-quit" aria-label="やめる">✕</button><div class="bs-time"><i></i><b>90</b></div><span class="bs-hp"></span></header>' +
+      '<div class="bs-arena"><div class="bs-boss">' + bossSvg() + '</div>' +
+      words.map(function (w, i) { var a = i / words.length * 6.283 - 1.57; return '<span class="bs-part" data-id="' + w.id + '" style="left:' + (50 + Math.cos(a) * 42).toFixed(1) + '%;top:' + (50 + Math.sin(a) * 40).toFixed(1) + '%">' + esc(w.w) + '</span>'; }).join('') +
+      '</div><div class="bs-q"></div><div class="bs-saved"></div>';
+    function hp() { $('.bs-hp', scr).innerHTML = esc(b.name) + '<br>残り ' + (words.length - Object.keys(broken).length) + ' / ' + words.length; }
+    hp();
+    if (window.Snd) Snd.appear();
+    if (G) G.fromTo($('.bs-boss', scr), { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, ease: 'back.out(1.8)' });
+    FX.slam('BOSS BATTLE', b.title + '「' + b.name + '」を 90秒で砕け！');
+    var tick = setInterval(function () {
+      if (over) return;
+      var t = Date.now(); left -= t - last; last = t;
+      var sec = Math.max(0, Math.ceil(left / 1000));
+      $('.bs-time b', scr).textContent = sec;
+      $('.bs-time i', scr).style.width = Math.max(0, left / (BOSS_SEC * 10)) + '%';
+      $('.bs-time', scr).classList.toggle('low', sec <= 15);
+      if (left <= 0) end(false);
+    }, 100);
+    $('.bs-quit', scr).addEventListener('click', function () { end(false, true); });
+    function nextQ() {
+      if (over) return;
+      cur = queue.shift();
+      if (!cur) return end(true);
+      $$('.bs-part', scr).forEach(function (p) { p.classList.toggle('target', p.dataset.id === cur.id); });
+      var w = cur, types = ['es2ja', 'ja2es'];
+      if (Speech.ok()) types.push('listen');
+      if (w.def) types.push('def2w');
+      var t = pick(types), right, list, prompt;
+      if (t === 'ja2es') { prompt = '<div class="bs-p ja">' + esc(w.ja) + '</div><p class="q-ask">' + T.inLang + '</p>'; right = V.head(w); list = shuffle([right].concat(others(w, 3, 'head'))); }
+      else if (t === 'def2w') { prompt = '<div class="bs-p"><span class="q-def">' + glossify(w.def) + '</span></div><p class="q-ask">この説明の単語は？</p>'; right = V.head(w); list = shuffle([right].concat(others(w, 3, 'head'))); }
+      else if (t === 'listen') { prompt = '<div class="bs-p"><button class="big-say" data-say="' + esc(V.head(w)) + '">🔊</button></div><p class="q-ask">聞こえた単語の意味は？</p>'; right = w.ja; list = shuffle([right].concat(others(w, 3, 'ja'))); }
+      else { prompt = '<div class="bs-p">' + headHtml(w) + '</div><p class="q-ask">意味は？</p>'; right = w.ja; list = shuffle([right].concat(others(w, 3, 'ja'))); }
+      var q = $('.bs-q', scr);
+      q.innerHTML = prompt + choiceHtml(list.map(esc), t === 'ja2es' || t === 'def2w' ? 'es' : '');
+      if (t === 'listen' || t === 'es2ja') Speech.say(V.head(w));
+      var done = false;
+      $$('.ch', q).forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          if (done || over) return; done = true;
+          var ok = list[+btn.dataset.i] === right;
+          $$('.ch', q).forEach(function (x) { x.disabled = true; if (list[+x.dataset.i] === right) x.classList.add('right'); });
+          if (ok) hit(w); else { btn.classList.add('wrong'); miss(w); }
+          setTimeout(nextQ, ok ? 450 : 1100);
+        });
+      });
+    }
+    function hit(w) {
+      combo++;
+      broken[w.id] = 1; okIds.push(w.id);
+      V.answer(w.id, true);   /* ふだんの復習と同じに数える */
+      var part = $('.bs-part[data-id="' + w.id + '"]', scr);
+      part.classList.add('broken');
+      if (window.Snd) Snd.ok(combo);
+      FX.burst(part, 'tile', 18);
+      if (G) G.fromTo($('.bs-boss', scr), { x: -8 }, { x: 0, duration: 0.4, ease: 'elastic.out(1.2,0.3)' });
+      $('.bs-saved', scr).insertAdjacentHTML('beforeend', '<span class="bs-buddy">' + cs(w, { mood: 'happy' }) + '</span>');
+      if (combo % 3 === 0) { left += 3000; FX.float($('.bs-time', scr), 'CRITICAL! +3秒', 'ok'); }
+      else FX.float(part, T.praise[Math.min(T.praise.length - 1, combo - 1)], 'ok');
+      hp();
+    }
+    function miss(w) {
+      combo = 0; left -= 5000;
+      queue.push(w);   /* あとでもう一度。記憶は下げない */
+      if (window.Snd) Snd.ng();
+      FX.shake(scr);
+      FX.float($('.bs-time', scr), '反撃！ −5秒', 'exp');
+      if (G) G.fromTo($('.bs-boss', scr), { scale: 1.15 }, { scale: 1, duration: 0.5, ease: 'back.out(3)' });
+    }
+    function end(won, quit) {
+      if (over) return; over = true; clearInterval(tick);
+      if (won) {
+        b.won = true;
+        okIds.forEach(function (id) { V.bonus(id, 1.15); });   /* 勝ったおまけ：長持ち＋15% */
+        S.bossWins = (S.bossWins || []).concat([{ name: b.title + ' ' + b.name, day: b.day, words: okIds.length }]);
+      }
+      V.save();
+      var el = document.createElement('div');
+      el.id = 'bond'; el.className = 'bond ' + (won ? 'k-grad' : 'k-back');
+      el.innerHTML = '<div class="bond-glow"></div><div class="bs-end-boss">' + bossSvg() + '</div>' +
+        '<p class="bond-eye">' + (won ? '🏆 撃破！' : quit ? 'ボスは去っていった' : '⏱ 時間切れ…') + '</p>' +
+        '<div class="bond-ja">' + esc(b.title) + '「' + esc(b.name) + '」' + (won ? 'を倒した' : '「また来るぞ…」') + '</div>' +
+        '<p class="bond-line">' + (okIds.length ? '助け出した単語 <b>' + okIds.length + '語</b>' + (won ? '。長持ちに＋15%のおまけ' : '。助けた子は、ちゃんと長持ちになった') : '記憶はそのまま。何も失っていない') + '</p>' +
+        '<div class="bs-end-saved">' + okIds.map(function (id) { return '<span>' + cs(V.word(id), { mood: 'happy' }) + '<small>' + esc(V.word(id).w) + '</small></span>'; }).join('') + '</div>' +
+        (won ? '<p class="bond-mem">ボス図鑑 ' + S.bossWins.length + '体目</p>' : '<p class="bond-mem">今日のうちなら、何度でも挑める</p>') + '<p class="bond-go">タップでホームへ</p>';
+      document.body.appendChild(el);
+      if (window.Snd) (won ? Snd.levelUp(3) : Snd.finish());
+      if (won) { FX.rain(); if (G) G.to($('.bs-end-boss', el), { scale: 0, rotate: 200, opacity: 0, duration: 1.2, delay: 0.4, ease: 'back.in(1.5)' }); }
+      var canGo = false; setTimeout(function () { canGo = true; }, 1400);
+      el.addEventListener('click', function () { if (!canGo) return; el.remove(); go('home'); });
+    }
+    setTimeout(nextQ, 1200);
+  }
+
   /* =========================================================
    * 結果
    * ========================================================= */
@@ -1496,6 +1658,7 @@
     $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { go(b.dataset.go); }); });
     $('#dMore').addEventListener('click', function () { if (wildAll().length) start([{ type: 'wild', n: chunkSize() }], 'ひと区切り'); else start(makePlan(5), '5分'); });
     $('#hRange').addEventListener('click', openRange);
+    $('#hBoss').addEventListener('click', function () { var b = todaysBoss(); if (b && !b.won) startBoss(); });
     $('#hDeck').addEventListener('click', function () { openDecks(); });
     $('#deckFile').addEventListener('change', function (e) {
       var f = e.target.files && e.target.files[0]; if (!f) return;

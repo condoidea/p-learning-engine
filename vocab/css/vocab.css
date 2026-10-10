@@ -454,3 +454,47 @@ mark { background: var(--mark); color: inherit; padding: 0 3px; border-radius: 4
 .mem-line { margin: 0; text-align: center; font-size: 13px; color: var(--accent2); }
 .mem-line b { font-size: 15px; }
 .bond-heart { position: absolute; left: 50%; top: 0; margin-left: -14px; font-size: 28px; pointer-events: none; }
+
+/* =========================================================
+ * ⚠ 緊急事態ボス
+ *  ホームの警報の帯：音は出さない。ときどき小刻みに揺れる（動きを減らす設定なら揺れない）
+ * ========================================================= */
+.boss-alert { display: flex; align-items: center; gap: 10px; width: 100%; margin: 0 0 10px; padding: 10px 12px; border-radius: 16px; text-align: left; color: #fff;
+  background: repeating-linear-gradient(-45deg, #b3122b 0 14px, #c8233b 14px 28px); border: 2px solid #ffd84d; box-shadow: 0 0 0 0 rgba(255, 70, 90, .5);
+  animation: alarm-shake 4.5s ease-in-out infinite, alarm-glow 2.2s ease-in-out infinite; }
+.boss-alert[hidden] { display: none; }
+.boss-alert b { display: block; font-size: 14px; line-height: 1.4; }
+.boss-alert small { display: block; font-size: 11px; opacity: .9; }
+.boss-alert .ba-ico { flex: none; font-size: 26px; }
+.boss-alert .ba-go { flex: none; margin-left: auto; padding: 6px 10px; border-radius: 10px; background: #ffd84d; color: #3a0610; font-weight: 900; font-size: 13px; }
+.boss-alert.won { background: linear-gradient(120deg, #2d7d5a, #3b9a72); border-color: #ffd84d; animation: none; }
+@keyframes alarm-shake { 0%, 86%, 100% { transform: none; } 88% { transform: translateX(-4px) rotate(-1deg); } 90% { transform: translateX(4px) rotate(1deg); } 92% { transform: translateX(-3px); } 94% { transform: translateX(3px); } 96% { transform: translateX(-1px); } }
+@keyframes alarm-glow { 50% { box-shadow: 0 0 0 6px rgba(255, 70, 90, .18); } }
+@media (prefers-reduced-motion: reduce) { .boss-alert { animation: none; } }
+
+#bossScreen { display: flex; flex-direction: column; gap: 8px; }
+.bs-head { display: flex; align-items: center; gap: 10px; }
+.bs-quit { width: 38px; height: 38px; border-radius: 50%; background: var(--card); border: 1px solid var(--line); flex: none; }
+.bs-time { position: relative; flex: 1; height: 22px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.bs-time i { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; background: linear-gradient(90deg, #2d7d5a, #e0a83b); transition: width .1s linear; }
+.bs-time.low i { background: #c8233b; }
+.bs-time b { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.5); }
+.bs-hp { flex: none; font-size: 12px; font-weight: 900; color: #7a4fd0; text-align: right; line-height: 1.3; }
+.bs-arena { position: relative; height: 250px; border-radius: 22px; overflow: hidden; background: radial-gradient(ellipse at 50% 55%, #3a2266 0%, #160d2c 75%); }
+.bs-boss { position: absolute; left: 50%; top: 50%; width: 130px; margin: -70px 0 0 -65px; }
+.boss-svg { width: 100%; display: block; animation: bob 2s ease-in-out infinite; }
+.bs-part { position: absolute; transform: translate(-50%, -50%); padding: 3px 8px; border-radius: 10px; background: #e7dcff; color: #2b1850; font-family: var(--f-es); font-weight: 700; font-size: 12px; white-space: nowrap; box-shadow: 0 2px 0 #7a4fd0; transition: opacity .3s, transform .3s; }
+.bs-part.target { background: #ffd84d; box-shadow: 0 0 0 3px rgba(255, 216, 77, .5); transform: translate(-50%, -50%) scale(1.15); z-index: 2; }
+.bs-part.broken { opacity: 0; transform: translate(-50%, -50%) scale(.3) rotate(25deg); }
+.bs-name { position: absolute; left: 0; right: 0; bottom: 6px; margin: 0; text-align: center; color: #e7dcff; font-size: 12px; font-weight: 700; }
+.bs-q { display: flex; flex-direction: column; gap: 8px; }
+.bs-p { min-height: 64px; display: flex; align-items: center; justify-content: center; padding: 8px 12px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); font-family: var(--f-es); font-weight: 800; font-size: 26px; text-align: center; }
+.bs-p.ja { font-family: var(--f-ja); font-size: 22px; }
+.bs-p .q-def { font-size: 17px; font-weight: 400; }
+.bs-p .big-say { width: 64px; height: 64px; font-size: 28px; }
+.bs-saved { display: flex; flex-wrap: wrap; gap: 2px; min-height: 30px; }
+.bs-buddy { width: 30px; }
+.bs-end-boss { width: 120px; }
+.bs-end-saved { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-width: 340px; }
+.bs-end-saved span { width: 52px; text-align: center; }
+.bs-end-saved small { display: block; font-family: var(--f-es); font-size: 10px; line-height: 1.1; overflow-wrap: anywhere; }

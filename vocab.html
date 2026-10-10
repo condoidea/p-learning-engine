@@ -24,9 +24,9 @@
   document.write('<link rel="stylesheet" href="https://fonts.googleapis.com/css2?' + (F[skin] || F.espana) + '&display=swap">');
 })();
 </script>
-<link rel="stylesheet" href="vocab/css/vocab.css?v=31">
-<link rel="stylesheet" href="vocab/css/skin-espana.css?v=31">
-<link rel="stylesheet" href="vocab/css/skin-avenue.css?v=31">
+<link rel="stylesheet" href="vocab/css/vocab.css?v=34">
+<link rel="stylesheet" href="vocab/css/skin-espana.css?v=34">
+<link rel="stylesheet" href="vocab/css/skin-avenue.css?v=34">
 </head>
 <body>
 <canvas id="fx" aria-hidden="true"></canvas>
@@ -39,6 +39,7 @@
       <div class="brand"><b id="hBrand"></b><small id="hSub"></small></div>
       <button class="deck-btn" id="hDeck"></button>
     </header>
+    <button class="boss-alert anim" id="hBoss" hidden></button>
 
     <div class="stats anim">
       <button class="st dex-st" data-go="dex"><small>📖 図鑑</small><b id="hDex"></b><span class="bar stack" id="hDexBar"></span><small class="rel" id="hRel"></small></button>
@@ -70,6 +71,9 @@
       <label id="tgSpeakRow"><input type="checkbox" id="tgSpeak"> 🗣 発音を読み上げ</label>
     </div>
   </section>
+
+  <!-- ============ ボス戦 ============ -->
+  <section id="bossScreen" class="screen" hidden></section>
 
   <!-- ============ 学習中 ============ -->
   <section id="play" class="screen" hidden>
@@ -121,15 +125,15 @@
 <input type="file" id="deckFile" accept=".json,application/json,text/plain" hidden>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="vocab/js/decks.js?v=31" data-load="1"></script>
-<script src="vocab/decks/spanish/conj-units.js?v=31"></script>
-<script src="vocab/js/conj-es.js?v=31"></script>
-<script src="vocab/js/deck-check.js?v=31"></script>
-<script src="vocab/js/core.js?v=31"></script>
-<script src="vocab/js/chara.js?v=31"></script>
-<script src="engine/js/audio.js?v=31"></script>
-<script src="vocab/js/sound-es.js?v=31"></script>
-<script src="vocab/js/sound-us.js?v=31"></script>
-<script src="vocab/js/ui.js?v=31"></script>
+<script src="vocab/js/decks.js?v=34" data-load="1"></script>
+<script src="vocab/decks/spanish/conj-units.js?v=34"></script>
+<script src="vocab/js/conj-es.js?v=34"></script>
+<script src="vocab/js/deck-check.js?v=34"></script>
+<script src="vocab/js/core.js?v=34"></script>
+<script src="vocab/js/chara.js?v=34"></script>
+<script src="engine/js/audio.js?v=34"></script>
+<script src="vocab/js/sound-es.js?v=34"></script>
+<script src="vocab/js/sound-us.js?v=34"></script>
+<script src="vocab/js/ui.js?v=34"></script>
 </body>
 </html>
