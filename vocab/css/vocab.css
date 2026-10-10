@@ -429,3 +429,27 @@ mark { background: var(--mark); color: inherit; padding: 0 3px; border-radius: 4
 .xsec h3 i { margin-left: 8px; font-style: normal; font-size: 11px; font-weight: 500; color: var(--muted); }
 #xBody .xsec h3 { justify-content: flex-start; }
 #xBody .xsec h3 small { margin-left: auto; }
+
+/* =========================================================
+ * 💫 身に付いた瞬間（全画面の短い場面）
+ * ========================================================= */
+.bond { position: fixed; inset: 0; z-index: 85; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 24px 20px;
+  background: radial-gradient(ellipse at 50% 42%, var(--card) 0%, var(--bg) 70%); text-align: center; cursor: pointer; }
+.bond-glow { position: absolute; left: 50%; top: 34%; width: 360px; height: 360px; margin: -180px 0 0 -180px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 220, 120, .55) 0%, rgba(255, 220, 120, .18) 40%, transparent 70%); }
+.k-back .bond-glow { background: radial-gradient(circle, rgba(140, 210, 255, .5) 0%, rgba(140, 210, 255, .15) 40%, transparent 70%); }
+.k-grad .bond-glow { background: conic-gradient(from 0deg, rgba(255,111,181,.35), rgba(255,211,107,.35), rgba(125,255,178,.35), rgba(107,200,255,.35), rgba(180,140,255,.35), rgba(255,111,181,.35)); filter: blur(18px); animation: holo-spin 6s linear infinite; }
+@keyframes holo-spin { to { transform: rotate(360deg); } }
+.bond-stage { position: relative; display: flex; align-items: flex-end; justify-content: center; gap: 6px; height: 130px; margin-bottom: 4px; }
+.bond-me { width: 92px; }
+.bond-bud { width: 104px; }
+.bond-bud.joined .chara { animation: bob 1.6s ease-in-out infinite; }
+.bond-eye { position: relative; margin: 6px 0 0; font-size: 26px; font-weight: 900; color: var(--accent); letter-spacing: .04em; }
+.bond-word { position: relative; font-family: var(--f-es); font-weight: 800; font-size: clamp(32px, 11vw, 48px); line-height: 1.15; white-space: nowrap; }
+.bond-ja { position: relative; font-size: 22px; font-weight: 900; }
+.bond-line { position: relative; margin: 10px 0 0; font-size: 15px; color: var(--ink); line-height: 1.7; }
+.bond-mem { position: relative; margin: 6px 0 0; padding: 6px 14px; border-radius: 999px; background: var(--sel-bg); color: var(--accent2); font-size: 14px; font-weight: 700; }
+.bond-go { position: relative; margin: 18px 0 0; font-size: 13px; color: var(--muted); animation: bob 1.6s ease-in-out infinite; }
+.mem-line { margin: 0; text-align: center; font-size: 13px; color: var(--accent2); }
+.mem-line b { font-size: 15px; }
+.bond-heart { position: absolute; left: 50%; top: 0; margin-left: -14px; font-size: 28px; pointer-events: none; }
