@@ -388,6 +388,10 @@ mark { background: var(--mark); color: inherit; padding: 0 3px; border-radius: 4
 .gl-tip::after { content: ''; position: absolute; left: 50%; bottom: -6px; margin-left: -6px; border: 6px solid transparent; border-bottom: 0; border-top-color: var(--ink); }
 .gl-tip.below::after { bottom: auto; top: -6px; border-top: 0; border-bottom: 6px solid var(--ink); }
 
+.memo .muted { color: var(--muted); font-size: 12px; }
+.homo { display: block; margin-top: 2px; font-size: 11px; font-weight: 700; color: var(--muted); }
+.bs-p .homo { margin-left: 8px; display: inline-block; }
+
 /* ---- 使い方の型 ---- */
 .use { display: block; margin-top: 2px; font-family: var(--f-es); font-size: 15px; font-weight: 600; color: var(--accent2); }
 .meaning .use { font-size: 14px; }
