@@ -376,7 +376,7 @@
   /* ---- 選択肢 ---- */
   function others(w, n, key) {
     var val = function (x) { return key === 'head' ? V.head(x) : key === 'form' ? formOf(x) : key === 'def' ? x.def : x.ja; };
-    var fit = function (x) { return x !== w && (key === 'ja' || x.ja !== w.ja) && (key !== 'def' || x.def); };
+    var fit = function (x) { return x !== w && !sameSpell(x, w) && (key === 'ja' || x.ja !== w.ja) && (key !== 'def' || x.def); };
     var mine = val(w), seen = {}; seen[mine] = 1;
     var same = shuffle(D.words.filter(function (x) { return fit(x) && x.pos === w.pos; }));
     var rest = shuffle(D.words.filter(function (x) { return fit(x) && x.pos !== w.pos; }));
@@ -401,10 +401,10 @@
       prompt = '<div class="q-card' + gcls(w) + rankCls(w.id) + '">' + tag + '<div class="q-word">' + headHtml(w) + '</div>' + useHtml(w) + sayBtn(V.head(w)) + '</div><p class="q-ask">📖 英英辞典の説明は？</p>';
       right = w.def; list = shuffle([right].concat(others(w, 3, 'def'))).map(esc);
     } else if (type === 'es2ja') {
-      prompt = '<div class="q-card' + gcls(w) + rankCls(w.id) + '">' + tag + '<div class="q-word">' + headHtml(w) + '</div>' + sayBtn(V.head(w)) + '</div><p class="q-ask">意味は？</p>';
+      prompt = '<div class="q-card' + gcls(w) + rankCls(w.id) + '">' + tag + '<div class="q-word">' + headHtml(w) + '</div>' + useHtml(w) + sayBtn(V.head(w)) + '</div><p class="q-ask">意味は？</p>';
       right = w.ja; list = shuffle([right].concat(others(w, 3, 'ja'))).map(esc);
     } else if (type === 'listen') {
-      prompt = '<div class="q-card listen' + rankCls(w.id) + '">' + tag + '<button class="big-say" data-say="' + esc(V.head(w)) + '">🔊</button><button class="say slow" data-say="' + esc(V.head(w)) + '">🐢</button></div><p class="q-ask">聞こえた単語の意味は？</p>';
+      prompt = '<div class="q-card listen' + rankCls(w.id) + '">' + tag + '<button class="big-say" data-say="' + esc(V.head(w)) + '">🔊</button><button class="say slow" data-say="' + esc(V.head(w)) + '">🐢</button>' + homoHtml(w) + '</div><p class="q-ask">聞こえた単語の意味は？</p>';
       right = w.ja; list = shuffle([right].concat(others(w, 3, 'ja'))).map(esc);
     } else if (type === 'ja2es') {
       prompt = '<div class="q-card ja' + rankCls(w.id) + '">' + tag + '<div class="q-ja">' + esc(w.ja) + '</div><small class="pos">' + POS[w.pos] + '</small></div><p class="q-ask">' + T.inLang + '</p>';
@@ -503,10 +503,14 @@
     $('.next', box).addEventListener('click', nx);
     if (auto) setTimeout(nx, auto);
   }
+  /* 同じつづりで意味が別の語（planta＝植物／工場）。はずれの選択肢に入れず、カードに「意味がいくつかある語」と出す */
+  var SPELL = {}; D.words.forEach(function (w) { var k = String(w.w).toLowerCase(); SPELL[k] = (SPELL[k] || 0) + 1; });
+  function sameSpell(a, b) { return String(a.w).toLowerCase() === String(b.w).toLowerCase(); }
+  function homoHtml(w) { return SPELL[String(w.w).toLowerCase()] > 1 ? '<small class="homo">📌 意味がいくつかある語（そのうちの1つ）</small>' : ''; }
   /* 使い方の型（例 contento de ＋ 動詞の原形） */
   /* 女性形（ingeniero → la ingeniera）も同じ場所に */
   function useHtml(w) {
-    return (w.fem ? '<small class="use">女性：la ' + esc(w.fem) + '</small>' : '') + (w.use ? '<small class="use">' + esc(w.use) + '</small>' : '');
+    return homoHtml(w) + (w.fem ? '<small class="use">女性：la ' + esc(w.fem) + '</small>' : '') + (w.use ? '<small class="use">' + esc(w.use) + '</small>' : '');
   }
   function refHtml(w) {
     if (!D.book) return '';
@@ -1468,7 +1472,7 @@
       if (t === 'ja2es') { prompt = '<div class="bs-p ja">' + esc(w.ja) + '</div><p class="q-ask">' + T.inLang + '</p>'; right = V.head(w); list = shuffle([right].concat(others(w, 3, 'head'))); }
       else if (t === 'def2w') { prompt = '<div class="bs-p"><span class="q-def">' + glossify(w.def) + '</span></div><p class="q-ask">この説明の単語は？</p>'; right = V.head(w); list = shuffle([right].concat(others(w, 3, 'head'))); }
       else if (t === 'listen') { prompt = '<div class="bs-p"><button class="big-say" data-say="' + esc(V.head(w)) + '">🔊</button></div><p class="q-ask">聞こえた単語の意味は？</p>'; right = w.ja; list = shuffle([right].concat(others(w, 3, 'ja'))); }
-      else { prompt = '<div class="bs-p">' + headHtml(w) + '</div><p class="q-ask">意味は？</p>'; right = w.ja; list = shuffle([right].concat(others(w, 3, 'ja'))); }
+      else { prompt = '<div class="bs-p">' + headHtml(w) + homoHtml(w) + '</div><p class="q-ask">意味は？</p>'; right = w.ja; list = shuffle([right].concat(others(w, 3, 'ja'))); }
       var q = $('.bs-q', scr);
       q.innerHTML = prompt + choiceHtml(list.map(esc), t === 'ja2es' || t === 'def2w' ? 'es' : '');
       if (t === 'listen' || t === 'es2ja') Speech.say(V.head(w));
