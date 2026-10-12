@@ -506,6 +506,14 @@
   /* 同じつづりで意味が別の語（planta＝植物／工場）。はずれの選択肢に入れず、カードに「意味がいくつかある語」と出す */
   var SPELL = {}; D.words.forEach(function (w) { var k = String(w.w).toLowerCase(); SPELL[k] = (SPELL[k] || 0) + 1; });
   function sameSpell(a, b) { return String(a.w).toLowerCase() === String(b.w).toLowerCase(); }
+  /* 説明欄：同じつづりのほかの意味（答えたあと・図鑑で。問題に答える前には出さない） */
+  function otherSensesHtml(w) {
+    var os = D.words.filter(function (x) { return x !== w && sameSpell(x, w); });
+    if (!os.length) return '';
+    return '<p class="memo">📌 ほかの意味：' + os.map(function (x) {
+      return '<b>' + esc(x.ja) + '</b>' + (x.ref ? '（' + esc(x.ref) + '）' : '') + (V.card(x.id) ? '' : '<small class="muted">（まだ出会っていない）</small>');
+    }).join('、') + '</p>';
+  }
   function homoHtml(w) { return SPELL[String(w.w).toLowerCase()] > 1 ? '<small class="homo">📌 意味がいくつかある語（そのうちの1つ）</small>' : ''; }
   /* 使い方の型（例 contento de ＋ 動詞の原形） */
   /* 女性形（ingeniero → la ingeniera）も同じ場所に */
@@ -520,7 +528,7 @@
   function memoHtml(w) {
     return '<div class="exp-box"><div class="ex">' + exHtml(w.ex[0]) + ' ' + sayBtn(w.ex[0]) + '</div><small>' + esc(w.ex[1]) + '</small>' +
       (w.def ? '<p class="memo">📖 <span class="q-def">' + glossify(w.def) + '</span> ' + sayBtn(w.def, 'inl') + (w.defJa ? '<span class="def-ja">訳：' + esc(w.defJa) + '</span>' : '') + '</p>' : '') +
-      (w.memo ? '<p class="memo">💡 ' + esc(w.memo) + '</p>' : '') + verbHtml(w) + (CU ? famHtml(w) : '') + '</div>';
+      (w.memo ? '<p class="memo">💡 ' + esc(w.memo) + '</p>' : '') + otherSensesHtml(w) + verbHtml(w) + (CU ? famHtml(w) : '') + '</div>';
   }
   /* 動詞：活用のくせと、大事な3つの形（現在 yo・点過去 yo・過去分詞） */
   function verbHtml(w) {
