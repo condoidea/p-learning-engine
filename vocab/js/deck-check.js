@@ -60,8 +60,10 @@
       if (w.fem != null) { if (typeof w.fem !== 'string' || !w.fem || /\s|-/.test(w.fem)) err(at, 'fem は女性形のつづり（例 "ingeniera"）'); else if (w.pos !== 'n') warn(at, 'fem は名詞だけ（形容詞の女性形は書かなくてよい）'); }
       if (w.art && ['el', 'la', 'los', 'las'].indexOf(w.art) < 0) err(at, 'art は el/la/los/las');
       if (typeof w.ja !== 'string' || !w.ja) err(at, 'ja（意味）が必須');
-      if (w.w && spell[w.w]) warn(at, '同じつづりが ' + spell[w.w] + ' にもある。同じ意味なら1つにまとめ、ref に両方のページを書く。意味が別なら、id を分けたままでよい（例 planta_1＝植物／planta_2＝工場。アプリが取り違えないように扱う）');
-      else if (w.w) spell[w.w] = at;
+      /* 同じつづり。id に _1・_2 をつけて意味（ja）も別なら、わざと分けた語なので注意しない */
+      var sp = w.w && spell[w.w];
+      if (sp && !(sp.ja !== w.ja && (/_\d+$/.test(sp.id) || /_\d+$/.test(w.id || '')))) warn(at, '同じつづりが ' + sp.at + ' にもある。同じ意味なら1つにまとめ、ref に両方のページを書く。意味が別なら、id を planta_1＝植物／planta_2＝工場 のように分ける（アプリが取り違えないように扱う）');
+      else if (w.w && !sp) spell[w.w] = { at: at, id: w.id, ja: w.ja };
       /* 例文 */
       if (!Array.isArray(w.ex) || w.ex.length !== 2 || typeof w.ex[0] !== 'string' || typeof w.ex[1] !== 'string') err(at, 'ex は ["スペイン語の例文", "日本語訳"]');
       else {
