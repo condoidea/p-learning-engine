@@ -343,7 +343,7 @@
   /* =========================================================
    * レッスンプレイヤー
    * ========================================================= */
-  var INTERACTIVE = { quiz: 1, bits: 1, gate: 1, order: 1, match: 1, num: 1, stack: 1, timeline: 1, decide: 1, advise: 1, route: 1, fill: 1, widget: 1, build: 1 };
+  var INTERACTIVE = { quiz: 1, bits: 1, gate: 1, order: 1, match: 1, num: 1, stack: 1, timeline: 1, decide: 1, advise: 1, route: 1, fill: 1, widget: 1, build: 1, drill: 1 };
   /* 背景が地図のコースでは、レッスンの舞台（L.place / ユニットの舞台）へ地図を動かす */
   function stage(L) {
     if (!L || !window.FX3D || !FX3D.focus) return;
@@ -438,7 +438,7 @@
     progress();
     setReady(false);
     var html = '<div class="ls-step t-' + s.t + '">';
-    var bubble = s.t === 'show' ? (s.frames[0].say || '') : s.t === 'say' ? s.text : s.t === 'term' ? 'あたらしい用語だよ！' : s.t === 'recap' ? (window.COURSE && COURSE.recapTap ? 'まとめ！ 思い出せるかな？' : 'ここまでのまとめ！') : s.text || s.q;
+    var bubble = s.t === 'show' ? (s.frames[0].say || '') : s.t === 'say' ? s.text : s.t === 'term' ? 'あたらしい用語だよ！' : s.t === 'recap' ? (window.COURSE && COURSE.recapTap ? 'まとめ！ 思い出せるかな？' : 'ここまでのまとめ！') : s.t === 'tip' ? (s.text || 'この手順で解けば迷わない。__解き方の型__！') : s.t === 'drill' ? (s.text || '今の型で、数字を変えて解いてみよう。まちがえても解き方が出るよ。') : s.text || s.q;
     if (s.t !== 'quiz') html += '<div class="ls-talk">' + pico(s.t === 'recap' ? 'happy' : '') + '<div class="bubble' + (/^[*\s]*[0-9０-９]/.test(bubble || '') ? ' num-start' : '') + (dropCapOk(bubble) ? ' dropcap' : '') + '">' + fmtG(bubble) + '</div></div>';
     html += '<div class="ls-body"></div></div>';
     st.innerHTML = html;
@@ -1198,6 +1198,69 @@
     }
     more.addEventListener('click', show);
     show();
+  };
+  /* =========================================================
+   * 解き方の型（Tips）：試験でよく出る計算の「手順」を1枚のカードに
+   *  {t:'tip', title, steps:['手順1', …], ex:['例：…', …], more}
+   *  ex は「例題を手順どおりに」。カードの how にも同じ型を書いておくと、復習で思い出せる
+   * ========================================================= */
+  STEP.tip = function (s, body) {
+    body.innerHTML = '<div class="tip-card"><span class="tip-tag">🗝 解き方の型</span><h3>' + fmt(s.title) + '</h3><ol class="tip-steps">' +
+      s.steps.map(function (x) { return '<li>' + fmtG(x) + '</li>'; }).join('') + '</ol>' +
+      (s.ex ? '<div class="tip-ex"><b>例</b>' + s.ex.map(function (x) { return '<p>' + fmt(x) + '</p>'; }).join('') + '</div>' : '') + '</div>';
+    gsap.from($$('.tip-steps li', body), { opacity: 0, x: -14, stagger: 0.12, duration: 0.35, delay: 0.2, ease: 'power3.out' });
+    moreInto(body, s.more);
+    setReady(true);
+  };
+  /* =========================================================
+   * 計算ドリル：数字が毎回ちがう問題を n 問（engine/js/drill.js が作る）
+   *  {t:'drill', kind:'hexfrac', n:3, text}
+   *  まちがえたら「解き方」を1手ずつ見せて、同じ型の別の問題へ。n 問正解でクリア
+   * ========================================================= */
+  STEP.drill = function (s, body) {
+    var gen = window.LEDrill && LEDrill[s.kind];
+    if (!gen) { body.innerHTML = '<p>（ドリル ' + esc(s.kind) + ' がありません）</p>'; setReady(true); return; }
+    var need = s.n || 3, got = 0, tries = 0, miss = 0;
+    body.innerHTML = '<div class="dr"><div class="dr-head"><span class="dr-tag">🎲 ランダム演習</span><span class="dr-prog"></span></div><div class="dr-box"></div></div>';
+    var box = $('.dr-box', body), prog = $('.dr-prog', body);
+    function dots() { var h = ''; for (var i = 0; i < need; i++) h += i < got ? '●' : '○'; prog.textContent = h + '　' + got + ' / ' + need + ' 問正解'; }
+    function next() {
+      var p = gen(); tries++;
+      var order = p.o.map(function (_, i) { return i; }); Core.shuffle(order);
+      box.innerHTML = '<p class="dr-q">' + fmt(p.q) + '</p><div class="dr-o">' + order.map(function (i) {
+        return '<button class="dr-b' + (p.mono ? ' mono' : '') + '"' + (i === 0 ? ' data-ok="1"' : '') + '>' + fmt(p.o[i]) + '</button>'; }).join('') + '</div><div class="dr-sol"></div>';
+      gsap.from(box, { opacity: 0, y: 10, duration: 0.3, ease: 'power2.out' });
+      var done = false;
+      $$('.dr-b', box).forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (done) return; done = true;
+          $$('.dr-b', box).forEach(function (x) { x.disabled = true; if (x.dataset.ok) x.classList.add('ok'); });
+          var sol = $('.dr-sol', box);
+          if (b.dataset.ok) {
+            got++; dots();
+            var c = centerOf(b); FX.burst(c[0], c[1], { n: 18, speed: 6 }); Sfx.correct(got);
+            gsap.fromTo(b, { scale: 1.1 }, { scale: 1, duration: 0.4, ease: 'back.out(3)' });
+            sol.innerHTML = '<details class="dr-how"><summary>解き方を見る</summary><ol>' + p.steps.map(function (x) { return '<li>' + fmt(x) + '</li>'; }).join('') + '</ol></details>';
+          } else {
+            miss++; b.classList.add('bad'); Sfx.wrong(); FX.shake(4);
+            sol.innerHTML = '<div class="dr-how open"><b>解き方</b><ol>' + p.steps.map(function (x) { return '<li>' + fmt(x) + '</li>'; }).join('') + '</ol></div>';
+            gsap.from($$('.dr-how li', sol), { opacity: 0, y: 8, stagger: 0.15, duration: 0.3 });
+          }
+          if (got >= need) {
+            if (P.first[P.i] === undefined) P.first[P.i] = miss === 0;
+            solved(box, miss === 0, miss ? 'まちがえた問題も、解き方を見て次で取り返せた！' : '全問正解！ この型はもう大丈夫。', 'ドリル クリア！');
+            sol.insertAdjacentHTML('beforeend', '<button class="btn-ghost dr-again">🎲 もう少し練習する</button>');
+            $('.dr-again', sol).addEventListener('click', function () { next(); });
+          } else {
+            sol.insertAdjacentHTML('beforeend', '<button class="btn-primary dr-next">次の問題 ▶</button>');
+            $('.dr-next', sol).addEventListener('click', next);
+          }
+        });
+      });
+    }
+    dots(); next();
+    /* 自動テスト用：正解をn回押す */
+    window.__LE_DRILL = { solve: function () { var k = 0; while (got < need && k++ < 50) { var ok = $('.dr-b[data-ok]', box); if (ok && !ok.disabled) ok.click(); var nx = $('.dr-next', box); if (nx) nx.click(); } } };
   };
   STEP.trace = function (s, body) {
     var lines = s.code.split('\n'), k = -1;

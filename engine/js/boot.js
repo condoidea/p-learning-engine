@@ -32,7 +32,7 @@
     'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js',
     'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js'
   ];
-  var ENGINE_JS = ['core', 'audio', 'fx3d', 'fxmap', 'fxgeo', 'fx2d', 'lesson', 'ui'];
+  var ENGINE_JS = ['core', 'audio', 'fx3d', 'fxmap', 'fxgeo', 'fx2d', 'drill', 'lesson', 'ui'];
   /* 古地図の背景（scene.preset 'map'）では three.js を読み込まない */
   var MAP_SCENE = C.scene && C.scene.preset === 'map';
   if (MAP_SCENE || (C.scene && C.scene.preset === 'geo')) LIBS = LIBS.slice(0, 1);

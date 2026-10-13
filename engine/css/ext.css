@@ -328,3 +328,33 @@ html { overflow-x: hidden; }
 .btn-mega.boss-call .mega-sub { color: #ffe0e6; font-weight: 600; }
 @keyframes bossPulse { 0%, 100% { box-shadow: 0 8px 30px -8px rgba(255, 63, 107, .8), inset 0 0 0 1px rgba(255, 255, 255, .25); } 50% { box-shadow: 0 8px 40px -4px rgba(255, 63, 107, 1), inset 0 0 0 1px rgba(255, 255, 255, .4); } }
 @media (prefers-reduced-motion: reduce) { .btn-mega.boss-call, .btn-mega.boss-call::after, .btn-mega.boss-call #bossIco { animation: none; } }
+/* 解き方の型（tip） */
+.tip-card { position: relative; padding: 16px 16px 14px; border-radius: 16px; background: rgba(8,10,26,.85); border: 2px solid color-mix(in srgb, var(--gold) 55%, transparent); box-shadow: 0 0 24px -10px var(--gold); }
+.tip-tag { display: inline-block; margin-bottom: 6px; padding: 2px 10px; border-radius: 99px; background: var(--gold); color: #1a1205; font-size: 12px; font-weight: 900; letter-spacing: .05em; }
+.tip-card h3 { margin: 4px 0 10px; font-size: 17px; line-height: 1.5; }
+.tip-steps { margin: 0; padding-left: 1.4em; display: grid; gap: 6px; font-size: 15px; line-height: 1.75; }
+.tip-steps li::marker { color: var(--gold); font-weight: 900; }
+.tip-ex { margin-top: 12px; padding: 10px 12px; border-radius: 10px; background: rgba(255,255,255,.05); border-left: 4px solid var(--accent); font-family: var(--f-mono); font-size: 14px; line-height: 1.8; }
+.tip-ex b { display: block; font-family: inherit; color: var(--accent); font-size: 12px; }
+.tip-ex p { margin: 0; overflow-wrap: anywhere; }
+/* 計算ドリル（drill） */
+.dr { display: grid; gap: 10px; }
+.dr-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.dr-tag { padding: 2px 10px; border-radius: 99px; background: var(--accent); color: #05060f; font-size: 12px; font-weight: 900; }
+.dr-prog { font-size: 13px; color: var(--muted); letter-spacing: .05em; }
+.dr-box { padding: 14px; border-radius: 14px; background: rgba(8,10,26,.85); border: 1px solid var(--line); }
+.dr-q { margin: 0 0 12px; font-size: 16px; line-height: 1.8; }
+.dr-o { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.dr-b { padding: 12px 8px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.05); color: var(--text); font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; overflow-wrap: anywhere; }
+.dr-b.mono { font-family: var(--f-mono); font-size: 14px; }
+.dr-b.ok { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 22%, transparent); }
+.dr-b.bad { border-color: var(--ng); background: color-mix(in srgb, var(--ng) 22%, transparent); }
+.dr-b:disabled { cursor: default; }
+.dr-sol:empty { display: none; }
+.dr-sol { margin-top: 12px; display: grid; gap: 10px; }
+.dr-how { padding: 10px 12px; border-radius: 10px; background: rgba(255,255,255,.05); border-left: 4px solid var(--gold); font-size: 14.5px; line-height: 1.8; }
+.dr-how summary { cursor: pointer; color: var(--gold); font-weight: 700; }
+.dr-how ol { margin: 6px 0 0; padding-left: 1.3em; }
+.dr-how b { color: var(--gold); }
+.dr-how.open > b { color: var(--gold); }
+@media (max-width: 420px) { .dr-o { grid-template-columns: 1fr; } }

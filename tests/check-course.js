@@ -34,6 +34,7 @@ for (const f of sandbox.COURSE.files) {
   if (ONLY && m && !ONLY.includes(m[1])) continue;
   run(courseDir + f);
 }
+run('engine/js/drill.js');   // 計算ドリルの問題づくり（kind の確認に使う）
 run('engine/js/core.js');
 const LE = sandbox.LE;
 const Core = sandbox.Core;
@@ -41,7 +42,7 @@ Core.load();
 
 const errors = [];
 const err = (m) => errors.push(m);
-const STEP_TYPES = ['say', 'term', 'quiz', 'bits', 'gate', 'order', 'match', 'num', 'steps', 'trace', 'stack', 'timeline', 'decide', 'advise', 'route', 'fill', 'like', 'widget', 'build', 'show', 'recap'];
+const STEP_TYPES = ['say', 'term', 'quiz', 'bits', 'gate', 'order', 'match', 'num', 'steps', 'trace', 'stack', 'timeline', 'decide', 'advise', 'route', 'fill', 'like', 'widget', 'build', 'show', 'recap', 'tip', 'drill'];
 
 /* ---- 問題 ---- */
 const ids = new Set();
@@ -79,6 +80,16 @@ for (const [lid, L] of Object.entries(LE.lessonDefs)) {
     if (s.t === 'show' && (!s.frames || !s.frames.length)) err('show にコマ（frames）がない: ' + at);
     [s].concat(s.frames || []).forEach(f => { if (f.ask && (!f.ask.o || f.ask.o.length < 2 || !f.ask.q)) err('ask は q と2つ以上の o が必要: ' + at); });
     if (s.t === 'widget' && !(LE.widgets && LE.widgets[s.w])) err('widget が見つからない: ' + s.w + ' @' + at);
+    if (s.t === 'tip' && (!s.title || !s.steps || !s.steps.length)) err('tip に title と steps が必要: ' + at);
+    if (s.t === 'drill') {
+      const g = sandbox.LEDrill && sandbox.LEDrill[s.kind];
+      if (!g) err('drill の kind が見つからない: ' + s.kind + ' @' + at);
+      else for (let k = 0; k < 200; k++) {   // 数字は毎回ちがうので、何度も作って確かめる
+        const p = g();
+        if (!p.q || !p.steps || !p.steps.length) { err('drill の問題に q / steps がない: ' + s.kind); break; }
+        if (!Array.isArray(p.o) || p.o.length < 3 || new Set(p.o).size !== p.o.length) { err('drill の選択肢が足りない・重複: ' + s.kind + ' ' + JSON.stringify(p.o)); break; }
+      }
+    }
     if (s.t === 'build' && (!s.ans || !s.ans.length)) err('build に答え（ans）がない: ' + at);
     if (s.t === 'decide' && (!s.o || s.o.filter(o => o.hist).length !== 1)) err('decide は史実の選択肢（hist）がちょうど1つ必要: ' + at);
     if (s.t === 'advise' && (!s.o || s.o.filter(o => o.ok).length < (s.need || 1))) err('advise の正しい根拠が need より少ない: ' + at);

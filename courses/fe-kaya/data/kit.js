@@ -31,7 +31,7 @@
   var used = {}, pins = {}, kOrder = [];
   function srcL(id) { var L = SRC[id]; if (!L) throw new Error('K: 元レッスンがない ' + id); return L; }
   function textOf(s) {
-    var t = [s.text, s.q, s.word, s.short, s.ex, s.reveal, s.ok, s.goal];
+    var t = [s.text, s.q, s.word, s.short, s.ex, s.reveal, s.ok, s.goal, s.title, s.kind && ('drill:' + s.kind)];   // tip は title、drill は「drill:種類」でも指せる
     (s.frames || []).forEach(function (f) { t.push(f.say, f.reveal); });
     (s.steps || []).forEach(function (x) { t.push(x); });
     (s.pairs || []).forEach(function (p) { t.push(p.join(' ')); });
