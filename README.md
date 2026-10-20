@@ -25,6 +25,8 @@ habsburg.html           ハプスブルク年代記コースの入口
 trig.html               三角比・平面図形コースの入口
 vocab.html              単語アプリ（スペイン語）の入口。中身は vocab/（設計は docs/単語アプリ設計.md）
 mole.html               モル教室（化学基礎・物質量）。エンジンを使わない独立アプリ。中身は mole/（先生とのトーク形式）
+relativo.html           ¡QUE FUSIÓN!（スペイン語の関係詞・西検4級）。独立アプリ。中身は relativo/（文の合体・ボス戦・ラッシュ・ガチャ）
+shared/es-words.js      スペイン語の共通単語帳（アプリ横断）。一覧は docs/スペイン語単語メモ.md
 engine/
   js/boot.js            起動処理（スタイル・画面・スクリプトを順に読み込む）
   js/fxmap.js, fxgeo.js 背景（古地図／方眼ノートと単位円）。scene.preset で切りかえ
@@ -57,6 +59,7 @@ docs/                   設計・コースの作り方
 ```bash
 node tests/check-course.js fe
 node tests/check-mole.js        # モル教室の台本・計算ドリルのチェック（通しテストは mole.html?e2e）
+node tests/check-relativo.js    # 関係詞アプリの教材チェック（--memo で docs/スペイン語単語メモ.md を作り直す）
 ```
 - ブラウザで `fe.html?e2e` を開く（全レッスン・全ボス・全モードを自動で解く。約10分）
 - `fe.html?e2e&fast` なら最初の2ユニットだけ（約2〜3分）
