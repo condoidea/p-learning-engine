@@ -28,12 +28,12 @@ window.LE_COURSES = [
     desc: '三角比・平面図形の公式を、図を動かして覚える。sin・cos・tan から正弦定理・余弦定理・メネラウスまで。',
     color: '#ff5fa2', color2: '#38d9ff', lessons: 15
   },
-  /* モル教室（mole/）：エンジンを使わない独立アプリ。進み具合は lessons[id].done を数える（基本7＋追加2） */
+  /* モル教室（mole/）：エンジンを使わない独立アプリ。進み具合は lessons[id].done を数える（基本8＋追加2） */
   {
     id: 'mole', entry: 'mole.html', storageKey: 'mole.v1',
     title: '化学基礎 物質量（モル）', brand: 'MOLMO LAB', icon: '🧪',
     desc: 'モルモットのモルモ先生とトークしながら、mol の基本を。正解するたびに粒がふえて、1 mol（6.0×10²³個）を目指す。クリアごとに結晶が育つ。',
-    color: '#5fd3b0', color2: '#9b5cff', lessons: 9
+    color: '#5fd3b0', color2: '#9b5cff', lessons: 10
   },
   /* 単語アプリ（vocab/）：kind: 'vocab'。words＝デッキの語数（図鑑の進み具合の表示に使う） */
   {

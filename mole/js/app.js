@@ -124,7 +124,7 @@
     }
     var html = '<div class="shelf-row">' + BASIC.map(slot).join('') + '</div>';
     if (basicAll()) html += '<h3 class="shelf-sub">🔓 追加レッスン：溶液の濃度</h3><div class="shelf-row">' + EXTRA.map(slot).join('') + '</div>';
-    else html += '<p class="shelf-hint">🔒 7つの結晶をそろえると、追加レッスンが開くよ</p>';
+    else html += '<p class="shelf-hint">🔒 基本の ' + BASIC.length + ' つの結晶をそろえると、追加レッスンが開くよ</p>';
     $('#hShelf').innerHTML = html;
     $('#tgSound').checked = S.settings.sound !== false;
     if (M.G && !M.E2E) {
@@ -242,7 +242,7 @@
     $('.dn-n').innerHTML = M.countHTML(S.L) + ' 個';
     var p = M.wait(1600);
     miles.forEach(function (m) { p = p.then(function () { M.snd.exp(); FX.rain(90); return FX.slam('<small>あつめた粒が</small><b class="mile">' + esc(m.t) + '</b><small>を こえた！</small>', 'mile'); }); });
-    if (unlockedExtra) p = p.then(function () { M.snd.exp(); FX.rain(120); return FX.slam('<small>7つの結晶がそろった！</small><b class="mile">追加レッスン 解放</b><small>溶液の濃度</small>', 'mile'); });
+    if (unlockedExtra) p = p.then(function () { M.snd.exp(); FX.rain(120); return FX.slam('<small>' + BASIC.length + ' つの結晶がそろった！</small><b class="mile">追加レッスン 解放</b><small>溶液の濃度</small>', 'mile'); });
     if (M.E2E) p.then(function () { M.e2eNext && M.e2eNext(); });
   }
   $('#done').addEventListener('click', function (e) {

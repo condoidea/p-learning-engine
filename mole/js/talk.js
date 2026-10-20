@@ -12,7 +12,7 @@
   var ABORT = { abort: true };
 
   /* 粒のふえ方（10 の何乗ぶん、ふえるか） */
-  var GAIN = { base: 0.105, combo: 0.014, speed: 0.07, clear: 0.4 };
+  var GAIN = { base: 0.096, combo: 0.013, speed: 0.064, clear: 0.36 };
   M.GAIN = GAIN;
 
   var log, tray, run = null;
@@ -57,15 +57,17 @@
     var r = run;
     setFace(face || 'normal');
     var d = row('t', '<div class="bub ' + (cls || '') + '"><i class="dots"><b></b><b></b><b></b></i></div>', 't');
-    var plain = String(text).replace(/[*_{}()|^]/g, '');
-    return wait(Math.min(1250, 280 + plain.length * 16)).then(function () {
+    var plain = String(text).replace(/[*_{}()|^\s]/g, '');
+    return wait(Math.min(700, 250 + plain.length * 6)).then(function () {
       alive(r);
       var b = d.querySelector('.bub');
       b.innerHTML = fmt(text); gl(b);
       M.snd.pop();
       M.$$('mark.k', b).forEach(function (mk, i) { if (M.G && !E2E) M.G.fromTo(mk, { backgroundSize: '0% 100%' }, { backgroundSize: '100% 100%', duration: 0.5, delay: 0.15 + i * 0.15, ease: 'power2.out' }); });
       scrollDown();
-      return wait(Math.min(900, 200 + plain.length * 9));
+      /* 読む時間：文字数に合わせて待つ（1文字 約0.09秒、1〜5.5秒）。待っている間はタップで先へ進める */
+      if (!tray.innerHTML) setTray('<p class="wait">👆 読んだら、画面をタップで先へ</p>');
+      return wait(Math.max(1000, Math.min(5500, plain.length * 90)));
     });
   }
   function me(html) { row('me', '<div class="bub">' + html + '</div>', 'me'); M.snd.type(); }
@@ -470,8 +472,8 @@
   };
   /* 吹き出しの待ちを、タップで早送り */
   document.addEventListener('click', function (e) {
-    if (!run || !e.target.closest || !e.target.closest('#log')) return;
-    if (e.target.closest('button,[data-gl],input')) return;
+    if (!run || !e.target.closest || !e.target.closest('#log, #tray')) return;
+    if (e.target.closest('button,[data-gl],input,#tipPop,.pbox')) return;
     if (run.skip) run.skip();
   });
 })();

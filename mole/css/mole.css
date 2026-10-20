@@ -368,3 +368,6 @@ mark.k { color: inherit; font-weight: 800; padding: 0 1px; background: linear-gr
 .card.rs-rule ul { margin: 0; padding-left: 1.2em; font-size: 15px; }
 .card.rs-rule li { margin: 3px 0; }
 .card.rs-rule li b { color: #c0306a; }
+/* 読んでいる間のトレイ（タップで先へ） */
+#tray .wait { margin: 0; text-align: center; font-size: 13px; font-weight: 700; color: var(--muted); animation: waitp 1.6s ease-in-out infinite; cursor: pointer; }
+@keyframes waitp { 50% { opacity: .45; } }
