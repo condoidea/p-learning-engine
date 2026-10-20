@@ -16,6 +16,8 @@
   M.E2E = E2E;
   /* ?sandbox：動作確認用の別の保存先（本物の記録に触れない） */
   M.KEY = E2E ? 'mole.e2e.v1' : /[?&]sandbox\b/.test(location.search) ? 'mole.sandbox.v1' : 'mole.v1';
+  /* 一度でも開いたら、ほかのアプリの「新しいアプリができたよ」のお知らせ（news/news.js）を出さない */
+  if (M.KEY === 'mole.v1') { try { localStorage.setItem('le.news.mole.opened', String(Date.now())); } catch (e) { /* 保存できない環境 */ } }
 
   M.$ = function (s, r) { return (r || document).querySelector(s); };
   M.$$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
