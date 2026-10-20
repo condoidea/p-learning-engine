@@ -38,7 +38,7 @@ function marks(w, s) {
 function texts(s) {
   if (typeof s === 'string') return [s];
   const out = [];
-  ['t', 'ask', 'num', 'oops', 'mission', 'board', 'foot', 'why', 'ok', 'fix', 'hint', 'q'].forEach(k => { if (typeof s[k] === 'string') out.push(s[k]); });
+  ['t', 'ask', 'num', 'oops', 'mission', 'aim', 'board', 'foot', 'why', 'ok', 'fix', 'hint', 'q'].forEach(k => { if (typeof s[k] === 'string') out.push(s[k]); });
   ['opts', 'lines', 'steps'].forEach(k => { if (Array.isArray(s[k])) s[k].forEach(x => out.push(x)); });
   if (s.ng && typeof s.ng === 'object') Object.values(s.ng).forEach(x => out.push(x));
   if (typeof s.ng === 'string') out.push(s.ng);

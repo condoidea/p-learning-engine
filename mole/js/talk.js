@@ -284,11 +284,20 @@
   function prop(s) {
     var r = run;
     return new Promise(function (res) {
-      var d = row('t wide', '<div class="card prop">' + (s.mission ? '<h4>🧪 実験</h4>' : '') + '<div class="pbox"></div><p class="pnote"></p></div>', 't');
+      /* 何のための実験か（ねらい）と、やること（ミッション）をカードの上に書いておく。終わっても残る */
+      var d = row('t wide', '<div class="card prop">' +
+        (s.mission ? '<h4>🧪 実験</h4>' : '<h4>🔬 図</h4>') +
+        (s.aim ? '<p class="aim"><b>ねらい</b>' + fmt(s.aim) + '</p>' : '') +
+        (s.mission ? '<p class="todo"><b>やること</b>' + fmt(s.mission) + '</p>' : '') +
+        '<div class="pbox"></div><p class="pnote"></p></div>', 't');
       var box = $('.pbox', d), note = $('.pnote', d), finished = false;
-      if (s.mission) setTray('<p class="mission">🧪 ' + fmt(s.mission) + '</p>'); else setTray('');
+      if (s.mission) setTray('<p class="mission">👆 上の実験で：' + fmt(s.mission) + '</p>'); else setTray('');
       var api = {
-        done: function () { if (finished) return; finished = true; alive(r); setTray(''); res(); },
+        done: function () {
+          if (finished) return; finished = true; alive(r); setTray('');
+          var td = $('.todo', d); if (td) { td.classList.add('ok'); td.querySelector('b').textContent = '✓ できた'; }
+          res();
+        },
         note: function (t) { note.innerHTML = t ? fmt(t) : ''; if (t) scrollDown(); },
         hit: function (el) { hit(el); },
         miss: function (el) { miss(el); }
@@ -363,7 +372,19 @@
         return new Promise(function (res) { $('.rs-next', ae).onclick = res; if (E2E) setTimeout(res); }).then(one);
       });
     }
-    return FX.slam('<b class="rush-t">⚡ RUSH!</b><small>早押し ' + qs.length + ' 問</small>', 'rush').then(one).then(function () {
+    /* はじめにルールを見せて、自分で「スタート」を押してから始める */
+    function intro() {
+      var qe = $('.rs-q', ov), ae = $('.rs-a', ov);
+      $('.rs-n', ov).textContent = '';
+      qe.innerHTML = '<div class="rs-intro"><b>早押しラッシュ</b><ul>' +
+        '<li>このレッスンから <b>' + qs.length + ' 問</b></li>' +
+        '<li>バーがなくなる前に答えると <b>スピードボーナス</b></li>' +
+        '<li>時間切れでも答えられる。まちがえたら答えと解き方が出るよ</li>' +
+        '<li>全問正解で <b>PERFECT!!</b> 粒のボーナス</li></ul></div>';
+      ae.innerHTML = '<button class="big go rs-start"><span>スタート ▶</span><small>準備ができたら押してね</small></button>';
+      return new Promise(function (res) { $('.rs-start', ae).onclick = function () { if (window.Sfx) Sfx.unlock(); res(); }; if (E2E) setTimeout(res); });
+    }
+    return intro().then(function () { alive(r); return FX.slam('<b class="rush-t">⚡ RUSH!</b><small>早押し ' + qs.length + ' 問</small>', 'rush'); }).then(one).then(function () {
       alive(r);
       if (okN === qs.length) {
         /* 全問正解：PERFECT!! と粒のボーナス（ふつうの正解2問ぶん） */

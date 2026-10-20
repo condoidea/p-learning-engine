@@ -14,7 +14,8 @@
   var M = window.M = window.M || {};
   var E2E = /[?&]e2e\b/.test(location.search);
   M.E2E = E2E;
-  M.KEY = E2E ? 'mole.e2e.v1' : 'mole.v1';
+  /* ?sandbox：動作確認用の別の保存先（本物の記録に触れない） */
+  M.KEY = E2E ? 'mole.e2e.v1' : /[?&]sandbox\b/.test(location.search) ? 'mole.sandbox.v1' : 'mole.v1';
 
   M.$ = function (s, r) { return (r || document).querySelector(s); };
   M.$$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };

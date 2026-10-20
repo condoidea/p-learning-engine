@@ -353,3 +353,18 @@ mark.k { color: inherit; font-weight: 800; padding: 0 1px; background: linear-gr
 .t-gain.blaze { background: linear-gradient(135deg, #ffb020, #ff3d7f 50%, #9b5cff); animation: hot .45s ease-in-out infinite; }
 .t-gain.hot #tCombo { color: #fff6c8; }
 @keyframes hot { 50% { box-shadow: 0 0 0 4px rgba(255,122,61,.25), 0 0 18px 4px rgba(255,61,127,.55); transform: scale(1.04); } }
+
+/* 実験カード：ねらい・やること（終わっても残る） */
+.card.prop .aim, .card.prop .todo { margin: 0 0 6px; padding: 6px 10px; border-radius: 10px; font-size: 14px; line-height: 1.6; }
+.card.prop .aim { background: #f5f2ff; }
+.card.prop .todo { background: #fff7d6; }
+.card.prop .todo.ok { background: #e8fbf2; }
+.card.prop .aim b, .card.prop .todo b { display: inline-block; margin-right: 6px; padding: 0 7px; border-radius: 6px; font-size: 11.5px; color: #fff; background: #9b84d9; vertical-align: 1px; }
+.card.prop .todo b { background: #e09200; }
+.card.prop .todo.ok b { background: var(--ok); }
+/* 早押しの開始画面 */
+.rs-intro > b { display: block; font-size: 20px; color: #7134d1; margin-bottom: 4px; }
+.rs-intro ul { margin: 0; padding-left: 1.2em; font-weight: 500; font-size: 15px; }
+.rs-intro li { margin: 4px 0; }
+.rs-intro li b { color: #c0306a; }
+.rs-start { margin-top: 4px; }
