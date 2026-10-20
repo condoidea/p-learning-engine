@@ -24,6 +24,7 @@ fe.html                 基本情報コースの入口（中身は数行。engin
 habsburg.html           ハプスブルク年代記コースの入口
 trig.html               三角比・平面図形コースの入口
 vocab.html              単語アプリ（スペイン語）の入口。中身は vocab/（設計は docs/単語アプリ設計.md）
+mole.html               モル教室（化学基礎・物質量）。エンジンを使わない独立アプリ。中身は mole/（先生とのトーク形式）
 engine/
   js/boot.js            起動処理（スタイル・画面・スクリプトを順に読み込む）
   js/fxmap.js, fxgeo.js 背景（古地図／方眼ノートと単位円）。scene.preset で切りかえ
@@ -54,6 +55,7 @@ docs/                   設計・コースの作り方
 エンジンを変更したら、全コースで両方を通すこと。
 ```bash
 node tests/check-course.js fe
+node tests/check-mole.js        # モル教室の台本・計算ドリルのチェック（通しテストは mole.html?e2e）
 ```
 - ブラウザで `fe.html?e2e` を開く（全レッスン・全ボス・全モードを自動で解く。約10分）
 - `fe.html?e2e&fast` なら最初の2ユニットだけ（約2〜3分）

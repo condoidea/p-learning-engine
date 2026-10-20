@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>モルモ先生のモル教室｜化学基礎 物質量</title>
+<meta name="theme-color" content="#eafaf4">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&family=Dela+Gothic+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="mole/css/mole.css?v=1">
+</head>
+<body>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div id="app">
+
+  <!-- ============ ホーム（ラボ） ============ -->
+  <section id="home" class="screen">
+    <header class="h-head">
+      <a class="back" href="index.html">← コース一覧</a>
+      <div class="brand"><small>化学基礎 ・ 物質量</small><b>モルモ先生の<br>モル教室</b></div>
+    </header>
+
+    <div class="greet">
+      <div class="greet-av" id="hAv"></div>
+      <div class="greet-bub" id="hGreet"></div>
+    </div>
+
+    <button class="meter" id="hMeter" aria-label="あつめた粒とスケール図鑑">
+      <small>あつめた粒</small>
+      <b id="hCount"></b>
+      <span class="m-bar"><i id="hBar"></i><span class="m-goal">1 mol</span></span>
+      <small class="m-next" id="hNext"></small>
+    </button>
+
+    <div class="cta" id="hCta"></div>
+
+    <h2 class="sec">結晶だな<small>レッスンごとに1つ育つ。くもったら、みがこう</small></h2>
+    <div class="shelf" id="hShelf"></div>
+
+    <div class="settings">
+      <label><input type="checkbox" id="tgSound"> 🔈 効果音</label>
+      <button class="link" id="hReset">記録をリセット</button>
+    </div>
+  </section>
+
+  <!-- ============ トーク（レッスン・みがく） ============ -->
+  <section id="talk" class="screen" hidden>
+    <header class="t-head">
+      <button id="tQuit" aria-label="やめる">✕</button>
+      <div class="t-av" id="tAv"></div>
+      <div class="t-mid"><b id="tTitle"></b><span id="tSub"></span></div>
+      <div class="t-gain"><small>粒</small><b id="tCount"></b><span id="tCombo"></span></div>
+    </header>
+    <main id="log" aria-live="polite"></main>
+    <div id="tray"></div>
+  </section>
+
+  <!-- ============ 結果 ============ -->
+  <section id="done" class="screen" hidden></section>
+</div>
+
+<div id="sheet" hidden><div class="sh"><button class="sh-close" aria-label="閉じる">✕</button><div id="sheetBody"></div></div></div>
+<div id="slam" hidden></div>
+<div id="tipPop" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="mole/js/base.js?v=1"></script>
+<script src="mole/js/data/glossary.js?v=1"></script>
+<script src="mole/js/data/lessons.js?v=1"></script>
+<script src="mole/js/data/lessons-extra.js?v=1"></script>
+<script src="mole/js/data/drills.js?v=1"></script>
+<script src="mole/js/props.js?v=1"></script>
+<script src="engine/js/audio.js?v=1"></script>
+<script src="mole/js/talk.js?v=1"></script>
+<script src="mole/js/app.js?v=1"></script>
+</body>
+</html>
