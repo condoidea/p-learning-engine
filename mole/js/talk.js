@@ -320,7 +320,18 @@
   }
 
   /* ---------- 早押しラッシュ ---------- */
+  /* ルールはトークの中で見せて、自分で「スタート」を押してから画面が開く（前の説明を読み終えてから） */
   function rush(n, pool) {
+    var r = run;
+    var d = row('t wide', '<div class="card rs-rule"><h4>⚡ 早押しラッシュ</h4><ul>' +
+      '<li>このレッスンから <b>' + n + ' 問</b></li>' +
+      '<li>バーがなくなる前に答えると <b>スピードボーナス</b></li>' +
+      '<li>時間切れでも答えられる。まちがえたら答えと解き方が出るよ</li>' +
+      '<li>全問正解で <b>PERFECT!!</b> 粒のボーナス</li></ul></div>', 't');
+    gl(d);
+    return reply(['⚡ スタート！']).then(function () { alive(r); return openRush(n, pool); });
+  }
+  function openRush(n, pool) {
     var r = run, qs = pickQuiz(pool || r.lesson.quiz, n);
     var ov = document.createElement('div');
     ov.className = 'rush'; ov.innerHTML = '<div class="rs-top"><b>⚡ RUSH</b><span class="rs-n"></span></div><div class="rs-timer"><i></i></div><div class="rs-q"></div><div class="rs-a"></div>';
@@ -372,19 +383,7 @@
         return new Promise(function (res) { $('.rs-next', ae).onclick = res; if (E2E) setTimeout(res); }).then(one);
       });
     }
-    /* はじめにルールを見せて、自分で「スタート」を押してから始める */
-    function intro() {
-      var qe = $('.rs-q', ov), ae = $('.rs-a', ov);
-      $('.rs-n', ov).textContent = '';
-      qe.innerHTML = '<div class="rs-intro"><b>早押しラッシュ</b><ul>' +
-        '<li>このレッスンから <b>' + qs.length + ' 問</b></li>' +
-        '<li>バーがなくなる前に答えると <b>スピードボーナス</b></li>' +
-        '<li>時間切れでも答えられる。まちがえたら答えと解き方が出るよ</li>' +
-        '<li>全問正解で <b>PERFECT!!</b> 粒のボーナス</li></ul></div>';
-      ae.innerHTML = '<button class="big go rs-start"><span>スタート ▶</span><small>準備ができたら押してね</small></button>';
-      return new Promise(function (res) { $('.rs-start', ae).onclick = function () { if (window.Sfx) Sfx.unlock(); res(); }; if (E2E) setTimeout(res); });
-    }
-    return intro().then(function () { alive(r); return FX.slam('<b class="rush-t">⚡ RUSH!</b><small>早押し ' + qs.length + ' 問</small>', 'rush'); }).then(one).then(function () {
+    return FX.slam('<b class="rush-t">⚡ RUSH!</b><small>早押し ' + qs.length + ' 問</small>', 'rush').then(one).then(function () {
       alive(r);
       if (okN === qs.length) {
         /* 全問正解：PERFECT!! と粒のボーナス（ふつうの正解2問ぶん） */
