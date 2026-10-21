@@ -122,10 +122,9 @@
   function tipsNote() {
     var ids = Object.keys(Y.TIPS).filter(function (k) { return S().tips[k]; });
     Y.sheet('<h3 class="sh-t">💡 Tips ノート</h3><p class="sh-sub">' + ids.length + ' / ' + Object.keys(Y.TIPS).length + ' 個</p>' +
-      (ids.length ? ids.map(function (k) {
-        var t = Y.TIPS[k];
-        return '<div class="tipcard"><b>' + fmt(t.t) + '</b><p>' + fmt(t.b) + '</p>' + (t.why ? '<details><summary>🤔 なぜ？</summary><p>' + fmt(t.why) + '</p></details>' : '') + '</div>';
-      }).join('') : '<p class="soon">レッスンで手に入れた Tips が、ここにたまる。</p>'));
+      (ids.length ? ids.map(function (k) { return Y.tipHTML(k); }).join('') : '<p class="soon">レッスンで手に入れた Tips が、ここにたまる。</p>'));
+    /* バルーンは Tips 1 枚ごとにつける（どのカードから読んでも、言葉の意味が引けるように） */
+    $$('#sheetBody .tipcard').forEach(function (c) { Y.glossify(c, {}); });
   }
 
   /* ---------- 設定 ---------- */

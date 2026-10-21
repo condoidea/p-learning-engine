@@ -121,6 +121,12 @@ for (const [id, b] of Object.entries(Y.BOSSES)) {
   (b.qs || []).forEach(q => { if (!Y.QS[q]) err('ボス ' + id + '：問題 ' + q + ' がない'); });
   if (b.finisher && !Y.SPELLS[b.finisher]) err('ボス ' + id + '：とどめの呪文 ' + b.finisher + ' がない');
 }
+/* Tips の図：分子と、光らせる原子があるか */
+for (const [id, t] of Object.entries(Y.TIPS)) (t.fig || []).forEach(f => {
+  const m = Y.MOLS[f.m];
+  if (!m) { err('Tips ' + id + '：図の分子 ' + f.m + ' がない'); return; }
+  (f.hl || []).forEach(a => { if (!m.s.atoms[a]) err('Tips ' + id + '：図の ' + f.m + ' に原子 ' + a + ' がない'); });
+});
 Y.ROUTE.forEach(id => { if (!Y.BOSSES[id] && !Y.LESSONS.some(l => l.id === id)) err('地図：' + id + ' がない'); });
 
 console.log('\nレッスン ' + Y.LESSONS.length + ' ・ 呪文 ' + Object.keys(Y.SPELLS).length + ' ・ 問題 ' + Object.keys(Y.QS).length + ' ・ Tips ' + Object.keys(Y.TIPS).length);

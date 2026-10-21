@@ -261,7 +261,8 @@
   }
 
   /* 小さな分子の絵（選択肢・呪文書） */
-  function mini(s, w) {
+  function mini(s, w, opt) {
+    var hl = (opt && opt.hl) || [];
     var b = bbox(s), pad = 0.7;
     var vb = [(b.x0 - pad) * 30, (b.y0 - pad) * 30, (b.x1 - b.x0 + pad * 2) * 30, (b.y1 - b.y0 + pad * 2) * 30].map(function (v) { return v.toFixed(0); }).join(' ');
     /* どの分子も同じ縮尺で描く（小さい分子が大きく見えないように）。入りきらないときだけ縮む */
@@ -276,7 +277,7 @@
     });
     s.order.forEach(function (id) {
       var a = s.atoms[id];
-      h += '<g class="at at-' + a.el + '" transform="translate(' + a.x * 30 + ',' + a.y * 30 + ')"><circle r="' + (a.el === 'H' ? 8 : 11) + '"/><text text-anchor="middle" dy=".36em">' + a.el + '</text></g>';
+      h += '<g class="at at-' + a.el + (hl.indexOf(id) >= 0 ? ' hl' : '') + '" transform="translate(' + a.x * 30 + ',' + a.y * 30 + ')"><circle r="' + (a.el === 'H' ? 8 : 11) + '"/><text text-anchor="middle" dy=".36em">' + a.el + '</text></g>';
     });
     return h + '</svg>';
   }
@@ -426,7 +427,7 @@
         hs.push({ p: s.k, d: s.d, cls: quiet ? '' : 'pop' }); hist.push({ t: 'H' });
       } else {
         var A = heavy[s.k], x = A.x + DIRS[s.d][0], y = A.y + DIRS[s.d][1], why = cellFree(x, y, s.k);
-        if (why === 'ring') { if (cb.bad) cb.bad('そこに置くと、となりの原子とも手をつないで「輪（環）」になる。\n輪を閉じる 1 本で、2 つの原子が手を 1 本ずつ使う → H をつける手が 2 本へって、別の物質になる。いまの錬成は「鎖」だけ'); Y.se('wrong'); return false; }
+        if (why === 'ring') { if (cb.bad) cb.bad('そこに置くと、となりの原子とも手をつないで「輪（環）」になる。\n輪にすると鎖の「はし」がなくなり、はしだった 2 つの原子が手を 1 本ずつ使う → H をつける手が 2 本へって、別の物質になる。いまの錬成は「鎖」だけ'); Y.se('wrong'); return false; }
         if (why) { if (cb.bad) cb.bad('そこには置けない（' + why + '）'); Y.se('wrong'); return false; }
         var id = 'a' + (++seq); heavy[id] = { el: el, x: x, y: y }; bonds.push([s.k, id]); hist.push({ t: 'h', id: id });
         if (P) partH(id);

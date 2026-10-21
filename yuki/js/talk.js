@@ -164,8 +164,9 @@
   function show(s) {
     var m = Y.MOLS[s.show];
     var d = row('card', '<div class="molcard"><div class="mc-host"></div><p><b>' + esc(m.n) + '</b> <span>' + esc(m.f) + '</span></p>' + (s.cap ? '<small>' + fmt(s.cap) + '</small>' : '') + '</div>', 'c');
-    var v = Y.Mol.view(d.querySelector('.mc-host'));
-    v.load(m.s); v.lit(!m.bad); if (m.bad) v.fizzle();
+    var v = Y.Mol.view(d.querySelector('.mc-host')), snap = Y.Mol.clone(m.s);
+    snap.glow = s.hl || [];   /* 注目してほしい原子を光らせる */
+    v.load(snap); v.lit(!m.bad); if (m.bad) v.fizzle();
     Y.se('whoosh');
     return wait(900);
   }
@@ -218,12 +219,21 @@
   }
 
   /* ---------- Tips ---------- */
+  /* Tips のカード（レッスンと Tips ノートで共通）。fig があれば、分子の絵で図解する */
+  Y.tipHTML = function (id, tag) {
+    var t = Y.TIPS[id];
+    var fig = t.fig ? '<div class="tfig">' + t.fig.map(function (f) {
+      var m = Y.MOLS[f.m];
+      return '<figure>' + Y.Mol.mini(m.s, 0, { hl: f.hl }) + '<figcaption><b>' + esc(m.n) + ' ' + esc(m.f) + '</b>' + fmt(f.cap) + '</figcaption></figure>';
+    }).join('') + '</div>' : '';
+    return '<div class="tipcard">' + (tag ? '<span class="tc-tag">' + tag + '</span>' : '') + '<b>' + fmt(t.t) + '</b><p>' + fmt(t.b) + '</p>' + fig +
+      (t.why ? '<details><summary>🤔 なぜ？</summary><p>' + fmt(t.why) + '</p></details>' : '') + '</div>';
+  };
   function tip(s) {
-    var t = Y.TIPS[s.tip], first = !Y.S.tips[s.tip];
+    var first = !Y.S.tips[s.tip];
     Y.S.tips[s.tip] = Y.S.tips[s.tip] || Date.now(); Y.save();
-    var d = row('card', '<div class="tipcard"><span class="tc-tag">💡 Tips' + (first ? ' GET!' : '') + '</span><b>' + fmt(t.t) + '</b><p>' + fmt(t.b) + '</p>' +
-      (t.why ? '<details><summary>🤔 なぜ？</summary><p>' + fmt(t.why) + '</p></details>' : '') + '</div>', 'c');
-    gl(d);
+    var d = row('card', Y.tipHTML(s.tip, '💡 Tips' + (first ? ' GET!' : '')), 'c');
+    Y.glossify(d, {});   /* Tips は読み返す物なので、前に出た言葉にもバルーンをつける */
     Y.se('coin');
     if (window.FX) { var c = FX.at(d); FX.burst(c.x, c.y, { pal: 'gold', n: 24 }); }
     return reply(['おぼえた！']);
