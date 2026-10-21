@@ -14,7 +14,11 @@
   function chOf(id) { var n = node(id); return n.boss ? n.boss.ch : n.L.ch; }
   function nameOf(id) { var n = node(id); return n.boss ? n.boss.title + '・' + n.boss.name : n.L.title; }
 
-  function screen(id) { $$('.screen').forEach(function (s) { s.hidden = s.id !== id; }); window.scrollTo(0, 0); }
+  function screen(id) {
+    $$('.screen').forEach(function (s) { s.hidden = s.id !== id; }); window.scrollTo(0, 0);
+    /* 文字を読む画面では、背景の城をうすくする */
+    document.body.classList.toggle('reading', id === 'talk' || id === 'battle');
+  }
 
   /* ---------- ホーム（地図） ---------- */
   var logoView = null;

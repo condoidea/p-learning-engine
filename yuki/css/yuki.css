@@ -1,15 +1,16 @@
 /* =========================================================
  * ユーキ・クエスト（yuki.html）
+ *  見た目：中世ヨーロッパの RPG（羊皮紙・金箔・封蝋・石の城）。ファイルの最後の「中世の装い」でまとめて上書きしている
  *  色の約束：⚡雷＝置換（黄）/ 🌪風＝付加（翠）/ 🏜砂＝脱水・縮合（橙）/ ⬡錬成（紫）
  *  原子：C 紺・H 白・O 赤・Cl 緑・Br 赤褐
  * ========================================================= */
 :root {
-  --bg: #0d0820; --bg2: #1a1038; --panel: #1d1440; --panel2: #271b55; --line: #3d2f78;
-  --txt: #f2ecff; --muted: #a99ccc; --gold: #ffd98a; --gold2: #ffb84d;
+  --bg: #120c08; --bg2: #1e140d; --panel: #2a1c12; --panel2: #3a2617; --line: #6b4a2b;
+  --txt: #f2e6cc; --muted: #b9a582; --gold: #f0c75e; --gold2: #c99230;
   --thunder: #fff36b; --wind: #7dffcf; --sand: #ffb45a; --forge: #b98cff; --ng: #ff6b7a; --ok: #6bffb0;
   --ac: var(--gold);
   --f-body: 'M PLUS Rounded 1c', system-ui, sans-serif;
-  --f-disp: 'Dela Gothic One', 'M PLUS Rounded 1c', sans-serif;
+  --f-disp: 'Cinzel', 'Shippori Mincho B1', serif;
   --f-min: 'Shippori Mincho B1', 'Hiragino Mincho ProN', serif;
 }
 * { box-sizing: border-box; }
@@ -53,8 +54,8 @@ mark.k { background: linear-gradient(transparent 55%, rgba(255, 217, 138, .45) 5
 .st-logo small, .logo small { display: block; font-size: 12px; letter-spacing: .2em; color: var(--muted); margin-bottom: 6px; }
 .st-logo b, .logo { display: block; white-space: nowrap; font: 800 clamp(30px, 10vw, 60px)/1.1 var(--f-min); color: var(--gold); text-shadow: 0 0 30px rgba(255, 184, 77, .6), 0 3px 0 #6b3a10; letter-spacing: .04em; }
 .st-logo b i, .logo i { font-style: normal; color: var(--forge); }
-.st-logo em { display: block; margin-top: 10px; font-style: normal; font: 400 18px var(--f-disp); color: #fff; }
-.st-press { font: 400 15px var(--f-disp); letter-spacing: .25em; color: #fff; animation: blink 1.4s ease-in-out infinite; }
+.st-logo em { display: block; margin-top: 10px; font-style: normal; font: 800 18px var(--f-disp); color: #fff; }
+.st-press { font: 800 15px var(--f-disp); letter-spacing: .25em; color: #fff; animation: blink 1.4s ease-in-out infinite; }
 .st-note { font-size: 12px; color: var(--muted); }
 @keyframes blink { 50% { opacity: .25; } }
 
@@ -96,7 +97,7 @@ mark.k { background: linear-gradient(transparent 55%, rgba(255, 217, 138, .45) 5
 .nd-t small { font-size: 12px; color: var(--muted); }
 .st { font-style: normal; color: var(--gold); letter-spacing: 1px; font-size: 13px; }
 .st u { text-decoration: none; color: var(--line); }
-.rk { font: 400 20px var(--f-disp); font-style: normal; }
+.rk { font: 800 20px var(--f-disp); font-style: normal; }
 .r-S { color: var(--gold); text-shadow: 0 0 12px var(--gold); } .r-A { color: var(--wind); } .r-B { color: var(--muted); }
 @keyframes pulse { 50% { box-shadow: 0 0 0 8px rgba(255, 217, 138, 0), 0 0 26px var(--gold); } }
 
@@ -263,7 +264,7 @@ details p { margin: 6px 0 0; padding: 8px 10px; border-radius: 10px; background:
 @keyframes fin { from { opacity: 0; transform: scale(2.4); filter: blur(8px); } }
 .rt-stage { margin: 0; font: 800 14px var(--f-min); color: var(--ac); letter-spacing: .2em; }
 .rt-src { font: 800 22px var(--f-min); color: #fff; margin: 4px 0; } .rt-src small { color: var(--muted); font: 700 14px var(--f-body); }
-.rt-fz { margin: 0; font: 400 28px var(--f-disp); color: var(--ng); }
+.rt-fz { margin: 0; font: 800 28px var(--f-disp); color: var(--ng); }
 .rt-hint { margin: 4px 0; font-size: 14px; color: #ffd0d6; line-height: 1.6; }
 #ritual.charge .rt-circle { animation: charge .45s ease-in; }
 @keyframes charge { to { transform: scale(.9); filter: brightness(2); } }
@@ -273,7 +274,7 @@ details p { margin: 6px 0 0; padding: 8px 10px; border-radius: 10px; background:
 .cd { flex: 1 0 96px; display: flex; flex-direction: column; align-items: center; gap: 1px; min-height: 76px; padding: 8px 6px; border-radius: 14px; background: rgba(29, 20, 64, .9); border: 1.5px solid var(--line); text-align: center; }
 .cd-i { font-size: 20px; } .cd b { font-size: 12.5px; line-height: 1.35; } .cd small { color: var(--muted); font-size: 11px; }
 .cd.on { border-color: var(--gold); background: #3a2a10; box-shadow: 0 0 16px -2px var(--gold2); transform: translateY(-2px); }
-.btn.fire { width: 100%; margin-top: 12px; font: 400 19px var(--f-disp); letter-spacing: .1em; }
+.btn.fire { width: 100%; margin-top: 12px; font: 800 19px var(--f-disp); letter-spacing: .1em; }
 .btn.fire:not(:disabled) { animation: glowb 1.4s ease-in-out infinite; }
 @keyframes glowb { 50% { box-shadow: 0 4px 0 #a8641c, 0 0 40px 2px var(--gold2); } }
 .rt-done { text-align: center; }
@@ -290,7 +291,7 @@ body.in-ritual { overflow: hidden; }
 @keyframes fever { to { background-position: 300% 0; } }
 .bt-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .bt-quit { width: 34px; height: 34px; border-radius: 50%; background: var(--panel); }
-.bt-name { flex: 1; } .bt-name small { display: block; font-size: 11px; color: var(--muted); } .bt-name b { font: 400 20px var(--f-disp); color: #ffb3bd; }
+.bt-name { flex: 1; } .bt-name small { display: block; font-size: 11px; color: var(--muted); } .bt-name b { font: 800 20px var(--f-disp); color: #ffb3bd; }
 .bt-hp { position: relative; flex-basis: 100%; height: 18px; border-radius: 999px; background: #2a0d18; border: 1px solid #6b2236; overflow: hidden; }
 .bt-hp i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, #ff3b5c, #ff9a6b); transition: width .5s cubic-bezier(.2, .9, .3, 1); }
 .bt-hp b { position: relative; display: block; text-align: center; font-size: 11.5px; line-height: 18px; text-shadow: 0 1px 2px #000; }
@@ -309,7 +310,7 @@ body.in-ritual { overflow: hidden; }
 .bt-say { min-height: 1.6em; margin: 4px 0; font-size: 14px; line-height: 1.6; }
 .bt-say b { color: #ffb3bd; margin-right: 4px; }
 .bt-me { display: flex; justify-content: space-between; align-items: center; font-size: 18px; }
-.bt-combo { font: 400 15px var(--f-disp); color: var(--gold); }
+.bt-combo { font: 800 15px var(--f-disp); color: var(--gold); }
 .bt-panel { margin-top: 6px; padding: 12px; border-radius: 20px; background: rgba(29, 20, 64, .9); border: 1px solid var(--line); }
 .bt-time { height: 6px; border-radius: 999px; background: #120b2c; overflow: hidden; margin-bottom: 8px; }
 .bt-time i { display: block; height: 100%; width: 100%; background: var(--wind); transition: width .1s linear; }
@@ -319,10 +320,10 @@ body.in-ritual { overflow: hidden; }
 .bt-why p { margin: 0 0 6px; font-size: 14px; line-height: 1.6; }
 .bt-rule { text-align: center; font-size: 14px; line-height: 1.75; }
 .bt-rule b { display: block; color: var(--gold); }
-.bt-rule .btn { margin-top: 12px; width: 100%; font: 400 19px var(--f-disp); }
+.bt-rule .btn { margin-top: 12px; width: 100%; font: 800 19px var(--f-disp); }
 .bt-end { text-align: center; padding: 8px 0; }
 .bt-end small { display: block; color: var(--muted); }
-.bt-end > b { display: block; font: 400 34px var(--f-disp); }
+.bt-end > b { display: block; font: 800 34px var(--f-disp); }
 .bt-end.lose > b { color: var(--ng); }
 .bt-end .rank { font-size: 76px; line-height: 1.1; }
 .bt-end p { line-height: 1.7; }
@@ -333,7 +334,7 @@ body.in-ritual { overflow: hidden; }
 .rs { width: 100%; text-align: center; padding: 24px 18px; border-radius: 26px; background: rgba(29, 20, 64, .9); border: 1px solid var(--line); }
 .rs small { color: var(--muted); letter-spacing: .2em; }
 .rs h2 { margin: 4px 0; font: 800 26px var(--f-min); color: var(--gold); }
-.rs h2 span { display: block; font: 400 30px var(--f-disp); color: #fff; }
+.rs h2 span { display: block; font: 800 30px var(--f-disp); color: #fff; }
 .rs-st { font-size: 40px; color: var(--gold); margin: 6px 0; letter-spacing: 4px; text-shadow: 0 0 16px var(--gold2); } .rs-st u { text-decoration: none; color: var(--line); text-shadow: none; }
 .rs ul { list-style: none; padding: 0; margin: 10px 0; display: grid; gap: 6px; }
 .rs li { padding: 8px; border-radius: 12px; background: rgba(0, 0, 0, .25); }
@@ -380,16 +381,217 @@ body.in-ritual { overflow: hidden; }
 /* ---------- 演出（fx.js） ---------- */
 #slam { position: fixed; inset: 0; z-index: 92; display: grid; place-items: center; pointer-events: none; }
 .sl { grid-area: 1 / 1; text-align: center; padding: 0 16px; }
-.sl b { display: block; font: 400 clamp(34px, 11vw, 64px)/1.15 var(--f-disp); color: #fff; -webkit-text-stroke: 1.5px #1a0a33; text-shadow: 0 0 30px var(--forge), 4px 4px 0 #3a1a7a; }
-.sl small { display: block; margin-top: 6px; font: 400 18px var(--f-disp); color: #fff; text-shadow: 0 2px 8px #000; }
+.sl b { display: block; font: 800 clamp(34px, 11vw, 64px)/1.15 var(--f-disp); color: #fff; -webkit-text-stroke: 1.5px #1a0a33; text-shadow: 0 0 30px var(--forge), 4px 4px 0 #3a1a7a; }
+.sl small { display: block; margin-top: 6px; font: 800 18px var(--f-disp); color: #fff; text-shadow: 0 2px 8px #000; }
 .sl.crit b, .sl.clear b, .sl.mute b { color: var(--gold); text-shadow: 0 0 34px var(--gold2), 4px 4px 0 #8a3a1f; }
 .sl.atk b { font-size: clamp(30px, 9vw, 52px); }
 .sl.boss b { color: #ffb3bd; text-shadow: 0 0 34px #ff3b5c, 4px 4px 0 #4a0d1a; }
 .sl.warn b { color: var(--ng); }
 .sl.combo b { color: var(--wind); }
-.flt { position: fixed; z-index: 93; pointer-events: none; font: 400 20px var(--f-disp); color: #fff; text-shadow: 0 2px 6px #000; white-space: nowrap; }
+.flt { position: fixed; z-index: 93; pointer-events: none; font: 800 20px var(--f-disp); color: #fff; text-shadow: 0 2px 6px #000; white-space: nowrap; }
 .flash { position: fixed; inset: 0; z-index: 91; pointer-events: none; mix-blend-mode: screen; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* =========================================================
+ * 中世の装い（羊皮紙・金箔・封蝋・石の城）
+ *  テトラの話・Tips・地図・スクロールは「羊皮紙にインク」、魔法陣は「暗い石板に金の光」。
+ *  飾りは縁と角だけにして、文字の読みやすさを優先する（原則9）
+ * ========================================================= */
+:root {
+  --parch: #f1e3c2; --parch2: #e3cb98; --parch-edge: #b48a52; --ink: #3a2414; --ink2: #6b4a2b;
+  --crimson: #8e1f1f; --crimson2: #b8322a; --teal-ink: #1d5c4c;
+}
+body { background: #120c08; }
+.bg { background:
+  radial-gradient(70% 45% at 50% -8%, rgba(255, 170, 70, .22), transparent 70%),
+  radial-gradient(120% 80% at 50% 120%, #2a1a10 0%, transparent 60%),
+  repeating-linear-gradient(0deg, rgba(255, 255, 255, .018) 0 1px, transparent 1px 34px),
+  repeating-linear-gradient(90deg, rgba(0, 0, 0, .12) 0 1px, transparent 1px 68px),
+  #140d09; }
+.bg i { border-color: rgba(240, 199, 94, .06); }
+.bg .castle { position: absolute; left: 50%; bottom: 0; width: min(760px, 160vw); transform: translateX(-50%); fill: #0a0705; opacity: .9; }
+.bg .castle .win { fill: #ffb44a; opacity: .55; animation: torch 3.2s ease-in-out infinite; }
+.bg .castle .win:nth-of-type(2n) { animation-delay: -1.3s; }
+@keyframes torch { 50% { opacity: .25; } }
+/* レッスン・儀式・ボスの間は、城を消して文字を読みやすく */
+body.reading .bg .castle { opacity: .18; }
+
+/* ---------- 羊皮紙の部品 ---------- */
+.parch, .bub, .tipcard, .spcard, .piccard, .ch, .rs, .bt-panel, .sh, #tipPop {
+  background: radial-gradient(120% 140% at 50% 40%, var(--parch) 55%, var(--parch2) 100%);
+  color: var(--ink); border: 1.5px solid var(--parch-edge);
+  box-shadow: inset 0 0 0 3px rgba(255, 248, 225, .35), inset 0 0 22px rgba(120, 80, 30, .28), 0 6px 18px -8px #000;
+}
+.bub { border-radius: 6px 16px 16px 4px; }
+.row.cont .bub { border-radius: 6px 16px 16px 6px; }
+.bub mark.k, .parch mark.k, .tipcard mark.k, .ch mark.k, .rs mark.k, .bt-panel mark.k, .sh mark.k { color: #2a1309; background: linear-gradient(transparent 55%, rgba(214, 160, 50, .5) 55%); }
+.bub .tip, .tipcard .tip, .bt-panel .tip, .sh .tip { color: var(--teal-ink); text-decoration-color: rgba(29, 92, 76, .7); }
+.bub .nick, .tipcard .nick, .sh .nick { color: var(--ink2); background: rgba(80, 50, 20, .1); }
+.bub .gl, .tipcard .gl, .bt-panel .gl, .sh .gl, .ch .gl { border-bottom-color: var(--teal-ink); }
+.bub.q { border-color: var(--crimson); box-shadow: inset 0 0 0 3px rgba(255, 248, 225, .35), inset 0 0 22px rgba(120, 80, 30, .28), 0 0 0 2px rgba(142, 31, 31, .25); }
+.bub.q.pre { border-color: var(--teal-ink); }
+.qtag { background: var(--crimson); color: #fbe9c8; border-radius: 3px; font-family: var(--f-min); }
+.pre .qtag { background: var(--teal-ink); }
+.row.me .bub { background: linear-gradient(180deg, #5a3720, #3f2515); color: #f6e6c4; border: 1.5px solid #9a6b3b; box-shadow: inset 0 0 0 2px rgba(255, 220, 150, .08), 0 4px 12px -6px #000; border-radius: 16px 6px 4px 16px; }
+.sto { color: #f0dcae; text-shadow: 0 0 14px rgba(255, 170, 70, .45); }
+.sto::before, .sto::after { content: '❦'; display: block; font-size: 14px; color: var(--gold2); opacity: .8; }
+.sto::after { transform: rotate(180deg); }
+.dots b { background: var(--ink2); }
+.row .av, .t-av { filter: drop-shadow(0 0 6px rgba(255, 200, 100, .35)); }
+
+/* 金箔のボタン */
+.btn, .rp, .cta {
+  color: #2a1608; background: linear-gradient(180deg, #fbe6a8 0%, #e9be5b 45%, #c48a2c 100%);
+  border: 1.5px solid #7a5216; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), inset 0 -2px 0 rgba(90, 50, 10, .35), 0 3px 0 #5b3a0e, 0 0 20px -8px #f0c75e;
+}
+.btn { border-radius: 10px; font-family: var(--f-min); font-weight: 800; letter-spacing: .05em; }
+.btn:active, .rp:active { transform: translateY(2px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 1px 0 #5b3a0e; }
+.btn.sub, .rp.why, .qb, .bld-bar button, .back, #tQuit, .bt-quit, .rt-skip, .sh-close {
+  color: #f3e3c0; background: linear-gradient(180deg, #5a3720, #3a2213); border: 1.5px solid #8a5f33; box-shadow: inset 0 1px 0 rgba(255, 220, 160, .15), 0 3px 0 #1e1209;
+}
+.rp { border-radius: 10px; font-family: var(--f-min); }
+.rp.why { color: #bff0dc; }
+.op { color: var(--ink); background: radial-gradient(120% 140% at 50% 40%, var(--parch) 55%, var(--parch2) 100%); border: 1.5px solid var(--parch-edge); border-radius: 8px; box-shadow: 0 3px 0 #6b4a2b; }
+.op small { color: var(--ink2); }
+.op.right { background: #cfe7c3; border-color: #2f6b3a; } .op.wrong { background: #f0c4bc; border-color: var(--crimson); }
+.opts.mols .op { background: #1b130d; border-color: #8a5f33; }
+.wait { color: #c9b48c; }
+#tray { background: linear-gradient(transparent, rgba(18, 12, 8, .96) 24%); }
+
+/* ---------- 羊皮紙の上の Tips・カード ---------- */
+.tipcard { border-color: #8a6a35; }
+.tc-tag { background: var(--teal-ink); color: #f1e3c2; border-radius: 3px; font-family: var(--f-min); }
+.tipcard b { color: #2a1309; font-family: var(--f-min); }
+details summary { color: var(--teal-ink); }
+.bub details summary, .tipcard details summary, .sh details summary { color: var(--teal-ink); }
+details p { background: rgba(120, 80, 30, .1); color: var(--ink); }
+.spcard b { color: #4a2a0c; }
+.spcard small { color: var(--ink2); }
+.spcard .link { color: var(--crimson); }
+.piccard b { color: var(--crimson); font-family: var(--f-min); }
+/* 魔法陣は暗い石板の上 */
+.molcard, .bcard { background: radial-gradient(90% 90% at 50% 45%, #2a1d14, #120c08); border: 2px solid #6b4a2b; outline: 1px solid rgba(240, 199, 94, .25); outline-offset: -6px; border-radius: 12px; color: #f2e6cc; }
+.molcard small, .molcard p span { color: #b9a582; }
+.pic .bb, .pic .bh { stroke: #6b4a2b; }
+.piccard .pic .at-C circle { fill: #3a2c6e; }
+
+/* ---------- 地図（羊皮紙の古地図・封蝋） ---------- */
+.ch { border-radius: 6px; padding: 16px 14px 8px; position: relative; }
+.ch::before { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(107, 74, 43, .45); border-radius: 3px; pointer-events: none; }
+.ch h2 { color: #3a1c0c; text-align: center; letter-spacing: .1em; }
+.ch h2 small { color: var(--crimson); font-family: 'Cinzel', var(--f-min); letter-spacing: .3em; }
+.ch h2::after { content: '— ❧ —'; display: block; font-size: 12px; color: var(--ink2); letter-spacing: .2em; margin-top: 2px; }
+.soon { color: var(--ink2); }
+.path::before { background: repeating-linear-gradient(var(--crimson) 0 6px, transparent 6px 12px); opacity: .55; }
+.nd-t b { color: #2a1309; font-family: var(--f-min); font-size: 16px; }
+.nd-t small { color: var(--ink2); }
+.nd-ic { background: #d9c08a; border: 2px solid var(--ink2); color: var(--ink2); }
+.nd.done .nd-ic { background: radial-gradient(circle at 40% 35%, #c9473a, var(--crimson) 70%); border-color: #5a1010; color: #fbe0a8; box-shadow: 0 2px 0 #3d0b0b; }
+.nd.now .nd-ic { background: radial-gradient(circle at 40% 35%, #fff2c0, #e0b24a); border-color: #7a5216; color: #4a2a0c; }
+.nd.boss .nd-ic { background: radial-gradient(circle at 40% 35%, #555, #1e1e1e); border-color: #000; color: #ffd0c8; }
+.nd.boss.done .nd-ic { background: radial-gradient(circle at 40% 35%, #c9473a, var(--crimson) 70%); }
+.nd.lock { opacity: .55; filter: grayscale(.6); }
+.st { color: #b8860b; } .st u { color: rgba(107, 74, 43, .35); }
+.rk { font-family: 'Cinzel', serif; font-weight: 900; }
+.r-S { color: #b8860b; text-shadow: none; } .r-A { color: var(--teal-ink); } .r-B { color: var(--ink2); }
+
+/* ---------- タイトル・ホーム ---------- */
+#start { background: radial-gradient(70% 50% at 50% 35%, rgba(255, 170, 70, .2), transparent 70%), linear-gradient(rgba(20, 13, 9, .96) 55%, rgba(20, 13, 9, .2)); }
+.crest { width: 112px; height: auto; filter: drop-shadow(0 0 18px rgba(240, 180, 80, .45)); }
+.st-logo small, .logo small { color: #c9b48c; font-family: var(--f-min); }
+.st-logo b, .logo { background: linear-gradient(180deg, #fff3c4 0%, #f0c75e 45%, #b07a22 100%); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: none; filter: drop-shadow(0 3px 0 #3a1f08) drop-shadow(0 0 18px rgba(240, 180, 80, .45)); }
+.st-logo b i, .logo i { color: transparent; }
+.st-en, .logo-en { display: block; margin-top: 4px; font: 700 13px 'Cinzel', serif; letter-spacing: .5em; color: #d8b56a; }
+.st-logo em { font: 800 17px var(--f-min); color: #f3e3c0; letter-spacing: .1em; }
+.st-press { font: 700 14px 'Cinzel', serif; letter-spacing: .4em; color: #f3e3c0; }
+.st-note { color: #a8916a; }
+.h-ti { color: #f0c75e; font-family: var(--f-min); }
+.h-mp { background: linear-gradient(180deg, #5a3720, #3a2213); border: 1.5px solid #8a5f33; color: #d9c49a; }
+.h-mp b { color: #f0c75e; }
+.cta { border-radius: 8px; position: relative; text-align: center; align-items: center; }
+.cta::before, .cta::after { content: '✦'; position: absolute; top: 50%; transform: translateY(-50%); color: #7a5216; font-size: 14px; }
+.cta::before { left: 12px; } .cta::after { right: 12px; }
+.cta b { font-family: var(--f-min); }
+.qb { border-radius: 8px; }
+.hero-c { opacity: .7; }
+
+/* ---------- トークの見出し ---------- */
+.t-head { background: linear-gradient(180deg, #3a2213, #24150b); border-bottom: 2px solid #8a5f33; box-shadow: 0 2px 0 rgba(240, 199, 94, .2); }
+.t-mid b { font-family: var(--f-min); color: #f6e6c4; }
+.t-mid span { color: #b9a582; }
+.t-mp b { color: #f0c75e; }
+
+/* ---------- 錬成の素材 ---------- */
+.pal-hint { color: #b9a582; }
+.b-mis { color: #f6e6c4; font-family: var(--f-min); }
+.bld-fill { color: #082a20 !important; background: linear-gradient(180deg, #a8f0d4, #4fbf98) !important; border-color: #1d5c4c !important; }
+
+/* ---------- 詠唱の儀式 ---------- */
+#ritual { background: #0b0705; background: radial-gradient(80% 50% at 50% 30%, color-mix(in srgb, var(--ac) 18%, #1a100a), #070403 75%); }
+.cd { background: radial-gradient(120% 140% at 50% 40%, var(--parch) 55%, var(--parch2) 100%); color: var(--ink); border: 1.5px solid var(--parch-edge); border-radius: 6px; box-shadow: 0 3px 0 #4a2c14; }
+.cd small { color: var(--ink2); }
+.cd.on { background: radial-gradient(120% 140% at 50% 40%, #fff3c4 55%, #f0c75e 100%); border-color: #7a5216; box-shadow: 0 0 18px -2px #f0c75e, 0 3px 0 #4a2c14; }
+.rt-lab { color: #c9b48c; font-family: var(--f-min); }
+.rt-attr { background: rgba(20, 12, 6, .7); }
+.btn.fire { font: 800 20px var(--f-min); letter-spacing: .3em; }
+
+/* ---------- ボス戦 ---------- */
+#battle { background: radial-gradient(90% 50% at 50% 20%, rgba(120, 30, 20, .35), transparent 70%); }
+.bt-name b { font-family: var(--f-min); font-weight: 800; color: #ffcfb8; letter-spacing: .1em; }
+.bt-hp { border-radius: 3px; border: 2px solid #8a5f33; background: #1e0b07; }
+.bt-hp i { background: linear-gradient(180deg, #e0523f, #8e1f1f); }
+.bt-say { color: #f2e6cc; }
+.bt-say b { color: #ffcfb8; }
+.bt-panel { border-radius: 6px; }
+.bt-q { color: #2a1309; }
+.bt-time { background: rgba(80, 50, 20, .25); }
+.bt-time i { background: var(--teal-ink); }
+.bt-why { background: rgba(120, 80, 30, .12); }
+.bt-rule b { color: var(--crimson); font-family: var(--f-min); }
+.bt-end small { color: var(--ink2); }
+.bt-end .rank { font-family: 'Cinzel', serif; font-weight: 900; }
+.bt-end p { color: var(--ink); }
+.rt-get { color: #8a5a10; }
+.bt-panel .b-host .mcw.bw { background: radial-gradient(closest-side, #2a1d14, #120c08); border-radius: 50%; }
+.bt-panel .pal-hint { color: var(--ink2); }
+.bt-panel .b-msg small { color: var(--ink2); }
+.boss-mirage .bt-boss { width: min(30vw, 120px); }
+
+/* ---------- 結果・シート ---------- */
+.rs { border-radius: 6px; }
+.rs small { color: var(--ink2); }
+.rs h2 { color: #3a1c0c; }
+.rs h2 span { font: 900 32px 'Cinzel', var(--f-min); color: var(--crimson); letter-spacing: .1em; }
+.rs-st { color: #c9962f; text-shadow: 0 1px 0 #6b4a2b; }
+.rs li { background: rgba(120, 80, 30, .12); }
+.rs li b { color: var(--crimson); }
+.rs-ti b { color: #5a2a8a; }
+.sh { border-radius: 10px 10px 0 0; }
+.sh-t { color: #3a1c0c; }
+.sh-sub, .sh .note { color: var(--ink2); }
+.bk { background: rgba(255, 250, 235, .45); color: var(--ink); border-radius: 6px; }
+.bk > b { color: #3a1c0c; }
+.bk > small { color: var(--ink2); }
+.stg { background: rgba(120, 80, 30, .15); }
+.scroll h3 { color: #2a1309; text-shadow: none; }
+.sc-attr { color: var(--crimson); }
+.sc-eq { background: rgba(255, 250, 235, .6); border-color: var(--parch-edge); color: #2a1309; }
+.sc-cond { color: var(--ink2); }
+.sc-trap { background: rgba(142, 31, 31, .08); border-color: rgba(142, 31, 31, .4); color: var(--ink); }
+.sc-trap b { color: var(--crimson); }
+.sc-chant { background: #1a110b; }
+.sc-chant b { color: #b9a582; }
+.sc-chant p { color: #f0c75e; }
+.sc-stage { color: var(--ink2); }
+.set label { background: rgba(255, 250, 235, .45); color: var(--ink); }
+#tipPop { color: var(--ink); }
+#tipPop b { color: var(--teal-ink); }
+#tipPop::before { border-bottom-color: var(--parch); }
+#tipPop.up::before { border-top-color: var(--parch2); }
+
+/* ---------- 叩きつけ文字 ---------- */
+.sl b { font-family: 'Cinzel', var(--f-min); font-weight: 900; color: #fff3c4; -webkit-text-stroke: 1px #3a1f08; text-shadow: 0 0 30px rgba(240, 180, 80, .7), 3px 3px 0 #3a1f08; }
+.sl.boss b { color: #ffcfb8; text-shadow: 0 0 34px #b8322a, 3px 3px 0 #2a0505; }
