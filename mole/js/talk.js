@@ -235,6 +235,8 @@
           if (ok) { if (tries === 1) hit($('.k-ok', tray)); else { M.snd.pop(); refreshCount(false); } setTray(''); res({ ok: true, tries: tries }); return; }
           if (tries === 1) miss($('.k-ok', tray));
           clear();
+          /* 2段階の計算（parts あり）は、まちがえたら1段階ずつの問題に分ける */
+          if (tries === 1 && s.parts) { setTray(''); res({ ok: false, split: true }); return; }
           if (tries === 1 && s.hint) { say('ちょっとちがうみたい。\n💡 ' + s.hint, 'think').then(fitTray); return; }
           setTray(''); res({ ok: false, tries: tries });
         });
@@ -244,6 +246,11 @@
     }).then(function (o) {
       alive(r);
       if (o.ok) return say(o.tries === 1 ? (s.ok || M.pick(PRAISE)) : '今度は正解！ ヒントから立て直せたね。', o.tries === 1 ? (r.combo >= 3 ? 'wow' : 'happy') : 'happy');
+      if (o.split) {
+        return say('ちょっとちがうみたい。\nこれは2段階の計算だね。\n2つに分けて、1つずつやってみよう！', 'think')
+          .then(function () { return play(s.parts); })
+          .then(function () { return say('2つつなげると、答えは ' + M.numText(s.ans) + (s.unit ? ' ' + s.unit : '') + '。\nこれで、さっきの問題も解けたね！', 'proud'); });
+      }
       return say('おしい！ いっしょに解いてみよう。', 'oops').then(function () {
         return steps(s.steps || [], s.ans, s.unit);
       });
@@ -400,7 +407,7 @@
   /* ---------- 問題プール → 台本の形に ---------- */
   function norm(item) {
     var q = item.gen ? M.genQ(item.gen) : item;
-    if (q.num != null && q.opts == null) return { num: q.q, ans: q.num, unit: q.unit, hint: q.hint, steps: q.steps, src: item };
+    if (q.num != null && q.opts == null) return { num: q.q, ans: q.num, unit: q.unit, hint: q.hint, steps: q.steps, parts: q.parts, src: item };
     var order = M.shuffle(q.opts.map(function (o, i) { return i; }));
     return { ask: q.q, opts: order.map(function (i) { return q.opts[i]; }), a: order.indexOf(q.a), why: q.why, src: item };
   }
