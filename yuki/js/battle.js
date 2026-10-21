@@ -113,6 +113,8 @@
         else setTimeout(function () { B.clear(); }, 1400);
       },
       bad: function (m) { msg.innerHTML = '<b class="ng">' + fmt(m) + '</b>'; Y.se('wrong'); },
+      /* ボス戦のヒントは、残り時間と引きかえ */
+      hint: function () { t0 -= 15000; if (window.FX) FX.floatText(innerWidth / 2, 120, '−15 秒', '#ff6b7a'); },
       change: function () {}
     });
     timer = setInterval(function () {

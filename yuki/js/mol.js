@@ -341,7 +341,10 @@
    *     パーツも素材（C・O・H）を使う。つなぐ手は 1 本だけで、残りの手には H が最初から付いている
    *     （芳香族の章では、ベンゼン環をパーツにする予定）
    *
-   *  puzzle = { mat: { C: 2, H: 6, O: 0 }, hFill: true, parts: ['CH3'],
+   *  わからないとき：「💡 ヒント」を押すたびに、hints の文が1つずつ出る。最後は「攻略の書」（まだ見つけていない答えの構造式）。
+   *  まちがいが2回つづくと、ヒントのボタンがゆれて知らせる
+   *
+   *  puzzle = { mat: { C: 2, H: 6, O: 0 }, hFill: true, parts: ['CH3'], hints: ['…', '…'],
    *             answers: [{ name, yomi, set: 'C:r1 C:r2', note }] }
    *  cb = { found(ans, n), dup(ans), bad(msg), change() }
    * ========================================================= */
@@ -353,10 +356,10 @@
   Y.Build = function (host, pz, cb) {
     cb = cb || {};
     var found = [], mats = ['C', 'O', 'H'].filter(function (k) { return pz.mat[k] > 0; }), parts = pz.parts || [];
-    var heavy, hs, bonds, hist, sel = null, lock = false, seq = 0;
+    var heavy, hs, bonds, hist, sel = null, lock = false, seq = 0, hintLv = 0, stuck = 0;
     pz.answers.forEach(function (a) { a._c = canon(parseSet(a.set)); });
     host.innerHTML = '<div class="bld"><div class="mcw bw">' + circleSVG('b' + (++uid)) + '</div>' +
-      '<div class="bld-pal"></div><div class="bld-bar"><button class="bld-undo" type="button">↶ ひとつ戻す</button>' +
+      '<div class="bld-pal"></div><div class="bld-hint" hidden></div><div class="bld-bar"><button class="bld-hintb" type="button">💡 ヒント</button><button class="bld-undo" type="button">↶ ひとつ戻す</button>' +
       (pz.hFill ? '<button class="bld-fill" type="button">💧 水素の詠唱（残りの手を H で）</button>' : '') +
       '<button class="bld-clr" type="button">↺ やり直す</button></div></div>';
     var w = host.querySelector('.mcw'), svg = w.querySelector('svg'), gm = w.querySelector('.mc-mol'), pal = host.querySelector('.bld-pal');
@@ -481,6 +484,7 @@
       var free = sockets().length, rest = mats.reduce(function (n, m) { return n + left(m); }, 0);
       if (!Object.keys(heavy).length) return;
       if (free && rest) return;   /* まだ作っている途中 */
+      if (free || rest) nudge();
       if (free && !rest) { if (cb.bad) cb.bad('素材を使いきったのに、空いている手が ' + free + ' 本ある。魔法陣が光らない…'); w.classList.add('fz'); setTimeout(function () { w.classList.remove('fz'); }, 600); return; }
       if (!free && rest) { if (cb.bad) cb.bad('手は全部うまったのに、素材が余っている。骨組みを見直そう'); return; }
       /* 手も素材もぴったり → 形をくらべる */
@@ -490,9 +494,10 @@
       var c = canonG(els, adj), ans = null;
       for (var k in els) if (els[k] === 'O' && adj[k].some(function (x) { return els[x] === 'O'; })) { if (cb.bad) cb.bad('O どうしをつなぐ形は、この冒険では使わない（不安定）'); return; }
       pz.answers.forEach(function (a) { if (a._c === c) ans = a; });
-      if (!ans) { if (cb.bad) cb.bad('魔法陣は光った…でも、今回のミッションの形ではない'); return; }
+      if (!ans) { nudge(); if (cb.bad) cb.bad('魔法陣は光った…でも、今回のミッションの形ではない'); return; }
       if (found.indexOf(ans) >= 0) { if (cb.dup) cb.dup(ans); return; }
       found.push(ans); w.classList.add('lit');
+      hintLv = 0; stuck = 0; hintEl.hidden = true; hb.classList.remove('nudge');
       if (cb.found) cb.found(ans, found.length);
     }
     /* ---- ドラッグ（指・マウス共通）とタップ ---- */
@@ -538,6 +543,24 @@
       place(sel, sockets()[+g.getAttribute('data-sock')]);
     });
     host.querySelector('.bld-undo').onclick = function () { if (!lock) undo(); };
+    /* ---- ヒント（押すたびにくわしく → 最後は攻略の書） ---- */
+    var hintEl = host.querySelector('.bld-hint'), hb = host.querySelector('.bld-hintb');
+    function nudge() { if (++stuck >= 2) hb.classList.add('nudge'); }
+    hb.onclick = function () {
+      if (lock) return;
+      var target = pz.answers.filter(function (a) { return found.indexOf(a) < 0; })[0]; if (!target) return;
+      var texts = (pz.hints && pz.hints.length ? pz.hints : ['C の手は 4 本、O は 2 本、H は 1 本。\nどの原子も手が全部うまれば、魔法陣が光る。']).concat(target.hint ? [target.hint] : []);
+      var lv = Math.min(hintLv, texts.length), all = texts.length + 1;
+      hintEl.hidden = false; hb.classList.remove('nudge');
+      if (lv < texts.length) {
+        hintEl.innerHTML = '<b>💡 ヒント ' + (lv + 1) + ' / ' + all + '</b><p>' + Y.fmt(texts[lv]) + '</p>' + (lv + 1 < all ? '<small>もう一度押すと、もっとくわしく</small>' : '');
+      } else {
+        hintEl.innerHTML = '<b>📖 攻略の書（' + all + ' / ' + all + '）</b><p>「' + Y.esc(target.name) + '」の形。これをまねして錬成しよう（H は自分でつなぐ）</p>' + Y.Mol.pic(target.set);
+      }
+      hintLv = lv + 1;
+      Y.se('coin');
+      if (cb.hint) cb.hint(lv);
+    };
     host.querySelector('.bld-clr').onclick = function () { if (!lock) { Y.se('whoosh'); reset(); } };
     var fb = host.querySelector('.bld-fill');
     if (fb) fb.onclick = function () {

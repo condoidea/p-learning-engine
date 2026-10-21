@@ -120,7 +120,7 @@
   R.close = close;
 
   R.run = function (spec) {
-    var goal = Y.SPELLS[spec.goal], pool = spec.pool || [spec.goal], tries = 0;
+    var goal = Y.SPELLS[spec.goal], pool = spec.pool || [spec.goal], tries = 0, lastFz = '';
     open(spec);
     var base = Y.MOLS[goal.from];
     function setHead(sp) {
@@ -130,7 +130,8 @@
     function reset() {
       el.removeAttribute('data-attr'); view.attr('');
       view.load(base.s); view.lit(false);
-      el.querySelector('.rt-chant').innerHTML = '<p class="rt-src">' + esc(base.n) + ' <small>' + esc(base.f) + '</small></p>';
+      /* 不発のときの ひとこと・ヒントは、選び直している間も残しておく */
+      el.querySelector('.rt-chant').innerHTML = '<p class="rt-src">' + esc(base.n) + ' <small>' + esc(base.f) + '</small></p>' + lastFz;
       setHead(null);
     }
     return new Promise(function (resolve) {
@@ -156,10 +157,15 @@
           tries++;
           view.fizzle(); Y.se('wrong'); if (window.FX) FX.shake(el);
           var msg = (goal.ng && (goal.ng[sel.reagent] || goal.ng[sel.cond])) || '…何も起きない。魔法陣が反応しない';
-          el.querySelector('.rt-chant').innerHTML = '<p class="rt-fz">不発…</p><p class="rt-hint">' + Y.fmt(msg) + '</p>';
+          /* 2回目の不発からはヒント：まず試薬、3回目からは条件も */
+          var R0 = Y.CARDS[goal.reagent], C0 = Y.CARDS[goal.cond], tip = '';
+          if (tries >= 2 && !spec.auto) tip = '💡 試薬は「' + R0.t + '」' + (tries >= 3 && spec.conds && spec.conds.length ? '、条件は「' + C0.t + '」' : '') + '。くわしくは、テトラの話を思い出そう';
+          lastFz = '<p class="rt-hint">不発：' + Y.fmt(msg) + '</p>' + (tip ? '<p class="rt-tip">' + Y.esc(tip) + '</p>' : '');
+          el.querySelector('.rt-chant').innerHTML = '<p class="rt-fz">不発…</p>' + lastFz;
           return Y.sleep(900).then(function () { busy = false; pick(); });
         }
         var sp = Y.SPELLS[id];
+        lastFz = '';
         setHead(sp);
         var pre = id === spec.goal ? Promise.resolve() : (window.FX ? (FX.slam('暴発！？', 'warn'), Y.sleep(900)) : Y.sleep(500));
         return pre.then(function () { return chant(sp, id); }).then(function () {
