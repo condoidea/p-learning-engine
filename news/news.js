@@ -1,36 +1,73 @@
 /* =========================================================
- * news.js — 新しいアプリのお知らせ（ほかのアプリを開いたときに1回だけ出すモーダル）
+ * news.js — アプリのお知らせ（中央管理）
  *
- *  使い方：各アプリの入口 HTML の </body> の前に
- *    <script src="news/news.js?v=1"></script>
- *  を1行足すだけ。見た目のスタイルはこのファイルの中だけ（le-news- で始まる名前）なので、
- *  各アプリの CSS・JS には影響しない。
+ *  すべてのアプリの入口 HTML の </body> の前に、この1行を入れておく（一度入れたら、もう触らない）
+ *    <script src="news/news.js?v=2"></script>
+ *  お知らせを足す・やめるときは、下の ITEMS を書きかえるだけ。各アプリのファイルは触らない。
+ *  見た目のスタイルはこのファイルの中だけ（le-news- で始まる名前）なので、各アプリの CSS・JS には影響しない。
  *
- *  出す条件（どちらも満たすとき）
- *   ・このアプリでは、まだ出していない（アプリごとに1回だけ）
- *   ・お知らせ先のアプリ（モル教室）を、まだ一度も開いていない
- *  閉じるのは「閉じる」ボタンだけ（背景のタップや Esc では閉じない）。
+ *  1件のお知らせを出す条件（ぜんぶ満たすとき）
+ *   ・そのアプリでは、まだ出していない（アプリごとに1回だけ。単語アプリはデッキごと）
+ *   ・お知らせ先のアプリ（url）を、まだ一度も開いていない
+ *   ・exclude に入っていないアプリ（お知らせ先のアプリ自身でも出さない）
+ *   ・until（あれば）の日付をすぎていない
+ *  同時に出せるのは1件だけ（ITEMS の上にあるものから）。閉じるのは「閉じる」ボタンだけ。
+ *
+ *  「開いたか」の記録：このファイルを読み込んだアプリは、開いたときに le.news.visited.<ファイル名> を残す
  * ========================================================= */
 (function () {
   'use strict';
-  var NEWS = {
-    id: 'mole',
-    url: 'mole.html',
-    /* モル教室を開いたことがあるか（mole/js/app.js が開いたときに立てる印と、学習記録） */
-    opened: function () { return get('le.news.mole.opened') || get('mole.v1'); }
-  };
-  /* テスト中（?e2e）や、モル教室そのものでは出さない */
-  if (/[?&]e2e\b/.test(location.search) || /mole\.html$/.test(location.pathname)) return;
+
+  /* =========================================================
+   * お知らせの一覧（ここだけ書きかえる）
+   *  id       お知らせの名前（記録に使う。あとから変えない）
+   *  url      お知らせ先のアプリ（入口のファイル名）
+   *  opened   url のほかに「開いたことがある」とみなす記録（昔の記録など）
+   *  exclude  このお知らせを出さないアプリ（ファイル名）
+   *  until    この日まで出す（'2026-12-31' の形。なければずっと）
+   *  face     先生の絵（'molmo' ＝ モルモ先生。なければ絵なし）
+   *  tag / title / sub / body / go   表示する文（body は HTML）
+   * ========================================================= */
+  var ITEMS = [
+    {
+      id: 'mole',
+      url: 'mole.html',
+      opened: ['le.news.mole.opened', 'mole.v1'],
+      exclude: ['relativo.html'],
+      face: 'molmo',
+      tag: 'NEW!',
+      title: '新しいアプリが<br>できたよ！',
+      sub: '🧪 化学基礎・物質量（モル）',
+      body: 'はじめまして、モルモ先生だよ！<br>わたしとおしゃべりしながら、<b>mol（モル）</b>の基本を覚えよう。1回 3〜4分、クリアするたびに結晶が育つよ。',
+      go: '▶ モル教室をのぞいてみる'
+    }
+  ];
 
   function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* 保存できない環境 */ } }
 
-  /* アプリの見分け：ファイル名（単語アプリはデッキごと） */
-  var file = (location.pathname.split('/').pop() || 'index.html');
+  /* このアプリの見分け：ファイル名（単語アプリはデッキごと） */
+  var file = location.pathname.split('/').pop() || 'index.html';
   var deck = /[?&]deck=([a-z0-9-]+)/.exec(location.search);
   var appKey = file + (deck ? '#' + deck[1] : '');
-  var seenKey = 'le.news.' + NEWS.id + '.seen.' + appKey;
-  if (get(seenKey) || NEWS.opened()) return;
+  var test = /[?&](e2e|sandbox)\b/.test(location.search);
+
+  /* 開いた記録（テストのときは残さない） */
+  if (!test) set('le.news.visited.' + file, String(Date.now()));
+  if (test) return;
+
+  function openedTarget(it) {
+    if (get('le.news.visited.' + it.url)) return true;
+    return (it.opened || []).some(function (k) { return !!get(k); });
+  }
+  function due(it) {
+    if (it.url === file || (it.exclude || []).indexOf(file) >= 0) return false;
+    if (it.until && new Date() > new Date(it.until + 'T23:59:59')) return false;
+    if (get('le.news.' + it.id + '.seen.' + appKey)) return false;
+    return !openedTarget(it);
+  }
+  var item = ITEMS.filter(due)[0];
+  if (!item) return;
 
   var CSS = [
     '.le-news-bg{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(20,30,40,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);opacity:0;transition:opacity .3s}',
@@ -55,16 +92,18 @@
     '@media (prefers-reduced-motion:reduce){.le-news-face,.le-news-dots i{animation:none}}'
   ].join('');
 
-  /* モルモ先生（にっこり顔） */
-  var FACE = '<svg class="le-news-face" viewBox="0 0 100 100" aria-hidden="true">' +
-    '<path d="M14 100 q2 -18 22 -20 h28 q20 2 22 20z" fill="#fff" stroke="#cfe3dc" stroke-width="2"/><path d="M36 80 l14 14 14 -14" fill="#5fd3b0" stroke="#cfe3dc" stroke-width="2"/>' +
-    '<ellipse cx="20" cy="30" rx="11" ry="9" fill="#c9783f" transform="rotate(-30 20 30)"/><ellipse cx="80" cy="30" rx="11" ry="9" fill="#c9783f" transform="rotate(30 80 30)"/>' +
-    '<ellipse cx="50" cy="55" rx="38" ry="31" fill="#e9a15b"/><path d="M50 26 q-9 14 -12 28 q-4 18 12 25 q16 -7 12 -25 q-3 -14 -12 -28z" fill="#fff7ec"/>' +
-    '<path d="M16 37 q34 -16 68 0" stroke="#3a8dff" stroke-width="3" fill="none"/><circle cx="38" cy="31" r="7.5" fill="#bfe6ff" stroke="#3a8dff" stroke-width="2.6"/><circle cx="62" cy="31" r="7.5" fill="#bfe6ff" stroke="#3a8dff" stroke-width="2.6"/>' +
-    '<path d="M30 53 q6 -8 12 0 M58 53 q6 -8 12 0" stroke="#2b1d16" stroke-width="3.2" fill="none" stroke-linecap="round"/>' +
-    '<ellipse cx="26" cy="62" rx="6" ry="3.6" fill="#ff8fa3" opacity=".55"/><ellipse cx="74" cy="62" rx="6" ry="3.6" fill="#ff8fa3" opacity=".55"/>' +
-    '<path d="M46.5 60 h7 q-3.5 5 -3.5 5 q0 0 -3.5 -5z" fill="#ff8fa3"/><path d="M43 67 q7 10 14 0 z" fill="#c2455a"/>' +
-    '<path d="M84 22 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2z" fill="#ffd23f"/><path d="M12 30 l1.4 4 4 1.4 -4 1.4 -1.4 4 -1.4 -4 -4 -1.4 4 -1.4z" fill="#ffd23f"/></svg>';
+  /* 先生の絵 */
+  var FACES = {
+    molmo: '<svg class="le-news-face" viewBox="0 0 100 100" aria-hidden="true">' +
+      '<path d="M14 100 q2 -18 22 -20 h28 q20 2 22 20z" fill="#fff" stroke="#cfe3dc" stroke-width="2"/><path d="M36 80 l14 14 14 -14" fill="#5fd3b0" stroke="#cfe3dc" stroke-width="2"/>' +
+      '<ellipse cx="20" cy="30" rx="11" ry="9" fill="#c9783f" transform="rotate(-30 20 30)"/><ellipse cx="80" cy="30" rx="11" ry="9" fill="#c9783f" transform="rotate(30 80 30)"/>' +
+      '<ellipse cx="50" cy="55" rx="38" ry="31" fill="#e9a15b"/><path d="M50 26 q-9 14 -12 28 q-4 18 12 25 q16 -7 12 -25 q-3 -14 -12 -28z" fill="#fff7ec"/>' +
+      '<path d="M16 37 q34 -16 68 0" stroke="#3a8dff" stroke-width="3" fill="none"/><circle cx="38" cy="31" r="7.5" fill="#bfe6ff" stroke="#3a8dff" stroke-width="2.6"/><circle cx="62" cy="31" r="7.5" fill="#bfe6ff" stroke="#3a8dff" stroke-width="2.6"/>' +
+      '<path d="M30 53 q6 -8 12 0 M58 53 q6 -8 12 0" stroke="#2b1d16" stroke-width="3.2" fill="none" stroke-linecap="round"/>' +
+      '<ellipse cx="26" cy="62" rx="6" ry="3.6" fill="#ff8fa3" opacity=".55"/><ellipse cx="74" cy="62" rx="6" ry="3.6" fill="#ff8fa3" opacity=".55"/>' +
+      '<path d="M46.5 60 h7 q-3.5 5 -3.5 5 q0 0 -3.5 -5z" fill="#ff8fa3"/><path d="M43 67 q7 10 14 0 z" fill="#c2455a"/>' +
+      '<path d="M84 22 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2z" fill="#ffd23f"/><path d="M12 30 l1.4 4 4 1.4 -4 1.4 -1.4 4 -1.4 -4 -4 -1.4 4 -1.4z" fill="#ffd23f"/></svg>'
+  };
 
   function show() {
     if (document.querySelector('.le-news-bg')) return;
@@ -75,15 +114,15 @@
     bg.className = 'le-news-bg';
     bg.setAttribute('role', 'dialog'); bg.setAttribute('aria-modal', 'true'); bg.setAttribute('aria-labelledby', 'le-news-title');
     bg.innerHTML = '<div class="le-news"><div class="le-news-dots">' + dots + '</div>' +
-      '<span class="le-news-tag">NEW!</span>' + FACE +
-      '<h2 id="le-news-title">新しいアプリが<br>できたよ！</h2>' +
-      '<p class="le-news-sub">🧪 化学基礎・物質量（モル）</p>' +
-      '<p class="le-news-bub">はじめまして、モルモ先生だよ！<br>わたしとおしゃべりしながら、<b>mol（モル）</b>の基本を覚えよう。1回 3〜4分、クリアするたびに結晶が育つよ。</p>' +
-      '<a class="le-news-go" href="' + NEWS.url + '">▶ モル教室をのぞいてみる</a>' +
+      (item.tag ? '<span class="le-news-tag">' + item.tag + '</span>' : '') + (FACES[item.face] || '') +
+      '<h2 id="le-news-title">' + item.title + '</h2>' +
+      (item.sub ? '<p class="le-news-sub">' + item.sub + '</p>' : '') +
+      (item.body ? '<p class="le-news-bub">' + item.body + '</p>' : '') +
+      '<a class="le-news-go" href="' + item.url + '">' + (item.go || '▶ ひらいてみる') + '</a>' +
       '<button type="button" class="le-news-close">閉じる</button></div>';
     document.body.appendChild(bg);
     /* 出した時点で、このアプリでは「出した」ことにする（アプリごとに1回だけ） */
-    set(seenKey, String(Date.now()));
+    set('le.news.' + item.id + '.seen.' + appKey, String(Date.now()));
     requestAnimationFrame(function () { requestAnimationFrame(function () { bg.classList.add('on'); }); });
     /* 閉じるのは「閉じる」ボタンだけ */
     bg.querySelector('.le-news-close').addEventListener('click', function () {
