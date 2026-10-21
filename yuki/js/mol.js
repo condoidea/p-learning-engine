@@ -386,7 +386,8 @@
    *     （芳香族の章では、ベンゼン環をパーツにする予定）
    *
    *  操作の練習：guide: [{ t: '…', until: 'heavy:1' | 'heavy:2' | 'sel:H' | 'h:6' | 'full', focus: 'C' | 'H' | 'fill' }] を順に出し、できたら次へ。
-   *    動くものに目が行く習性を使う：指示の文字は1つずつ出し、指示が指している物（素材・筆のボタン）を小さくはずませる
+   *    目線の誘導：いちばん見せたいのは「いま書き換わった指示」。動かすのは指示の文字だけ（1つずつ出す）。
+   *    指示が指している物（素材・筆のボタン）には、指示を出しきってから、動かない光の目印を静かにつける（読んでいる途中に目を奪わない）
    *  わからないとき：「💡 ヒント」を押すたびに、hints の文が1つずつ出る。最後は「攻略の書」（まだ見つけていない答えの構造式）。
    *  まちがいが2回つづくと、ヒントのボタンがゆれて知らせる
    *
@@ -563,7 +564,7 @@
       Y.chg(apEl);
     }
     /* ---- 操作の練習（ガイド）：条件を満たしたら次の指示へ ---- */
-    var gi = 0, gEl = null, gShown = -1;
+    var gi = 0, gEl = null, gShown = -1, cueAt = 0, cueT = 0;
     function guideTick() {
       var G = pz.guide; gEl = gEl || host.querySelector('.bld-guide');
       if (!G || !gEl) return;
@@ -578,11 +579,16 @@
         if (!ok) break;
         gi++; adv = true;
       }
-      if (gi >= G.length) { gEl.hidden = true; beckon(null); return; }
+      if (gi >= G.length) { gEl.hidden = true; beckon(null); host.classList.remove('quiet'); return; }
       gEl.hidden = false;
-      beckon(focusOf(G[gi]));
-      if (gShown === gi) return;   /* 同じ指示なら書きかえない */
+      if (gShown === gi) { beckon(Date.now() >= cueAt ? focusOf(G[gi]) : null); return; }   /* 同じ指示なら書きかえない */
       gShown = gi;
+      /* 目印は、指示の文字を出しきって読み終えるころ（文字数に合わせて）につける */
+      var wait = 900 + Y.plain(G[gi].t).length * 35;
+      cueAt = Date.now() + wait; beckon(null);
+      host.classList.add('quiet');   /* 新しい指示を読んでいる間は、ほかの物を動かさない（光る手の明滅も止める） */
+      clearTimeout(cueT); var me = gi;
+      cueT = setTimeout(function () { host.classList.remove('quiet'); if (gShown === me && !lock && !found.length) beckon(focusOf(G[me])); }, wait);
       gEl.innerHTML = '<b>🧭 練習 ' + (gi + 1) + ' / ' + G.length + '</b><p>' + Y.fmt(G[gi].t) + '</p>';
       Y.typeIn(gEl.querySelector('p'));
       if (adv) { gEl.classList.remove('swap'); void gEl.offsetWidth; gEl.classList.add('swap'); Y.se('coin'); }
@@ -597,10 +603,10 @@
       return null;
     }
     function beckon(f) {
-      Y.$$('.beckon', host).forEach(function (x) { x.classList.remove('beckon'); });
+      Y.$$('.cue', host).forEach(function (x) { x.classList.remove('cue'); });
       if (!f) return;
       var el = f === 'fill' ? host.querySelector('.bld-fill') : pal.querySelector('[data-el="' + f + '"]');
-      if (el && !el.disabled && !el.classList.contains('on')) el.classList.add('beckon');
+      if (el && !el.disabled && !el.classList.contains('on')) el.classList.add('cue');
     }
     function check() {
       w.classList.remove('lit');
