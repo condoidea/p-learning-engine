@@ -35,6 +35,13 @@ window.LE_COURSES = [
     desc: 'モルモットのモルモ先生とトークしながら、mol の基本を。正解するたびに粒がふえて、1 mol（6.0×10²³個）を目指す。クリアごとに結晶が育つ。',
     color: '#5fd3b0', color2: '#9b5cff', lessons: 10
   },
+  /* ¡QUE FUSIÓN!（relativo/）：エンジンを使わない独立アプリ。進み具合は lessons[id].done を数える（10レッスン。ボスは数えない） */
+  {
+    id: 'relativo', entry: 'relativo.html', storageKey: 'relativo.v1',
+    title: 'スペイン語 関係詞', brand: '¡QUE FUSIÓN!', icon: '⚡',
+    desc: '2つの文をタップで合体！ que・quien・前置詞＋冠詞＋que・donde・lo que・cuyo まで、西検4級の関係詞を1日30分×7日で。ボス戦・60秒ラッシュ・フレーズガチャつき。',
+    color: '#ff4fa3', color2: '#38e8ff', lessons: 10
+  },
   /* 単語アプリ（vocab/）：kind: 'vocab'。words＝デッキの語数（図鑑の進み具合の表示に使う） */
   {
     id: 'spanish', kind: 'vocab', entry: 'vocab.html', storageKey: 'vocab.spanish.v1',
