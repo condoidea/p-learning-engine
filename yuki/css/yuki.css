@@ -196,14 +196,12 @@ mark.k { background: linear-gradient(transparent 55%, rgba(255, 217, 138, .45) 5
 /* 書き換わった枠：ふわっと光る（Y.chg） */
 .chg { animation: chg 1s ease-out; }
 @keyframes chg { 0%, 25% { box-shadow: 0 0 0 3px rgba(255, 230, 150, .9), 0 0 26px 4px rgba(255, 210, 100, .85); filter: brightness(1.25); } 100% { box-shadow: none; filter: none; } }
-/* 魔法陣の上の知らせ（目線のある所に一瞬出して、下の説明へ誘導する） */
-.mc-toast { position: absolute; left: 50%; top: 8%; z-index: 3; transform: translateX(-50%); max-width: 92%; padding: 7px 14px; border-radius: 8px; text-align: center; font: 800 14.5px/1.4 var(--f-body); white-space: nowrap; pointer-events: none; color: #2a1608; background: linear-gradient(180deg, #fff3c4, #e9be5b); border: 1.5px solid #7a5216; box-shadow: 0 6px 18px -6px #000, 0 0 20px rgba(240, 199, 94, .6); opacity: 0; }
-.mc-toast small { display: block; font-size: 11.5px; font-weight: 700; opacity: .85; }
-.mc-toast.ok { color: #0b3326; background: linear-gradient(180deg, #d6fff0, #7fd6b8); border-color: #1d5c4c; }
-.mc-toast.ng { color: #fff; background: linear-gradient(180deg, #e0523f, #8e1f1f); border-color: #4a0d0d; white-space: normal; width: max-content; }
-.mc-toast.show { animation: toast 1.9s ease forwards; }
-@keyframes toast { 0% { opacity: 0; transform: translate(-50%, 10px) scale(.9); } 12% { opacity: 1; transform: translate(-50%, 0) scale(1.06); } 20% { transform: translate(-50%, 0) scale(1); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -6px); } }
-@keyframes toastFade { 0% { opacity: 0; } 10%, 80% { opacity: 1; } 100% { opacity: 0; } }
+/* 指示が指している物を小さくはずませる（動くものに目が行く習性で、次に触る所へ目を連れていく） */
+.beckon { animation: beckon 1.3s ease-in-out infinite; }
+@keyframes beckon { 0%, 100% { transform: translateY(0); box-shadow: 0 0 0 0 rgba(127, 214, 184, 0); } 40% { transform: translateY(-5px); box-shadow: 0 0 0 4px rgba(127, 214, 184, .55), 0 0 18px rgba(127, 214, 184, .7); } 60% { transform: translateY(0); } }
+/* 書き換わった指示の文字を、1つずつ出す（Y.typeIn） */
+.tw { animation: tin .2s ease-out both; }
+@keyframes tin { from { opacity: 0; } }
 @keyframes gdgo { from { transform: scale(.94); filter: brightness(1.6); } }
 .bld-hint { margin-top: 8px; padding: 10px 12px; border-radius: 6px; color: var(--ink, #3a2414); background: radial-gradient(120% 140% at 50% 40%, #f1e3c2 55%, #e3cb98 100%); border: 1.5px solid #b48a52; }
 .bld-hint b { display: block; color: #1d5c4c; font-size: 13px; }
@@ -458,10 +456,12 @@ body.in-ritual { overflow: hidden; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   /* 操作の練習の明滅は、動きではなく明るさの変化なので止めない（「視差効果を減らす」がオンでも目を引くように） */
   .bld-guide, .bld-guide.go { animation: gpulse 2.2s ease-in-out infinite !important; }
-  /* 書き換わりの知らせも、光と明るさだけなので止めない */
+  /* 書き換わりの光と、文字を1つずつ出すのも、動きではないので止めない */
   .bld-guide.swap { animation: gflash 1s ease-out, gpulse 2.2s ease-in-out 1s infinite !important; }
   .chg { animation: chg 1s ease-out !important; }
-  .mc-toast.show { animation: toastFade 1.9s ease forwards !important; }
+  .tw { animation: tin .2s ease-out both !important; }
+  /* 練習で次に触る物のはずみは、目線の案内そのものなので止めない（小さく・ゆっくり） */
+  .beckon { animation: beckon 1.3s ease-in-out infinite !important; }
 }
 
 /* =========================================================

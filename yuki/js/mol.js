@@ -385,7 +385,8 @@
    *     パーツも素材（C・O・H）を使う。つなぐ手は 1 本だけで、残りの手には H が最初から付いている
    *     （芳香族の章では、ベンゼン環をパーツにする予定）
    *
-   *  操作の練習：guide: [{ t: '…', until: 'heavy:1' | 'heavy:2' | 'sel:H' | 'h:6' | 'full' }] を順に出し、できたら次へ
+   *  操作の練習：guide: [{ t: '…', until: 'heavy:1' | 'heavy:2' | 'sel:H' | 'h:6' | 'full', focus: 'C' | 'H' | 'fill' }] を順に出し、できたら次へ。
+   *    動くものに目が行く習性を使う：指示の文字は1つずつ出し、指示が指している物（素材・筆のボタン）を小さくはずませる
    *  わからないとき：「💡 ヒント」を押すたびに、hints の文が1つずつ出る。最後は「攻略の書」（まだ見つけていない答えの構造式）。
    *  まちがいが2回つづくと、ヒントのボタンがゆれて知らせる
    *
@@ -406,26 +407,12 @@
     var found = [], mats = ['C', 'O', 'H'].filter(function (k) { return pz.mat[k] > 0; }), parts = pz.parts || [];
     var heavy, hs, bonds, hist, sel = null, lock = false, seq = 0, hintLv = 0, stuck = 0;
     pz.answers.forEach(function (a) { a._c = canon(parseSet(a.set)); });
-    host.innerHTML = '<div class="bld"><div class="mcw bw">' + circleSVG('b' + (++uid)) + '<div class="mc-toast" hidden></div></div>' +
+    host.innerHTML = '<div class="bld"><div class="mcw bw">' + circleSVG('b' + (++uid)) + '</div>' +
       '<div class="bld-guide" hidden></div><div class="bld-appr" hidden></div><div class="bld-pal"></div><div class="bld-hint" hidden></div><div class="bld-bar"><button class="bld-hintb" type="button">💡 ヒント</button><button class="bld-undo" type="button">↶ ひとつ戻す</button>' +
       (pz.hFill ? '<button class="bld-fill" type="button">🖌 水素の筆（残りの手を H で）</button>' : '') +
       '<button class="bld-clr" type="button">↺ やり直す</button></div></div>';
     var w = host.querySelector('.mcw'), svg = w.querySelector('svg'), gm = w.querySelector('.mc-mol'), pal = host.querySelector('.bld-pal');
-    /* ---- 目線の誘導：操作中は魔法陣を見ているので、知らせは魔法陣の上に一瞬出し、くわしい説明（下）へ目を向けさせる ---- */
-    var toastEl = null, toastT = 0;
-    function toast(html, kind) {
-      toastEl = toastEl || host.querySelector('.mc-toast');
-      clearTimeout(toastT);
-      toastEl.className = 'mc-toast ' + (kind || '');
-      toastEl.innerHTML = html; toastEl.hidden = false;
-      void toastEl.offsetWidth; toastEl.classList.add('show');
-      toastT = setTimeout(function () { toastEl.hidden = true; }, 1900);
-    }
-    function bad(m) {
-      if (cb.bad) cb.bad(m);
-      var first = String(m).split(/[。\n]/)[0];
-      toast('⚠ ' + Y.esc(first) + '<small>くわしくは下 ↓</small>', 'ng');
-    }
+    function bad(m) { if (cb.bad) cb.bad(m); }
     function reset() { heavy = {}; hs = []; bonds = []; hist = []; render(); }
     function left(el) {
       var P = PARTS[el];
@@ -566,24 +553,21 @@
       var br = a.loc.length ? a.loc.map(function (n) { return n + ' 番目'; }).join('・') + 'に枝（メチル）' : '枝なし';
       var same = null; found.forEach(function (f) { if (f._c === a.canon) same = f; });
       var key = a.canon + (same ? '!' : ''), fresh = apEl.hidden || apEl.getAttribute('data-k') !== key;
-      apEl.setAttribute('data-k', key);
       apEl.hidden = false;
+      if (!fresh) return;   /* 同じ鑑定なら書きかえない（文字を出し直さない） */
+      apEl.setAttribute('data-k', key);
       apEl.className = 'bld-appr' + (same ? ' warn' : '');
       apEl.innerHTML = '<b>🔎 鑑定</b> いちばん長い鎖は <em>C ' + a.len + ' つ</em>（番号の 1→' + a.len + '）・' + br +
         (pz.appraise === 'name' && a.name ? '<br>→ <strong>' + Y.esc(a.name) + '</strong>' : '') +
         (same ? '<br>⚠ もう作った「' + Y.esc(same.name) + '」と同じ形！ 鎖の長さと枝の番号が同じ' : '');
-      if (fresh) {
-        Y.chg(apEl);
-        if (same) toast('⚠ もう作った形と同じ！<small>鑑定を見て ↓</small>', 'ng');
-        else toast('🔎 鑑定が出た<small>下を見て ↓</small>', 'info');
-      }
+      Y.chg(apEl);
     }
     /* ---- 操作の練習（ガイド）：条件を満たしたら次の指示へ ---- */
-    var gi = 0, gEl = null;
+    var gi = 0, gEl = null, gShown = -1;
     function guideTick() {
       var G = pz.guide; gEl = gEl || host.querySelector('.bld-guide');
       if (!G || !gEl) return;
-      if (found.length || lock) { gEl.hidden = true; return; }
+      if (found.length || lock) { gEl.hidden = true; beckon(null); return; }
       var nH = Object.keys(heavy).length, adv = false;
       while (gi < G.length) {
         var u = String(G[gi].until).split(':'), ok = false;
@@ -594,10 +578,29 @@
         if (!ok) break;
         gi++; adv = true;
       }
-      if (gi >= G.length) { if (!gEl.hidden && adv) toast('✓ 練習クリア！', 'ok'); gEl.hidden = true; return; }
+      if (gi >= G.length) { gEl.hidden = true; beckon(null); return; }
       gEl.hidden = false;
+      beckon(focusOf(G[gi]));
+      if (gShown === gi) return;   /* 同じ指示なら書きかえない */
+      gShown = gi;
       gEl.innerHTML = '<b>🧭 練習 ' + (gi + 1) + ' / ' + G.length + '</b><p>' + Y.fmt(G[gi].t) + '</p>';
-      if (adv) { gEl.classList.remove('swap'); void gEl.offsetWidth; gEl.classList.add('swap'); Y.se('coin'); toast('✓ できた！<small>次の練習は下 ↓</small>', 'ok'); }
+      Y.typeIn(gEl.querySelector('p'));
+      if (adv) { gEl.classList.remove('swap'); void gEl.offsetWidth; gEl.classList.add('swap'); Y.se('coin'); }
+    }
+    /* 指示が指している物：focus があればそれ。なければ、待っている操作から決める */
+    function focusOf(g) {
+      if (g.focus) return g.focus;
+      var u = String(g.until).split(':')[0];
+      if (u === 'heavy') return 'C';
+      if (u === 'sel') return String(g.until).split(':')[1];
+      if (u === 'full' && pz.hFill && left('C') <= 0 && left('O') <= 0) return 'fill';
+      return null;
+    }
+    function beckon(f) {
+      Y.$$('.beckon', host).forEach(function (x) { x.classList.remove('beckon'); });
+      if (!f) return;
+      var el = f === 'fill' ? host.querySelector('.bld-fill') : pal.querySelector('[data-el="' + f + '"]');
+      if (el && !el.disabled && !el.classList.contains('on')) el.classList.add('beckon');
     }
     function check() {
       w.classList.remove('lit');

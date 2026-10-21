@@ -64,8 +64,28 @@
     if (window.FX) { FX.slam('LEVEL UP!', 'clear', 'Lv ' + L.lv + '　' + L.title); FX.confetti(60, 'gold'); }
   };
 
-  /* 中身が書き換わった枠を、ふわっと光らせる（パッと切り替わっても、変わったことに気づけるように） */
-  Y.chg = function (el) { if (!el) return; el.classList.remove('chg'); void el.offsetWidth; el.classList.add('chg'); };
+  /* 中身が書き換わった指示を、ふわっと光らせて、文字を1つずつ出す。
+   *  パッと切り替わっても気づかないので、指示そのものの動きで目線を引く（よそに知らせの文を増やさない）。
+   *  呼ぶのは中身を書きかえる前でも後でもよい（書きかえが終わってから文字を出す） */
+  Y.chg = function (el) {
+    if (!el) return;
+    el.classList.remove('chg'); void el.offsetWidth; el.classList.add('chg');
+    Promise.resolve().then(function () { Y.typeIn(el); });
+  };
+  Y.typeIn = function (el) {
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null), nodes = [], n;
+    while ((n = walker.nextNode())) if (!(n.parentNode.closest && n.parentNode.closest('svg,.tw'))) nodes.push(n);
+    var total = nodes.reduce(function (a, t) { return a + t.nodeValue.length; }, 0);
+    var step = Math.max(10, Math.min(34, 1000 / Math.max(1, total))), i = 0;   /* 長い文でも 1 秒くらいで出きる */
+    nodes.forEach(function (t) {
+      var f = document.createDocumentFragment();
+      Array.prototype.forEach.call(t.nodeValue, function (ch) {
+        var s = document.createElement('span'); s.className = 'tw'; s.textContent = ch;
+        s.style.animationDelay = Math.round(i++ * step) + 'ms'; f.appendChild(s);
+      });
+      t.parentNode.replaceChild(f, t);
+    });
+  };
 
   Y.save = function () { try { localStorage.setItem(Y.KEY, JSON.stringify(Y.S)); } catch (e) { /* 保存できない環境 */ } };
   Y.reset = function () { Y.S = blank(); Y.save(); };
