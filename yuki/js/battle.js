@@ -1,7 +1,7 @@
 /* =========================================================
  * yuki/battle.js — ボス戦
  *
- *  Y.Battle.run(boss) → Promise<{ win, rank, mp }>
+ *  Y.Battle.run(boss) → Promise<{ win, rank, exp }>
  *   kind: 'quiz'   問題に答えて攻撃。速く答えるとクリティカル（2倍）、3連続で FEVER（2倍）。まちがえると反撃（ライフ −1）
  *         'build'  時間内に錬成。ちがう形を作るたびに大ダメージ。同じ形を作ると幻影に惑わされて反撃
  *   HP を削りきったら、とどめの詠唱（finisher）。ライフ 3、0 で負け
@@ -149,14 +149,14 @@
     p.then(function () {
       $('.bt-boss', el).classList.add('gone');
       var rank = st.dmgTaken === 0 ? 'S' : st.dmgTaken === 1 ? 'A' : 'B';
-      var mp = { S: 120, A: 90, B: 60 }[rank];
-      Y.S.mp = (Y.S.mp || 0) + mp; Y.save();
+      var mp = { S: 120, A: 90, B: 60 }[rank], up = Y.addExp(mp);
+      if (up) setTimeout(function () { Y.levelUp(up); }, 1800);
       if (Y.Bgm) Y.Bgm.jingle('victory');
       if (window.FX) FX.confetti(150, 'rainbow');
       $('.bt-say', el).innerHTML = '';
-      $('.bt-panel', el).innerHTML = '<div class="bt-end"><small>' + esc(b.name) + ' を倒した！</small><b class="rank r-' + rank + '">' + rank + '</b><p>正解 ' + st.ok + ' ・ 受けたダメージ ' + st.dmgTaken + '<br>魔力 +' + mp + ' MP</p>' +
+      $('.bt-panel', el).innerHTML = '<div class="bt-end"><small>' + esc(b.name) + ' を倒した！</small><b class="rank r-' + rank + '">' + rank + '</b><p>正解 ' + st.ok + ' ・ 受けたダメージ ' + st.dmgTaken + '<br>経験値 +' + mp + ' EXP</p>' +
         (b.reward ? '<p class="rt-get">' + fmt(b.reward) + '</p>' : '') + '<button class="btn" data-a="ok">地図へ ▶</button></div>';
-      $('.bt-panel', el).onclick = function (e) { if (e.target.closest('[data-a]')) resolve({ win: true, rank: rank, mp: mp }); };
+      $('.bt-panel', el).onclick = function (e) { if (e.target.closest('[data-a]')) resolve({ win: true, rank: rank, exp: mp }); };
     });
   }
 

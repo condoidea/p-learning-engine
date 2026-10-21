@@ -426,7 +426,7 @@
         hs.push({ p: s.k, d: s.d, cls: quiet ? '' : 'pop' }); hist.push({ t: 'H' });
       } else {
         var A = heavy[s.k], x = A.x + DIRS[s.d][0], y = A.y + DIRS[s.d][1], why = cellFree(x, y, s.k);
-        if (why === 'ring') { if (cb.bad) cb.bad('そこに置くと、となりの原子ともつながって「輪（環）」になる。\n輪にすると手が 2 本へって、H が 2 つ少ない別の物質になる。いまの錬成は「鎖」だけ'); Y.se('wrong'); return false; }
+        if (why === 'ring') { if (cb.bad) cb.bad('そこに置くと、となりの原子とも手をつないで「輪（環）」になる。\n輪を閉じる 1 本で、2 つの原子が手を 1 本ずつ使う → H をつける手が 2 本へって、別の物質になる。いまの錬成は「鎖」だけ'); Y.se('wrong'); return false; }
         if (why) { if (cb.bad) cb.bad('そこには置けない（' + why + '）'); Y.se('wrong'); return false; }
         var id = 'a' + (++seq); heavy[id] = { el: el, x: x, y: y }; bonds.push([s.k, id]); hist.push({ t: 'h', id: id });
         if (P) partH(id);

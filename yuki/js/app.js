@@ -5,8 +5,7 @@
   'use strict';
   var Y = window.Y, $ = Y.$, $$ = Y.$$, esc = Y.esc, fmt = Y.fmt, S = function () { return Y.S; };
 
-  var TITLES = [[0, '見習い錬成士'], [200, '錬成士'], [500, '上級錬成士'], [900, '炭素の継承者'], [1400, '大錬成士']];
-  function title() { var mp = S().mp || 0, t = TITLES[0][1]; TITLES.forEach(function (x) { if (mp >= x[0]) t = x[1]; }); return t; }
+  function title() { return Y.level(S().exp).title; }
   function node(id) { return Y.BOSSES[id] ? { boss: Y.BOSSES[id] } : { L: Y.LESSONS.filter(function (l) { return l.id === id; })[0] }; }
   function done(id) { return !!(S().lessons[id] && S().lessons[id].done); }
   function unlocked(id) { var i = Y.ROUTE.indexOf(id); return i === 0 || done(Y.ROUTE[i - 1]); }
@@ -24,7 +23,10 @@
   var logoView = null;
   function home() {
     screen('home');
-    $('#hMp').textContent = S().mp || 0;
+    var LV = Y.level(S().exp);
+    $('#hLv').textContent = LV.lv;
+    $('#hXp').style.width = Math.round(LV.cur / LV.need * 100) + '%';
+    $('#hXpN').textContent = LV.cur + ' / ' + LV.need;
     $('#hTitle').textContent = title();
     if (!logoView) { logoView = Y.Mol.view($('#hCircle')); logoView.load({ atoms: {}, order: [], bonds: [] }); logoView.lit(true); }
     var nx = nextId();
@@ -71,8 +73,8 @@
     var d = $('#done');
     d.innerHTML = '<div class="rs"><small>' + esc(Y.CHAPTERS[L.ch].n) + '</small><h2>' + esc(L.title) + '<span>クリア！</span></h2>' +
       '<p class="rs-st">' + '★★★'.slice(0, stars) + '<u>' + '★★★'.slice(stars) + '</u></p>' +
-      '<ul><li>正解 <b>' + r.ok + ' / ' + r.total + '</b></li><li>魔力 <b>+' + r.mp + ' MP</b></li>' + (nt ? '<li>💡 Tips <b>+' + nt + '</b></li>' : '') + (ns ? '<li>📜 呪文 <b>+' + ns + '</b></li>' : '') + '</ul>' +
-      '<p class="rs-ti">称号：<b>' + esc(title()) + '</b></p><button class="btn" id="rsGo">地図へ ▶</button></div>';
+      '<ul><li>正解 <b>' + r.ok + ' / ' + r.total + '</b></li><li>経験値 <b>+' + r.exp + ' EXP</b></li>' + (nt ? '<li>💡 Tips <b>+' + nt + '</b></li>' : '') + (ns ? '<li>📜 呪文 <b>+' + ns + '</b></li>' : '') + '</ul>' +
+      '<p class="rs-ti">Lv ' + Y.level(S().exp).lv + '　称号：<b>' + esc(title()) + '</b></p><button class="btn" id="rsGo">地図へ ▶</button></div>';
     if (Y.Bgm) Y.Bgm.jingle('clear');
     if (window.FX) { FX.confetti(110, 'gold'); FX.slam('CLEAR!', 'clear'); }
     $('#rsGo').onclick = home;
@@ -146,7 +148,7 @@
     };
     b.oninput = function (e) { if (e.target.getAttribute('data-r') === 'vol') { st.vol = +e.target.value; Y.Bgm.setVol(); } };
     $('#stTest').onclick = function () { Y.Voice.unlock(); Y.Voice.say('ねつよ、ひゃくななじゅうの、ほむらとなれ'); };
-    $('#stReset').onclick = function () { if (confirm('記録（レッスン・呪文・Tips・魔力）をすべて消しますか？')) { Y.reset(); Y.closeSheet(); home(); } };
+    $('#stReset').onclick = function () { if (confirm('記録（レッスン・呪文・Tips・経験値）をすべて消しますか？')) { Y.reset(); Y.closeSheet(); home(); } };
   }
 
   /* ---------- はじまり（PRESS START：音と読み上げを使えるようにする最初のタップ） ---------- */

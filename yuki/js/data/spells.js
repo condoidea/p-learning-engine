@@ -32,6 +32,9 @@
     ethanol: { n: 'エタノール', f: 'C₂H₅OH', s: P('C c1 -1.2 0; C c2 0 0; O o 1.2 0; H ho 2.1 0; H h1a -1.2 -1; H h1b -1.2 1; H h1c -2.2 0; H h2a 0 -1; H h2b 0 1', 'c1-c2 c2-o o-ho c1-h1a c1-h1b c1-h1c c2-h2a c2-h2b') },
     dme: { n: 'ジメチルエーテル', f: 'CH₃OCH₃', s: P('C c1 -1.1 0; O o 0 0; C c2 1.1 0; H a1 -1.1 -1; H a2 -1.1 1; H a3 -2.1 0; H b1 1.1 -1; H b2 1.1 1; H b3 2.1 0', 'c1-o o-c2 c1-a1 c1-a2 c1-a3 c2-b1 c2-b2 c2-b3') },
     ethylene: { n: 'エチレン', f: 'C₂H₄', s: P('C c1 -0.6 0; C c2 0.6 0; H ha -1.2 -0.85; H hb -1.2 0.85; H hc 1.2 -0.85; H hd 1.2 0.85', 'c1=c2 c1-ha c1-hb c2-hc c2-hd') },
+    /* 輪（環）の例：C 4 つの輪。つなぎ目が 4 か所なので H は 8 つ */
+    cyclobutane: { n: 'シクロブタン', f: 'C₄H₈', s: P('C c1 -0.6 -0.6; C c2 0.6 -0.6; C c3 0.6 0.6; C c4 -0.6 0.6; H a1 -1.5 -0.6; H a2 -0.6 -1.5; H b1 1.5 -0.6; H b2 0.6 -1.5; H c1h 1.5 0.6; H c2h 0.6 1.5; H d1 -1.5 0.6; H d2 -0.6 1.5', 'c1-c2 c2-c3 c3-c4 c4-c1 c1-a1 c1-a2 c2-b1 c2-b2 c3-c1h c3-c2h c4-d1 c4-d2') },
+    butane: { n: 'ブタン', f: 'C₄H₁₀', s: P('C c1 -1.8 0; C c2 -0.6 0; C c3 0.6 0; C c4 1.8 0; H a1 -1.8 -1; H a2 -1.8 1; H a3 -2.8 0; H b1 -0.6 -1; H b2 -0.6 1; H c1h 0.6 -1; H c2h 0.6 1; H d1 1.8 -1; H d2 1.8 1; H d3 2.8 0', 'c1-c2 c2-c3 c3-c4 c1-a1 c1-a2 c1-a3 c2-b1 c2-b2 c3-c1h c3-c2h c4-d1 c4-d2 c4-d3') },
     /* まちがい探し用（手の数が合わない） */
     bad5: { n: '手が5本の C', f: '', bad: true, s: P('C c 0 0; H h1 0 -1; H h2 1 0; H h3 0 1; H h4 -1 0; H h5 0.75 -0.75', 'c-h1 c-h2 c-h3 c-h4 c-h5') },
     badO: { n: '手が3本の O', f: '', bad: true, s: P('C c 0 0; H h1 0 -1; H h2 0 1; H h3 -1 0; O o 1.1 0; H ha 1.1 -1; H hb 2.1 0', 'c-h1 c-h2 c-h3 c-o o-ha o-hb') },

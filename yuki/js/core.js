@@ -27,7 +27,7 @@
    *  settings    = { voice, bgm, sfx, vol, rate }
    * ========================================================= */
   function blank() {
-    return { v: 1, lessons: {}, spells: {}, tips: {}, mp: 0,
+    return { v: 1, lessons: {}, spells: {}, tips: {}, exp: 0,
       settings: { voice: true, bgm: true, sfx: true, vol: 0.6, rate: 1 } };
   }
   Y.load = function () {
@@ -37,9 +37,33 @@
     if (!s || s.v !== 1) return b;
     for (var k in b) if (!(k in s)) s[k] = b[k];
     for (var j in b.settings) if (!(j in s.settings)) s.settings[j] = b.settings[j];
+    if (s.mp != null) { s.exp = (s.exp || 0) + s.mp; delete s.mp; }   /* 昔の「魔力 MP」は経験値にうつす */
     return s;
   };
   Y.S = Y.load();
+  /* =========================================================
+   * 経験値とレベル（Lv n → n+1 に必要な経験値は 60＋30n）。レベルで称号が変わる
+   * ========================================================= */
+  var TITLES = [[1, '見習い錬成士'], [3, '錬成士'], [5, '上級錬成士'], [7, '炭素の継承者'], [10, '大錬成士']];
+  Y.level = function (exp) {
+    var lv = 1, rest = exp || 0;
+    while (rest >= 60 + lv * 30) { rest -= 60 + lv * 30; lv++; }
+    var t = TITLES[0][1]; TITLES.forEach(function (x) { if (lv >= x[0]) t = x[1]; });
+    return { lv: lv, cur: rest, need: 60 + lv * 30, title: t };
+  };
+  /* 経験値を足す。レベルが上がったら、新しいレベルを返す */
+  Y.addExp = function (n) {
+    var before = Y.level(Y.S.exp).lv;
+    Y.S.exp = (Y.S.exp || 0) + n; Y.save();
+    var after = Y.level(Y.S.exp);
+    return after.lv > before ? after : null;
+  };
+  Y.levelUp = function (L) {
+    if (!L) return;
+    Y.se('levelUp');
+    if (window.FX) { FX.slam('LEVEL UP!', 'clear', 'Lv ' + L.lv + '　' + L.title); FX.confetti(60, 'gold'); }
+  };
+
   Y.save = function () { try { localStorage.setItem(Y.KEY, JSON.stringify(Y.S)); } catch (e) { /* 保存できない環境 */ } };
   Y.reset = function () { Y.S = blank(); Y.save(); };
   /* 音の出口（engine/js/audio.js）は、BGM か効果音のどちらかがオンなら開く。効果音を鳴らすかどうかは Y.se が決める */

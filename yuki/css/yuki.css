@@ -527,6 +527,10 @@ details p { background: rgba(120, 80, 30, .1); color: var(--ink); }
 .h-ti { color: #f0c75e; font-family: var(--f-min); }
 .h-mp { background: linear-gradient(180deg, #5a3720, #3a2213); border: 1.5px solid #8a5f33; color: #d9c49a; }
 .h-mp b { color: #f0c75e; }
+.h-mp { display: flex; align-items: center; gap: 6px; font-family: 'Cinzel', var(--f-min); }
+.h-mp .xp { display: block; width: 64px; height: 6px; border-radius: 3px; background: #1e1209; overflow: hidden; border: 1px solid #8a5f33; }
+.h-mp .xp u { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #c99230, #fff3c4); transition: width .8s; }
+.h-mp small { font-size: 10.5px; color: #b9a582; font-family: var(--f-body); }
 .cta { border-radius: 8px; position: relative; text-align: center; align-items: center; }
 .cta::before, .cta::after { content: '✦'; position: absolute; top: 50%; transform: translateY(-50%); color: #7a5216; font-size: 14px; }
 .cta::before { left: 12px; } .cta::after { right: 12px; }

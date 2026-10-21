@@ -11,7 +11,7 @@
  *   { cast: { goal, pool, reagents, conds }, mission }   詠唱の儀式（ritual.js）
  *   { tip: 'honc' }                Tips カードを手に入れる（data/tips.js）
  *   { slam: '…' }                  画面のまん中にドン
- *  採点した問題の正解・まちがいで、魔力（MP）がふえる
+ *  正解・錬成・詠唱で経験値（EXP）がふえる。たまるとレベルアップ
  * ========================================================= */
 (function () {
   'use strict';
@@ -90,12 +90,13 @@
   }
   function me(html) { row('me', '<div class="bub">' + html + '</div>', 'me'); }
 
-  /* ---------- 魔力（MP） ---------- */
+  /* ---------- 経験値（EXP） ---------- */
   function gain(n, el) {
-    Y.S.mp = (Y.S.mp || 0) + n; Y.save();
-    run.mp += n;
-    $('#tMp').textContent = run.mp;
-    if (el && window.FX) { var c = FX.at(el); FX.floatText(c.x, c.y - 10, '+' + n + ' MP', '#ffd98a'); }
+    var up = Y.addExp(n);
+    run.exp += n;
+    $('#tMp').textContent = run.exp;
+    if (el && window.FX) { var c = FX.at(el); FX.floatText(c.x, c.y - 10, '+' + n + ' EXP', '#ffd98a'); }
+    if (up) setTimeout(function () { Y.levelUp(up); }, 500);
   }
   function hit(el) {
     run.ok++; run.total++; run.combo++;
@@ -255,12 +256,12 @@
     run: function (L) {
       log = $('#log'); tray = $('#tray');
       log.innerHTML = ''; setTray('');
-      var r = run = { L: L, used: {}, ok: 0, total: 0, miss: 0, combo: 0, mp: 0, face: 'normal' };
+      var r = run = { L: L, used: {}, ok: 0, total: 0, miss: 0, combo: 0, exp: 0, face: 'normal' };
       $('#tTitle').textContent = L.title; $('#tSub').textContent = L.sub || '';
       $('#tMp').textContent = '0';
       setFace('normal');
       if (Y.Bgm) Y.Bgm.play('village', 1);
-      return play(L.steps).then(function () { return { ok: r.ok, total: r.total, miss: r.miss, mp: r.mp }; });
+      return play(L.steps).then(function () { return { ok: r.ok, total: r.total, miss: r.miss, exp: r.exp }; });
     },
     abort: function () { if (run) { run.dead = true; if (run.skip) run.skip(); if (run.onAbort) run.onAbort(); } run = null; Y.Ritual.close(); },
     tapSkip: function () { if (run && run.skip) run.skip(); }
