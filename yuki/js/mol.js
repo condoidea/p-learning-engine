@@ -406,11 +406,26 @@
     var found = [], mats = ['C', 'O', 'H'].filter(function (k) { return pz.mat[k] > 0; }), parts = pz.parts || [];
     var heavy, hs, bonds, hist, sel = null, lock = false, seq = 0, hintLv = 0, stuck = 0;
     pz.answers.forEach(function (a) { a._c = canon(parseSet(a.set)); });
-    host.innerHTML = '<div class="bld"><div class="mcw bw">' + circleSVG('b' + (++uid)) + '</div>' +
+    host.innerHTML = '<div class="bld"><div class="mcw bw">' + circleSVG('b' + (++uid)) + '<div class="mc-toast" hidden></div></div>' +
       '<div class="bld-guide" hidden></div><div class="bld-appr" hidden></div><div class="bld-pal"></div><div class="bld-hint" hidden></div><div class="bld-bar"><button class="bld-hintb" type="button">💡 ヒント</button><button class="bld-undo" type="button">↶ ひとつ戻す</button>' +
       (pz.hFill ? '<button class="bld-fill" type="button">🖌 水素の筆（残りの手を H で）</button>' : '') +
       '<button class="bld-clr" type="button">↺ やり直す</button></div></div>';
     var w = host.querySelector('.mcw'), svg = w.querySelector('svg'), gm = w.querySelector('.mc-mol'), pal = host.querySelector('.bld-pal');
+    /* ---- 目線の誘導：操作中は魔法陣を見ているので、知らせは魔法陣の上に一瞬出し、くわしい説明（下）へ目を向けさせる ---- */
+    var toastEl = null, toastT = 0;
+    function toast(html, kind) {
+      toastEl = toastEl || host.querySelector('.mc-toast');
+      clearTimeout(toastT);
+      toastEl.className = 'mc-toast ' + (kind || '');
+      toastEl.innerHTML = html; toastEl.hidden = false;
+      void toastEl.offsetWidth; toastEl.classList.add('show');
+      toastT = setTimeout(function () { toastEl.hidden = true; }, 1900);
+    }
+    function bad(m) {
+      if (cb.bad) cb.bad(m);
+      var first = String(m).split(/[。\n]/)[0];
+      toast('⚠ ' + Y.esc(first) + '<small>くわしくは下 ↓</small>', 'ng');
+    }
     function reset() { heavy = {}; hs = []; bonds = []; hist = []; render(); }
     function left(el) {
       var P = PARTS[el];
@@ -462,19 +477,19 @@
     }
     function place(el, s, quiet) {
       if (lock) return false;
-      if (left(el) <= 0) { if (cb.bad) cb.bad(el + ' はもう残っていない'); return false; }
+      if (left(el) <= 0) { bad(el + ' はもう残っていない'); return false; }
       var P = PARTS[el], key = el;
       if (P) el = P.el;
       if (s.k === null) {
-        if (el === 'H') { if (cb.bad) cb.bad('H は手が 1 本だけ。骨組みのまん中にはなれない。C から始めよう'); Y.se('wrong'); return false; }
+        if (el === 'H') { bad('H は手が 1 本だけ。骨組みのまん中にはなれない。C から始めよう'); Y.se('wrong'); return false; }
         var id0 = 'a' + (++seq); heavy[id0] = { el: el, x: 0, y: 0 }; hist.push({ t: 'h', id: id0 });
         if (P) partH(id0);
       } else if (el === 'H') {
         hs.push({ p: s.k, d: s.d, cls: quiet ? '' : 'pop' }); hist.push({ t: 'H' });
       } else {
         var A = heavy[s.k], x = A.x + DIRS[s.d][0], y = A.y + DIRS[s.d][1], why = cellFree(x, y, s.k);
-        if (why === 'ring') { if (cb.bad) cb.bad('そこに置くと、となりの原子とも手をつないで「輪（環）」になる。\n輪にすると鎖の「はし」がなくなり、はしだった 2 つの原子が手を 1 本ずつ使う → H をつける手が 2 本へって、別の物質になる。いまの錬成は「鎖」だけ'); Y.se('wrong'); return false; }
-        if (why) { if (cb.bad) cb.bad('そこには置けない（' + why + '）'); Y.se('wrong'); return false; }
+        if (why === 'ring') { bad('そこに置くと、となりの原子とも手をつないで「輪（環）」になる。\n輪にすると鎖の「はし」がなくなり、はしだった 2 つの原子が手を 1 本ずつ使う → H をつける手が 2 本へって、別の物質になる。いまの錬成は「鎖」だけ'); Y.se('wrong'); return false; }
+        if (why) { bad('そこには置けない（' + why + '）'); Y.se('wrong'); return false; }
         var id = 'a' + (++seq); heavy[id] = { el: el, x: x, y: y }; bonds.push([s.k, id]); hist.push({ t: 'h', id: id });
         if (P) partH(id);
       }
@@ -550,11 +565,18 @@
       if (!a || lock) { apEl.hidden = true; return; }
       var br = a.loc.length ? a.loc.map(function (n) { return n + ' 番目'; }).join('・') + 'に枝（メチル）' : '枝なし';
       var same = null; found.forEach(function (f) { if (f._c === a.canon) same = f; });
+      var key = a.canon + (same ? '!' : ''), fresh = apEl.hidden || apEl.getAttribute('data-k') !== key;
+      apEl.setAttribute('data-k', key);
       apEl.hidden = false;
       apEl.className = 'bld-appr' + (same ? ' warn' : '');
       apEl.innerHTML = '<b>🔎 鑑定</b> いちばん長い鎖は <em>C ' + a.len + ' つ</em>（番号の 1→' + a.len + '）・' + br +
         (pz.appraise === 'name' && a.name ? '<br>→ <strong>' + Y.esc(a.name) + '</strong>' : '') +
         (same ? '<br>⚠ もう作った「' + Y.esc(same.name) + '」と同じ形！ 鎖の長さと枝の番号が同じ' : '');
+      if (fresh) {
+        Y.chg(apEl);
+        if (same) toast('⚠ もう作った形と同じ！<small>鑑定を見て ↓</small>', 'ng');
+        else toast('🔎 鑑定が出た<small>下を見て ↓</small>', 'info');
+      }
     }
     /* ---- 操作の練習（ガイド）：条件を満たしたら次の指示へ ---- */
     var gi = 0, gEl = null;
@@ -572,10 +594,10 @@
         if (!ok) break;
         gi++; adv = true;
       }
-      if (gi >= G.length) { gEl.hidden = true; return; }
+      if (gi >= G.length) { if (!gEl.hidden && adv) toast('✓ 練習クリア！', 'ok'); gEl.hidden = true; return; }
       gEl.hidden = false;
       gEl.innerHTML = '<b>🧭 練習 ' + (gi + 1) + ' / ' + G.length + '</b><p>' + Y.fmt(G[gi].t) + '</p>';
-      if (adv) { gEl.classList.remove('go'); void gEl.offsetWidth; gEl.classList.add('go'); Y.se('coin'); }
+      if (adv) { gEl.classList.remove('swap'); void gEl.offsetWidth; gEl.classList.add('swap'); Y.se('coin'); toast('✓ できた！<small>次の練習は下 ↓</small>', 'ok'); }
     }
     function check() {
       w.classList.remove('lit');
@@ -583,16 +605,16 @@
       if (!Object.keys(heavy).length) return;
       if (free && rest) return;   /* まだ作っている途中 */
       if (free || rest) nudge();
-      if (free && !rest) { if (cb.bad) cb.bad('素材を使いきったのに、空いている手が ' + free + ' 本ある。魔法陣が光らない…'); w.classList.add('fz'); setTimeout(function () { w.classList.remove('fz'); }, 600); return; }
-      if (!free && rest) { if (cb.bad) cb.bad('手は全部うまったのに、素材が余っている。骨組みを見直そう'); return; }
+      if (free && !rest) { bad('素材を使いきったのに、空いている手が ' + free + ' 本ある。魔法陣が光らない…'); w.classList.add('fz'); setTimeout(function () { w.classList.remove('fz'); }, 600); return; }
+      if (!free && rest) { bad('手は全部うまったのに、素材が余っている。骨組みを見直そう'); return; }
       /* 手も素材もぴったり → 形をくらべる */
       var els = {}, adj = {};
       Object.keys(heavy).forEach(function (k) { els[k] = heavy[k].el; adj[k] = []; });
       bonds.forEach(function (b) { adj[b[0]].push(b[1]); adj[b[1]].push(b[0]); });
       var c = canonG(els, adj), ans = null;
-      for (var k in els) if (els[k] === 'O' && adj[k].some(function (x) { return els[x] === 'O'; })) { if (cb.bad) cb.bad('O どうしをつなぐ形は、この冒険では使わない（不安定）'); return; }
+      for (var k in els) if (els[k] === 'O' && adj[k].some(function (x) { return els[x] === 'O'; })) { bad('O どうしをつなぐ形は、この冒険では使わない（不安定）'); return; }
       pz.answers.forEach(function (a) { if (a._c === c) ans = a; });
-      if (!ans) { nudge(); if (cb.bad) cb.bad('魔法陣は光った…でも、今回のミッションの形ではない'); return; }
+      if (!ans) { nudge(); bad('魔法陣は光った…でも、今回のミッションの形ではない'); return; }
       if (found.indexOf(ans) >= 0) { if (cb.dup) cb.dup(ans); return; }
       found.push(ans); w.classList.add('lit');
       hintLv = 0; stuck = 0; hintEl.hidden = true; hb.classList.remove('nudge');
@@ -637,7 +659,7 @@
     window.addEventListener('pointercancel', function () { if (drag && drag.ghost) drag.ghost.remove(); drag = null; });
     gm.addEventListener('click', function (e) {
       var g = e.target.closest && e.target.closest('[data-sock]'); if (!g || lock) return;
-      if (!sel) { if (cb.bad) cb.bad('先に、下の素材を選ぼう'); return; }
+      if (!sel) { bad('先に、下の素材を選ぼう'); return; }
       place(sel, sockets()[+g.getAttribute('data-sock')]);
     });
     host.querySelector('.bld-undo').onclick = function () { if (!lock) undo(); };
@@ -651,8 +673,10 @@
       var lv = Math.min(hintLv, texts.length), all = texts.length + 1;
       hintEl.hidden = false; hb.classList.remove('nudge');
       if (lv < texts.length) {
+        Y.chg(hintEl);
         hintEl.innerHTML = '<b>💡 ヒント ' + (lv + 1) + ' / ' + all + '</b><p>' + Y.fmt(texts[lv]) + '</p>' + (lv + 1 < all ? '<small>もう一度押すと、もっとくわしく</small>' : '');
       } else {
+        Y.chg(hintEl);
         hintEl.innerHTML = '<b>📖 攻略の書（' + all + ' / ' + all + '）</b><p>「' + Y.esc(target.name) + '」の形。これをまねして錬成しよう（H は自分でつなぐ）</p>' + Y.Mol.pic(target.set);
       }
       hintLv = lv + 1;
@@ -664,7 +688,7 @@
     if (fb) fb.onclick = function () {
       if (lock) return;
       var ss = sockets();
-      if (ss.length > left('H')) { if (cb.bad) cb.bad('H が足りない。骨組みを見直そう'); return; }
+      if (ss.length > left('H')) { bad('H が足りない。骨組みを見直そう'); return; }
       ss.forEach(function (s) { place('H', s, true); });
       Y.se('levelUp'); render(); check();
     };

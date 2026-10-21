@@ -103,7 +103,7 @@
     var B = Y.Build($('.b-host', panel), pz, {
       found: function (a, n) {
         st.combo++; st.ok++;
-        msg.innerHTML = '<b class="ok">' + esc(a.name) + '！</b>';
+        Y.chg(msg); msg.innerHTML = '<b class="ok">' + esc(a.name) + '！</b>';
         if (st.boss.split) ghostDown(n - 1, a);
         Y.Voice.say(a.yomi || a.name, { rate: 1.05, pitch: 0.8 });
         bossHit(Math.ceil(st.max / need), true, '⬡ 錬成撃！<br>' + esc(a.name));
@@ -113,11 +113,11 @@
       dup: function (a) {
         bossAttack(st.boss.split ? 'ふふふ…その形の魔法なら、もう倒した分身にしか当たらないわ' : 'ふふふ…それは「' + a.name + '」。さっきと同じ形よ');
         if (st.boss.split) { var gi = B.found().indexOf(a), g = $('.gh[data-g="' + gi + '"]', el); if (g) { g.classList.remove('dup'); void g.offsetWidth; g.classList.add('dup'); } }
-        msg.innerHTML = '<b class="ng">同じ形に惑わされた！</b><br><small>曲げても、ひっくり返しても、つながり方が同じなら同じ物質</small>';
+        Y.chg(msg); msg.innerHTML = '<b class="ng">同じ形に惑わされた！</b><br><small>曲げても、ひっくり返しても、つながり方が同じなら同じ物質</small>';
         if (st.life <= 0) { clearTimer(); B.lock(true); setTimeout(function () { finish(false, resolve); }, 1200); }
         else setTimeout(function () { B.clear(); }, 1400);
       },
-      bad: function (m) { msg.innerHTML = '<b class="ng">' + fmt(m) + '</b>'; Y.se('wrong'); },
+      bad: function (m) { Y.chg(msg); msg.innerHTML = '<b class="ng">' + fmt(m) + '</b>'; Y.se('wrong'); },
       /* ボス戦のヒントは、残り時間と引きかえ */
       hint: function () { t0 -= 15000; if (window.FX) FX.floatText(innerWidth / 2, 120, '−15 秒', '#ff6b7a'); },
       change: function () {}

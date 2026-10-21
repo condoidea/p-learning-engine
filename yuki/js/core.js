@@ -64,6 +64,9 @@
     if (window.FX) { FX.slam('LEVEL UP!', 'clear', 'Lv ' + L.lv + '　' + L.title); FX.confetti(60, 'gold'); }
   };
 
+  /* 中身が書き換わった枠を、ふわっと光らせる（パッと切り替わっても、変わったことに気づけるように） */
+  Y.chg = function (el) { if (!el) return; el.classList.remove('chg'); void el.offsetWidth; el.classList.add('chg'); };
+
   Y.save = function () { try { localStorage.setItem(Y.KEY, JSON.stringify(Y.S)); } catch (e) { /* 保存できない環境 */ } };
   Y.reset = function () { Y.S = blank(); Y.save(); };
   /* 音の出口（engine/js/audio.js）は、BGM か効果音のどちらかがオンなら開く。効果音を鳴らすかどうかは Y.se が決める */

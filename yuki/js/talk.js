@@ -192,6 +192,7 @@
         found: function (a, n) {
           names.push(a.name); made.push(a);
           if (window.FX) FX.slam(esc(a.name), 'clear', '錬成、発動！');
+          Y.chg(msg);
           msg.innerHTML = '<b class="ok">錬成成功！ ' + esc(a.name) + '</b>' + (a.note ? '<br><small>' + fmt(a.note) + '</small>' : '');
           Y.se('levelUp'); if (window.FX) { var c = FX.at(B.el); FX.burst(c.x, c.y, { pal: 'gold', n: 50, ring: true }); }
           Y.Voice.say((a.yomi || a.name) + '、れんせい！', { rate: 1, pitch: 0.8 });
@@ -201,10 +202,11 @@
           else setTimeout(function () { B.clear(); }, 1500);
         },
         dup: function (a) {
+          Y.chg(msg);
           msg.innerHTML = '<b class="ng">それは「' + esc(a.name) + '」。さっきと同じ形だ！</b><br><small>' + fmt(pz.dupMsg || '曲げても、ひっくり返しても、つながり方が同じなら同じ物質') + '</small>';
           Y.se('wrong'); if (window.FX) FX.shake(B.el);
         },
-        bad: function (m) { msg.innerHTML = '<b class="ng">' + fmt(m) + '</b>'; Y.se('wrong'); },
+        bad: function (m) { Y.chg(msg); msg.innerHTML = '<b class="ng">' + fmt(m) + '</b>'; Y.se('wrong'); },
         change: function () { if (msg.textContent.trim()) msg.innerHTML = '　'; }
       });
       run.onAbort = function () { res([]); };
