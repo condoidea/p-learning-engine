@@ -35,9 +35,15 @@
   /* 画面を離れたら無音の再生も止める（ほかのアプリの音をじゃましない） */
   document.addEventListener('visibilitychange', function () { if (silentEl) { if (document.hidden) silentEl.pause(); else if (on()) playbackSession(); } });
 
+  /* iPhone の Safari は、止まった状態が suspended だけでなく interrupted（ほかの音・画面切りかえ・再生扱いの切りかえのあと）にもなる。
+   * running 以外なら、どれでも再開する */
+  function resume() {
+    if (!ctx || ctx.state === 'running') return;
+    try { var p = ctx.resume(); if (p && p.catch) p.catch(function () {}); } catch (e) { /* 再開できない */ }
+  }
   function ensure() {
     playbackSession();
-    if (ctx) { if (ctx.state === 'suspended') ctx.resume(); return ctx; }
+    if (ctx) { resume(); return ctx; }
     var AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return null;
     ctx = new AC();
@@ -51,6 +57,18 @@
     comp.connect(ctx.destination);
     return ctx;
   }
+  /* 画面にふれるたびに、音を起こしておく（iPhone は「タッチの最中」でないと再開できない）。
+   *  最初の1回は、無音を一瞬だけ鳴らして確実に起こす。効果音そのものは、タッチのあと（タイマーなど）で鳴ることが多いため */
+  var primed = false;
+  function wake() {
+    if (!on() || !ensure()) return;
+    resume();
+    if (primed) return;
+    primed = true;
+    try { var b = ctx.createBuffer(1, 1, 22050), s = ctx.createBufferSource(); s.buffer = b; s.connect(ctx.destination); s.start(0); } catch (e) { /* 鳴らせない */ }
+  }
+  ['touchend', 'pointerdown', 'keydown'].forEach(function (ev) { document.addEventListener(ev, wake, true); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) resume(); });
   function hz(semi) { return 440 * Math.pow(2, (semi - 9) / 12) * 2; } // C5 基準
   function tone(f, t0, dur, type, vol, slideTo) {
     var o = ctx.createOscillator(), g = ctx.createGain();

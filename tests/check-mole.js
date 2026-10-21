@@ -52,7 +52,7 @@ function checkStep(w, s, run) {
   run.n = 0;
   if (s.reply) { s.reply.forEach(o => { if (o.then) { const r2 = { n: 0 }; o.then.forEach(x => checkStep(w + '（' + o.l + '）', x, r2)); } }); return; }
   if (s.ask) { if (!Array.isArray(s.opts) || s.a == null || s.a < 0 || s.a >= s.opts.length) E(w, '答えの番号がおかしい：' + s.ask); if (s.ng && typeof s.ng === 'object') Object.keys(s.ng).forEach(k => { if (+k === s.a || +k >= s.opts.length) E(w, 'ng の番号がおかしい：' + s.ask); }); return; }
-  if (s.num) { if (typeof s.ans !== 'number' || !isFinite(s.ans)) E(w, '答えが数でない：' + s.num); if (!s.steps) W(w, '解き方（steps）がない：' + s.num); return; }
+  if (s.num) { if (typeof s.ans !== 'number' || !isFinite(s.ans)) E(w, '答えが数でない：' + s.num); if (!s.steps) W(w, '解き方（steps）がない：' + s.num); if (s.parts) { const r2 = { n: 0 }; s.parts.forEach(x => checkStep(w + '（分解）', x, r2)); } return; }
   if (s.oops) { if (s.bad == null || s.bad >= s.lines.length) E(w, 'まちがいの行番号がおかしい'); if (!s.fix) E(w, 'fix がない'); return; }
   if (s.prop) { if (PROPS.indexOf(s.prop) < 0) E(w, '実験がない：' + s.prop); return; }
   if (s.board) { if (!Array.isArray(s.lines)) E(w, '板書の lines がない'); return; }
@@ -92,6 +92,7 @@ Object.keys(M.GEN).forEach(name => {
     const odd = (all.match(/\d+\.\d+/g) || []).filter(x => x.split('.')[1].replace(/0+$/, '').length >= 3)[0] ? [(all.match(/\d+\.\d+/g) || []).filter(x => x.split('.')[1].replace(/0+$/, '').length >= 3)[0]] : null;
     if (odd) { E('drill ' + name, '半端な小数 ' + odd[0] + '：' + q.q); break; }
     if (!q.steps || !q.steps.length) { E('drill ' + name, 'steps がない'); break; }
+    if (q.parts && !q.parts.every(p => typeof p.ans === 'number' && isFinite(p.ans) && p.num && p.steps)) { E('drill ' + name, 'parts がおかしい'); break; }
   }
 });
 console.log('\n' + (err ? '✗ エラー ' + err + ' 件' : '✓ エラーなし') + (warn ? '・注意 ' + warn + ' 件' : ''));

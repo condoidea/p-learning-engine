@@ -50,6 +50,9 @@
   ];
   function awTxt(v) { return v === 1 ? '1.0' : String(v); }
 
+  /* 2段階の計算を、まちがえたときに1段階ずつ解く問題（parts） */
+  function part(q, ans, unit, hint, step) { return { num: q, ans: ans, unit: unit, hint: hint, steps: [step] }; }
+
   var GEN = {
     powMul: function () {
       var a = pick([1.5, 2.0, 3.0, 4.0]), b = pick([2.0, 3.0, 4.0]), m = pick([2, 3, 20, 23]), n = pick([1, 2, 3, 4]);
@@ -117,25 +120,33 @@
       var s = pick(SUBS.slice(0, 7)), n = pickMol(s, [0.10, 0.20, 0.50, 2.0]), g = mass(s, n), cnt = n * 6.0e23;
       return { q: s.name + ' ' + s.f + ' ' + gT(g) + ' g には、分子が何個ある？（' + s.f + '＝' + Mtxt(s) + '）', num: cnt, unit: '個',
         hint: 'まず質量から mol を求めて（わる）、次に mol から個数を求める（かける）。',
-        steps: ['【質量から mol を求める】' + gT(g) + '÷' + Mtxt(s) + '＝' + nice(n) + ' mol', '【mol から個数を求める】' + nice(n) + '×6.0×10^23＝' + fx(cnt) + ' 個'] };
+        steps: ['【質量から mol を求める】' + gT(g) + '÷' + Mtxt(s) + '＝' + nice(n) + ' mol', '【mol から個数を求める】' + nice(n) + '×6.0×10^23＝' + fx(cnt) + ' 個'],
+        parts: [part('1段階め。' + s.f + ' ' + gT(g) + ' g は何 mol？（' + s.f + '＝' + Mtxt(s) + '）', n, 'mol', '質量から mol を求めるときは、モル質量でわる。', gT(g) + '÷' + Mtxt(s) + '＝' + nice(n) + ' mol'),
+          part('2段階め。' + nice(n) + ' mol は、分子何個？', cnt, '個', 'mol から個数を求めるときは、6.0×10^23 をかける。', nice(n) + '×6.0×10^23＝' + fx(cnt) + ' 個')] };
     },
     L2g: function () {
       var s = pick(GAS), n = pickMol(s, [0.10, 0.25, 0.50, 2.0]), v = Math.round(22.4 * n * 100) / 100, g = mass(s, n);
       return { q: '標準状態で ' + v + ' L の' + s.name + ' ' + s.f + ' は何 g？（' + s.f + '＝' + Mtxt(s) + '）', num: g, unit: 'g',
         hint: 'まず体積から mol を求めて（22.4 でわる）、次に mol から質量を求める（モル質量をかける）。',
-        steps: ['【体積から mol を求める】' + v + '÷22.4＝' + nice(n) + ' mol', '【mol から質量を求める】' + Mtxt(s) + '×' + nice(n) + '＝' + gT(g) + ' g'] };
+        steps: ['【体積から mol を求める】' + v + '÷22.4＝' + nice(n) + ' mol', '【mol から質量を求める】' + Mtxt(s) + '×' + nice(n) + '＝' + gT(g) + ' g'],
+        parts: [part('1段階め。標準状態で ' + v + ' L の ' + s.f + ' は何 mol？', n, 'mol', '体積から mol を求めるときは、22.4 でわる。', v + '÷22.4＝' + nice(n) + ' mol'),
+          part('2段階め。' + s.f + ' ' + nice(n) + ' mol は何 g？（' + s.f + '＝' + Mtxt(s) + '）', g, 'g', 'mol から質量を求めるときは、モル質量をかける。', Mtxt(s) + '×' + nice(n) + '＝' + gT(g) + ' g')] };
     },
     n2L: function () {
       var s = pick(GAS), n = pick([0.10, 0.50, 2.0, 3.0]), cnt = n * 6.0e23, v = Math.round(22.4 * n * 100) / 100;
       return { q: s.name + ' ' + s.f + ' の分子 ' + fx(cnt) + ' 個は、標準状態で何 L？', num: v, unit: 'L',
         hint: 'まず個数から mol を求めて（6.0×10^23 でわる）、次に mol から体積を求める（22.4 をかける）。',
-        steps: ['【個数から mol を求める】(' + fx(cnt) + ')÷(6.0×10^23)＝' + nice(n) + ' mol', '【mol から体積を求める】22.4×' + nice(n) + '＝' + v + ' L'] };
+        steps: ['【個数から mol を求める】(' + fx(cnt) + ')÷(6.0×10^23)＝' + nice(n) + ' mol', '【mol から体積を求める】22.4×' + nice(n) + '＝' + v + ' L'],
+        parts: [part('1段階め。分子 ' + fx(cnt) + ' 個は何 mol？', n, 'mol', '個数から mol を求めるときは、6.0×10^23 でわる。', '(' + fx(cnt) + ')÷(6.0×10^23)＝' + nice(n) + ' mol'),
+          part('2段階め。標準状態で ' + nice(n) + ' mol の気体は何 L？', v, 'L', 'mol から体積を求めるときは、22.4 をかける。', '22.4×' + nice(n) + '＝' + v + ' L')] };
     },
     g2L: function () {
       var s = pick(GAS), n = pickMol(s, [0.10, 0.25, 0.50, 2.0]), g = mass(s, n), v = Math.round(22.4 * n * 100) / 100;
       return { q: s.name + ' ' + s.f + ' ' + gT(g) + ' g は、標準状態で何 L？（' + s.f + '＝' + Mtxt(s) + '）', num: v, unit: 'L',
         hint: 'まず質量から mol を求めて（わる）、次に mol から体積を求める（22.4 をかける）。',
-        steps: ['【質量から mol を求める】' + gT(g) + '÷' + Mtxt(s) + '＝' + nice(n) + ' mol', '【mol から体積を求める】22.4×' + nice(n) + '＝' + v + ' L'] };
+        steps: ['【質量から mol を求める】' + gT(g) + '÷' + Mtxt(s) + '＝' + nice(n) + ' mol', '【mol から体積を求める】22.4×' + nice(n) + '＝' + v + ' L'],
+        parts: [part('1段階め。' + s.f + ' ' + gT(g) + ' g は何 mol？（' + s.f + '＝' + Mtxt(s) + '）', n, 'mol', '質量から mol を求めるときは、モル質量でわる。', gT(g) + '÷' + Mtxt(s) + '＝' + nice(n) + ' mol'),
+          part('2段階め。標準状態で ' + nice(n) + ' mol の気体は何 L？', v, 'L', 'mol から体積を求めるときは、22.4 をかける。', '22.4×' + nice(n) + '＝' + v + ' L')] };
     },
     /* 溶液（追加レッスン） */
     molar: function () {
@@ -156,7 +167,9 @@
       var n = pick([0.10, 0.20, 0.050]), mL = pick([250, 500]), g = Math.round(s.M * n * 100) / 100, c = Math.round(n / (mL / 1000) * 1000) / 1000;
       return { q: s.name + ' ' + s.f + ' ' + gT(g) + ' g を水にとかして ' + mL + ' mL の溶液にした。モル濃度は？（' + s.f + '＝' + s.M + '）', num: c, unit: 'mol/L',
         hint: 'まず質量から mol を求める（わる）。次に mol を L でわる。',
-        steps: ['【質量から mol を求める】' + gT(g) + '÷' + s.M + '＝' + nice(n) + ' mol', mL + ' mL ＝ ' + Lt(mL) + ' L', nice(n) + '÷' + Lt(mL) + '＝' + nice(c) + ' mol/L'] };
+        steps: ['【質量から mol を求める】' + gT(g) + '÷' + s.M + '＝' + nice(n) + ' mol', mL + ' mL ＝ ' + Lt(mL) + ' L', nice(n) + '÷' + Lt(mL) + '＝' + nice(c) + ' mol/L'],
+        parts: [part('1段階め。' + s.f + ' ' + gT(g) + ' g は何 mol？（' + s.f + '＝' + s.M + '）', n, 'mol', '質量から mol を求めるときは、モル質量でわる。', gT(g) + '÷' + s.M + '＝' + nice(n) + ' mol'),
+          part('2段階め。' + nice(n) + ' mol をとかして全体を ' + mL + ' mL にした。モル濃度は？', c, 'mol/L', 'mL を L に直してから、mol を L でわる。', nice(n) + '÷' + Lt(mL) + '＝' + nice(c) + ' mol/L')] };
     }
   };
   M.GEN = GEN;
