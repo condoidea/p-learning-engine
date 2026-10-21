@@ -186,7 +186,7 @@ mark.k { background: linear-gradient(transparent 55%, rgba(255, 217, 138, .45) 5
 .pic { display: block; width: 100%; height: auto; margin: 4px auto 0; }
 .bld-guide { margin: 4px 0 8px; padding: 9px 12px; border-radius: 6px; color: #f6e6c4; background: linear-gradient(180deg, #1d5c4c, #12403a); border: 1.5px solid #7fd6b8; box-shadow: 0 0 16px -4px #7fd6b8; animation: gpulse 2.2s ease-in-out infinite; }
 /* 操作の練習は、枠がほんのり明滅して目を引く（強すぎない明るさで） */
-@keyframes gpulse { 0%, 100% { border-color: #7fd6b8; box-shadow: 0 0 10px -6px #7fd6b8; } 50% { border-color: #d6fff0; box-shadow: 0 0 22px 0 rgba(127, 214, 184, .75); } }
+@keyframes gpulse { 0%, 100% { border-color: #5fb89a; box-shadow: 0 0 6px -4px #7fd6b8; } 50% { border-color: #e6fff6; box-shadow: 0 0 0 2px rgba(127, 214, 184, .35), 0 0 24px 2px rgba(127, 214, 184, .8); } }
 .bld-guide b { display: block; font-size: 12.5px; color: #bff0dc; letter-spacing: .05em; }
 .bld-guide p { margin: 2px 0 0; font-size: 14.5px; line-height: 1.6; }
 .bld-guide mark.k { color: #fff3c4; background: linear-gradient(transparent 55%, rgba(240, 199, 94, .45) 55%); }
@@ -443,6 +443,8 @@ body.in-ritual { overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  /* 操作の練習の明滅は、動きではなく明るさの変化なので止めない（「視差効果を減らす」がオンでも目を引くように） */
+  .bld-guide, .bld-guide.go { animation: gpulse 2.2s ease-in-out infinite !important; }
 }
 
 /* =========================================================
