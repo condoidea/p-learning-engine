@@ -65,9 +65,9 @@
       M.snd.pop();
       M.$$('mark.k', b).forEach(function (mk, i) { if (M.G && !E2E) M.G.fromTo(mk, { backgroundSize: '0% 100%' }, { backgroundSize: '100% 100%', duration: 0.5, delay: 0.15 + i * 0.15, ease: 'power2.out' }); });
       scrollDown();
-      /* 読む時間：文字数に合わせて待つ（1文字 約0.09秒、1〜5.5秒）。待っている間はタップで先へ進める */
+      /* 読む時間：文字数に合わせて少し待つ（1文字 約0.055秒、0.9〜3秒）。長い説明は台本の返事で区切る。待っている間はタップで先へ */
       if (!tray.innerHTML) setTray('<p class="wait">👆 読んだら、画面をタップで先へ</p>');
-      return wait(Math.max(1000, Math.min(5500, plain.length * 90)));
+      return wait(Math.max(900, Math.min(3000, plain.length * 55)));
     });
   }
   function me(html) { row('me', '<div class="bub">' + html + '</div>', 'me'); M.snd.type(); }
@@ -235,7 +235,7 @@
           if (ok) { if (tries === 1) hit($('.k-ok', tray)); else { M.snd.pop(); refreshCount(false); } setTray(''); res({ ok: true, tries: tries }); return; }
           if (tries === 1) miss($('.k-ok', tray));
           clear();
-          if (tries === 1 && s.hint) { say('ちょっとちがうみたい。ヒント：' + s.hint, 'think').then(fitTray); return; }
+          if (tries === 1 && s.hint) { say('ちょっとちがうみたい。\n💡 ' + s.hint, 'think').then(fitTray); return; }
           setTray(''); res({ ok: false, tries: tries });
         });
         setTray(kp.html); kp.bind(tray.firstChild);
@@ -252,7 +252,7 @@
   function steps(lines, ans, unit) {
     var r = run;
     var d = row('t wide', '<div class="card steps"><h4>解き方</h4><ol>' + lines.map(function (l) { return '<li>' + fmt(l) + '</li>'; }).join('') + '</ol>' +
-      '<p class="ans">答え：' + fmt(M.numText(ans) + (unit ? ' ' + unit : '')) + '</p></div>', 't');
+      '<p class="ans">答えは ' + fmt(M.numText(ans) + (unit ? ' ' + unit : '')) + '</p></div>', 't');
     gl(d);
     if (M.G && !E2E) M.G.from($$('li', d), { x: -14, opacity: 0, duration: 0.3, stagger: 0.25 });
     return wait(900 + lines.length * 500).then(function () { alive(r); return reply(['わかった']); });
@@ -293,7 +293,7 @@
         (s.mission ? '<p class="todo"><b>やること</b>' + fmt(s.mission) + '</p>' : '') +
         '<div class="pbox"></div><p class="pnote"></p></div>', 't');
       var box = $('.pbox', d), note = $('.pnote', d), finished = false;
-      if (s.mission) setTray('<p class="mission">👆 上の実験で：' + fmt(s.mission) + '</p>'); else setTray('');
+      if (s.mission) setTray('<p class="mission">👆 上の実験で、' + fmt(s.mission) + '</p>'); else setTray('');
       var api = {
         done: function () {
           if (finished) return; finished = true; alive(r); setTray('');
@@ -378,8 +378,8 @@
         alive(r);
         if (o.ok) { okN++; return wait(650).then(one); }
         /* まちがえたら、答えと解き方を見てから次へ */
-        var expl = q.num != null ? (q.steps || []).map(fmt).join('<br>') + '<br><b>答え：' + fmt(M.numText(q.ans) + (q.unit ? ' ' + q.unit : '')) + '</b>'
-          : '<b>正解：' + fmt(q.opts[q.a]) + '</b>' + (q.why ? '<br>' + fmt(q.why) : '');
+        var expl = q.num != null ? (q.steps || []).map(fmt).join('<br>') + '<br><b>答えは ' + fmt(M.numText(q.ans) + (q.unit ? ' ' + q.unit : '')) + '</b>'
+          : '<b>正解は ' + fmt(q.opts[q.a]) + '</b>' + (q.why ? '<br>' + fmt(q.why) : '');
         ae.innerHTML = '<div class="rs-ex">' + expl + '</div><button class="main-s rs-next">つぎへ ▶</button>';
         gl(ae);
         return new Promise(function (res) { $('.rs-next', ae).onclick = res; if (E2E) setTimeout(res); }).then(one);

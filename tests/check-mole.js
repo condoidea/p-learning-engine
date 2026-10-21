@@ -48,7 +48,7 @@ function checkStep(w, s, run) {
   texts(s).forEach(t => marks(w, t));
   /* 改行なしで長い1行（まくしたて）を探す。板書・選択肢は除く */
   if (!s.board) [s.t, typeof s === 'string' ? s : null, s.ask, s.why, s.num, s.ok, s.fix, s.oops].filter(x => typeof x === 'string').forEach(t => t.split('\n').forEach(line => { const n = line.replace(/\{[pmgv]\||[*_{}()|^]/g, '').length; if (n > 40) W(w, '1行が長い（' + n + '字）：' + line.slice(0, 40)); }));
-  if (typeof s === 'string' || s.t) { run.n++; if (run.n === 4) W(w, '先生が4回つづけて話している：' + (s.t || s).slice(0, 30)); return; }
+  if (typeof s === 'string' || s.t) { run.n++; if (run.n === 3) W(w, '先生が3回つづけて話している：' + (s.t || s).slice(0, 30)); return; }
   run.n = 0;
   if (s.reply) { s.reply.forEach(o => { if (o.then) { const r2 = { n: 0 }; o.then.forEach(x => checkStep(w + '（' + o.l + '）', x, r2)); } }); return; }
   if (s.ask) { if (!Array.isArray(s.opts) || s.a == null || s.a < 0 || s.a >= s.opts.length) E(w, '答えの番号がおかしい：' + s.ask); if (s.ng && typeof s.ng === 'object') Object.keys(s.ng).forEach(k => { if (+k === s.a || +k >= s.opts.length) E(w, 'ng の番号がおかしい：' + s.ask); }); return; }

@@ -226,7 +226,7 @@
         '<path d="M150 50 l-6 12 h12z" fill="' + (d === 0 ? '#2bb673' : '#ff5a5a') + '"/>' +
         cpan(lx, ly) + cpan(rx, ry) +
         '<g>' + pile('C', st.left, lx, ly + 62, 0.62).replace(/>C</g, '>¹²C<') + '</g><g>' + pile(st.el, n, rx, ry + 62, st.el === 'H' ? 0.55 : 0.6) + '</g>';
-      cnt.innerHTML = '左：¹²C × ' + st.left + '　／　右：' + st.el + ' × <b>' + n + '</b>' + (d === 0 && n ? '　<span class="ok">つり合った！</span>' : d > 0 ? '　<span class="ng">右が重い</span>' : '');
+      cnt.innerHTML = '左の皿 ¹²C ' + st.left + '個　／　右の皿 ' + st.el + ' <b>' + n + '</b>個' + (d === 0 && n ? '　<span class="ok">つり合った！</span>' : d > 0 ? '　<span class="ng">右が重い</span>' : '');
       if (d === 0 && n && !finished) {
         finished = true; M.$$('.pbl-b', box).forEach(function (b) { b.disabled = true; });
         M.snd.bloop(); M.FX.burst.apply(null, M.FX.at(sv).concat([30]));
@@ -267,7 +267,7 @@
       if (M.G && !M.E2E) { var o = { v: 0 }; M.G.to(o, { v: s.m, duration: 0.8, ease: 'power2.out', onUpdate: function () { disp.textContent = o.v.toFixed(1); } }); }
       else disp.textContent = s.m.toFixed(1);
       tw(M.$('svg > :first-child', box), { y: -40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: 'bounce.out' });
-      cap.innerHTML = fmt(s.name + ' ' + s.f + '：' + s.k + ' ' + s.m + ' → 1 mol ＝ **' + s.m + ' g**');
+      cap.innerHTML = fmt(s.name + ' ' + s.f + ' の' + s.k + 'は ' + s.m + '。1 mol は **' + s.m + ' g**');
       M.$('[data-i="' + i + '"]', box).classList.add('done');
       if (Object.keys(tried).length >= 3 && !finished) { finished = true; clearTimeout(timer); timer = setTimeout(function () { M.snd.bloop(); api.done(); }, M.E2E ? 0 : 1100); }
     }
@@ -308,7 +308,7 @@
       for (var k = 0; k < 14; k++) dots.push({ x: 80 + Math.random() * 140, y: 30 + Math.random() * 115, vx: (Math.random() - 0.5) * 2.4, vy: (Math.random() - 0.5) * 2.4 });
       if (!raf && !M.E2E) raf = requestAnimationFrame(loop);
       M.snd.pop();
-      cap.innerHTML = fmt(cur.name + ' ' + cur.f + ' 1 mol：体積 **22.4 L**、質量 ' + cur.m + ' g');
+      cap.innerHTML = fmt(cur.name + ' ' + cur.f + ' 1 mol は、体積 **22.4 L**・質量 ' + cur.m + ' g');
       M.$('[data-i="' + i + '"]', box).classList.add('done');
       if (Object.keys(tried).length >= 3 && !finished) {
         finished = true;
@@ -352,7 +352,7 @@
     }
     function draw() {
       sv.innerHTML = (cfg.mode === 'route' ? '<line x1="' + NODES.p.x + '" y1="' + NODES.p.y + '" x2="' + NODES.g.x + '" y2="' + NODES.g.y + '" stroke="#e7ecef" stroke-width="3" stroke-dasharray="6 8"/><text x="160" y="48" text-anchor="middle" font-size="11" fill="#a8b4bd">直行の道はない</text>' : '') +
-        '<text x="160" y="346" text-anchor="middle" font-size="12" font-weight="800" fill="#6b7a86">mol へ向かう：÷　／　mol から出る：×</text>' +
+        '<text x="160" y="346" text-anchor="middle" font-size="12" font-weight="800" fill="#6b7a86">【mol を求める】わる　／　【mol から求める】かける</text>' +
         roadSvg('p') + roadSvg('g') + roadSvg('v') + nodeSvg('mol') + nodeSvg('p') + nodeSvg('g') + nodeSvg('v');
     }
     function showOpts(k) {
