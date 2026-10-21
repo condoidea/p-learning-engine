@@ -184,6 +184,12 @@ mark.k { background: linear-gradient(transparent 55%, rgba(255, 217, 138, .45) 5
 .bld-fill { color: #082a20; background: var(--wind) !important; }
 .bld-bar button:disabled { opacity: .35; }
 .pic { display: block; width: 100%; height: auto; margin: 4px auto 0; }
+.bld-guide { margin: 4px 0 8px; padding: 9px 12px; border-radius: 6px; color: #f6e6c4; background: linear-gradient(180deg, #1d5c4c, #12403a); border: 1.5px solid #7fd6b8; box-shadow: 0 0 16px -4px #7fd6b8; }
+.bld-guide b { display: block; font-size: 12.5px; color: #bff0dc; letter-spacing: .05em; }
+.bld-guide p { margin: 2px 0 0; font-size: 14.5px; line-height: 1.6; }
+.bld-guide mark.k { color: #fff3c4; background: linear-gradient(transparent 55%, rgba(240, 199, 94, .45) 55%); }
+.bld-guide.go { animation: gdgo .5s cubic-bezier(.2, 1.5, .4, 1); }
+@keyframes gdgo { from { transform: scale(.94); filter: brightness(1.6); } }
 .bld-hint { margin-top: 8px; padding: 10px 12px; border-radius: 6px; color: var(--ink, #3a2414); background: radial-gradient(120% 140% at 50% 40%, #f1e3c2 55%, #e3cb98 100%); border: 1.5px solid #b48a52; }
 .bld-hint b { display: block; color: #1d5c4c; font-size: 13px; }
 .bld-hint p { margin: 2px 0 0; font-size: 14px; line-height: 1.65; }

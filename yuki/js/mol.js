@@ -336,11 +336,12 @@
    *  ・素材を使いきって、空いている手が1本もなくなったら魔法陣が光る（＝原子価がそろった）
    *
    *  分子が大きくなったときの工夫
-   *   ・hFill：「水素の詠唱」ボタンで、残りの手をまとめて H で埋める（骨組みづくりに集中できる）
+   *   ・hFill：「水素の筆」ボタンで、残りの手をまとめて H で埋める（骨組みづくりに集中できる）
    *   ・parts：原子のまとまり（パーツ）をひとつで置ける。CH₃（メチル基）・OH（ヒドロキシ基）。
    *     パーツも素材（C・O・H）を使う。つなぐ手は 1 本だけで、残りの手には H が最初から付いている
    *     （芳香族の章では、ベンゼン環をパーツにする予定）
    *
+   *  操作の練習：guide: [{ t: '…', until: 'heavy:1' | 'heavy:2' | 'sel:H' | 'h:6' | 'full' }] を順に出し、できたら次へ
    *  わからないとき：「💡 ヒント」を押すたびに、hints の文が1つずつ出る。最後は「攻略の書」（まだ見つけていない答えの構造式）。
    *  まちがいが2回つづくと、ヒントのボタンがゆれて知らせる
    *
@@ -359,8 +360,8 @@
     var heavy, hs, bonds, hist, sel = null, lock = false, seq = 0, hintLv = 0, stuck = 0;
     pz.answers.forEach(function (a) { a._c = canon(parseSet(a.set)); });
     host.innerHTML = '<div class="bld"><div class="mcw bw">' + circleSVG('b' + (++uid)) + '</div>' +
-      '<div class="bld-pal"></div><div class="bld-hint" hidden></div><div class="bld-bar"><button class="bld-hintb" type="button">💡 ヒント</button><button class="bld-undo" type="button">↶ ひとつ戻す</button>' +
-      (pz.hFill ? '<button class="bld-fill" type="button">💧 水素の詠唱（残りの手を H で）</button>' : '') +
+      '<div class="bld-guide" hidden></div><div class="bld-pal"></div><div class="bld-hint" hidden></div><div class="bld-bar"><button class="bld-hintb" type="button">💡 ヒント</button><button class="bld-undo" type="button">↶ ひとつ戻す</button>' +
+      (pz.hFill ? '<button class="bld-fill" type="button">🖌 水素の筆（残りの手を H で）</button>' : '') +
       '<button class="bld-clr" type="button">↺ やり直す</button></div></div>';
     var w = host.querySelector('.mcw'), svg = w.querySelector('svg'), gm = w.querySelector('.mc-mol'), pal = host.querySelector('.bld-pal');
     function reset() { heavy = {}; hs = []; bonds = []; hist = []; render(); }
@@ -400,7 +401,7 @@
       for (var k in heavy) {
         var A = heavy[k];
         if (A.x === x && A.y === y) return 'ふさがっている';
-        if (k !== parent && Math.abs(A.x - x) + Math.abs(A.y - y) === 1) return 'ほかの原子とぶつかる';
+        if (k !== parent && Math.abs(A.x - x) + Math.abs(A.y - y) === 1) return 'ring';
       }
       return '';
     }
@@ -425,6 +426,7 @@
         hs.push({ p: s.k, d: s.d, cls: quiet ? '' : 'pop' }); hist.push({ t: 'H' });
       } else {
         var A = heavy[s.k], x = A.x + DIRS[s.d][0], y = A.y + DIRS[s.d][1], why = cellFree(x, y, s.k);
+        if (why === 'ring') { if (cb.bad) cb.bad('そこに置くと、となりの原子ともつながって「輪（環）」になる。\n輪にすると手が 2 本へって、H が 2 つ少ない別の物質になる。いまの錬成は「鎖」だけ'); Y.se('wrong'); return false; }
         if (why) { if (cb.bad) cb.bad('そこには置けない（' + why + '）'); Y.se('wrong'); return false; }
         var id = 'a' + (++seq); heavy[id] = { el: el, x: x, y: y }; bonds.push([s.k, id]); hist.push({ t: 'h', id: id });
         if (P) partH(id);
@@ -478,6 +480,28 @@
       var fb = host.querySelector('.bld-fill');
       if (fb) fb.disabled = lock || !Object.keys(heavy).length || !sockets().length || left('C') > 0 || left('O') > 0;
       if (cb.change && !quiet) cb.change();
+      guideTick();
+    }
+    /* ---- 操作の練習（ガイド）：条件を満たしたら次の指示へ ---- */
+    var gi = 0, gEl = null;
+    function guideTick() {
+      var G = pz.guide; gEl = gEl || host.querySelector('.bld-guide');
+      if (!G || !gEl) return;
+      if (found.length || lock) { gEl.hidden = true; return; }
+      var nH = Object.keys(heavy).length, adv = false;
+      while (gi < G.length) {
+        var u = String(G[gi].until).split(':'), ok = false;
+        if (u[0] === 'heavy') ok = nH >= +u[1];
+        else if (u[0] === 'sel') ok = sel === u[1] || (hs.length > 0 && u[1] === 'H');
+        else if (u[0] === 'h') ok = hs.length >= +u[1];
+        else if (u[0] === 'full') ok = !sockets().length;
+        if (!ok) break;
+        gi++; adv = true;
+      }
+      if (gi >= G.length) { gEl.hidden = true; return; }
+      gEl.hidden = false;
+      gEl.innerHTML = '<b>🧭 練習 ' + (gi + 1) + ' / ' + G.length + '</b><p>' + Y.fmt(G[gi].t) + '</p>';
+      if (adv) { gEl.classList.remove('go'); void gEl.offsetWidth; gEl.classList.add('go'); Y.se('coin'); }
     }
     function check() {
       w.classList.remove('lit');
