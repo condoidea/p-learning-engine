@@ -110,6 +110,15 @@ function walk(steps, src, run) {
       return;
     }
     if (s.tip) { if (!Y.TIPS[s.tip]) err(at + '：Tips ' + s.tip + ' がない'); return; }
+    if (s.match) {
+      (s.match.rounds || []).forEach((r, k) => {
+        if (r.length < 2) err(at + '：マッチングの ' + (k + 1) + ' 回目が 2 組より少ない');
+        const lefts = new Set(r.map(p => String(p[0])));
+        if (lefts.size !== r.length) err(at + '：マッチングの ' + (k + 1) + ' 回目に同じ左がある');
+        r.forEach(p => { if (p[1] && p[1].pic) { if (!B.connected(B.parseSet(p[1].pic))) err(at + '：マッチングの図がつながっていない'); else { const a = B.appraiseSet(p[1].pic); if (a.name && a.name !== p[0]) err(at + '：「' + p[0] + '」の図は ' + a.name); } } });
+      });
+      return;
+    }
     if (s.slam) return;
     err(at + '：知らないステップ ' + JSON.stringify(s).slice(0, 60));
   });

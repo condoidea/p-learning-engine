@@ -10,6 +10,7 @@
  *   { build: { mat, answers, need }, mission }  錬成（answers をすべて＝または need 個見つけるまで）
  *   { cast: { goal, pool, reagents, conds }, mission }   詠唱の儀式（ritual.js）
  *   { tip: 'honc' }                Tips カードを手に入れる（data/tips.js）
+ *   { match: { title, rounds: [[[左, 右], …], …] } }   組み合わせ演習（全部の組を合わせる。右は文字か { pic: 'C:r0 …' }）
  *   { slam: '…' }                  画面のまん中にドン
  *  正解・錬成・詠唱で経験値（EXP）がふえる。たまるとレベルアップ
  * ========================================================= */
@@ -176,20 +177,26 @@
     var r = run, pz = s.build, need = pz.need || pz.answers.length;
     if (Y.Bgm) Y.Bgm.play('forge', 1);
     var d = row('card', '<div class="bcard"><p class="b-mis">⬡ ' + fmt(s.mission) + '</p><div class="b-host"></div><p class="b-msg">　</p><div class="b-got"></div></div>', 'c');
-    var msg = d.querySelector('.b-msg'), got = d.querySelector('.b-got');
-    function prog(n) { got.innerHTML = pz.answers.map(function (a, i) { return '<span class="' + (i < n ? 'on' : '') + '">' + (i < n ? '◆' : '◇') + '</span>'; }).slice(0, need).join('') + '<small>' + n + ' / ' + need + '</small>'; }
-    prog(0);
+    var msg = d.querySelector('.b-msg'), got = d.querySelector('.b-got'), made = [];
+    /* 作った形の棚：作った形は構造式で、まだの所は「？」 */
+    function prog() {
+      got.innerHTML = '<p class="shelf-t">作った形 ' + made.length + ' / ' + need + '</p><div class="shelf">' + made.map(function (a) {
+        return '<figure>' + Y.Mol.pic(a.set, { num: !!pz.appraise }) + '<figcaption>' + esc(a.name) + '</figcaption></figure>';
+      }).join('') + new Array(need - made.length + 1).join('<figure class="q"><span>？</span></figure>') + '</div>';
+    }
+    prog();
     setTray('');
     return new Promise(function (res) {
       var names = [];
       var B = Y.Build(d.querySelector('.b-host'), pz, {
         found: function (a, n) {
-          names.push(a.name);
+          names.push(a.name); made.push(a);
+          if (window.FX) FX.slam(esc(a.name), 'clear', '錬成、発動！');
           msg.innerHTML = '<b class="ok">錬成成功！ ' + esc(a.name) + '</b>' + (a.note ? '<br><small>' + fmt(a.note) + '</small>' : '');
           Y.se('levelUp'); if (window.FX) { var c = FX.at(B.el); FX.burst(c.x, c.y, { pal: 'gold', n: 50, ring: true }); }
           Y.Voice.say((a.yomi || a.name) + '、れんせい！', { rate: 1, pitch: 0.8 });
           gain(15, B.el);
-          prog(n);
+          prog();
           if (n >= need) { B.lock(true); setTimeout(function () { res(names); }, 1600); }
           else setTimeout(function () { B.clear(); }, 1500);
         },
@@ -202,6 +209,72 @@
       });
       run.onAbort = function () { res([]); };
     }).then(function () { alive(r); setTray(''); if (Y.Bgm) Y.Bgm.play('village', 1); });
+  }
+
+  /* ---------- 組み合わせ演習（マッチング） ----------
+   *  1 回 5 組くらい。左を選んで右を選ぶ（逆でもよい）。まちがえた組は、その回の最後に「おさらい」でもう一度出す
+   *  ＝抜き出しの問題ではなく、全部の組を一度は自分で合わせる */
+  function match(s) {
+    var r = run, M = s.match, rounds = M.rounds.slice(), t0 = Date.now(), misses = 0, ri = 0, total = rounds.length;
+    var d = row('card', '<div class="mcard"><p class="m-t">⚔ ' + fmt(M.title) + '</p><p class="m-st"></p><div class="m-grid"></div><p class="m-msg">　</p></div>', 'c');
+    var grid = d.querySelector('.m-grid'), st = d.querySelector('.m-st'), mm = d.querySelector('.m-msg');
+    setTray('');
+    function rhtml(x) { return typeof x === 'object' && x.pic ? Y.Mol.pic(x.pic) : fmt(String(x)); }
+    return new Promise(function (res) {
+      function round(pairs, review) {
+        var missed = [], left = pairs.length, selL = null, selR = null;
+        st.innerHTML = (review ? '🔁 おさらい' : '第 ' + (ri + 1) + ' / ' + total + ' 陣') + '　<span class="m-time"></span>';
+        var L = Y.shuffle(pairs.map(function (p, i) { return i; })), R = Y.shuffle(pairs.map(function (p, i) { return i; }));
+        grid.innerHTML = '<div class="m-col">' + L.map(function (i) { return '<button class="m-it" data-s="l" data-i="' + i + '">' + fmt(String(pairs[i][0])) + '</button>'; }).join('') + '</div>' +
+          '<div class="m-col">' + R.map(function (i) { return '<button class="m-it' + (typeof pairs[i][1] === 'object' ? ' pic' : '') + '" data-s="r" data-i="' + i + '">' + rhtml(pairs[i][1]) + '</button>'; }).join('') + '</div>';
+        Y.glossify(grid, {});
+        var tick = setInterval(function () { var tm = d.querySelector('.m-time'); if (tm) tm.textContent = '⏱ ' + ((Date.now() - t0) / 1000).toFixed(1) + ' 秒'; }, 100);
+        grid.onclick = function (e) {
+          var b = e.target.closest('.m-it'); if (!b || b.disabled) return;
+          var side = b.getAttribute('data-s');
+          Y.$$('.m-it[data-s="' + side + '"]', grid).forEach(function (x) { x.classList.toggle('on', x === b); });
+          if (side === 'l') selL = b; else selR = b;
+          Y.se('tap');
+          if (!selL || !selR) return;
+          var a = selL, c = selR; selL = selR = null;
+          a.classList.remove('on'); c.classList.remove('on');
+          if (a.getAttribute('data-i') === c.getAttribute('data-i')) {
+            a.disabled = c.disabled = true; a.classList.add('ok'); c.classList.add('ok');
+            Y.se('correct', pairs.length - left + 1);
+            if (window.FX) { var p = FX.at(c); FX.burst(p.x, p.y, { pal: 'gold', n: 14 }); }
+            mm.innerHTML = '<b class="ok">' + fmt(String(pairs[+a.getAttribute('data-i')][0])) + '</b>';
+            if (--left === 0) {
+              clearInterval(tick); gain(review ? 4 : 8, d);
+              setTimeout(function () {
+                if (missed.length) {   /* まちがえた組を、もう一度（1 組だけなら、もう 1 組まぜて選ばせる） */
+                  var again = missed.map(function (i) { return pairs[i]; });
+                  if (again.length === 1) again.push(pairs.filter(function (p) { return p !== again[0]; })[0]);
+                  round(again, true);
+                } else if (++ri < total) round(rounds[ri]);
+                else finish();
+              }, 650);
+            }
+          } else {
+            misses++; Y.se('wrong');
+            [a, c].forEach(function (x) { x.classList.add('ng'); setTimeout(function () { x.classList.remove('ng'); }, 450); });
+            var i = +a.getAttribute('data-i');
+            if (missed.indexOf(i) < 0) missed.push(i);
+            mm.innerHTML = '<b class="ng">ちがう組み合わせ</b>　「' + fmt(String(pairs[i][0])) + '」の相手は…？';
+          }
+        };
+      }
+      function finish() {
+        var sec = ((Date.now() - t0) / 1000).toFixed(1);
+        grid.onclick = null;
+        grid.innerHTML = '';
+        st.innerHTML = '';
+        mm.innerHTML = '<b class="ok">全部そろった！</b>　⏱ ' + sec + ' 秒・まちがい ' + misses + ' 回';
+        if (window.FX) FX.slam('COMPLETE!', 'clear', '⏱ ' + sec + ' 秒');
+        Y.se('levelUp');
+        setTimeout(res, 1100);
+      }
+      round(rounds[0]);
+    }).then(function () { alive(r); });
   }
 
   /* ---------- 詠唱の儀式 ---------- */
@@ -255,6 +328,7 @@
         if (s.build) return build(s);
         if (s.cast) return cast(s);
         if (s.tip) return tip(s);
+        if (s.match) return match(s);
         if (s.slam) { if (window.FX) FX.slam(s.slam, s.cls || ''); Y.se('crit'); return wait(1000); }
         throw new Error('unknown step ' + JSON.stringify(s));
       });

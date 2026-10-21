@@ -4,6 +4,8 @@
  *  Y.Battle.run(boss) → Promise<{ win, rank, exp }>
  *   kind: 'quiz'   問題に答えて攻撃。速く答えるとクリティカル（2倍）、3連続で FEVER（2倍）。まちがえると反撃（ライフ −1）
  *         'build'  時間内に錬成。ちがう形を作るたびに大ダメージ。同じ形を作ると幻影に惑わされて反撃
+ *                  split: true なら、ボスは答えの数だけ分身する。それぞれ別の形の魔法陣でしか倒せない（＝別の形を作る必然性）。
+ *                  倒した分身の所に、その形の構造式が残る（＝どの形をもう作ったかが見える）
  *   HP を削りきったら、とどめの詠唱（finisher）。ライフ 3、0 で負け
  * ========================================================= */
 (function () {
@@ -11,6 +13,7 @@
   var Y = window.Y, $ = Y.$, $$ = Y.$$, esc = Y.esc, fmt = Y.fmt;
   var ATK = { thunder: '⚡ 雷撃！', wind: '🌪 疾風刃！', sand: '🏜 砂塵波！', forge: '⬡ 錬成撃！' };
   var el, st, timer = 0;
+  var GHOST = '<svg viewBox="0 0 200 200" class="gh-svg"><path d="M100 24c-36 0-58 30-58 64v84l14-12 14 14 15-14 15 14 15-14 14 14 14-12V88c0-34-22-64-57-64z" fill="#b39bff"/><path d="M64 76q36-26 72 0v26q-36 18-72 0z" fill="#2a1760"/><ellipse cx="82" cy="88" rx="9" ry="6" fill="#7dffcf"/><ellipse cx="118" cy="88" rx="9" ry="6" fill="#7dffcf"/><path d="M86 128q14 10 28 0" stroke="#2a1760" stroke-width="5" fill="none" stroke-linecap="round"/></svg>';
 
   function hud() {
     $('.bt-hp i', el).style.width = Math.max(0, st.hp / st.max * 100) + '%';
@@ -101,13 +104,15 @@
       found: function (a, n) {
         st.combo++; st.ok++;
         msg.innerHTML = '<b class="ok">' + esc(a.name) + '！</b>';
+        if (st.boss.split) ghostDown(n - 1, a);
         Y.Voice.say(a.yomi || a.name, { rate: 1.05, pitch: 0.8 });
         bossHit(Math.ceil(st.max / need), true, '⬡ 錬成撃！<br>' + esc(a.name));
         if (n >= need) { clearTimer(); B.lock(true); setTimeout(function () { finish(true, resolve); }, 1300); }
         else setTimeout(function () { B.clear(); }, 1100);
       },
       dup: function (a) {
-        bossAttack('ふふふ…それは「' + a.name + '」。さっきと同じ形よ');
+        bossAttack(st.boss.split ? 'ふふふ…その形の魔法なら、もう倒した分身にしか当たらないわ' : 'ふふふ…それは「' + a.name + '」。さっきと同じ形よ');
+        if (st.boss.split) { var gi = B.found().indexOf(a), g = $('.gh[data-g="' + gi + '"]', el); if (g) { g.classList.remove('dup'); void g.offsetWidth; g.classList.add('dup'); } }
         msg.innerHTML = '<b class="ng">同じ形に惑わされた！</b><br><small>曲げても、ひっくり返しても、つながり方が同じなら同じ物質</small>';
         if (st.life <= 0) { clearTimer(); B.lock(true); setTimeout(function () { finish(false, resolve); }, 1200); }
         else setTimeout(function () { B.clear(); }, 1400);
@@ -122,6 +127,17 @@
       bar.style.width = Math.max(0, k * 100) + '%'; bar.classList.toggle('low', k < 0.25);
       if (k <= 0) { clearTimer(); B.lock(true); st.life = 0; hud(); finish(false, resolve); }
     }, 200);
+  }
+
+  /* 分身を倒す：魔法陣から光が飛び、分身が消えて、そこに弱点の形（作った構造式）が残る */
+  function ghostDown(i, a) {
+    var g = $('.gh[data-g="' + i + '"]', el); if (!g) return;
+    g.classList.add('hit');
+    if (window.FX) { var p = FX.at(g); FX.burst(p.x, p.y, { pal: 'rel', n: 50, sp: 10, ring: true }); FX.flash('#b39bff'); }
+    setTimeout(function () {
+      g.classList.add('down');
+      $('.gh-lab', g).innerHTML = '<small>弱点</small>' + Y.Mol.pic(a.set, { num: true }) + '<b>' + esc(a.name) + '</b>';
+    }, 450);
   }
 
   function finish(win, resolve) {
@@ -167,7 +183,9 @@
       el.className = 'screen boss-' + boss.id;
       el.innerHTML = '<header class="bt-head"><button class="bt-quit" aria-label="にげる">✕</button><div class="bt-name"><small>' + esc(boss.title) + '</small><b>' + esc(boss.name) + '</b></div>' +
         '<div class="bt-hp"><i></i><b></b></div></header>' +
-        '<div class="bt-stage"><div class="bt-boss">' + boss.art + '</div><p class="bt-say"></p></div>' +
+        '<div class="bt-stage"><div class="bt-boss">' + (boss.split ? '<div class="bt-split">' + boss.build.answers.map(function (a, i) {
+          return '<div class="gh" data-g="' + i + '"><div class="gh-art">' + GHOST + '</div><p class="gh-lab">分身 ' + (i + 1) + '<br><small>弱点：？</small></p></div>';
+        }).join('') + '</div>' : boss.art) + '</div><p class="bt-say"></p></div>' +
         '<div class="bt-me"><span class="bt-life"></span><span class="bt-combo"></span></div>' +
         '<div class="bt-panel"></div>';
       hud();

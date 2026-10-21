@@ -116,7 +116,46 @@
     if (el === 'O') return h === 2 ? 'H₂O' : h === 1 ? 'OH' : 'O';
     return el + (h > 0 ? 'H' + (h > 1 ? sub(h) : '') : '');
   }
-  Y.BuildCore = { canon: canon, canonG: canonG, hNeed: hNeed, parseSet: parseSet, connected: connected, label: label, SLOTS: SLOTS };
+  /* =========================================================
+   * 鑑定：骨組みの「いちばん長い鎖」を見つけて番号をふり、アルカンなら名前をつける
+   *  ・番号は、枝の番号が小さくなる向き（2-メチルブタンを 3-メチルブタンと呼ばない）
+   *  ・枝がすべてメチル（C 1 つ）のときだけ名前を出す（序盤は C 5 つまでなので、いつもこれで足りる）
+   * ========================================================= */
+  var CHAIN = ['', 'メタン', 'エタン', 'プロパン', 'ブタン', 'ペンタン', 'ヘキサン', 'ヘプタン', 'オクタン', 'ノナン', 'デカン'];
+  var MULT = ['', '', 'ジ', 'トリ', 'テトラ'];
+  function appraise(els, adj) {
+    var ids = Object.keys(els), best = null;
+    function pathFrom(u) {   /* u から各点への道（木なので BFS の親をたどる） */
+      var par = {}, seen = {}, q = [u]; seen[u] = 1;
+      while (q.length) { var v = q.shift(); adj[v].forEach(function (x) { if (!seen[x]) { seen[x] = 1; par[x] = v; q.push(x); } }); }
+      return function (w) { var p = [w]; while (p[0] !== u) p.unshift(par[p[0]]); return p; };
+    }
+    function locs(p) {
+      var out = [];
+      p.forEach(function (v, i) {
+        var onPath = (i > 0 ? 1 : 0) + (i < p.length - 1 ? 1 : 0);
+        for (var k = 0; k < adj[v].length - onPath; k++) out.push(i + 1);
+      });
+      return out;
+    }
+    function less(a, b) { for (var i = 0; i < Math.min(a.length, b.length); i++) if (a[i] !== b[i]) return a[i] < b[i]; return a.length < b.length; }
+    ids.forEach(function (u) {
+      var to = pathFrom(u);
+      ids.forEach(function (w) {
+        var p = to(w), L = locs(p);
+        if (!best || p.length > best.path.length || (p.length === best.path.length && (L.length > best.loc.length || (L.length === best.loc.length && less(L, best.loc))))) best = { path: p, loc: L };
+      });
+    });
+    var allC = ids.every(function (k) { return els[k] === 'C'; });
+    var onChain = {}; best.path.forEach(function (v) { onChain[v] = 1; });
+    var methylOnly = ids.every(function (k) { return onChain[k] || adj[k].length === 1; });
+    var n = best.path.length, name = null;
+    if (allC && methylOnly && CHAIN[n]) name = best.loc.length ? best.loc.join(',') + '-' + MULT[best.loc.length] + 'メチル' + CHAIN[n] : CHAIN[n];
+    return { path: best.path, loc: best.loc, len: n, name: name, allC: allC };
+  }
+  function appraiseSet(set) { var p = parseSet(set); return appraise(p, graphOf(p).adj); }
+
+  Y.BuildCore = { canon: canon, appraise: appraise, appraiseSet: appraiseSet, canonG: canonG, hNeed: hNeed, parseSet: parseSet, connected: connected, label: label, SLOTS: SLOTS };
   if (typeof document === 'undefined') return;
 
   /* =========================================================
@@ -309,6 +348,10 @@
     Object.keys(heavy).forEach(function (k) { var A = heavy[k]; h += atomSVG(A.el, A.x * U, A.y * U); });
     return h;
   }
+  /* いちばん長い鎖の番号（原子の右上の小さな丸） */
+  function numSVG(heavy, path) {
+    return path.map(function (k, i) { var A = heavy[k]; return '<g class="num" transform="translate(' + (A.x * U + 13) + ',' + (A.y * U - 13) + ')"><circle r="8.5"/><text text-anchor="middle" dy=".36em">' + (i + 1) + '</text></g>'; }).join('');
+  }
   /* 骨組みの残りの手を、ぜんぶ H で埋めた位置 */
   function fillH(heavy, bonds) {
     var hs = [];
@@ -320,13 +363,13 @@
     return hs;
   }
   /* マスの記法（'C:r0 C:r1 …'）の形を、H まで描いた絵にする（問題の図に使う） */
-  Y.Mol.pic = function (set) {
+  Y.Mol.pic = function (set, opt) {
     var place = parseSet(set), heavy = {}, bonds = [], ids = Object.keys(place);
     ids.forEach(function (s) { heavy[s] = { el: place[s], x: SLOTS[s][0], y: SLOTS[s][1] }; });
     ids.forEach(function (a) { ids.forEach(function (b) { if (a < b && adjSlots(a, b)) bonds.push([a, b]); }); });
     var xs = ids.map(function (s) { return heavy[s].x; }), ys = ids.map(function (s) { return heavy[s].y; });
     var x0 = (Math.min.apply(null, xs) - 0.85) * U, x1 = (Math.max.apply(null, xs) + 0.85) * U, y0 = (Math.min.apply(null, ys) - 0.85) * U, y1 = (Math.max.apply(null, ys) + 0.85) * U;
-    return '<svg class="pic" viewBox="' + [x0, y0, x1 - x0, y1 - y0].join(' ') + '" style="max-width:' + Math.round((x1 - x0) * 0.85) + 'px" aria-hidden="true">' + structSVG(heavy, bonds, fillH(heavy, bonds)) + '</svg>';
+    return '<svg class="pic" viewBox="' + [x0, y0, x1 - x0, y1 - y0].join(' ') + '" style="max-width:' + Math.round((x1 - x0) * 0.85) + 'px" aria-hidden="true">' + structSVG(heavy, bonds, fillH(heavy, bonds)) + (opt && opt.num ? numSVG(heavy, appraiseSet(set).path) : '') + '</svg>';
   };
 
   /* =========================================================
@@ -346,7 +389,10 @@
    *  わからないとき：「💡 ヒント」を押すたびに、hints の文が1つずつ出る。最後は「攻略の書」（まだ見つけていない答えの構造式）。
    *  まちがいが2回つづくと、ヒントのボタンがゆれて知らせる
    *
-   *  puzzle = { mat: { C: 2, H: 6, O: 0 }, hFill: true, parts: ['CH3'], hints: ['…', '…'],
+   *  鑑定：appraise: 'chain'（鎖の長さと枝の番号）/ 'name'（名前まで）。C を全部置いた時点で、いちばん長い鎖に番号をふって見せる。
+   *        もう作った形と同じなら、H をつける前に知らせる（曲げただけ・裏返しただけの形に、その場で気づけるように）
+   *
+   *  puzzle = { mat: { C: 2, H: 6, O: 0 }, hFill: true, parts: ['CH3'], hints: ['…', '…'], appraise: 'name',
    *             answers: [{ name, yomi, set: 'C:r1 C:r2', note }] }
    *  cb = { found(ans, n), dup(ans), bad(msg), change() }
    * ========================================================= */
@@ -361,7 +407,7 @@
     var heavy, hs, bonds, hist, sel = null, lock = false, seq = 0, hintLv = 0, stuck = 0;
     pz.answers.forEach(function (a) { a._c = canon(parseSet(a.set)); });
     host.innerHTML = '<div class="bld"><div class="mcw bw">' + circleSVG('b' + (++uid)) + '</div>' +
-      '<div class="bld-guide" hidden></div><div class="bld-pal"></div><div class="bld-hint" hidden></div><div class="bld-bar"><button class="bld-hintb" type="button">💡 ヒント</button><button class="bld-undo" type="button">↶ ひとつ戻す</button>' +
+      '<div class="bld-guide" hidden></div><div class="bld-appr" hidden></div><div class="bld-pal"></div><div class="bld-hint" hidden></div><div class="bld-bar"><button class="bld-hintb" type="button">💡 ヒント</button><button class="bld-undo" type="button">↶ ひとつ戻す</button>' +
       (pz.hFill ? '<button class="bld-fill" type="button">🖌 水素の筆（残りの手を H で）</button>' : '') +
       '<button class="bld-clr" type="button">↺ やり直す</button></div></div>';
     var w = host.querySelector('.mcw'), svg = w.querySelector('svg'), gm = w.querySelector('.mc-mol'), pal = host.querySelector('.bld-pal');
@@ -451,7 +497,8 @@
       Y.se('whoosh'); render(); check();
     }
     function render(quiet) {
-      gm.innerHTML = structSVG(heavy, bonds, hs);
+      var ap = appr();
+      gm.innerHTML = structSVG(heavy, bonds, hs) + (ap ? numSVG(heavy, ap.path) : '');
       /* 骨組みのまん中が、魔法陣のまん中に来るようにずらす */
       /* 小さな分子は大きく、大きな分子は魔法陣に収まるように拡大・縮小する */
       var ks = Object.keys(heavy), ox = 0, oy = 0, z = 1.35;
@@ -482,6 +529,32 @@
       if (fb) fb.disabled = lock || !Object.keys(heavy).length || !sockets().length || left('C') > 0 || left('O') > 0;
       if (cb.change && !quiet) cb.change();
       guideTick();
+      showAppr(ap);
+    }
+    /* ---- 鑑定：C（と O）を全部置いたら、鎖に番号をふって見せる ---- */
+    function graphNow() {
+      var els = {}, adj = {};
+      Object.keys(heavy).forEach(function (k) { els[k] = heavy[k].el; adj[k] = []; });
+      bonds.forEach(function (b) { adj[b[0]].push(b[1]); adj[b[1]].push(b[0]); });
+      return { els: els, adj: adj };
+    }
+    function appr() {
+      if (!pz.appraise || !Object.keys(heavy).length || left('C') > 0 || left('O') > 0) return null;
+      var g = graphNow(), a = appraise(g.els, g.adj);
+      a.canon = canonG(g.els, g.adj);
+      return a.allC ? a : null;
+    }
+    var apEl = null;
+    function showAppr(a) {
+      apEl = apEl || host.querySelector('.bld-appr');
+      if (!a || lock) { apEl.hidden = true; return; }
+      var br = a.loc.length ? a.loc.map(function (n) { return n + ' 番目'; }).join('・') + 'に枝（メチル）' : '枝なし';
+      var same = null; found.forEach(function (f) { if (f._c === a.canon) same = f; });
+      apEl.hidden = false;
+      apEl.className = 'bld-appr' + (same ? ' warn' : '');
+      apEl.innerHTML = '<b>🔎 鑑定</b> いちばん長い鎖は <em>C ' + a.len + ' つ</em>（番号の 1→' + a.len + '）・' + br +
+        (pz.appraise === 'name' && a.name ? '<br>→ <strong>' + Y.esc(a.name) + '</strong>' : '') +
+        (same ? '<br>⚠ もう作った「' + Y.esc(same.name) + '」と同じ形！ 鎖の長さと枝の番号が同じ' : '');
     }
     /* ---- 操作の練習（ガイド）：条件を満たしたら次の指示へ ---- */
     var gi = 0, gEl = null;
