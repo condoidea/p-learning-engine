@@ -42,6 +42,13 @@ window.LE_COURSES = [
     desc: '2つの文をタップで合体！ que・quien・前置詞＋冠詞＋que・donde・lo que・cuyo まで、西検4級の関係詞を1日30分×7日で。ボス戦・60秒ラッシュ・フレーズガチャつき。',
     color: '#ff4fa3', color2: '#38e8ff', lessons: 10
   },
+  /* ユーキ・クエスト（yuki/）：有機化学のRPG。独立アプリ。進み具合は lessons[id].done を数える（序章3＋1章3＋ボス2） */
+  {
+    id: 'yuki', entry: 'yuki.html', storageKey: 'yuki.v1',
+    title: '有機化学', brand: 'ユーキ・クエスト', icon: '⬡',
+    desc: '素材を集めて魔法陣を描き、呪文を詠唱して反応を発動！ 炭素の精霊テトラと、共通テストの有機化学を。属性ごとの BGM・詠唱の読み上げ・ボス戦つき。',
+    color: '#ffb84d', color2: '#b98cff', lessons: 8
+  },
   /* 単語アプリ（vocab/）：kind: 'vocab'。words＝デッキの語数（図鑑の進み具合の表示に使う） */
   {
     id: 'spanish', kind: 'vocab', entry: 'vocab.html', storageKey: 'vocab.spanish.v1',
