@@ -63,8 +63,9 @@ function checkBuild(src, pz) {
   pz.answers.forEach(a => {
     const p = B.parseSet(a.set), cnt = {};
     Object.values(p).forEach(el => { cnt[el] = (cnt[el] || 0) + 1; });
-    Object.keys(pz.mat).forEach(el => { if ((cnt[el] || 0) !== pz.mat[el]) err(src + '：「' + a.name + '」の ' + el + ' の数が素材と合わない'); });
-    Object.keys(p).forEach(sl => { if (!B.SLOTS[sl]) err(src + '：台座 ' + sl + ' がない'); });
+    Object.keys(pz.mat).filter(el => el !== 'H').forEach(el => { if ((cnt[el] || 0) !== pz.mat[el]) err(src + '：「' + a.name + '」の ' + el + ' の数が素材と合わない'); });
+    if ((pz.mat.H || 0) !== B.hNeed(p)) err(src + '：「' + a.name + '」に必要な H は ' + B.hNeed(p) + ' 個（素材は ' + (pz.mat.H || 0) + ' 個）');
+    Object.keys(p).forEach(sl => { if (!B.SLOTS[sl]) err(src + '：マス ' + sl + ' がない'); });
     if (!B.connected(p)) err(src + '：「' + a.name + '」がつながっていない');
     const c = B.canon(p);
     if (seen[c]) err(src + '：「' + a.name + '」と「' + seen[c] + '」が同じ形');

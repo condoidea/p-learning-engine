@@ -177,7 +177,7 @@
     var msg = d.querySelector('.b-msg'), got = d.querySelector('.b-got');
     function prog(n) { got.innerHTML = pz.answers.map(function (a, i) { return '<span class="' + (i < n ? 'on' : '') + '">' + (i < n ? '◆' : '◇') + '</span>'; }).slice(0, need).join('') + '<small>' + n + ' / ' + need + '</small>'; }
     prog(0);
-    setTray('<p class="wait">⬡ 台座をタップして、素材を置こう（もう一度タップで別の素材・空に）</p>');
+    setTray('');
     return new Promise(function (res) {
       var names = [];
       var B = Y.Build(d.querySelector('.b-host'), pz, {

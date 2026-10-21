@@ -145,28 +145,44 @@ mark.k { background: linear-gradient(transparent 55%, rgba(255, 217, 138, .45) 5
 .mini .at text { font-size: 11px; } .mini .at-H text { font-size: 9px; }
 .mini line { stroke-width: 2.4; }
 
-/* ---------- 錬成 ---------- */
+/* ---------- 錬成（素材を手までドラッグ） ---------- */
 .bld { width: 100%; }
-.mcw.bw { aspect-ratio: auto; height: 260px; }
-.mcw.bw .mc { height: 260px; }
-.slot rect:not(.hit) { fill: rgba(255, 255, 255, .03); stroke: var(--line); stroke-dasharray: 4 4; }
-.slot .hit { fill: transparent; }
-.slot { cursor: pointer; }
-.slot.on rect:not(.hit) { stroke-dasharray: none; }
-.slot.on.at-C rect:not(.hit) { fill: #2e2468; stroke: #9a8cff; }
-.slot.on.at-O rect:not(.hit) { fill: #e2414f; stroke: #ff9aa2; }
-.slot text { font: 800 15px var(--f-body); fill: #fff; pointer-events: none; }
-.bb { stroke-width: 4; }
-.bld-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
-.bld-mat { display: flex; align-items: center; gap: 6px; flex: 1; flex-wrap: wrap; font-size: 13px; }
-.bld-mat small { color: var(--muted); font-size: 11.5px; }
-.mt { padding: 3px 10px; border-radius: 999px; font-weight: 800; background: #2e2468; }
-.mt.at-O { background: #8f2530; } .mt.zero { opacity: .35; }
-.bld-clr { padding: 6px 12px; border-radius: 999px; background: var(--panel2); font-size: 13px; font-weight: 700; }
-.lock .slot { cursor: default; }
+.mcw.bw { aspect-ratio: auto; height: 280px; }
+.mcw.bw .mc { height: 280px; touch-action: none; }
+.mcw.bw .mc-mol { transition: transform .35s cubic-bezier(.2, .9, .3, 1); }
+.bb { stroke: var(--gold); stroke-width: 3.5; stroke-linecap: round; }
+.bh { stroke: var(--gold); stroke-width: 2.6; stroke-linecap: round; stroke-opacity: .85; }
+.at.pop { animation: apop .35s cubic-bezier(.2, 1.6, .4, 1); transform-box: fill-box; transform-origin: center; }
+@keyframes apop { from { scale: .2; } }
+.sock line { stroke: var(--wind); stroke-width: 2.5; stroke-dasharray: 3 3; stroke-opacity: .7; }
+.sock .dot { fill: rgba(125, 255, 207, .25); stroke: var(--wind); stroke-width: 2; animation: sock 1.4s ease-in-out infinite; }
+.sock .hit { fill: transparent; cursor: pointer; }
+.sock-t { font: 700 12px var(--f-body); fill: var(--wind); }
+.sock.no { opacity: .25; } .sock.no .dot { animation: none; }
+.sock.can .dot { fill: rgba(255, 217, 138, .45); stroke: var(--gold); }
+.sock.over .dot { fill: var(--gold); stroke: #fff; r: 11px; }
+@keyframes sock { 50% { stroke-opacity: .35; fill-opacity: .4; } }
+.lock .sock { display: none; }
+.bld-pal { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 2px; }
+.part { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 58px; height: 58px; border-radius: 50%; border: 2px solid; touch-action: none; user-select: none; -webkit-user-select: none; transition: transform .1s; }
+.part b { font-size: 21px; line-height: 1; } .part small { font-size: 11.5px; font-weight: 800; opacity: .9; }
+.part.at-C { background: #2e2468; border-color: #9a8cff; color: #fff; }
+.part.at-O { background: #e2414f; border-color: #ff9aa2; color: #fff; }
+.part.at-H { background: #e8f1ff; border-color: #fff; color: #1b2440; }
+.part.pt { width: auto; min-width: 74px; padding: 0 12px; border-radius: 29px; }
+.part.pt b { font-size: 18px; } .part.pt small { font-size: 10px; }
+.drag-ghost.pt { width: auto; padding: 0 12px; border-radius: 23px; font-size: 17px; }
+.part.on { transform: scale(1.12); box-shadow: 0 0 0 4px rgba(255, 217, 138, .5), 0 0 18px var(--gold2); }
+.part:disabled { opacity: .3; }
+.pal-hint { flex: 1 1 120px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.drag-ghost { position: fixed; z-index: 99; width: 46px; height: 46px; margin: -23px 0 0 -23px; border-radius: 50%; display: grid; place-items: center; font: 800 20px var(--f-body); pointer-events: none; box-shadow: 0 0 20px var(--gold2); border: 2px solid #fff; }
+.drag-ghost.at-C { background: #2e2468; color: #fff; } .drag-ghost.at-O { background: #e2414f; color: #fff; } .drag-ghost.at-H { background: #e8f1ff; color: #1b2440; }
+.bld-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.bld-bar .bld-fill { order: -1; flex-basis: 100%; }
+.bld-bar button { padding: 7px 12px; border-radius: 999px; background: var(--panel2); font-size: 13px; font-weight: 700; }
+.bld-fill { color: #082a20; background: var(--wind) !important; }
+.bld-bar button:disabled { opacity: .35; }
 .pic { display: block; width: 100%; height: auto; margin: 4px auto 0; }
-.pic .slot rect { fill: #2e2468; stroke: #9a8cff; stroke-width: 2; }
-.pic .slot.at-O rect { fill: #e2414f; stroke: #ff9aa2; }
 
 /* ---------- トーク ---------- */
 #talk { display: flex; flex-direction: column; height: 100dvh; }

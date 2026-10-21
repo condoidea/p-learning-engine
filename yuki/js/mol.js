@@ -75,7 +75,7 @@
 
   Y.Mol = { parse: parse, clone: clone, applyOps: applyOps, valenceErrors: valenceErrors, bbox: bbox, union: union, VAL: VAL };
 
-  /* 錬成の台座（画面なしでも使う部分） */
+  /* 錬成の形の書き方（画面なしでも使う部分）。答えの形は、くし形のマス（横5・上下3ずつ）の名前 'C:r0 C:r1 …' で書く */
   var SLOTS = {};
   [0, 1, 2, 3, 4].forEach(function (i) { SLOTS['r' + i] = [i - 2, 0]; });
   [1, 2, 3].forEach(function (i) { SLOTS['u' + i] = [i - 2, -1]; SLOTS['d' + i] = [i - 2, 1]; });
@@ -90,14 +90,18 @@
     ids.forEach(function (a) { adj[a] = ids.filter(function (b) { return b !== a && adjSlots(a, b); }); });
     return { ids: ids, adj: adj };
   }
-  function canon(place) {
-    var g = graphOf(place), best = null;
+  /* つながり方の「指紋」：どこから描いても、曲げても裏返しても同じ文字列になる（木の正規形） */
+  function canonG(els, adj) {
+    var best = null;
     function enc(v, par) {
-      return place[v] + '(' + g.adj[v].filter(function (x) { return x !== par; }).map(function (x) { return enc(x, v); }).sort().join(',') + ')';
+      return els[v] + '(' + adj[v].filter(function (x) { return x !== par; }).map(function (x) { return enc(x, v); }).sort().join(',') + ')';
     }
-    g.ids.forEach(function (r) { var c = enc(r, null); if (best === null || c < best) best = c; });
+    Object.keys(els).forEach(function (r) { var c = enc(r, null); if (best === null || c < best) best = c; });
     return best;
   }
+  function canon(place) { return canonG(place, graphOf(place).adj); }
+  /* その骨組みに必要な H の数（手の余りの合計） */
+  function hNeed(place) { var g = graphOf(place), n = 0; g.ids.forEach(function (v) { n += VAL[place[v]] - g.adj[v].length; }); return n; }
   function connected(place) {
     var g = graphOf(place); if (!g.ids.length) return false;
     var seen = {}, st = [g.ids[0]];
@@ -112,7 +116,7 @@
     if (el === 'O') return h === 2 ? 'H₂O' : h === 1 ? 'OH' : 'O';
     return el + (h > 0 ? 'H' + (h > 1 ? sub(h) : '') : '');
   }
-  Y.BuildCore = { canon: canon, parseSet: parseSet, connected: connected, label: label, SLOTS: SLOTS };
+  Y.BuildCore = { canon: canon, canonG: canonG, hNeed: hNeed, parseSet: parseSet, connected: connected, label: label, SLOTS: SLOTS };
   if (typeof document === 'undefined') return;
 
   /* =========================================================
@@ -278,91 +282,285 @@
   }
   Y.Mol.view = view; Y.Mol.mini = mini;
 
-  /* 台座の形を、略した書き方（CH₃・CH₂…）の絵で見せる（錬成と同じ見た目） */
-  Y.Mol.pic = function (set) {
-    var place = parseSet(set), ids = Object.keys(place), SX = 68, SY = 60;
-    var xs = ids.map(function (s) { return SLOTS[s][0]; }), ys = ids.map(function (s) { return SLOTS[s][1]; });
-    var x0 = Math.min.apply(null, xs) * SX - 34, x1 = Math.max.apply(null, xs) * SX + 34, y0 = Math.min.apply(null, ys) * SY - 24, y1 = Math.max.apply(null, ys) * SY + 24;
-    var h = '<svg class="pic" viewBox="' + [x0, y0, x1 - x0, y1 - y0].join(' ') + '" style="max-width:' + Math.round((x1 - x0) * 0.9) + 'px" aria-hidden="true">';
-    ids.forEach(function (a) { ids.forEach(function (b) { if (a < b && adjSlots(a, b)) h += '<line class="bb" x1="' + SLOTS[a][0] * SX + '" y1="' + SLOTS[a][1] * SY + '" x2="' + SLOTS[b][0] * SX + '" y2="' + SLOTS[b][1] * SY + '"/>'; }); });
-    ids.forEach(function (s) {
-      var deg = ids.filter(function (b) { return b !== s && adjSlots(s, b); }).length;
-      h += '<g class="slot on at-' + place[s] + '" transform="translate(' + SLOTS[s][0] * SX + ',' + SLOTS[s][1] * SY + ')"><rect x="-27" y="-18" width="54" height="36" rx="18"/><text text-anchor="middle" dy=".36em">' + label(place[s], deg) + '</text></g>';
+  /* =========================================================
+   * 構造式の絵（H まで全部描く）
+   *  重い原子（C・O）はマス目に置き、H は手の向きに半マスの所に描く。手の向きは 上・右・下・左
+   * ========================================================= */
+  var DIRS = { U: [0, -1], R: [1, 0], D: [0, 1], L: [-1, 0] };
+  var OPP = { U: 'D', D: 'U', L: 'R', R: 'L' };
+  function dirOf(a, b) { var dx = b.x - a.x, dy = b.y - a.y; return dx === 1 ? 'R' : dx === -1 ? 'L' : dy === 1 ? 'D' : 'U'; }
+  /* その原子の手の向き。C は4方向。O は「つながった向き」とその反対（つながりがなければ左右） */
+  function handsOf(a, bondDirs) {
+    if (a.el === 'C') return ['U', 'R', 'D', 'L'];
+    if (a.el === 'O') { var d = bondDirs[0]; return d ? [d, OPP[d]] : ['L', 'R']; }
+    return [];
+  }
+  var U = 46;   /* 1マスの大きさ（px） */
+  function atomSVG(el, x, y, cls) {
+    return '<g class="at at-' + el + (cls ? ' ' + cls : '') + '" transform="translate(' + x + ',' + y + ')"><circle r="' + (el === 'H' ? 10 : 15) + '"/><text text-anchor="middle" dy=".36em">' + el + '</text></g>';
+  }
+  /* 骨組み（{ id: {el, x, y} } と結合）から、H まで描いた SVG の中身 */
+  function structSVG(heavy, bonds, hs) {
+    var h = '';
+    bonds.forEach(function (b) { var A = heavy[b[0]], B = heavy[b[1]]; h += '<line class="bb" x1="' + A.x * U + '" y1="' + A.y * U + '" x2="' + B.x * U + '" y2="' + B.y * U + '"/>'; });
+    hs.forEach(function (H) { var A = heavy[H.p], d = DIRS[H.d]; h += '<line class="bh" x1="' + A.x * U + '" y1="' + A.y * U + '" x2="' + (A.x + d[0] * 0.55) * U + '" y2="' + (A.y + d[1] * 0.55) * U + '"/>'; });
+    hs.forEach(function (H) { var A = heavy[H.p], d = DIRS[H.d]; h += atomSVG('H', (A.x + d[0] * 0.55) * U, (A.y + d[1] * 0.55) * U, H.cls); });
+    Object.keys(heavy).forEach(function (k) { var A = heavy[k]; h += atomSVG(A.el, A.x * U, A.y * U); });
+    return h;
+  }
+  /* 骨組みの残りの手を、ぜんぶ H で埋めた位置 */
+  function fillH(heavy, bonds) {
+    var hs = [];
+    Object.keys(heavy).forEach(function (k) {
+      var A = heavy[k], used = [];
+      bonds.forEach(function (b) { if (b[0] === k) used.push(dirOf(A, heavy[b[1]])); if (b[1] === k) used.push(dirOf(A, heavy[b[0]])); });
+      handsOf(A, used).forEach(function (d) { if (used.indexOf(d) < 0) hs.push({ p: k, d: d }); });
     });
-    return h + '</svg>';
+    return hs;
+  }
+  /* マスの記法（'C:r0 C:r1 …'）の形を、H まで描いた絵にする（問題の図に使う） */
+  Y.Mol.pic = function (set) {
+    var place = parseSet(set), heavy = {}, bonds = [], ids = Object.keys(place);
+    ids.forEach(function (s) { heavy[s] = { el: place[s], x: SLOTS[s][0], y: SLOTS[s][1] }; });
+    ids.forEach(function (a) { ids.forEach(function (b) { if (a < b && adjSlots(a, b)) bonds.push([a, b]); }); });
+    var xs = ids.map(function (s) { return heavy[s].x; }), ys = ids.map(function (s) { return heavy[s].y; });
+    var x0 = (Math.min.apply(null, xs) - 0.85) * U, x1 = (Math.max.apply(null, xs) + 0.85) * U, y0 = (Math.min.apply(null, ys) - 0.85) * U, y1 = (Math.max.apply(null, ys) + 0.85) * U;
+    return '<svg class="pic" viewBox="' + [x0, y0, x1 - x0, y1 - y0].join(' ') + '" style="max-width:' + Math.round((x1 - x0) * 0.85) + 'px" aria-hidden="true">' + structSVG(heavy, bonds, fillH(heavy, bonds)) + '</svg>';
   };
 
   /* =========================================================
-   * 錬成（骨格づくり）
-   *  くしの形の台座（横5つ・上下に3つずつ）に、C や O を置く。台座どうしは環にならないので、できるのは鎖と枝だけ
-   *  H は手の余りから自動で数え、CH₃ / CH₂ / OH のように略して書く（＝示性式の書き方に慣れる）
+   * 錬成：素材（C・O・H）を、原子の空いている「手」までドラッグしてつなぐ
+   *  ・光っている小さな丸が「空いている手」。素材をそこへ運ぶ（または素材をタップ → 手をタップ）
+   *  ・H は手が1本なので、骨組みの先には何もつなげない。C・O は新しいマスに置かれ、そこからまた手が出る
+   *  ・ほかの原子のとなり（つながっていないのに、くっついて見える所）には置けない＝環はできない
+   *  ・素材を使いきって、空いている手が1本もなくなったら魔法陣が光る（＝原子価がそろった）
    *
-   *  puzzle = { mat: { C: 4, O: 0 }, answers: [{ name, yomi, set: 'C:r0 C:r1 C:r2 C:r3' }], hint }
+   *  分子が大きくなったときの工夫
+   *   ・hFill：「水素の詠唱」ボタンで、残りの手をまとめて H で埋める（骨組みづくりに集中できる）
+   *   ・parts：原子のまとまり（パーツ）をひとつで置ける。CH₃（メチル基）・OH（ヒドロキシ基）。
+   *     パーツも素材（C・O・H）を使う。つなぐ手は 1 本だけで、残りの手には H が最初から付いている
+   *     （芳香族の章では、ベンゼン環をパーツにする予定）
+   *
+   *  puzzle = { mat: { C: 2, H: 6, O: 0 }, hFill: true, parts: ['CH3'],
+   *             answers: [{ name, yomi, set: 'C:r1 C:r2', note }] }
    *  cb = { found(ans, n), dup(ans), bad(msg), change() }
    * ========================================================= */
+  var PARTS = {
+    CH3: { el: 'C', t: 'CH₃', n: 'メチル基' },
+    OH: { el: 'O', t: 'OH', n: 'ヒドロキシ基' }
+  };
+  var SPANX = 6, SPANY = 4;   /* 骨組みの大きさの上限（横 7 マス・縦 5 マス）。絵はいつも魔法陣のまん中に寄せる */
   Y.Build = function (host, pz, cb) {
     cb = cb || {};
-    var place = {}, found = [], mats = Object.keys(pz.mat).filter(function (k) { return pz.mat[k] > 0; });
+    var found = [], mats = ['C', 'O', 'H'].filter(function (k) { return pz.mat[k] > 0; }), parts = pz.parts || [];
+    var heavy, hs, bonds, hist, sel = null, lock = false, seq = 0;
     pz.answers.forEach(function (a) { a._c = canon(parseSet(a.set)); });
     host.innerHTML = '<div class="bld"><div class="mcw bw">' + circleSVG('b' + (++uid)) + '</div>' +
-      '<div class="bld-bar"><span class="bld-mat"></span><button class="bld-clr" type="button">↺ やり直す</button></div></div>';
-    var w = host.querySelector('.mcw'), gm = w.querySelector('.mc-mol'), matEl = host.querySelector('.bld-mat');
-    var SX = 68, SY = 60;
-    function count(el) { var n = 0; for (var k in place) if (place[k] === el) n++; return n; }
-    function render() {
-      gm.innerHTML = '';
-      var g = graphOf(place);
-      /* 結合 */
-      g.ids.forEach(function (a) { g.adj[a].forEach(function (b) { if (a < b) svgEl('line', { 'class': 'bb', x1: SLOTS[a][0] * SX, y1: SLOTS[a][1] * SY, x2: SLOTS[b][0] * SX, y2: SLOTS[b][1] * SY }, gm); }); });
-      Object.keys(SLOTS).forEach(function (s) {
-        var p = SLOTS[s], el = place[s];
-        var gg = svgEl('g', { 'class': 'slot' + (el ? ' on at-' + el : ''), transform: 'translate(' + p[0] * SX + ',' + p[1] * SY + ')', 'data-s': s, role: 'button', tabindex: '0' }, gm);
-        svgEl('rect', { x: -27, y: -18, width: 54, height: 36, rx: 18 }, gg);
-        var t = svgEl('text', { 'text-anchor': 'middle', dy: '.36em' }, gg);
-        t.textContent = el ? label(el, g.adj[s].length) : '';
-        /* タップの範囲は少し大きめ */
-        svgEl('rect', { 'class': 'hit', x: -31, y: -30, width: 62, height: 60 }, gg);
-      });
-      matEl.innerHTML = mats.map(function (m) {
-        var left = pz.mat[m] - count(m);
-        return '<span class="mt at-' + m + (left ? '' : ' zero') + '"><b>' + m + '</b>×' + left + '</span>';
-      }).join('') + '<small>台座をタップして置く</small>';
-      if (cb.change) cb.change();
+      '<div class="bld-pal"></div><div class="bld-bar"><button class="bld-undo" type="button">↶ ひとつ戻す</button>' +
+      (pz.hFill ? '<button class="bld-fill" type="button">💧 水素の詠唱（残りの手を H で）</button>' : '') +
+      '<button class="bld-clr" type="button">↺ やり直す</button></div></div>';
+    var w = host.querySelector('.mcw'), svg = w.querySelector('svg'), gm = w.querySelector('.mc-mol'), pal = host.querySelector('.bld-pal');
+    function reset() { heavy = {}; hs = []; bonds = []; hist = []; render(); }
+    function left(el) {
+      var P = PARTS[el];
+      if (P) return Math.max(0, Math.min(left(P.el), Math.floor(left('H') / (VAL[P.el] - 1))));
+      var n = pz.mat[el] || 0;
+      if (el === 'H') return n - hs.length;
+      for (var k in heavy) if (heavy[k].el === el) n--;
+      return n;
     }
-    function cycle(s) {
-      var order = [null].concat(mats), i = order.indexOf(place[s] || null);
-      for (var k = 1; k <= order.length; k++) {
-        var nx = order[(i + k) % order.length];
-        if (nx === null || count(nx) < pz.mat[nx]) { if (nx === null) delete place[s]; else place[s] = nx; break; }
+    function bondDirs(k) {
+      var A = heavy[k], ds = [];
+      bonds.forEach(function (b) { if (b[0] === k) ds.push(dirOf(A, heavy[b[1]])); if (b[1] === k) ds.push(dirOf(A, heavy[b[0]])); });
+      hs.forEach(function (H) { if (H.p === k) ds.push(H.d); });
+      return ds;
+    }
+    function heavyBondDirs(k) {
+      var A = heavy[k], ds = [];
+      bonds.forEach(function (b) { if (b[0] === k) ds.push(dirOf(A, heavy[b[1]])); if (b[1] === k) ds.push(dirOf(A, heavy[b[0]])); });
+      return ds;
+    }
+    /* 空いている手の一覧 */
+    function sockets() {
+      var out = [];
+      if (!Object.keys(heavy).length) return [{ k: null, d: null, x: 0, y: 0 }];
+      Object.keys(heavy).forEach(function (k) {
+        var A = heavy[k], used = bondDirs(k);
+        handsOf(A, heavyBondDirs(k)).forEach(function (d) { if (used.indexOf(d) < 0) out.push({ k: k, d: d, x: A.x + DIRS[d][0] * 0.55, y: A.y + DIRS[d][1] * 0.55 }); });
+      });
+      return out;
+    }
+    function cellFree(x, y, parent) {
+      var xs = [x], ys = [y];
+      for (var j in heavy) { xs.push(heavy[j].x); ys.push(heavy[j].y); }
+      if (Math.max.apply(null, xs) - Math.min.apply(null, xs) > SPANX || Math.max.apply(null, ys) - Math.min.apply(null, ys) > SPANY) return '魔法陣からはみ出す';
+      for (var k in heavy) {
+        var A = heavy[k];
+        if (A.x === x && A.y === y) return 'ふさがっている';
+        if (k !== parent && Math.abs(A.x - x) + Math.abs(A.y - y) === 1) return 'ほかの原子とぶつかる';
       }
-      Y.se('tap');
-      render(); check();
+      return '';
+    }
+    function canPlace(el, s) {
+      if (!el || left(el) <= 0) return false;
+      if (s.k === null) return el !== 'H';
+      if (el === 'H') return true;
+      if (PARTS[el] && left('H') < VAL[PARTS[el].el] - 1) return false;
+      var A = heavy[s.k];
+      return !cellFree(A.x + DIRS[s.d][0], A.y + DIRS[s.d][1], s.k);
+    }
+    function place(el, s, quiet) {
+      if (lock) return false;
+      if (left(el) <= 0) { if (cb.bad) cb.bad(el + ' はもう残っていない'); return false; }
+      var P = PARTS[el], key = el;
+      if (P) el = P.el;
+      if (s.k === null) {
+        if (el === 'H') { if (cb.bad) cb.bad('H は手が 1 本だけ。骨組みのまん中にはなれない。C から始めよう'); Y.se('wrong'); return false; }
+        var id0 = 'a' + (++seq); heavy[id0] = { el: el, x: 0, y: 0 }; hist.push({ t: 'h', id: id0 });
+        if (P) partH(id0);
+      } else if (el === 'H') {
+        hs.push({ p: s.k, d: s.d, cls: quiet ? '' : 'pop' }); hist.push({ t: 'H' });
+      } else {
+        var A = heavy[s.k], x = A.x + DIRS[s.d][0], y = A.y + DIRS[s.d][1], why = cellFree(x, y, s.k);
+        if (why) { if (cb.bad) cb.bad('そこには置けない（' + why + '）'); Y.se('wrong'); return false; }
+        var id = 'a' + (++seq); heavy[id] = { el: el, x: x, y: y }; bonds.push([s.k, id]); hist.push({ t: 'h', id: id });
+        if (P) partH(id);
+      }
+      if (!quiet) { Y.se('tap'); if (left(key) <= 0 && sel === key) sel = null; render(); check(); }
+      return true;
+    }
+    /* パーツ：つなぐ手を 1 本だけ残して、ほかの手に H を付ける（最初の原子なら右の手を残す） */
+    function partH(id) {
+      var A = heavy[id], hb = heavyBondDirs(id), keep = hb.length ? null : 'R', n = 0;
+      handsOf(A, hb).forEach(function (d) { if (hb.indexOf(d) < 0 && d !== keep) { hs.push({ p: id, d: d, cls: 'pop' }); n++; } });
+      hist[hist.length - 1] = { t: 'p', id: id, n: n };
+    }
+    function undo() {
+      var h = hist.pop(); if (!h) return;
+      if (h.t === 'H') hs.pop();
+      else {
+        if (h.t === 'p') hs.splice(hs.length - h.n, h.n);
+        delete heavy[h.id]; bonds = bonds.filter(function (b) { return b[1] !== h.id; });
+      }
+      Y.se('whoosh'); render(); check();
+    }
+    function render(quiet) {
+      gm.innerHTML = structSVG(heavy, bonds, hs);
+      /* 骨組みのまん中が、魔法陣のまん中に来るようにずらす */
+      /* 小さな分子は大きく、大きな分子は魔法陣に収まるように拡大・縮小する */
+      var ks = Object.keys(heavy), ox = 0, oy = 0, z = 1.35;
+      if (ks.length) {
+        var xs = ks.map(function (k) { return heavy[k].x; }), ys = ks.map(function (k) { return heavy[k].y; });
+        var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs), y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
+        ox = -(x1 + x0) / 2 * U; oy = -(y1 + y0) / 2 * U;
+        z = Math.min(1.35, 250 / ((x1 - x0 + 1.6) * U), 230 / ((y1 - y0 + 1.6) * U));
+      }
+      gm.style.transform = 'scale(' + z.toFixed(3) + ') translate(' + ox + 'px,' + oy + 'px)';
+      if (!lock) sockets().forEach(function (s, i) {
+        var ok = canPlace(sel, s), cls = 'sock' + (sel ? (ok ? ' can' : ' no') : '');
+        var px = s.x * U, py = s.y * U, ax = s.k === null ? px : heavy[s.k].x * U, ay = s.k === null ? py : heavy[s.k].y * U;
+        var g = svgEl('g', { 'class': cls, 'data-sock': i }, gm);
+        if (s.k !== null) svgEl('line', { x1: ax + (px - ax) * 0.45, y1: ay + (py - ay) * 0.45, x2: px, y2: py }, g);
+        svgEl('circle', { 'class': 'dot', cx: px, cy: py, r: s.k === null ? 16 : 7 }, g);
+        svgEl('circle', { 'class': 'hit', cx: px, cy: py, r: 19 }, g);
+        if (s.k === null) { var t = svgEl('text', { x: px, y: py + 36, 'text-anchor': 'middle', 'class': 'sock-t' }, g); t.textContent = 'ここに最初の原子'; }
+      });
+      pal.innerHTML = mats.map(function (m) {
+        var n = left(m);
+        return '<button type="button" class="part at-' + m + (n ? '' : ' zero') + (sel === m ? ' on' : '') + '" data-el="' + m + '"' + (n && !lock ? '' : ' disabled') + '><b>' + m + '</b><small>×' + n + '</small></button>';
+      }).join('') + parts.map(function (k) {
+        var n = left(k), P = PARTS[k];
+        return '<button type="button" class="part pt at-' + P.el + (sel === k ? ' on' : '') + '" data-el="' + k + '"' + (n && !lock ? '' : ' disabled') + '><b>' + P.t + '</b><small>' + P.n + '</small></button>';
+      }).join('') + '<p class="pal-hint">' + (sel ? '光っている「手」をタップ（またはドラッグ）' : '素材を「手」までドラッグ。タップで選んでもいい') + '</p>';
+      var fb = host.querySelector('.bld-fill');
+      if (fb) fb.disabled = lock || !Object.keys(heavy).length || !sockets().length || left('C') > 0 || left('O') > 0;
+      if (cb.change && !quiet) cb.change();
     }
     function check() {
-      var full = mats.every(function (m) { return count(m) === pz.mat[m]; });
       w.classList.remove('lit');
-      if (!full) return;
-      if (!connected(place)) { if (cb.bad) cb.bad('バラバラだと魔法陣にならない。全部を手でつなごう'); w.classList.add('fz'); setTimeout(function () { w.classList.remove('fz'); }, 600); return; }
-      var g = graphOf(place);
-      for (var s in place) if (place[s] === 'O' && g.adj[s].length > 2) { if (cb.bad) cb.bad('O の手は 2 本。3 本以上はつなげない'); return; }
-      for (var s2 in place) if (place[s2] === 'O') { if (g.adj[s2].some(function (x) { return place[x] === 'O'; })) { if (cb.bad) cb.bad('O どうしをつなぐ形は、この冒険では使わない（不安定）'); return; } }
-      var c = canon(place), ans = null;
+      var free = sockets().length, rest = mats.reduce(function (n, m) { return n + left(m); }, 0);
+      if (!Object.keys(heavy).length) return;
+      if (free && rest) return;   /* まだ作っている途中 */
+      if (free && !rest) { if (cb.bad) cb.bad('素材を使いきったのに、空いている手が ' + free + ' 本ある。魔法陣が光らない…'); w.classList.add('fz'); setTimeout(function () { w.classList.remove('fz'); }, 600); return; }
+      if (!free && rest) { if (cb.bad) cb.bad('手は全部うまったのに、素材が余っている。骨組みを見直そう'); return; }
+      /* 手も素材もぴったり → 形をくらべる */
+      var els = {}, adj = {};
+      Object.keys(heavy).forEach(function (k) { els[k] = heavy[k].el; adj[k] = []; });
+      bonds.forEach(function (b) { adj[b[0]].push(b[1]); adj[b[1]].push(b[0]); });
+      var c = canonG(els, adj), ans = null;
+      for (var k in els) if (els[k] === 'O' && adj[k].some(function (x) { return els[x] === 'O'; })) { if (cb.bad) cb.bad('O どうしをつなぐ形は、この冒険では使わない（不安定）'); return; }
       pz.answers.forEach(function (a) { if (a._c === c) ans = a; });
-      if (!ans) { if (cb.bad) cb.bad('この形は今回の答えにない'); return; }
+      if (!ans) { if (cb.bad) cb.bad('魔法陣は光った…でも、今回のミッションの形ではない'); return; }
       if (found.indexOf(ans) >= 0) { if (cb.dup) cb.dup(ans); return; }
       found.push(ans); w.classList.add('lit');
       if (cb.found) cb.found(ans, found.length);
     }
-    host.addEventListener('click', function (e) {
-      var sl = e.target.closest && e.target.closest('[data-s]'); if (sl && !host.classList.contains('lock')) { cycle(sl.getAttribute('data-s')); return; }
-      if (e.target.closest && e.target.closest('.bld-clr')) { place = {}; Y.se('whoosh'); render(); }
+    /* ---- ドラッグ（指・マウス共通）とタップ ---- */
+    var drag = null;
+    function nearest(cx, cy) {
+      var best = null, bd = 44;
+      Y.$$('[data-sock]', gm).forEach(function (g) {
+        var r = g.querySelector('.hit').getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, d = Math.hypot(x - cx, y - cy);
+        if (d < bd) { bd = d; best = g; }
+      });
+      return best;
+    }
+    pal.addEventListener('pointerdown', function (e) {
+      var b = e.target.closest('[data-el]'); if (!b || b.disabled || lock) return;
+      e.preventDefault();
+      drag = { el: b.getAttribute('data-el'), x: e.clientX, y: e.clientY, moved: false, ghost: null, over: null };
     });
-    render();
+    window.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      if (!drag.moved && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 8) return;
+      if (!drag.moved) {
+        drag.moved = true; sel = drag.el; render();
+        drag.ghost = document.createElement('div'); drag.ghost.className = 'drag-ghost at-' + (PARTS[drag.el] ? PARTS[drag.el].el + ' pt' : drag.el); drag.ghost.textContent = PARTS[drag.el] ? PARTS[drag.el].t : drag.el;
+        document.body.appendChild(drag.ghost);
+      }
+      drag.ghost.style.left = e.clientX + 'px'; drag.ghost.style.top = e.clientY + 'px';
+      var g = nearest(e.clientX, e.clientY);
+      if (drag.over !== g) { if (drag.over) drag.over.classList.remove('over'); drag.over = g; if (g) g.classList.add('over'); }
+    }, { passive: true });
+    window.addEventListener('pointerup', function (e) {
+      if (!drag) return;
+      var d = drag; drag = null;
+      if (d.ghost) d.ghost.remove();
+      if (!d.moved) { sel = sel === d.el ? null : d.el; Y.se('tap'); render(); return; }
+      var g = d.over || nearest(e.clientX, e.clientY);
+      if (g) place(d.el, sockets()[+g.getAttribute('data-sock')]);
+      else { sel = null; render(); }
+    });
+    window.addEventListener('pointercancel', function () { if (drag && drag.ghost) drag.ghost.remove(); drag = null; });
+    gm.addEventListener('click', function (e) {
+      var g = e.target.closest && e.target.closest('[data-sock]'); if (!g || lock) return;
+      if (!sel) { if (cb.bad) cb.bad('先に、下の素材を選ぼう'); return; }
+      place(sel, sockets()[+g.getAttribute('data-sock')]);
+    });
+    host.querySelector('.bld-undo').onclick = function () { if (!lock) undo(); };
+    host.querySelector('.bld-clr').onclick = function () { if (!lock) { Y.se('whoosh'); reset(); } };
+    var fb = host.querySelector('.bld-fill');
+    if (fb) fb.onclick = function () {
+      if (lock) return;
+      var ss = sockets();
+      if (ss.length > left('H')) { if (cb.bad) cb.bad('H が足りない。骨組みを見直そう'); return; }
+      ss.forEach(function (s) { place('H', s, true); });
+      Y.se('levelUp'); render(); check();
+    };
+    reset();
     return {
-      clear: function () { place = {}; render(); },
+      clear: function () { sel = null; reset(); },
       found: function () { return found.slice(); },
-      lock: function (on) { host.classList.toggle('lock', !!on); },
-      el: w
+      lock: function (on) { lock = !!on; host.classList.toggle('lock', lock); render(true); },
+      el: w,
+      /* テスト用：骨組みを置く（'C:r0 C:r1 …' の記法） */
+      _set: function (set, withH) {
+        reset(); var p = parseSet(set), ids = Object.keys(p);
+        ids.forEach(function (s) { heavy[s] = { el: p[s], x: SLOTS[s][0], y: SLOTS[s][1] }; });
+        ids.forEach(function (a) { ids.forEach(function (b) { if (a < b && adjSlots(a, b)) bonds.push([a, b]); }); });
+        if (withH) hs = fillH(heavy, bonds);
+        render(); check();
+      }
     };
   };
 })();

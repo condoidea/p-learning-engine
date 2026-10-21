@@ -39,9 +39,9 @@
     mirage: { id: 'mirage', ch: 0, kind: 'build', name: 'ミラージュ', title: '幻影の門番', hp: 90, lim: 150000,
       intro: 'ふふふ…この門は、本当の形を見ぬける者しか通れない',
       taunt: ['ふふふ、それはもう見た形よ', '惑わされたわね'],
-      rule: 'C 5 つで、C₅H₁₂ の異性体を **3 種類** 錬成すると勝ち。\n同じ形を 2 回作ると反撃（ライフ −1）。制限時間 150 秒。',
+      rule: 'C 5 つで骨組みを作り（CH₃ パーツ・「水素の詠唱」も使える）、C₅H₁₂ の異性体を **3 種類** 錬成すると勝ち。\n同じ形を 2 回作ると反撃（ライフ −1）。制限時間 150 秒。',
       mission: 'C₅H₁₂ の異性体を 3 種類、錬成せよ',
-      build: { mat: { C: 5 }, answers: [A.pentane, A.mbutane, A.neopentane] },
+      build: { mat: { C: 5, H: 12 }, hFill: true, parts: ['CH3'], answers: [A.pentane, A.mbutane, A.neopentane] },
       finYomi: 'ペンタン、に、メチルブタン、に、に、ジメチルプロパン。さんじゅう、れんせい！', finText: '三重錬成！',
       reward: '🗝 幻影の門が開いた。1章「炭化水素の草原」へ！',
       art: '<svg viewBox="0 0 200 200" class="boss-art mirage"><g class="ghost g3"><path d="M100 24c-36 0-58 30-58 64v84l14-12 14 14 15-14 15 14 15-14 14 14 14-12V88c0-34-22-64-57-64z" fill="#6c4bd8" opacity=".25"/></g>' +
