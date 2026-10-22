@@ -315,8 +315,10 @@ details p { margin: 6px 0 0; padding: 8px 10px; border-radius: 10px; background:
 .rt-attr i { font-style: normal; margin-right: 4px; }
 .rt-mis { flex: 1; margin: 2px 0 0; font-size: 13.5px; line-height: 1.6; }
 .rt-skip { width: 36px; height: 36px; flex: none; border-radius: 50%; background: rgba(0, 0, 0, .4); }
-.rt-circle { width: min(78vw, 46dvh, 380px); margin: 6px auto 0; }
-.rt-chant { min-height: 92px; max-width: 560px; width: 100%; margin: 4px auto; text-align: center; }
+/* 魔法陣は「残った高さ」に合わせて大きさが変わる（小さい画面でも、下の試薬・条件・発動ボタンが画面に収まるように） */
+.rt-circle { flex: 1 1 0; min-height: 110px; width: 100%; max-width: 380px; margin: 4px auto 0; display: flex; justify-content: center; align-items: center; }
+.rt-circle .mcw { height: 100%; width: auto; max-width: 100%; aspect-ratio: 1; }
+.rt-chant { flex: none; max-height: 26dvh; overflow-y: auto; max-width: 560px; width: 100%; margin: 4px auto; text-align: center; }
 .rt-ln { margin: 2px 0; font: 800 clamp(17px, 5vw, 22px)/1.5 var(--f-min); color: #fff; text-shadow: 0 0 14px var(--ac), 0 0 2px var(--ac); animation: lnin .6s cubic-bezier(.2, .9, .3, 1); }
 .rt-ln:not(:last-child):not(.final) { opacity: .45; font-size: clamp(14px, 4vw, 17px); }
 .rt-ln.final small { display: block; font-size: clamp(15px, 4.4vw, 19px); color: #fff; letter-spacing: .3em; }
@@ -330,13 +332,15 @@ details p { margin: 6px 0 0; padding: 8px 10px; border-radius: 10px; background:
 .rt-tip { display: inline-block; margin: 6px 0 0; padding: 6px 12px; border-radius: 6px; font-size: 13.5px; line-height: 1.6; color: #3a2414; background: linear-gradient(#f1e3c2, #e3cb98); border: 1px solid #b48a52; }
 #ritual.charge .rt-circle { animation: charge .45s ease-in; }
 @keyframes charge { to { transform: scale(.9); filter: brightness(2); } }
-.rt-tray { max-width: 560px; width: 100%; margin: auto auto 0; }
+.rt-tray { flex: none; max-width: 560px; width: 100%; margin: 0 auto; }
+#ritual { overflow-y: auto; }   /* ふだんは収まる。収まらない画面だけスクロール */
+#ritual.fin .rt-ln:not(.final), #ritual.fin .rt-stage { display: none; }
 .rt-lab { margin: 6px 0 4px; font-size: 12px; color: var(--muted); letter-spacing: .15em; }
 .cds { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
-.cd { flex: 1 0 96px; display: flex; flex-direction: column; align-items: center; gap: 1px; min-height: 76px; padding: 8px 6px; border-radius: 14px; background: rgba(29, 20, 64, .9); border: 1.5px solid var(--line); text-align: center; }
+.cd { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; min-height: 62px; padding: 6px 6px; border-radius: 14px; background: rgba(29, 20, 64, .9); border: 1.5px solid var(--line); text-align: center; }
 .cd-i { font-size: 20px; } .cd b { font-size: 12.5px; line-height: 1.35; } .cd small { color: var(--muted); font-size: 11px; }
 .cd.on { border-color: var(--gold); background: #3a2a10; box-shadow: 0 0 16px -2px var(--gold2); transform: translateY(-2px); }
-.btn.fire { width: 100%; margin-top: 12px; font: 800 19px var(--f-disp); letter-spacing: .1em; }
+.btn.fire { width: 100%; margin-top: 10px; font: 800 19px var(--f-disp); letter-spacing: .1em; }
 .btn.fire:not(:disabled) { animation: glowb 1.4s ease-in-out infinite; }
 @keyframes glowb { 50% { box-shadow: 0 4px 0 #a8641c, 0 0 40px 2px var(--gold2); } }
 .rt-done { text-align: center; }

@@ -129,6 +129,7 @@
       el.querySelector('.rt-attr').innerHTML = (sp ? '<i>' + A.icon + '</i>' + esc(A.n) + '属性・' + esc(A.type) : '<i>⬡</i>素材：' + esc(base.n));
     }
     function reset() {
+      el.classList.remove('fin');
       el.removeAttribute('data-attr'); view.attr('');
       view.load(base.s); view.lit(false);
       /* 不発のときの ひとこと・ヒントは、選び直している間も残しておく */
@@ -137,6 +138,7 @@
     }
     return new Promise(function (resolve) {
       function finish(sp, id) {
+        el.classList.add('fin');   /* 結果を出すときは、詠唱の途中の行をたたむ（小さい画面でもボタンが見えるように） */
         var r = addCast(id), first = r.n === 1;
         var tray = el.querySelector('.rt-tray');
         tray.innerHTML = '<div class="rt-done"><p class="rt-prod"><small>顕現</small><b>' + esc(sp.product) + '</b><span>' + esc(sp.pf) + '</span></p>' +
@@ -176,6 +178,7 @@
           tries++;
           addCast(id);
           var tray = el.querySelector('.rt-tray');
+          el.classList.add('fin');
           tray.innerHTML = '<div class="rt-done"><p class="rt-prod warn"><small>できたのは…</small><b>' + esc(sp.product) + '</b><span>' + esc(sp.pf) + '</span></p>' +
             '<p class="rt-hint">ミッションは「' + esc(goal.product) + '」。条件を見直そう</p><div class="rt-btns"><button class="btn" data-a="again">もう一度 ↺</button></div></div>';
           tray.onclick = function (e) { if (e.target.closest('[data-a]')) { tray.onclick = null; if (Y.Bgm) Y.Bgm.stop(); pick(); } };

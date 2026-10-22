@@ -156,7 +156,9 @@
     var p = Promise.resolve();
     if (b.finisher) {
       $('.bt-say', el).innerHTML = '<b>テトラ</b>「いまだ！ とどめの詠唱を！」';
-      p = Y.sleep(1200).then(function () {
+      /* とどめも、自分で押してから（セリフを読む時間をとる） */
+      $('.bt-panel', el).innerHTML = '<div class="bt-rule"><b>とどめの詠唱</b><button class="btn">⚡ 詠唱をはじめる</button></div>';
+      p = new Promise(function (go) { $('.bt-rule .btn', el).onclick = function () { Y.Voice.unlock(); go(); }; }).then(function () {
         return Y.Ritual.cast(b.finisher, { full: true, mission: 'とどめの詠唱', onBoss: function () { $('.bt-boss', el).classList.add('gone'); } });
       });
     } else if (b.finYomi) {

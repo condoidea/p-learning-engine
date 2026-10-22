@@ -282,8 +282,11 @@
   function cast(s) {
     var r = run, c = s.cast;
     var spec = { goal: c.goal, pool: c.pool, reagents: c.reagents, conds: c.conds, mission: s.mission, auto: c.auto };
-    setTray('');
-    return Y.Ritual.run(spec).then(function (res) {
+    /* 前の話を読みきってから、自分で押して儀式を開く（勝手に開くと読む時間が足りない） */
+    return new Promise(function (go) {
+      setTray('<button class="btn fire go-rt">⬡ 魔法陣へ</button>');
+      tray.onclick = function (e) { if (e.target.closest('.go-rt')) { tray.onclick = null; setTray(''); Y.Voice.unlock(); go(); } };
+    }).then(function () { alive(r); return Y.Ritual.run(spec); }).then(function (res) {
       alive(r);
       if (!res.tries) gain(20); else gain(8);
       var sp = Y.SPELLS[c.goal];
