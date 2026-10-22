@@ -62,6 +62,7 @@ node tests/check-course.js fe
 node tests/check-mole.js        # モル教室の台本・計算ドリルのチェック（通しテストは mole.html?e2e）
 node tests/check-relativo.js    # 関係詞アプリの教材チェック（--memo で docs/スペイン語単語メモ.md を作り直す）
 node tests/check-yuki.js        # ユーキ・クエストの教材チェック（反応のあとの手の数・読み・台本。お試しは yuki.html?sandbox）
+# 画面の重なりチェック：スマホの実際の高さ（375×550 など）で開き、tests/overlap.js を読みこんで overlaps()
 ```
 - ブラウザで `fe.html?e2e` を開く（全レッスン・全ボス・全モードを自動で解く。約10分）
 - `fe.html?e2e&fast` なら最初の2ユニットだけ（約2〜3分）

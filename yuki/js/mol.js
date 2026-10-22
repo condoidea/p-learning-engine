@@ -77,8 +77,9 @@
 
   /* 錬成の形の書き方（画面なしでも使う部分）。答えの形は、くし形のマス（横5・上下3ずつ）の名前 'C:r0 C:r1 …' で書く */
   var SLOTS = {};
-  [0, 1, 2, 3, 4].forEach(function (i) { SLOTS['r' + i] = [i - 2, 0]; });
-  [1, 2, 3].forEach(function (i) { SLOTS['u' + i] = [i - 2, -1]; SLOTS['d' + i] = [i - 2, 1]; });
+  /* 横 6 つ（r0〜r5）と、その上下 4 つずつ（u1〜u4・d1〜d4）。C 6 つまでの鎖・枝が描ける */
+  [0, 1, 2, 3, 4, 5].forEach(function (i) { SLOTS['r' + i] = [i - 2, 0]; });
+  [1, 2, 3, 4].forEach(function (i) { SLOTS['u' + i] = [i - 2, -1]; SLOTS['d' + i] = [i - 2, 1]; });
   function adjSlots(a, b) {
     var p = SLOTS[a], q = SLOTS[b];
     if (a[0] === 'r' && b[0] === 'r') return Math.abs(p[0] - q[0]) === 1;
@@ -155,7 +156,38 @@
   }
   function appraiseSet(set) { var p = parseSet(set); return appraise(p, graphOf(p).adj); }
 
-  Y.BuildCore = { canon: canon, appraise: appraise, appraiseSet: appraiseSet, canonG: canonG, hNeed: hNeed, parseSet: parseSet, connected: connected, label: label, SLOTS: SLOTS };
+  /* C が n 個のアルカンの形を全部（名前つき）。台座の上で描ける描き方（sets）もすべて集める。寄り道クエストの問題づくりに使う */
+  var isoCache = {};
+  function isomers(n) {
+    if (isoCache[n]) return isoCache[n];
+    var ids = Object.keys(SLOTS), seen = {}, groups = {}, order = [];
+    var frontier = ids.map(function (k) { return [k]; });
+    for (var size = 1; size < n; size++) {
+      var next = [];
+      frontier.forEach(function (sub) {
+        ids.forEach(function (k) {
+          if (sub.indexOf(k) >= 0 || !sub.some(function (x) { return adjSlots(x, k); })) return;
+          var t = sub.concat([k]).sort(), key = t.join(' ');
+          if (seen[key]) return; seen[key] = 1; next.push(t);
+        });
+      });
+      frontier = next;
+    }
+    frontier.forEach(function (sub) {
+      var place = {}; sub.forEach(function (k) { place[k] = 'C'; });
+      var c = canon(place);
+      if (!groups[c]) { var a = appraise(place, graphOf(place).adj); groups[c] = { canon: c, name: a.name, len: a.len, loc: a.loc, sets: [] }; order.push(c); }
+      /* つながっていないのに、となりのマスに並ぶ描き方は使わない（つながって見えて、まぎらわしい） */
+      var tricky = sub.some(function (x) { return sub.some(function (y) {
+        var p = SLOTS[x], q = SLOTS[y];
+        return x < y && Math.abs(p[0] - q[0]) + Math.abs(p[1] - q[1]) === 1 && !adjSlots(x, y);
+      }); });
+      if (!tricky) groups[c].sets.push(sub.map(function (k) { return 'C:' + k; }).join(' '));
+    });
+    return (isoCache[n] = order.map(function (c) { return groups[c]; }).filter(function (g) { return g.name && g.sets.length; }));
+  }
+
+  Y.BuildCore = { canon: canon, appraise: appraise, appraiseSet: appraiseSet, isomers: isomers, CHAIN: CHAIN, MULT: MULT, canonG: canonG, hNeed: hNeed, parseSet: parseSet, connected: connected, label: label, SLOTS: SLOTS };
   if (typeof document === 'undefined') return;
 
   /* =========================================================
@@ -408,10 +440,11 @@
     var found = [], mats = ['C', 'O', 'H'].filter(function (k) { return pz.mat[k] > 0; }), parts = pz.parts || [];
     var heavy, hs, bonds, hist, sel = null, lock = false, seq = 0, hintLv = 0, stuck = 0;
     pz.answers.forEach(function (a) { a._c = canon(parseSet(a.set)); });
-    host.innerHTML = '<div class="bld"><div class="mcw bw">' + circleSVG('b' + (++uid)) + '</div>' +
-      '<div class="bld-guide" hidden></div><div class="bld-appr" hidden></div><div class="bld-pal"></div><div class="bld-hint" hidden></div><div class="bld-bar"><button class="bld-hintb" type="button">💡 ヒント</button><button class="bld-undo" type="button">↶ ひとつ戻す</button>' +
+    /* 並び：指示 → 魔法陣 → 素材 → 筆・ヒント・戻す → 鑑定 → ヒントの文。操作する物を魔法陣のすぐ下にまとめる（小さい画面でも同時に見える） */
+    host.innerHTML = '<div class="bld"><div class="bld-guide" hidden></div><div class="mcw bw">' + circleSVG('b' + (++uid)) + '</div>' +
+      '<div class="bld-pal"></div><div class="bld-bar"><button class="bld-hintb" type="button">💡 ヒント</button><button class="bld-undo" type="button">↶ 戻す</button>' +
       (pz.hFill ? '<button class="bld-fill" type="button">🖌 水素の筆（残りの手を H で）</button>' : '') +
-      '<button class="bld-clr" type="button">↺ やり直す</button></div></div>';
+      '<button class="bld-clr" type="button">↺ やり直す</button></div><div class="bld-appr" hidden></div><div class="bld-hint" hidden></div></div>';
     var w = host.querySelector('.mcw'), svg = w.querySelector('svg'), gm = w.querySelector('.mc-mol'), pal = host.querySelector('.bld-pal');
     function bad(m) { if (cb.bad) cb.bad(m); }
     function reset() { heavy = {}; hs = []; bonds = []; hist = []; render(); }
@@ -562,6 +595,8 @@
         (pz.appraise === 'name' && a.name ? '<br>→ <strong>' + Y.esc(a.name) + '</strong>' : '') +
         (same ? '<br>⚠ もう作った「' + Y.esc(same.name) + '」と同じ形！ 鎖の長さと枝の番号が同じ' : '');
       Y.chg(apEl);
+      /* 鑑定は魔法陣と素材の下に出るので、見える所まで少しだけスクロール */
+      setTimeout(function () { if (apEl.scrollIntoView) apEl.scrollIntoView({ block: "nearest", behavior: Y.RM ? "auto" : "smooth" }); }, 60);
     }
     /* ---- 操作の練習（ガイド）：条件を満たしたら次の指示へ ---- */
     var gi = 0, gEl = null, gShown = -1, cueAt = 0, cueT = 0;
@@ -686,7 +721,7 @@
         hintEl.innerHTML = '<b>💡 ヒント ' + (lv + 1) + ' / ' + all + '</b><p>' + Y.fmt(texts[lv]) + '</p>' + (lv + 1 < all ? '<small>もう一度押すと、もっとくわしく</small>' : '');
       } else {
         Y.chg(hintEl);
-        hintEl.innerHTML = '<b>📖 攻略の書（' + all + ' / ' + all + '）</b><p>「' + Y.esc(target.name) + '」の形。これをまねして錬成しよう（H は自分でつなぐ）</p>' + Y.Mol.pic(target.set);
+        hintEl.innerHTML = '<b>📖 攻略の書（' + all + ' / ' + all + '）</b><p>「' + Y.esc(target.name) + '」の形。これをまねして錬成しよう' + (pz.hFill ? '（H は水素の筆で）' : '（H は自分でつなぐ）') + '</p>' + Y.Mol.pic(target.set);
       }
       hintLv = lv + 1;
       Y.se('coin');

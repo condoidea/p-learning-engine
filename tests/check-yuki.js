@@ -20,7 +20,7 @@ const ROOT = path.join(__dirname, '..');
 const ctx = { window: {}, console };
 ctx.window.window = ctx.window;
 vm.createContext(ctx.window);
-['yuki/js/mol.js', 'yuki/js/data/spells.js', 'yuki/js/data/tips.js', 'yuki/js/data/lessons.js', 'yuki/js/data/bosses.js'].forEach(f => {
+['yuki/js/mol.js', 'yuki/js/data/spells.js', 'yuki/js/data/tips.js', 'yuki/js/data/lessons.js', 'yuki/js/data/side.js', 'yuki/js/data/bosses.js'].forEach(f => {
   /* core.js は画面が必要なので、ここで使う部品だけ用意する */
   if (f === 'yuki/js/mol.js') { ctx.window.Y = { gloss(o) { this.GL = Object.assign(this.GL || {}, o); } }; }
   vm.runInContext(fs.readFileSync(path.join(ROOT, f), 'utf8'), ctx.window, { filename: f });
@@ -124,6 +124,12 @@ function walk(steps, src, run) {
   });
 }
 Y.LESSONS.forEach(L => walk(L.steps, L.id, { n: 0 }));
+/* 寄り道クエスト：問題は毎回作るので、何度か作って全部点検する */
+Y.shuffle = Y.shuffle || (a => a.slice().sort(() => Math.random() - 0.5));
+(Y.SIDE || []).forEach(q => {
+  if (!Y.LESSONS.some(l => l.id === q.after)) err('寄り道 ' + q.id + '：after ' + q.after + ' がない');
+  for (let k = 0; k < 30; k++) walk(q.make(), q.id + '（' + (k + 1) + '回目）', { n: 0 });
+});
 for (const [id, q] of Object.entries(Y.QS)) checkQ('問題 ' + id, q);
 for (const [id, b] of Object.entries(Y.BOSSES)) {
   if (b.kind === 'build') checkBuild('ボス ' + id, b.build);

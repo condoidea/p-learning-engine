@@ -57,7 +57,7 @@
       var q = bank[qi++], order = Y.shuffle(q.opts.map(function (_, i) { return i; }));
       var panel = $('.bt-panel', el), t0 = Date.now(), LIM = q.lim || 15000;
       panel.innerHTML = '<div class="bt-time"><i></i></div><p class="bt-q">' + fmt(q.q) + '</p>' +
-        '<div class="opts' + (q.mols ? ' mols' : '') + '">' + order.map(function (i) {
+        '<div class="opts' + (q.mols ? ' mols' : q.opts.every(function (o) { return String(o).length <= 12; }) ? ' two' : '') + '">' + order.map(function (i) {
           var o = q.opts[i];
           return '<button class="op" data-i="' + i + '">' + (q.mols ? Y.Mol.mini(Y.MOLS[o].s, 110) + '<small>' + esc(Y.MOLS[o].f) + '</small>' : fmt(o)) + '</button>';
         }).join('') + '</div>';
@@ -98,7 +98,7 @@
   function buildLoop(resolve) {
     var pz = st.boss.build, need = pz.answers.length, t0 = Date.now(), LIM = st.boss.lim || 150000;
     var panel = $('.bt-panel', el);
-    panel.innerHTML = '<div class="bt-time"><i></i></div><p class="bt-q">' + fmt(st.boss.mission) + '</p><div class="b-host"></div><p class="b-msg">　</p>';
+    panel.innerHTML = '<div class="bt-time"><i></i></div><p class="bt-q">' + fmt(st.boss.mission) + '</p><div class="b-host"></div><p class="b-msg"></p>';
     var msg = $('.b-msg', panel), bar = $('.bt-time i', panel);
     var B = Y.Build($('.b-host', panel), pz, {
       found: function (a, n) {

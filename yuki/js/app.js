@@ -43,7 +43,16 @@
           '<span class="nd-ic">' + (st === 'lock' ? '🔒' : n.boss ? '⚔' : st === 'done' ? '✦' : '⬡') + '</span>' +
           '<span class="nd-t"><b>' + esc(n.boss ? n.boss.name : n.L.title) + '</b><small>' + esc(n.boss ? n.boss.title + '（ボス）' : n.L.sub) + '</small></span>' + badge + '</button></li>';
       });
-      h += '</ol></section>';
+      h += '</ol>';
+      /* 寄り道クエスト：メインの話とは別に、練習で深める。何度でも遊べる */
+      var sides = (Y.SIDE || []).filter(function (q) { return q.ch === c.id; });
+      if (sides.length) h += '<div class="side"><p class="side-t">🧭 寄り道クエスト<small>何度でも挑める</small></p>' + sides.map(function (q) {
+        var open = done(q.after), rec = S().lessons[q.id] || {};
+        return '<button class="sq' + (open ? '' : ' lock') + '" data-side="' + q.id + '"' + (open ? '' : ' disabled') + '><span class="sq-ic">' + (open ? q.icon : '🔒') + '</span>' +
+          '<span class="nd-t"><b>' + esc(q.title) + '</b><small>' + esc(open ? q.sub : '「' + nameOf(q.after) + '」のあとで開く') + '</small></span>' +
+          (rec.stars ? '<i class="st">' + '★★★'.slice(0, rec.stars) + '<u>' + '★★★'.slice(rec.stars) + '</u></i>' : '') + '</button>';
+      }).join('') + '</div>';
+      h += '</section>';
     });
     h += '<section class="ch ch-soon"><h2><small>2章</small>酸素の森</h2><p class="soon">アルコール・アルデヒド・カルボン酸・エステル。🔥炎（酸化）・✨光（銀鏡）・💧水（加水分解）の魔法… 準備中</p></section>';
     $('#hMap').innerHTML = h;
@@ -51,6 +60,12 @@
     if (Y.Bgm) Y.Bgm.stop();   /* BGM は詠唱とボス戦（キメの場面）だけ。地図・レッスンは静かに */
   }
 
+  /* 寄り道クエスト：毎回、問題を作り直してレッスンとして遊ぶ */
+  function side(id) {
+    var q = (Y.SIDE || []).filter(function (x) { return x.id === id; })[0]; if (!q) return;
+    Y.Voice.unlock();
+    lesson({ id: q.id, ch: q.ch, title: q.title, sub: '寄り道クエスト', side: true, steps: q.make() });
+  }
   function go(id) {
     if (!unlocked(id)) return;
     var n = node(id);
@@ -160,7 +175,10 @@
       $('#start').classList.add('go');
       setTimeout(function () { $('#start').hidden = true; home(); }, Y.RM ? 0 : 500);
     };
-    $('#hMap').addEventListener('click', function (e) { var b = e.target.closest('[data-go]'); if (b) go(b.getAttribute('data-go')); });
+    $('#hMap').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-go]'); if (b) { go(b.getAttribute('data-go')); return; }
+      var q = e.target.closest('[data-side]'); if (q && !q.disabled) side(q.getAttribute('data-side'));
+    });
     $('#hBook').onclick = spellbook; $('#hTips').onclick = tipsNote; $('#hSet').onclick = settings;
     $('#tQuit').onclick = function () { if (confirm('レッスンをやめて地図へもどりますか？')) { Y.Talk.abort(); home(); } };
     $('#log').addEventListener('click', function (e) { if (!e.target.closest('button,[data-gl],details,summary,.bld,.b-host')) Y.Talk.tapSkip(); });

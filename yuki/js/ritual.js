@@ -107,7 +107,7 @@
     el = $('#ritual');
     el.hidden = false;
     el.innerHTML = '<header class="rt-head"><span class="rt-attr"></span><p class="rt-mis">' + Y.fmt(spec.mission || '') + '</p><button class="rt-skip" aria-label="早送り">⏩</button></header>' +
-      '<div class="rt-circle"></div><div class="rt-chant"></div><div class="rt-tray"></div>';
+      '<div class="rt-scene"><div class="rt-circle"></div><div class="rt-chant" data-overlay-ok></div></div><div class="rt-tray"></div>';
     view = Y.Mol.view(el.querySelector('.rt-circle'));
     el.querySelector('.rt-skip').onclick = function () { skip = true; Y.Voice.stop(); };
     document.body.classList.add('in-ritual');
@@ -141,9 +141,10 @@
         el.classList.add('fin');   /* 結果を出すときは、詠唱の途中の行をたたむ（小さい画面でもボタンが見えるように） */
         var r = addCast(id), first = r.n === 1;
         var tray = el.querySelector('.rt-tray');
-        tray.innerHTML = '<div class="rt-done"><p class="rt-prod"><small>顕現</small><b>' + esc(sp.product) + '</b><span>' + esc(sp.pf) + '</span></p>' +
-          (first ? '<p class="rt-get">📜 魔法のスクロール「' + esc(sp.name) + '」を手に入れた！</p>' : '<p class="rt-get">' + STAGE[stageOf(id)] + (r.stage > 0 ? '（使うほど詠唱が短くなる）' : '') + '</p>') +
-          '<div class="rt-btns"><button class="btn sub" data-a="scroll">📜 スクロールを読む</button><button class="btn" data-a="next">つづける ▶</button></div></div>';
+        /* 名前は詠唱の最後の行（顕現せよ——○○）に出ているので、ここでは式とごほうびだけ */
+        tray.innerHTML = '<div class="rt-done"><p class="rt-pf">' + esc(sp.pf) + '</p>' +
+          (first ? '<p class="rt-get">📜 スクロール「' + esc(sp.name) + '」を手に入れた！</p>' : '<p class="rt-get">' + STAGE[stageOf(id)] + (r.stage > 0 ? '（使うほど詠唱が短くなる）' : '') + '</p>') +
+          '<div class="rt-btns row"><button class="btn sub" data-a="scroll">📜 スクロール</button><button class="btn" data-a="next">つづける ▶</button></div></div>';
         if (first && window.FX) FX.confetti(70, 'gold');
         tray.onclick = function (e) {
           var b = e.target.closest('[data-a]'); if (!b) return;

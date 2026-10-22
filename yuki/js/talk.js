@@ -138,7 +138,7 @@
       var b = log.lastElementChild.querySelector('.bub');
       b.insertAdjacentHTML('afterbegin', '<span class="qtag">' + (s.pre ? '予想' : 'Q') + '</span>');
       return new Promise(function (res) {
-        setTray('<div class="opts' + (s.mols ? ' mols' : '') + '">' + s.opts.map(function (o, i) { return '<button class="op" data-i="' + i + '">' + optHTML(o, s) + '</button>'; }).join('') + '</div>');
+        setTray('<div class="opts' + (s.mols ? ' mols' : s.opts.every(function (o) { return String(o).length <= 12; }) ? ' two' : '') + '">' + s.opts.map(function (o, i) { return '<button class="op" data-i="' + i + '">' + optHTML(o, s) + '</button>'; }).join('') + '</div>');
         tray.onclick = function (e) {
           var bt = e.target.closest('[data-i]'); if (!bt) return;
           tray.onclick = null;
@@ -175,8 +175,10 @@
   /* ---------- 錬成 ---------- */
   function build(s) {
     var r = run, pz = s.build, need = pz.need || pz.answers.length;
-    var d = row('card', '<div class="bcard"><p class="b-mis">⬡ ' + fmt(s.mission) + '</p><div class="b-host"></div><p class="b-msg">　</p><div class="b-got"></div></div>', 'c');
+    var d = row('card', '<div class="bcard"><p class="b-mis">⬡ ' + fmt(s.mission) + '</p><div class="b-host"></div><p class="b-msg"></p><div class="b-got"></div></div>', 'c');
     var msg = d.querySelector('.b-msg'), got = d.querySelector('.b-got'), made = [];
+    /* 小さい画面でも魔法陣と素材が同時に見えるよう、カードの頭を画面の上にそろえる */
+    setTimeout(function () { var lg = $('#log'); lg.scrollTo({ top: d.offsetTop - 8, behavior: Y.RM ? 'auto' : 'smooth' }); }, 350);
     /* 作った形の棚：作った形は構造式で、まだの所は「？」 */
     function prog() {
       got.innerHTML = '<p class="shelf-t">作った形 ' + made.length + ' / ' + need + '</p><div class="shelf">' + made.map(function (a) {
@@ -206,7 +208,7 @@
           Y.se('wrong'); if (window.FX) FX.shake(B.el);
         },
         bad: function (m) { Y.chg(msg); msg.innerHTML = '<b class="ng">' + fmt(m) + '</b>'; Y.se('wrong'); },
-        change: function () { if (msg.textContent.trim()) msg.innerHTML = '　'; }
+        change: function () { if (msg.textContent.trim()) msg.innerHTML = ''; }
       });
       run.onAbort = function () { res([]); };
     }).then(function () { alive(r); setTray(''); });
