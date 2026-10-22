@@ -55,7 +55,7 @@ RQ.questions = [
   { id: 'l3-02', L: 3, k: 'bug', s: 'La mujer quien trabaja aquí es muy amable.', a: 'quien', ok: 'La mujer que trabaja aquí es muy amable.', ja: 'ここで働いている女の人は、とても親切だ。', why: 'コンマなし・前置詞なし → que。' },
   { id: 'l3-03', L: 3, k: 'pick', s: 'Mis amigos, ___ son de México, hablan español.', o: ['quienes', 'quien', 'quienas'], a: 0, ja: '私の友だちは、メキシコ出身で、スペイン語を話す。', why: '先行詞が複数 → quienes。' },
   { id: 'l3-04', L: 3, k: 'bug', s: 'Mis tíos, quien viven en Osaka, tienen un restaurante.', a: 'quien', ok: 'Mis tíos, quienes viven en Osaka, tienen un restaurante.', ja: 'おじ夫婦は、大阪に住んでいて、レストランをやっている。', why: '先行詞（mis tíos）が複数 → quienes。' },
-  { id: 'l3-05', L: 3, k: 'ja', s: 'Ana, quien estudia japonés, quiere visitar Kioto.', o: ['アナは日本語を勉強していて、京都を訪れたいと思っている。', '日本語を勉強しているアナは、京都に住みたい。', 'アナは、京都で日本語を勉強したい。'], a: 0, why: 'コンマにはさまれた所は「ちなみに」の情報。本体は Ana quiere visitar Kioto。' },
+  { id: 'l3-05', L: 3, k: 'ja', s: 'Ana, quien estudia japonés, quiere visitar Kioto.', o: ['アナは日本語を勉強していて、京都を訪れたいと思っている。', '日本語を勉強しているアナは、京都に住みたい。', 'アナは、京都で日本語を勉強したい。'], a: 0, why: 'コンマにはさまれた所は（かっこ）のおまけの説明。本体は Ana quiere visitar Kioto。' },
   { id: 'l3-06', L: 3, k: 'pick', s: 'El chico ___ canta en la fiesta es Carlos.', o: ['que', 'quien', 'quienes'], a: 0, ja: 'パーティーで歌っている男の子は、カルロスだ。', why: 'コンマなし・前置詞なし → que。quien はここには入れない。' },
   { id: 'l3-07', L: 3, k: 'bug', s: 'Las chicas quienes bailan son mis primas.', a: 'quienes', ok: 'Las chicas que bailan son mis primas.', ja: '踊っている女の子たちは、私のいとこだ。', why: 'コンマなし → 人でも que。' },
   { id: 'l3-08', L: 3, k: 'pick', s: 'Mi profesora, ___ es de Barcelona, habla catalán.', o: ['quien', 'quienes', 'quiena'], a: 0, ja: '私の先生は、バルセロナ出身で、カタルーニャ語を話す。', why: '先行詞が1人 → quien。quien に女性形はない。' },
