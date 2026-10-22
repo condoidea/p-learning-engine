@@ -273,9 +273,13 @@ details p { margin: 6px 0 0; padding: 8px 10px; border-radius: 12px; background:
 .warn { overflow: hidden; background: repeating-linear-gradient(45deg, #ffd23f 0 14px, #1a0a33 14px 28px); padding: 4px 0; }
 .warn span { display: block; white-space: nowrap; padding: 2px 0; background: #ff2d55; font: 400 14px var(--f-latin); color: #fff; letter-spacing: .1em; animation: marquee 4s linear infinite; }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-.boss-intro { text-align: center; padding: 10px 4px; }
+.boss-intro { text-align: center; padding: 4px; }
+.boss-intro .rules { padding: 8px 12px; font-size: 13.5px; line-height: 1.55; }
+.boss-intro .bline { margin: 2px 0 8px; }
+.boss-intro .best { margin: 4px 0 0; font-size: 13px; }
+.boss-intro .best b { font-size: 16px; }
 .bface { display: grid; place-items: center; font-size: 46px; line-height: 1; filter: drop-shadow(0 0 16px var(--bc)); }
-.bface.big { font-size: 110px; margin: 10px 0; animation: bossFloat 2.2s ease-in-out infinite; }
+.bface.big { font-size: 110px; font-size: min(110px, 12vh); font-size: min(110px, 12dvh); margin: 6px 0; animation: bossFloat 2.2s ease-in-out infinite; }
 @keyframes bossFloat { 50% { transform: translateY(-10px) scale(1.04); } }
 .boss-intro small { font: 400 14px var(--f-latin); color: var(--bc); letter-spacing: .15em; }
 .boss-intro h2 { margin: 0; font: 400 28px var(--f-disp); text-shadow: 0 0 20px var(--bc); }
