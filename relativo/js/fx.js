@@ -76,6 +76,9 @@
     d.className = 'sl ' + (cls || '');
     d.innerHTML = '<b>' + text + '</b>' + (sub ? '<small>' + sub + '</small>' : '');
     slamEl.appendChild(d);
+    /* 長い文字（SET COMPLETE!! など）は画面の幅に収まるまで小さくする */
+    var bEl = d.querySelector('b'), bw = bEl.scrollWidth, max = innerWidth - 24;
+    if (bw > max) bEl.style.fontSize = Math.floor(parseFloat(getComputedStyle(bEl).fontSize) * max / bw) + 'px';
     if (RM || !d.animate) { setTimeout(function () { d.remove(); }, 1100); return; }
     d.animate([
       { transform: 'scale(3.2) rotate(-12deg)', opacity: 0 },

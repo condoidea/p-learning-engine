@@ -30,7 +30,7 @@
   var KEY = SANDBOX ? 'relativo.sandbox' : 'relativo.v1';
   function fresh() {
     return { v: 1, xp: 0, tickets: 0, streak: { n: 0, last: '' }, lessons: {}, bosses: {}, q: {}, cards: {}, tips: {},
-      mis: { d: '', done: {}, bonus: false }, rushBest: 0, pulls: 0, settings: { sound: true, speak: true } };
+      mis: { d: '', done: {}, bonus: false }, rushBest: 0, pulls: 0, sets: {}, cardp: {}, settings: { sound: true, speak: true } };
   }
   function load() {
     try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) { var f = fresh(); for (var k in s) f[k] = s[k]; return f; } } catch (e) { /* 保存領域が使えない */ }
@@ -208,7 +208,7 @@
     var t = e.target.closest && e.target.closest('.gw, .gj, [data-say]');
     if (!t) { if (!e.target.closest('#pop')) pop.hidden = true; return; }
     e.stopPropagation(); e.preventDefault();
-    if (t.hasAttribute('data-say')) { Speech.say(t.getAttribute('data-say')); FX.pop(t); return; }
+    if (t.hasAttribute('data-say')) { Speech.say(t.getAttribute('data-say'), t.classList.contains('slow')); FX.pop(t); return; }
     if (t.classList.contains('gw')) {
       var w = WORD[t.getAttribute('data-w')];
       showPop(t, '<b class="pw">' + esc(t.textContent) + (w.w.toLowerCase() !== t.textContent.toLowerCase() ? '<small>← ' + esc(w.w) + '</small>' : '') + '</b><span>' + esc(w.ja) + '</span><i>' + [POS[w.pos], LVN[w.lv]].filter(Boolean).join('・') + '</i>');
@@ -308,7 +308,7 @@
    *  cb(ok, ms)
    * ========================================================= */
   var KIND = { pick: ['🎯', '空いている所に入るのは？'], ante: ['👆', '先行詞をタップ'], bug: ['🐛', 'まちがい探し'], which: ['🕵️', 'この que の正体は？'],
-    ja: ['💬', '意味は？'], build: ['🧩', 'ならべて文を作ろう'], join: ['⚡', '正しい合体は？'] };
+    ja: ['💬', '意味は？'], build: ['🧩', 'ならべて文を作ろう'], join: ['⚡', '正しい合体は？'], listen: ['🎧', '聞こえた文はどれ？'] };
   var RELW = { que: 1, quien: 1, quienes: 1, donde: 1, cuyo: 1, cuya: 1, cuyos: 1, cuyas: 1 };
   function renderQ(q, card, T, opts, cb) {
     opts = opts || {};
@@ -319,11 +319,14 @@
     if (q.k === 'pick' || q.k === 'ja') body = '<div class="es-line">' + esHtml(q.s) + '</div>';
     else if (q.k === 'ante' || q.k === 'bug' || q.k === 'which') body = '<div class="es-line toks">' + toks(q.s, q.k === 'which' ? q.w : null) + '</div>';
     else if (q.k === 'build') body = '<div class="build-line"></div>';
+    else if (q.k === 'listen') body = Speech.ok() ? '<div class="listen"><button class="say big" data-say="' + esc(q.s) + '" aria-label="もう一度聞く">🔊</button><button class="say slow" data-say="' + esc(q.s) + '" aria-label="ゆっくり聞く">🐢</button><small>何度でも聞けるよ</small></div>'
+      : '<p class="why">（この端末ではスペイン語の音声が使えないので、日本語の意味から選ぼう）</p><div class="es-line">' + esc(q.ja) + '</div>';
     else if (q.k === 'join') body = '<div class="join"><div class="es-line sm">' + esHtml(q.p[0]) + '</div><div class="fz-plus">＋</div><div class="es-line sm">' + esHtml(q.p[1]) + '</div></div>';
-    var showJa = q.ja && q.k !== 'ja' && q.k !== 'join';
+    var showJa = q.ja && q.k !== 'ja' && q.k !== 'join' && q.k !== 'listen';
     card.innerHTML = '<div class="qtag"><span>' + KIND[q.k][0] + '</span> ' + KIND[q.k][1] + (opts.tag ? '<em>' + esc(opts.tag) + '</em>' : '') + '</div>' + body +
       (showJa ? '<div class="ja-line">' + esc(q.ja) + '</div>' : '') + '<div class="qres"></div>';
     glossEs(card);
+    if (q.k === 'listen' && Speech.ok()) later(function () { if (!done) Speech.say(q.s); }, 350);
     if (q.k === 'ante') {
       var rw = $$('.tok', card).filter(function (t) { return RELW[t.getAttribute('data-n')]; })[0];
       if (rw) rw.classList.add('mk');
@@ -345,14 +348,14 @@
     function result(ok) {
       var r = $('.qres', card), s = full();
       r.innerHTML = (ok ? '<b class="rk ok">⭕ ' + PRAISE[Math.floor(Math.random() * 4)] + '</b>' : '<b class="rk ng">❌ おしい！</b>') +
-        (ok && q.k !== 'bug' && q.k !== 'join' && q.k !== 'pick' ? '' : '<div class="es-line ans">' + esHtml(s) + sayBtn(s) + '</div>') +
-        (q.k === 'ja' ? '<div class="ja-line">' + esc(q.o[q.a]) + '</div>' : q.k === 'join' && q.ja ? '<div class="ja-line">' + esc(q.ja) + '</div>' : '') +
+        (ok && q.k !== 'bug' && q.k !== 'join' && q.k !== 'pick' && q.k !== 'listen' ? '' : '<div class="es-line ans">' + esHtml(s) + sayBtn(s) + '</div>') +
+        (q.k === 'ja' ? '<div class="ja-line">' + esc(q.o[q.a]) + '</div>' : (q.k === 'join' || q.k === 'listen') && q.ja ? '<div class="ja-line">' + esc(q.ja) + '</div>' : '') +
         (q.why ? '<p class="why">' + ja(q.why) + '</p>' : '');
       glossAll(r);
       autoSay(s);
     }
 
-    if (q.k === 'pick' || q.k === 'ja' || q.k === 'join' || q.k === 'which') {
+    if (q.k === 'pick' || q.k === 'ja' || q.k === 'join' || q.k === 'which' || q.k === 'listen') {
       var labels = q.k === 'which' ? ['関係詞', '接続詞（〜ということ）', '疑問詞（何・どこ）'] : q.o;
       var ans = q.a;
       var list = labels.map(function (l, i) { return { label: l, i: i }; });
@@ -362,7 +365,7 @@
         if (q.k === 'pick') { var bl = $('.blank', card); if (bl) { bl.textContent = q.o[i]; bl.className = 'blank filled ' + (ok ? 'ok' : 'ng'); } }
         markOpts(wrap, ans, i);
         finish(ok);
-      }, q.k === 'join' || q.k === 'ja' ? 'long' : '');
+      }, q.k === 'join' || q.k === 'ja' || q.k === 'listen' ? 'long' : '');
       return;
     }
     if (q.k === 'ante' || q.k === 'bug') {
@@ -574,7 +577,9 @@
       S.cards[card.id] = (S.cards[card.id] || 0) + 1;
     }
     S.lessons[L.id] = { done: true, stars: Math.max(stars, rec.stars || 0), at: Date.now() };
-    rewards = rewards.concat(missionDone('stage'));
+    var sets = setRewards();
+    rewards = rewards.concat(missionDone('stage'), sets);
+    setFx(sets);
     touchDay();
     var up = addXp(run.xp);
     save(); cur = null;
@@ -859,6 +864,69 @@
     one();
   }
 
+  /* ----- カード練習（持っているカードの例文で 🎧聞き取り・🧩並べ替え） ----- */
+  function cardQ(c, kind) {
+    var s = plain(c.es);
+    if (kind === 'build') return { id: 'card:' + c.id + ':b', k: 'build', s: s, d: [/\bquien(es)?\b/i.test(s) ? 'que' : 'quien'], ja: c.ja, card: c.id };
+    /* まぎらわしい文：同じレッスンのカードを優先 */
+    var others = shuffle(D.cards.filter(function (x) { return x.id !== c.id && plain(x.es) !== s; }))
+      .sort(function (a, b) { return (b.L === c.L) - (a.L === c.L); }).slice(0, 2);
+    return { id: 'card:' + c.id + ':l', k: 'listen', s: s, o: [s].concat(others.map(function (x) { return plain(x.es); })), a: 0, ja: c.ja, card: c.id };
+  }
+  function ownedCards() { return D.cards.filter(function (c) { return S.cards[c.id]; }); }
+  function cardGo(ids) {
+    var cards = ids ? ids.map(function (id) { return CARD[id]; })
+      : shuffle(ownedCards()).sort(function (a, b) { return (S.cardp[a.id] || 0) - (S.cardp[b.id] || 0); }).slice(0, 5);
+    if (!cards.length) return toast('🃏 カードを手に入れると、カードで練習できるよ');
+    var list = [], k = 0, full = !ids;
+    cards.forEach(function (c) { list.push(cardQ(c, 'listen'), cardQ(c, 'build')); });
+    $('#modal').hidden = true;
+    zStop(); show('quiz'); zActive = true; zRun = newRun();
+    $('#zTitle').textContent = '🃏 カードで練習'; zHud.innerHTML = '';
+    FX.slam('CARD PRACTICE', 'cyan', '🎧 聞き取り ・ 🧩 並べ替え');
+    function paint() { $('#zProg').style.width = Math.round(k / list.length * 100) + '%'; $('#zRight').innerHTML = '<small>XP</small><b>' + zRun.xp + '</b>'; }
+    function one() {
+      paint();
+      if (k >= list.length) return end();
+      var q = list[k++], c = zCard();
+      renderQ(q, c, T2, { tag: k + ' / ' + list.length + '　' + CARD[q.card].r }, function (ok) {
+        if (ok) { S.cardp[q.card] = (S.cardp[q.card] || 0) + 1; hit(zRun, $('.chosen', T2.el) || c); } else miss(zRun, c);
+        save(); paint();
+        later(function () { T2.next(one, k < list.length ? '▶ つぎへ' : '▶ おわり！'); }, 250);
+      });
+    }
+    function end() {
+      zStop();
+      var rewards = [];
+      if (full) { S.tickets += 1; rewards.push({ icon: '🎟', t: 'カード練習やりきり +1' }); }
+      touchDay();
+      zRun.xp += 10;
+      var up = addXp(zRun.xp); save();
+      var acc = zRun.ok / list.length;
+      showResult({ title: acc === 1 ? 'PERFECT!!' : 'PRACTICE CLEAR!', sub: 'カードで練習 ' + list.length + '問', stars: acc >= 0.9 ? 3 : acc >= 0.7 ? 2 : 1, run: zRun, rewards: rewards, up: up,
+        note: '練習で正解したカードは、図鑑に 🎧 の回数がつくよ。まだ練習していないカードから順に出る。',
+        retry: { label: '🃏 もう一回', fn: function () { cardGo(ids); } }, next: { label: '🃏 図鑑へ', fn: function () { dexScreen('cards'); } } });
+    }
+    one();
+  }
+
+  /* ----- レッスンごとに5枚そろえるとボーナス ----- */
+  var SET_TIX = 3, SET_XP = 50;
+  function setRewards() {
+    var got = [];
+    D.lessons.forEach(function (L) {
+      var mine = D.cards.filter(function (c) { return c.L === L.no; });
+      if (S.sets[L.no] || !mine.every(function (c) { return S.cards[c.id]; })) return;
+      S.sets[L.no] = Date.now(); S.tickets += SET_TIX; S.xp += SET_XP;
+      got.push({ icon: '🏆', t: 'L' + L.no + ' カード5枚コンプリート！ 🎟+' + SET_TIX + '・+' + SET_XP + ' XP', set: L.no });
+    });
+    return got;
+  }
+  function setFx(got) {
+    if (!got.length) return;
+    later(function () { FX.slam('SET COMPLETE!!', 'gold', got.map(function (g) { return 'L' + g.set; }).join('・') + ' の5枚がそろった'); FX.confetti(140, 'gold'); Sfx.levelUp(); }, 600);
+  }
+
   /* =========================================================
    * ガチャ
    * ========================================================= */
@@ -880,7 +948,7 @@
       '<div class="gacha"><div class="machine" id="gm"><div class="dome">' + Array.apply(null, Array(14)).map(function (x, i) { return '<i style="left:' + (8 + (i * 37) % 140) + 'px;bottom:' + (4 + Math.floor(i / 4) * 24) + 'px;--h:' + (i * 47 % 360) + '"></i>'; }).join('') + '</div><div class="mbody"><span class="mslot"></span><span class="knob"></span></div></div>' +
       '<p class="g-info">クリアしたレッスンのフレーズカードが出るよ（いま ' + pool.length + ' 種類）。<br>持っているカード ' + own + ' / ' + D.cards.length + '</p>' +
       '<div class="g-btns"><button class="tb go" id="g1">1回まわす <small>🎟1</small></button><button class="tb gold" id="g10">10連 <small>🎟10・SR以上1枚確定</small></button></div>' +
-      '<p class="g-rate">出る確率：SSR 5%・SR 13%・R 30%・N 52%（UR はボスを倒したときだけ）<br>持っているカードが出たら +15 XP</p><div id="gOut"></div></div>';
+      '<p class="g-rate">出る確率：SSR 5%・SR 13%・R 30%・N 52%（UR はボスを倒したときだけ）<br>持っているカードが出たら +15 XP<br>🏆 レッスンごとに5枚そろえると 🎟+3・+50 XP</p><div id="gOut"></div></div>';
     $('#gBack').addEventListener('click', home);
     $('#g1').addEventListener('click', function () { pull(1); });
     $('#g10').addEventListener('click', function () { pull(10); });
@@ -897,6 +965,7 @@
     var dupXp = 0, news = 0;
     got.forEach(function (c) { if (S.cards[c.id]) dupXp += 15; else news++; S.cards[c.id] = (S.cards[c.id] || 0) + 1; });
     var up = dupXp ? addXp(dupXp) : 0;
+    var sets = setRewards();
     save();
     var top = got.reduce(function (m, c) { return 'N R SR SSR'.split(' ').indexOf(c.r) > 'N R SR SSR'.split(' ').indexOf(m) ? c.r : m; }, 'N');
     var m = $('#gm'), out = $('#gOut');
@@ -922,7 +991,11 @@
           later(function () { flipCard(nc); }, 300 + i * 260);
         });
         later(function () {
-          out.insertAdjacentHTML('beforeend', '<p class="g-sum">新しいカード <b>' + news + '</b> 枚' + (dupXp ? '　かぶり → <b>+' + dupXp + ' XP</b>' : '') + '</p>');
+          out.insertAdjacentHTML('beforeend', '<p class="g-sum">新しいカード <b>' + news + '</b> 枚' + (dupXp ? '　かぶり → <b>+' + dupXp + ' XP</b>' : '') + '</p>' +
+            sets.map(function (g) { return '<p class="g-set">' + g.icon + ' ' + esc(g.t) + '</p>'; }).join('') +
+            '<button class="tb sub" id="gDex">🃏 図鑑でカードを練習する</button>');
+          $('#gDex').addEventListener('click', function () { Sfx.tap(); dexScreen('cards'); });
+          setFx(sets);
           $('.pxp b', $('#gacha')).textContent = S.tickets;
           pulling = false;
           if (up) levelUp(up);
@@ -951,21 +1024,26 @@
       glossAll(body);
       return;
     }
-    var html = '<p class="dex-note">カードをタップすると大きく見られるよ。🔊で読み上げ。</p>';
+    var html = '<button class="tb go" id="dPractice"' + (own ? '' : ' disabled') + '>🃏 カードで練習 <small>持っているカードから 🎧聞き取り・🧩並べ替え 10問</small></button>' +
+      '<p class="dex-note">カードをタップすると、その1枚だけで練習もできるよ。<br>🏆 レッスンごとに5枚そろえると 🎟+3・+50 XP</p>';
     D.lessons.forEach(function (L) {
-      html += '<h3 class="dex-h">L' + L.no + ' ' + esc(L.ti) + '</h3><div class="dex-grid">' + D.cards.filter(function (c) { return c.L === L.no; }).map(slot).join('') + '</div>';
+      var mine = D.cards.filter(function (c) { return c.L === L.no; }), have = mine.filter(function (c) { return S.cards[c.id]; }).length;
+      html += '<h3 class="dex-h">L' + L.no + ' ' + esc(L.ti) + (S.sets[L.no] ? '<span class="set done">🏆 COMPLETE</span>' : '<span class="set">' + have + ' / ' + mine.length + '</span>') + '</h3><div class="dex-grid">' + D.cards.filter(function (c) { return c.L === L.no; }).map(slot).join('') + '</div>';
     });
     html += '<h3 class="dex-h">👑 ボス撃破の証（UR）</h3><div class="dex-grid">' + D.cards.filter(function (c) { return c.boss; }).map(slot).join('') + '</div>';
     body.innerHTML = html;
+    $('#dPractice').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); cardGo(); });
     function slot(c) {
-      var n = S.cards[c.id];
-      return n ? '<button class="slot rr-' + RCOL[c.r] + '" data-c="' + c.id + '"><span class="pc-r">' + c.r + '</span><span class="sl-es">' + esc(plain(c.es)) + '</span>' + (n > 1 ? '<em>×' + n + '</em>' : '') + '</button>'
+      var n = S.cards[c.id], p = S.cardp[c.id];
+      return n ? '<button class="slot rr-' + RCOL[c.r] + '" data-c="' + c.id + '"><span class="pc-r">' + c.r + '</span><span class="sl-es">' + esc(plain(c.es)) + '</span>' + (n > 1 ? '<em>×' + n + '</em>' : '') + (p ? '<i class="sl-p">🎧' + p + '</i>' : '') + '</button>'
         : '<div class="slot none"><span>？</span></div>';
     }
     $$('button.slot', body).forEach(function (b) {
       b.addEventListener('click', function () {
         var c = CARD[b.getAttribute('data-c')];
-        modal(cardHtml(c, false) + '<p class="m-note">持っている枚数：' + S.cards[c.id] + '</p>', 'card-m');
+        modal(cardHtml(c, false) + '<p class="m-note">持っている枚数：' + S.cards[c.id] + '　練習で正解：' + (S.cardp[c.id] || 0) + '回</p>' +
+          '<div class="tbs m-btns"><button class="tb go" id="mPractice">🎧 聞き取り ＋ 🧩 並べ替え</button></div>', 'card-m');
+        $('#mPractice').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); cardGo([c.id]); });
         var nc = $('#mbody .pcard'); glossEs(nc); later(function () { drawArc(nc); }, 380); autoSay(c.es);
       });
     });
@@ -988,6 +1066,9 @@
   }
   function home() {
     zStop(); cur = null; show('home');
+    /* 前の版でそろっていたセットのボーナスも、ここで渡す */
+    var sets = setRewards();
+    if (sets.length) { save(); setFx(sets); toast(sets.map(function (g) { return g.icon + ' ' + esc(g.t); }).join('<br>')); }
     var L = levelOf(S.xp);
     $('#hLvN').textContent = L.lv; $('#hLvBar').style.width = Math.round(L.cur / L.need * 100) + '%'; $('#hLvTi').textContent = titleOf(L.lv) + '　あと ' + (L.need - L.cur) + ' XP';
     $('#hStreak b').textContent = S.streak.last === today() || S.streak.last === ymd(Date.now() - DAY) ? S.streak.n : 0;

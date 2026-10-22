@@ -449,3 +449,23 @@ details p { margin: 6px 0 0; padding: 8px 10px; border-radius: 12px; background:
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* ---------- カード練習・セット ---------- */
+.listen { display: flex; align-items: center; gap: 12px; margin: 6px 0; }
+.listen .say { position: static; width: 64px; height: 64px; font-size: 28px; background: linear-gradient(135deg, var(--rel), #7a3cff); box-shadow: 0 0 20px rgba(255, 79, 163, .5); }
+.listen .say.slow { width: 46px; height: 46px; font-size: 20px; background: var(--panel2); box-shadow: none; }
+.listen small { color: var(--muted); font-size: 12px; }
+.dex-h { display: flex; align-items: center; gap: 8px; }
+.dex-h .set { margin-left: auto; padding: 0 10px; border-radius: 99px; background: var(--panel2); font: 400 12px var(--f-latin); color: var(--muted); flex: none; }
+.dex-h .set.done { background: linear-gradient(90deg, #ffb020, #ffd23f); color: #2a1300; }
+.slot .sl-p { position: absolute; bottom: 4px; right: 6px; font-style: normal; font-size: 10px; color: var(--ante); }
+.slot .sl-es { margin-bottom: 8px; }
+#dPractice { margin: 4px 0 6px; }
+#dPractice:disabled { opacity: .45; }
+.m-btns { margin-top: 10px; }
+.g-set { margin: 6px 0; padding: 8px 12px; border-radius: 14px; background: rgba(255, 210, 63, .14); border: 1px solid rgba(255, 210, 63, .45); font-weight: 800; }
+#gDex { margin-top: 10px; }
+#modal.card-m .mbox { padding-top: 50px; }
+.slot { padding-bottom: 18px; }
+.slot .sl-es { margin-bottom: 0; }
+.pcard .es-line { padding-right: 34px; }
