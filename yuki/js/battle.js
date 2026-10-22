@@ -56,7 +56,8 @@
       if (qi >= bank.length) { bank = Y.shuffle(bank); qi = 0; }
       var q = bank[qi++], order = Y.shuffle(q.opts.map(function (_, i) { return i; }));
       var panel = $('.bt-panel', el), t0 = Date.now(), LIM = q.lim || 15000;
-      panel.innerHTML = '<div class="bt-time"><i></i></div><p class="bt-q">' + fmt(q.q) + '</p>' +
+      el.classList.toggle('haspic', !!q.pic);   /* 構造式が出る問題は、ボスを小さくして選択肢まで画面に収める */
+      panel.innerHTML = '<div class="bt-time"><i></i></div>' + (q.pic ? '<div class="bt-pic">' + Y.Mol.pic(q.pic) + '</div>' : '') + '<p class="bt-q">' + fmt(q.q) + '</p>' +
         '<div class="opts' + (q.mols ? ' mols' : q.opts.every(function (o) { return String(o).length <= 12; }) ? ' two' : '') + '">' + order.map(function (i) {
           var o = q.opts[i];
           return '<button class="op" data-i="' + i + '">' + (q.mols ? Y.Mol.mini(Y.MOLS[o].s, 110) + '<small>' + esc(Y.MOLS[o].f) + '</small>' : fmt(o)) + '</button>';

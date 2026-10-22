@@ -119,16 +119,20 @@ function walk(steps, src, run) {
       });
       return;
     }
-    if (s.slam) return;
+    if (s.slam || s.journey) return;
     err(at + '：知らないステップ ' + JSON.stringify(s).slice(0, 60));
   });
 }
 Y.LESSONS.forEach(L => walk(L.steps, L.id, { n: 0 }));
 /* 寄り道クエスト：問題は毎回作るので、何度か作って全部点検する */
 Y.shuffle = Y.shuffle || (a => a.slice().sort(() => Math.random() - 0.5));
-(Y.SIDE || []).forEach(q => {
-  if (!Y.LESSONS.some(l => l.id === q.after)) err('寄り道 ' + q.id + '：after ' + q.after + ' がない');
-  for (let k = 0; k < 30; k++) walk(q.make(), q.id + '（' + (k + 1) + '回目）', { n: 0 });
+(Y.GUILD || []).forEach(q => {
+  if (!Y.LESSONS.some(l => l.id === q.after)) err('依頼 ' + q.id + '：after ' + q.after + ' がない');
+  if (!Y.GUILD_TYPES[q.type]) err('依頼 ' + q.id + '：種類 ' + q.type + ' がない');
+  for (let k = 0; k < 30; k++) {
+    if (q.run === 'battle') { const b = q.make(); b.qs.forEach(id => { const x = Y.QS[id]; if (!x) err('依頼 ' + q.id + '：問題 ' + id + ' がない'); else { checkQ('依頼 ' + q.id + ' ' + id, x); if (x.pic && !B.connected(B.parseSet(x.pic))) err('依頼 ' + q.id + '：図がつながっていない'); } }); }
+    else walk(q.make(), q.id + '（' + (k + 1) + '回目）', { n: 0 });
+  }
 });
 for (const [id, q] of Object.entries(Y.QS)) checkQ('問題 ' + id, q);
 for (const [id, b] of Object.entries(Y.BOSSES)) {
@@ -144,6 +148,6 @@ for (const [id, t] of Object.entries(Y.TIPS)) (t.fig || []).forEach(f => {
 });
 Y.ROUTE.forEach(id => { if (!Y.BOSSES[id] && !Y.LESSONS.some(l => l.id === id)) err('地図：' + id + ' がない'); });
 
-console.log('\nレッスン ' + Y.LESSONS.length + ' ・ 呪文 ' + Object.keys(Y.SPELLS).length + ' ・ 問題 ' + Object.keys(Y.QS).length + ' ・ Tips ' + Object.keys(Y.TIPS).length);
+console.log('\nレッスン ' + Y.LESSONS.length + ' ・ 呪文 ' + Object.keys(Y.SPELLS).length + ' ・ 問題 ' + Object.keys(Y.QS).filter(k => /^q\d+$/.test(k)).length + ' ・ Tips ' + Object.keys(Y.TIPS).length);
 console.log(errors ? '❌ エラー ' + errors + ' 件' : '✅ エラーなし', warns ? '・ 注意 ' + warns + ' 件' : '');
 process.exit(errors ? 1 : 0);

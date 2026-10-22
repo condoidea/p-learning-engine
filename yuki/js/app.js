@@ -44,14 +44,13 @@
           '<span class="nd-t"><b>' + esc(n.boss ? n.boss.name : n.L.title) + '</b><small>' + esc(n.boss ? n.boss.title + '（ボス）' : n.L.sub) + '</small></span>' + badge + '</button></li>';
       });
       h += '</ol>';
-      /* 寄り道クエスト：メインの話とは別に、練習で深める。何度でも遊べる */
-      var sides = (Y.SIDE || []).filter(function (q) { return q.ch === c.id; });
-      if (sides.length) h += '<div class="side"><p class="side-t">🧭 寄り道クエスト<small>何度でも挑める</small></p>' + sides.map(function (q) {
-        var open = done(q.after), rec = S().lessons[q.id] || {};
-        return '<button class="sq' + (open ? '' : ' lock') + '" data-side="' + q.id + '"' + (open ? '' : ' disabled') + '><span class="sq-ic">' + (open ? q.icon : '🔒') + '</span>' +
-          '<span class="nd-t"><b>' + esc(q.title) + '</b><small>' + esc(open ? q.sub : '「' + nameOf(q.after) + '」のあとで開く') + '</small></span>' +
-          (rec.stars ? '<i class="st">' + '★★★'.slice(0, rec.stars) + '<u>' + '★★★'.slice(rec.stars) + '</u></i>' : '') + '</button>';
-      }).join('') + '</div>';
+      /* 冒険者ギルド：困りごとの依頼を受ける（メインの話とは別に、練習で深める。何度でも受けられる） */
+      var reqs = (Y.GUILD || []).filter(function (q) { return q.ch === c.id; });
+      if (reqs.length) {
+        var open = reqs.filter(function (q) { return done(q.after); }).length, clear = reqs.filter(function (q) { return S().lessons[q.id]; }).length;
+        h += '<button class="guild" data-guild="' + c.id + '"' + (open ? '' : ' disabled') + '><span class="g-ic">🍺</span><span class="nd-t"><b>冒険者ギルド</b><small>' +
+          (open ? '依頼 ' + open + ' 件を受けられる・達成 ' + clear + ' 件' : '「' + nameOf(reqs[0].after) + '」のあとで開く') + '</small></span><span class="g-go">' + (open ? '掲示板 ▶' : '🔒') + '</span></button>';
+      }
       h += '</section>';
     });
     h += '<section class="ch ch-soon"><h2><small>2章</small>酸素の森</h2><p class="soon">アルコール・アルデヒド・カルボン酸・エステル。🔥炎（酸化）・✨光（銀鏡）・💧水（加水分解）の魔法… 準備中</p></section>';
@@ -61,10 +60,46 @@
   }
 
   /* 寄り道クエスト：毎回、問題を作り直してレッスンとして遊ぶ */
-  function side(id) {
-    var q = (Y.SIDE || []).filter(function (x) { return x.id === id; })[0]; if (!q) return;
-    Y.Voice.unlock();
-    lesson({ id: q.id, ch: q.ch, title: q.title, sub: '寄り道クエスト', side: true, steps: q.make() });
+  /* ---------- 冒険者ギルド（掲示板 → 依頼書 → 依頼を受ける） ---------- */
+  function guild(ch) {
+    var reqs = (Y.GUILD || []).filter(function (q) { return q.ch === ch; });
+    var body = Y.sheet('<div class="board"><h3 class="sh-t">🍺 冒険者ギルド</h3><p class="sh-sub">酒場の掲示板に、困りごとの依頼が貼ってある。何度でも受けられる。</p>' +
+      reqs.map(function (q) {
+        var T = Y.GUILD_TYPES[q.type], open = done(q.after), rec = S().lessons[q.id];
+        return '<button class="req' + (open ? '' : ' lock') + '" data-req="' + q.id + '"' + (open ? '' : ' disabled') + '>' +
+          '<span class="rq-type">' + T.icon + ' ' + esc(T.n) + '</span>' + (rec ? '<span class="rq-done">達成</span>' : '') +
+          '<b>' + esc(q.title) + '</b><small>依頼人：' + esc(q.client) + '</small>' +
+          (open ? '' : '<small class="rq-lock">🔒「' + esc(nameOf(q.after)) + '」のあとで受けられる</small>') + '</button>';
+      }).join('') + '</div>');
+    body.onclick = function (e) {
+      var b = e.target.closest('[data-req]'); if (!b || b.disabled) return;
+      reqSheet(b.getAttribute('data-req'));
+    };
+  }
+  function reqSheet(id) {
+    var q = (Y.GUILD || []).filter(function (x) { return x.id === id; })[0], T = Y.GUILD_TYPES[q.type], rec = S().lessons[q.id];
+    var body = Y.sheet('<div class="reqd"><p class="rq-type">' + T.icon + ' ' + esc(T.n) + '</p><h3>' + esc(q.title) + '</h3>' +
+      '<p class="rq-client">依頼人：' + esc(q.client) + '</p><p class="rq-trouble">「' + esc(q.trouble) + '」</p>' +
+      '<p class="rq-reward">報酬：' + esc(q.reward) + (rec ? '　（これまでの最高：' + (rec.rank ? 'ランク ' + rec.rank : '★'.repeat(rec.stars || 0)) + '）' : '') + '</p>' +
+      '<div class="rt-btns row"><button class="btn sub" data-a="back">掲示板へ</button><button class="btn" data-a="go">依頼を受ける ▶</button></div></div>');
+    body.onclick = function (e) {
+      var a = e.target.closest('[data-a]'); if (!a) return;
+      if (a.getAttribute('data-a') === 'back') { guild(q.ch); return; }
+      Y.closeSheet(); Y.Voice.unlock(); request(q);
+    };
+  }
+  function request(q) {
+    if (q.run === 'battle') {
+      var b = q.make();
+      screen('battle');
+      Y.Battle.run(b).then(function (r) {
+        if (r.win) { S().lessons[q.id] = { done: true, rank: best(S().lessons[q.id], r.rank) }; Y.save(); home(); }
+        else if (r.retry) request(q);
+        else home();
+      });
+      return;
+    }
+    lesson({ id: q.id, ch: q.ch, title: q.title, sub: Y.GUILD_TYPES[q.type].icon + ' ギルドの依頼', steps: q.make() });
   }
   function go(id) {
     if (!unlocked(id)) return;
@@ -177,7 +212,7 @@
     };
     $('#hMap').addEventListener('click', function (e) {
       var b = e.target.closest('[data-go]'); if (b) { go(b.getAttribute('data-go')); return; }
-      var q = e.target.closest('[data-side]'); if (q && !q.disabled) side(q.getAttribute('data-side'));
+      var g = e.target.closest('[data-guild]'); if (g && !g.disabled) guild(+g.getAttribute('data-guild'));
     });
     $('#hBook').onclick = spellbook; $('#hTips').onclick = tipsNote; $('#hSet').onclick = settings;
     $('#tQuit').onclick = function () { if (confirm('レッスンをやめて地図へもどりますか？')) { Y.Talk.abort(); home(); } };

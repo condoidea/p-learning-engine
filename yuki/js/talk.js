@@ -10,6 +10,7 @@
  *   { build: { mat, answers, need }, mission }  錬成（answers をすべて＝または need 個見つけるまで）
  *   { cast: { goal, pool, reagents, conds }, mission }   詠唱の儀式（ritual.js）
  *   { tip: 'honc' }                Tips カードを手に入れる（data/tips.js）
+ *   { journey: { i, n, label, icon } }  旅の進み具合（ギルドの依頼：探索・護衛）
  *   { match: { title, rounds: [[[左, 右], …], …] } }   組み合わせ演習（全部の組を合わせる。右は文字か { pic: 'C:r0 …' }）
  *   { slam: '…' }                  画面のまん中にドン
  *  正解・錬成・詠唱で経験値（EXP）がふえる。たまるとレベルアップ
@@ -335,6 +336,12 @@
         if (s.cast) return cast(s);
         if (s.tip) return tip(s);
         if (s.match) return match(s);
+        if (s.journey) {
+          var J = s.journey, dots = '';
+          for (var k = 1; k <= J.n; k++) dots += '<i class="' + (k < J.i ? 'past' : k === J.i ? 'now' : '') + '">' + (k === J.i ? J.icon : '') + '</i>';
+          row('card', '<div class="jcard"><b>' + esc(J.label) + '</b><div class="jline">' + dots + '<i class="goal">🏁</i></div></div>', 'c');
+          return wait(600);
+        }
         if (s.slam) { if (window.FX) FX.slam(s.slam, s.cls || ''); Y.se('crit'); return wait(1000); }
         throw new Error('unknown step ' + JSON.stringify(s));
       });
