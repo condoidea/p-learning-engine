@@ -1,6 +1,7 @@
 /* =========================================================
  * yuki/bgm.js — その場で鳴らす BGM（音声ファイルなし・すべてオリジナル曲）
  *
+ *  鳴らすのは「キメの場面」だけ：詠唱（属性の曲が盛り上がって発動）とボス戦。地図・レッスン・錬成・カード選びは静か
  *  Y.Bgm.play(id, level)  曲を流す（同じ曲なら level だけ変える）
  *  Y.Bgm.level(n)          盛り上がり 0〜3（0：和音とベース → 1：太鼓 → 2：スネアとアルペジオ → 3：メロディ）
  *  Y.Bgm.climax()          一瞬止めてから「ドーン」→ 全部の楽器（発動の瞬間）。止まっている時間ぶん待つ Promise を返す
@@ -243,7 +244,7 @@
         }, 420);
         curId = id; return;
       }
-      bus.gain.setValueAtTime(1, t);
+      bus.gain.cancelScheduledValues(t); bus.gain.setValueAtTime(1, t);
       start(id); applyLevel(t);
     },
     level: function (n) { lvl = Math.max(0, Math.min(3, n)); if (ctx && cur) applyLevel(ctx.currentTime); },

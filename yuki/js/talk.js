@@ -175,7 +175,6 @@
   /* ---------- 錬成 ---------- */
   function build(s) {
     var r = run, pz = s.build, need = pz.need || pz.answers.length;
-    if (Y.Bgm) Y.Bgm.play('forge', 1);
     var d = row('card', '<div class="bcard"><p class="b-mis">⬡ ' + fmt(s.mission) + '</p><div class="b-host"></div><p class="b-msg">　</p><div class="b-got"></div></div>', 'c');
     var msg = d.querySelector('.b-msg'), got = d.querySelector('.b-got'), made = [];
     /* 作った形の棚：作った形は構造式で、まだの所は「？」 */
@@ -210,7 +209,7 @@
         change: function () { if (msg.textContent.trim()) msg.innerHTML = '　'; }
       });
       run.onAbort = function () { res([]); };
-    }).then(function () { alive(r); setTray(''); if (Y.Bgm) Y.Bgm.play('village', 1); });
+    }).then(function () { alive(r); setTray(''); });
   }
 
   /* ---------- 組み合わせ演習（マッチング） ----------
@@ -289,7 +288,7 @@
       if (!res.tries) gain(20); else gain(8);
       var sp = Y.SPELLS[c.goal];
       row('card', '<div class="spcard" data-attr="' + sp.attr + '"><span>' + Y.ATTR[sp.attr].icon + '</span><b>' + esc(sp.name) + '</b><small>' + esc(sp.scroll.eq) + '</small><button class="link" data-scroll="' + c.goal + '">📜 スクロール</button></div>', 'c');
-      if (Y.Bgm) Y.Bgm.play('village', 1);
+      if (Y.Bgm) Y.Bgm.stop();   /* 学習中は BGM なし（キメの場面だけで鳴らす） */
     });
   }
 
@@ -346,7 +345,7 @@
       $('#tTitle').textContent = L.title; $('#tSub').textContent = L.sub || '';
       $('#tMp').textContent = '0';
       setFace('normal');
-      if (Y.Bgm) Y.Bgm.play('village', 1);
+      if (Y.Bgm) Y.Bgm.stop();   /* 学習中は BGM なし（キメの場面だけで鳴らす） */
       return play(L.steps).then(function () { return { ok: r.ok, total: r.total, miss: r.miss, exp: r.exp }; });
     },
     abort: function () { if (run) { run.dead = true; if (run.skip) run.skip(); if (run.onAbort) run.onAbort(); } run = null; Y.Ritual.close(); },

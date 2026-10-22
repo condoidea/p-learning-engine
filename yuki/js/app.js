@@ -17,6 +17,7 @@
     $$('.screen').forEach(function (s) { s.hidden = s.id !== id; }); window.scrollTo(0, 0);
     /* 文字を読む画面では、背景の城をうすくする */
     document.body.classList.toggle('reading', id === 'talk' || id === 'battle');
+    document.body.classList.toggle('in-battle', id === 'battle');
   }
 
   /* ---------- ホーム（地図） ---------- */
@@ -47,7 +48,7 @@
     h += '<section class="ch ch-soon"><h2><small>2章</small>酸素の森</h2><p class="soon">アルコール・アルデヒド・カルボン酸・エステル。🔥炎（酸化）・✨光（銀鏡）・💧水（加水分解）の魔法… 準備中</p></section>';
     $('#hMap').innerHTML = h;
     var n2 = $('.nd.now'); if (n2 && !Y.RM) setTimeout(function () { n2.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 300);
-    if (Y.Bgm) Y.Bgm.play('village', 3);
+    if (Y.Bgm) Y.Bgm.stop();   /* BGM は詠唱とボス戦（キメの場面）だけ。地図・レッスンは静かに */
   }
 
   function go(id) {
@@ -142,7 +143,7 @@
       '<button class="link danger" id="stReset">記録をリセット</button>' + (Y.SANDBOX ? '<p class="note">🧪 sandbox（お試し用の保存先）で動いている</p>' : '') + '</div>');
     b.onchange = function (e) {
       var k = e.target.getAttribute('data-k'), r = e.target.getAttribute('data-r');
-      if (k) { st[k] = e.target.checked; Y.save(); if (k === 'bgm') { if (st.bgm) Y.Bgm.play('village', 3); else Y.Bgm.stop(); } if (k === 'voice' && !st.voice) Y.Voice.stop(); }
+      if (k) { st[k] = e.target.checked; Y.save(); if (k === 'bgm' && !st.bgm) Y.Bgm.stop(); if (k === 'voice' && !st.voice) Y.Voice.stop(); }
       if (r) { st[r] = +e.target.value; Y.save(); if (r === 'vol') Y.Bgm.setVol(); }
     };
     b.oninput = function (e) { if (e.target.getAttribute('data-r') === 'vol') { st.vol = +e.target.value; Y.Bgm.setVol(); } };

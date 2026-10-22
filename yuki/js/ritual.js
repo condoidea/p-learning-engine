@@ -114,6 +114,7 @@
   }
   function close() {
     Y.Voice.stop();
+    if (Y.Bgm && !document.body.classList.contains('in-battle')) Y.Bgm.stop();   /* 儀式が終わったら曲も終わり（ボス戦の中ならボスの曲にまかせる） */
     if (el) { el.hidden = true; el.innerHTML = ''; }
     document.body.classList.remove('in-ritual');
   }
@@ -177,7 +178,7 @@
           var tray = el.querySelector('.rt-tray');
           tray.innerHTML = '<div class="rt-done"><p class="rt-prod warn"><small>できたのは…</small><b>' + esc(sp.product) + '</b><span>' + esc(sp.pf) + '</span></p>' +
             '<p class="rt-hint">ミッションは「' + esc(goal.product) + '」。条件を見直そう</p><div class="rt-btns"><button class="btn" data-a="again">もう一度 ↺</button></div></div>';
-          tray.onclick = function (e) { if (e.target.closest('[data-a]')) { tray.onclick = null; if (Y.Bgm) Y.Bgm.play('forge', 0); pick(); } };
+          tray.onclick = function (e) { if (e.target.closest('[data-a]')) { tray.onclick = null; if (Y.Bgm) Y.Bgm.stop(); pick(); } };
         });
       }
       function pick() {
@@ -203,7 +204,7 @@
           if (e.target.closest('.fire') && !fb.disabled) { tray.onclick = null; Y.Voice.unlock(); fire(sel); }
         };
       }
-      if (Y.Bgm) Y.Bgm.play('forge', 0);
+      if (Y.Bgm) Y.Bgm.stop();   /* カードを選んでいる間は静かに。詠唱が始まったら属性の曲 */
       pick();
     });
   };
