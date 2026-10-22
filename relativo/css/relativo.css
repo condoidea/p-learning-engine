@@ -250,7 +250,7 @@ details p { margin: 6px 0 0; padding: 8px 10px; border-radius: 12px; background:
 .k-ante .tok.ok { color: var(--ante); }
 .join { padding: 6px 10px; border-radius: 14px; background: rgba(0, 0, 0, .2); }
 .build-line { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-height: 52px; padding: 8px; border-radius: 14px; border: 2px dashed var(--line); }
-.build-line.empty::before { content: 'タイルをタップして、ここに並べよう'; color: var(--muted); font-size: 13px; }
+.build-line.empty::before { content: 'タップかドラッグで、ここに並べよう（並べたあとも動かせる）'; color: var(--muted); font-size: 13px; }
 .build-line:not(.empty)::after { content: attr(data-end); font-weight: 800; font-size: 18px; }
 .build-line.ok { border-color: var(--ok); border-style: solid; }
 .build-line.ng { border-color: var(--ng); border-style: solid; }
@@ -469,3 +469,11 @@ details p { margin: 6px 0 0; padding: 8px 10px; border-radius: 12px; background:
 .slot { padding-bottom: 18px; }
 .slot .sl-es { margin-bottom: 0; }
 .pcard .es-line { padding-right: 34px; }
+
+/* ---------- 並べ替えのドラッグ ---------- */
+.tile { touch-action: none; -webkit-user-select: none; user-select: none; }
+.tile.dragging { opacity: .35; }
+.tile.ghost { position: fixed; z-index: 99; pointer-events: none; transform: translate(-50%, -70%) scale(1.12) rotate(-3deg); border-color: var(--rel); background: #3a1a6a; box-shadow: 0 10px 24px rgba(0, 0, 0, .55), 0 0 16px rgba(255, 79, 163, .5); }
+.drop-caret { position: fixed; z-index: 98; width: 4px; border-radius: 4px; background: var(--rel); box-shadow: 0 0 10px var(--rel); pointer-events: none; animation: tapGlow .6s infinite; }
+.tile-hint { margin: 0 0 6px; text-align: center; color: var(--muted); font-size: 12px; }
+

@@ -388,26 +388,90 @@
       var line = $('.build-line', card), placed = [];
       var tiles = shuffle(words.concat(q.d || []));
       T.clear();
-      var pool = el('div', 'tiles'), bar = el('div', 'tbs small');
+      var pool = el('div', 'tiles'), dragEnd = 0;
+      /* タップ：下のタイル → 文の最後に追加／並べたタイル → 下に戻す
+       * ドラッグ：下のタイル → 好きな位置に入れる／並べたタイル → 位置を入れかえる（文の外に出すと下に戻る） */
+      function insertAt(item, at) {
+        if (at == null || at >= placed.length) { placed.push(item); line.appendChild(item.el); }
+        else { line.insertBefore(item.el, placed[at].el); placed.splice(at, 0, item); }
+      }
+      function place(btn, w, at) {
+        btn.classList.add('used');
+        var p = el('span', 'tile on', esc(w)); p.setAttribute('role', 'button');
+        var item = { w: w, el: p, src: btn };
+        p.addEventListener('click', function () { if (done || Date.now() - dragEnd < 400) return; Sfx.tap(); unplace(item); });
+        drag(p, item, btn, w);
+        insertAt(item, at); FX.pop(p, 1.2); paint();
+        if (placed.length === words.length) check();
+      }
+      function unplace(item) { placed.splice(placed.indexOf(item), 1); item.el.remove(); item.src.classList.remove('used'); paint(); }
+      function dropIndex(ev, skip) {
+        var list = placed.filter(function (x) { return x !== skip; });
+        for (var i = 0; i < list.length; i++) {
+          var r = list[i].el.getBoundingClientRect();
+          if (ev.clientY < r.top) return i;
+          if (ev.clientY <= r.bottom && ev.clientX < r.left + r.width / 2) return i;
+        }
+        return list.length;
+      }
+      function overLine(ev) { var r = line.getBoundingClientRect(); return ev.clientX >= r.left - 12 && ev.clientX <= r.right + 12 && ev.clientY >= r.top - 30 && ev.clientY <= r.bottom + 30; }
+      var caret = null;
+      function showCaret(ev, skip) {
+        if (!overLine(ev)) { if (caret) caret.hidden = true; return; }
+        if (!caret) { caret = el('div', 'drop-caret'); document.body.appendChild(caret); }
+        var list = placed.filter(function (x) { return x !== skip; }), at = dropIndex(ev, skip), r, x;
+        if (list.length && at < list.length) { r = list[at].el.getBoundingClientRect(); x = r.left - 4; }
+        else if (list.length) { r = list[list.length - 1].el.getBoundingClientRect(); x = r.right + 2; }
+        else { r = line.getBoundingClientRect(); x = r.left + 8; r = { top: r.top + 10, height: r.height - 20 }; }
+        caret.hidden = false; caret.style.left = x + 'px'; caret.style.top = r.top + 'px'; caret.style.height = r.height + 'px';
+      }
+      function drag(src, item, btn, w) {
+        src.addEventListener('pointerdown', function (e) {
+          if (done || (!item && btn.classList.contains('used'))) return;
+          var x0 = e.clientX, y0 = e.clientY, ghost = null;
+          function move(ev) {
+            if (!ghost) {
+              if (Math.abs(ev.clientX - x0) + Math.abs(ev.clientY - y0) < 8) return;
+              ghost = el('div', 'tile ghost', esc(w)); document.body.appendChild(ghost);
+              src.classList.add('dragging');
+            }
+            ev.preventDefault();
+            ghost.style.left = ev.clientX + 'px'; ghost.style.top = ev.clientY + 'px';
+            showCaret(ev, item);
+          }
+          function up(ev) {
+            document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); document.removeEventListener('pointercancel', up);
+            if (!ghost) return;
+            ghost.remove(); src.classList.remove('dragging'); if (caret) caret.hidden = true;
+            dragEnd = Date.now();
+            if (done || ev.type === 'pointercancel') return;
+            Sfx.tap();
+            if (item) {
+              if (overLine(ev)) { var at = dropIndex(ev, item); placed.splice(placed.indexOf(item), 1); insertAt(item, at); FX.pop(item.el, 1.15); paint(); }
+              else unplace(item);
+            } else if (overLine(ev)) place(btn, w, dropIndex(ev, null));
+          }
+          document.addEventListener('pointermove', move, { passive: false });
+          document.addEventListener('pointerup', up); document.addEventListener('pointercancel', up);
+        });
+      }
       tiles.forEach(function (w) {
         var b = el('button', 'tile', esc(w));
         b.addEventListener('click', function () {
-          if (done || b.classList.contains('used')) return;
-          Sfx.tap(); b.classList.add('used');
-          var p = el('span', 'tile on', esc(w)); p.setAttribute('role', 'button');
-          p.addEventListener('click', function () { if (done) return; Sfx.tap(); placed.splice(placed.indexOf(item), 1); p.remove(); b.classList.remove('used'); paint(); });
-          var item = { w: w, el: p };
-          placed.push(item); line.appendChild(p); FX.pop(p, 1.2); paint();
-          if (placed.length === words.length) check();
+          if (done || b.classList.contains('used') || Date.now() - dragEnd < 400) return;
+          Sfx.tap(); place(b, w);
         });
+        drag(b, null, b, w);
         pool.appendChild(b);
       });
+      T.el.appendChild(el('p', 'tile-hint', 'タップで追加・ドラッグで好きな位置へ'));
       T.el.appendChild(pool);
       function paint() { line.setAttribute('data-end', end); line.classList.toggle('empty', !placed.length); }
       function check() {
         var ok = placed.map(function (x) { return x.w; }).join(' ') === words.join(' ');
         line.classList.add(ok ? 'ok' : 'ng');
         $$('.tile', pool).forEach(function (t) { t.disabled = true; });
+        if (caret) caret.remove();
         finish(ok);
       }
       paint();
