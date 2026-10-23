@@ -353,8 +353,10 @@
     }
     function result(ok) {
       var r = $('.qres', card), s = full();
-      var showS = !(ok && (q.k === 'ja' || q.k === 'who' || q.k === 'build'));
+      var alt = card.hasAttribute('data-alt');
+      var showS = alt || !(ok && (q.k === 'ja' || q.k === 'who' || q.k === 'build'));
       r.innerHTML = (ok ? '<b class="rk ok">⭕ ' + pick(PRAISE) + '</b>' : '<b class="rk ng">❌ おしい！</b>') +
+        (alt ? '<p class="why">その語順でも正解！ 呼びかけの名前や por favor は、文の前でも後ろでも OK（コンマで区切る）。こんな言い方もあるよ：</p>' : '') +
         (showS ? '<div class="es-line ans">' + esHtml(s) + sayBtn(s) + '</div>' : '') +
         (q.k === 'ja' ? '<div class="ja-line">' + esc(q.o[q.a]) + '</div>' : q.k === 'who' && !ok ? '<div class="ja-line">' + esc(WHO[q.a]) + '</div>' : q.k === 'listen' && q.ja ? '<div class="ja-line">' + esc(q.ja) + '</div>' : '') +
         (q.why ? '<p class="why">' + ja(q.why) + '</p>' : '');
@@ -392,11 +394,28 @@
   }
 
   /* タイル並べ（タップで追加・ドラッグで好きな位置へ） */
+  /* タイルは記号なし・小文字（名前は大文字のまま）。コンマや大文字で並び順が分からないように。
+   * 呼びかけの名前・por favor は、前でも後ろでも正解（Lola, abre la puerta. ／ Abre la puerta, Lola.） */
+  var NAMES = {}; (DICT.names || []).forEach(function (n) { NAMES[n.toLowerCase()] = n; });
+  function tileWord(w) { var c = w.replace(/[¿?¡!.,;:]/g, ''), lc = c.toLowerCase(); return NAMES[lc] || lc; }
+  function buildAnswers(s) {
+    var segs = s.replace(/[.?!]+$/, '').split(/,\s*/).map(function (x) { return x.split(' ').map(tileWord).filter(Boolean); });
+    var movable = function (g) { var t = g.join(' '); return (g.length === 1 && (NAMES[t.toLowerCase()] || /^(amigos|chicos|señores|señor|señora)$/.test(t))) || t === 'por favor'; };
+    var core = segs.filter(function (g) { return !movable(g); }), mov = segs.filter(movable), out = {};
+    /* 動かせる部分を、それぞれ前か後ろに置く（2^n 通り） */
+    for (var m = 0; m < (1 << mov.length); m++) {
+      var front = [], back = [];
+      mov.forEach(function (g, k) { (m & (1 << k) ? front : back).push(g); });
+      out[[].concat.apply([], front.concat(core, back)).join(' ')] = 1;
+    }
+    out[[].concat.apply([], segs).join(' ')] = 1;
+    return out;
+  }
   function buildQ(q, card, T, finish, isDone) {
-    var words = q.s.split(' '), last = words[words.length - 1], end = (/[.?!]+$/.exec(last) || [''])[0];
-    words[words.length - 1] = last.slice(0, last.length - end.length);
+    var words = q.s.split(' ').map(tileWord), end = (/[.?!]+$/.exec(q.s) || [''])[0];
+    var answers = buildAnswers(q.s), canon = words.join(' ');
     var line = $('.build-line', card), placed = [];
-    var tiles = shuffle(words.concat(q.d || []));
+    var tiles = shuffle(words.concat((q.d || []).map(tileWord)));
     T.clear();
     var pool = el('div', 'tiles'), dragEnd = 0, caret = null;
     function insertAt(item, at) {
@@ -475,7 +494,8 @@
     T.el.appendChild(pool);
     function paint() { line.setAttribute('data-end', end); line.classList.toggle('empty', !placed.length); }
     function check() {
-      var ok = placed.map(function (x) { return x.w; }).join(' ') === words.join(' ');
+      var mine = placed.map(function (x) { return x.w; }).join(' '), ok = !!answers[mine];
+      if (ok && mine !== canon) card.setAttribute('data-alt', '1');
       line.classList.add(ok ? 'ok' : 'ng');
       $$('.tile', pool).forEach(function (t) { t.disabled = true; });
       if (caret) caret.remove();
@@ -1503,6 +1523,7 @@
   if (SANDBOX) document.body.classList.add('sandbox');
   try { localStorage.setItem('le.news.manda.opened', '1'); } catch (e) { /* 保存できない環境 */ }
   /* 動作確認用：?sandbox で window.__manda（状態の参照・クリア記録の書きかえ） */
-  if (SANDBOX) window.__manda = { S: function () { return S; }, save: save, home: home, start: function (id) { startLesson(LESSON[id]); }, boss: function (id) { bossIntro(BOSS[id]); }, finish: function () { if (cur) { cur.i = cur.L.steps.length; step(); } }, cur: function () { return cur; }, Q: QBY, WHO: WHO };
+  if (SANDBOX) window.__manda = { S: function () { return S; }, save: save, home: home, start: function (id) { startLesson(LESSON[id]); }, boss: function (id) { bossIntro(BOSS[id]); }, finish: function () { if (cur) { cur.i = cur.L.steps.length; step(); } }, cur: function () { return cur; }, Q: QBY, WHO: WHO,
+    testQ: function (id) { zStop(); show('quiz'); zRun = newRun(); renderQ(QBY[id], zCard(), T2, {}, function () {}); } };
   home();
 })();

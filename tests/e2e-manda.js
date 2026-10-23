@@ -54,7 +54,7 @@
     ov('Q ' + q.id);
     if (q.k === 'bug') { Array.prototype.filter.call(card.querySelectorAll('.tok'), function (t) { return t.dataset.n === norm(q.a); })[0].click(); return true; }
     if (q.k === 'build') {
-      var words = q.s.split(' '), last = words.length - 1; words[last] = words[last].replace(/[.?!]+$/, '');
+      var words = q.s.split(' ').map(function (w) { var c = w.replace(/[¿?¡!.,;:]/g, ''); return /^(Pepe|Lola|Tomás|Marina)$/.test(c) ? c : c.toLowerCase(); });
       for (var i = 0; i < words.length; i++) { Array.prototype.filter.call(T.querySelectorAll('.tile:not(.used):not(.on)'), function (t) { return t.textContent === words[i]; })[0].click(); await SL(60); }
       return true;
     }
