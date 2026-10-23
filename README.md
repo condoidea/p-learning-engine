@@ -26,6 +26,7 @@ trig.html               三角比・平面図形コースの入口
 vocab.html              単語アプリ（スペイン語）の入口。中身は vocab/（設計は docs/単語アプリ設計.md）
 mole.html               モル教室（化学基礎・物質量）。エンジンを使わない独立アプリ。中身は mole/（先生とのトーク形式）
 relativo.html           ¡QUE FUSIÓN!（スペイン語の関係詞・西検4級）。独立アプリ。中身は relativo/（文の合体・ボス戦・ラッシュ・ガチャ）
+manda.html              ¡MANDA!（スペイン語の命令表現・西検4級）。独立アプリ。中身は manda/（島を育てる神さまの命令・自動で進む神託・ボス戦・ラッシュ・奇跡の祈り）
 yuki.html               ユーキ・クエスト（有機化学）。独立アプリ。中身は yuki/（錬成・詠唱の儀式・属性ごとの BGM・読み上げ・ボス戦）
 shared/es-words.js      スペイン語の共通単語帳（アプリ横断）。一覧は docs/スペイン語単語メモ.md
 engine/
@@ -61,6 +62,7 @@ docs/                   設計・コースの作り方
 node tests/check-course.js fe
 node tests/check-mole.js        # モル教室の台本・計算ドリルのチェック（通しテストは mole.html?e2e）
 node tests/check-relativo.js    # 関係詞アプリの教材チェック（--memo で docs/スペイン語単語メモ.md を作り直す）
+node tests/check-manda.js       # 命令表現アプリの教材チェック（ブラウザの通しテストは tests/e2e-manda.js）
 node tests/check-yuki.js        # ユーキ・クエストの教材チェック（反応のあとの手の数・読み・台本。お試しは yuki.html?sandbox）
 # 画面の重なりチェック：スマホの実際の高さ（375×550 など）で開き、tests/overlap.js を読みこんで overlaps()
 ```

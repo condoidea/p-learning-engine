@@ -127,6 +127,23 @@ if (process.argv.indexOf('--memo') >= 0) {
     const V = load(['vocab/decks/spanish/deck.js']);
     vamos = new Set(V.VOCAB_DECK.words.map(w => w.w.toLowerCase()));
   } catch (e) { warn('¡VAMOS! のデッキが読めない：' + e.message); }
+  /* ¡MANDA!（命令表現 manda/）の文も数える */
+  const usedM = new Map(), mTexts = [];
+  try {
+    const M = load(['shared/es-words.js', 'manda/js/data/lessons.js', 'manda/js/data/questions.js', 'manda/js/data/cards.js']).MQ;
+    const add = s => { if (s && !JP.test(s)) mTexts.push(s); };
+    const ticks = s => String(s || '').replace(/`([^`]+)`/g, (m, x) => { mTexts.push(x); return m; });
+    M.lessons.forEach(L => L.steps.forEach(st => {
+      ['es', 'out', 'w'].forEach(k => { if (typeof st[k] === 'string') add(st[k]); });
+      (st.o || []).forEach(o => { if (o.length > 2) add(o); });
+      (st.tbl || []).forEach(r => r.forEach(c => add(c.replace(/（[^）]*）/g, ' ').replace(/[：:]/g, ' '))));
+      ['x', 'r', 'why', 'more', 'q', 'ti', 'hint', 'need'].forEach(k => ticks(st[k]));
+    }));
+    M.questions.forEach(q => { add(q.s); add(q.ok); add(q.v); (q.d || []).forEach(add); if (q.k !== 'ja') (q.o || []).forEach(add); ticks(q.why); ticks(q.sit); });
+    M.cards.forEach(c => add(c.es));
+    mTexts.forEach(s => tokens(s).forEach(tok => { const e = index.get(tok); if (e && !names.has(tok)) usedM.set(e, (usedM.get(e) || 0) + 1); }));
+  } catch (e) { warn('¡MANDA! のデータが読めない：' + e.message); }
+  const tot = e => (used.get(e) || 0) + (usedM.get(e) || 0);
   const LV = { 5: '5級（基本）', 4: '4級', 3: '4級より上（アプリでバルーン説明）', 0: '機能語（冠詞・前置詞・代名詞など）' };
   const POS = { n: '名詞', v: '動詞', adj: '形容詞', adv: '副詞', pron: '代名詞', art: '冠詞', prep: '前置詞', conj: '接続詞', rel: '関係詞', int: '疑問詞', num: '数', det: '限定詞', phr: '表現' };
   const out = [];
@@ -135,7 +152,7 @@ if (process.argv.indexOf('--memo') >= 0) {
   out.push('スペイン語のアプリで、問題・例文に織り込んだ単語の一覧。**次のアプリを作るときに「どれを復習として使うか」「どれと被らないように新しく足すか」を決めるためのメモ。**');
   out.push('');
   out.push('- 元のデータは [shared/es-words.js](../shared/es-words.js)（共通の単語帳）。アプリはこれを読んで、難しめの語（4級・4級より上）にバルーンを出す');
-  out.push('- この文書は `node tests/check-relativo.js --memo` で作り直す（手で直さない）。回数は、そのアプリの例文・問題に出てきた回数（活用形もまとめて数える）');
+  out.push('- この文書は `node tests/check-relativo.js --memo` で作り直す（手で直さない）。回数は、そのアプリの例文・問題に出てきた回数（活用形もまとめて数える）。「よく出した語」は2つのアプリの合計');
   out.push('- 「¡VAMOS!」の列：単語アプリ（vocab.html）のスペイン語デッキにもある語は ✓');
   out.push('- 新しいアプリを作ったら：使う語を単語帳に足し（ない語はチェックでエラーになる）、このスクリプトにそのアプリの文を集める処理と列を足す');
   out.push('- 次のアプリの語選びのめやす：**復習として使うなら「よく出した語」や 4級の語から**（このアプリで見慣れている）。**新しく足すなら、この表にない語**を選ぶと被らない');
@@ -145,10 +162,11 @@ if (process.argv.indexOf('--memo') >= 0) {
   out.push('| 印 | アプリ | 中身 |');
   out.push('|---|---|---|');
   out.push('| relativo | ¡QUE FUSIÓN!（relativo.html） | 関係詞（que・quien・前置詞＋冠詞＋que・donde・lo que・el que・cuyo）。西検4級 |');
+  out.push('| manda | ¡MANDA!（manda.html） | 命令表現（tú・usted・vosotros・ustedes の命令、不規則な8つ、代名詞をくっつける、「〜するな」）。西検4級 |');
   out.push('');
   out.push('## まとめ');
   out.push('');
-  const usedList = DICT.words.filter(e => used.has(e) && e.pos !== 'bad');
+  const usedList = DICT.words.filter(e => (used.has(e) || usedM.has(e)) && e.pos !== 'bad');
   const byLv = {};
   usedList.forEach(e => { byLv[e.lv] = (byLv[e.lv] || 0) + 1; });
   out.push('| 級 | 語数 |');
@@ -156,18 +174,18 @@ if (process.argv.indexOf('--memo') >= 0) {
   [5, 4, 3, 0].forEach(l => out.push('| ' + LV[l] + ' | ' + (byLv[l] || 0) + ' |'));
   out.push('| 合計 | ' + usedList.length + ' |');
   out.push('');
-  out.push('よく出した語（10回以上）：' + usedList.filter(e => e.lv !== 0 && used.get(e) >= 10).sort((a, b) => used.get(b) - used.get(a)).map(e => e.w + '（' + used.get(e) + '）').join('、'));
+  out.push('よく出した語（10回以上）：' + usedList.filter(e => e.lv !== 0 && tot(e) >= 10).sort((a, b) => tot(b) - tot(a)).map(e => e.w + '（' + tot(e) + '）').join('、'));
   out.push('');
   [5, 4, 3, 0].forEach(l => {
     const list = usedList.filter(e => e.lv === l).sort((a, b) => a.w.localeCompare(b.w, 'es'));
     if (!list.length) return;
     out.push('## ' + LV[l]);
     out.push('');
-    out.push('| 単語 | 意味 | 品詞 | 出てきた形 | relativo | ¡VAMOS! |');
-    out.push('|---|---|---|---|---|---|');
+    out.push('| 単語 | 意味 | 品詞 | 出てきた形 | relativo | manda | ¡VAMOS! |');
+    out.push('|---|---|---|---|---|---|---|');
     list.forEach(e => {
-      const forms = (e.f || []).filter(f => texts.some(t => tokens(t.es).indexOf(f.toLowerCase()) >= 0));
-      out.push('| ' + e.w + ' | ' + e.ja + ' | ' + (POS[e.pos] || e.pos || '') + ' | ' + forms.join(', ') + ' | ' + used.get(e) + ' | ' + (vamos.has(e.w.toLowerCase()) ? '✓' : '') + ' |');
+      const forms = (e.f || []).filter(f => texts.some(t => tokens(t.es).indexOf(f.toLowerCase()) >= 0) || mTexts.some(t => tokens(t).indexOf(f.toLowerCase()) >= 0));
+      out.push('| ' + e.w + ' | ' + e.ja + ' | ' + (POS[e.pos] || e.pos || '') + ' | ' + forms.join(', ') + ' | ' + (used.get(e) || '') + ' | ' + (usedM.get(e) || '') + ' | ' + (vamos.has(e.w.toLowerCase()) ? '✓' : '') + ' |');
     });
     out.push('');
   });

@@ -243,9 +243,110 @@
   W('molestar', 'イライラさせる・迷惑をかける', 'v', 3, 'molestó');
   W('importar', '大事である', 'v', 3, 'importa');
 
+  /* ---------- ¡MANDA!（命令表現 manda/）で足した語・形 ----------
+   *  命令の形も活用形として見出し語の下に入れる（F で既存の見出し語に形を足す） */
+  function F(w, f) { var e = words.filter(function (x) { return x.w === w; })[0]; if (!e) throw new Error('F: ' + w); e.f = e.f.concat(f.split(/\s*,\s*/)); }
+  W('yo', '私は', 'pron', 0);
+  W('tú', '君は（仲よしの相手）', 'pron', 0);
+  W('usted', 'あなた（ていねいに話す相手）', 'pron', 0);
+  W('nosotros', '私たち', 'pron', 0);
+  W('vosotros', '君たち（仲よしの何人もの相手・スペイン）', 'pron', 0);
+  W('ustedes', 'あなたたち（ていねい・中南米では仲よしにも）', 'pron', 0);
+  W('se', '自分を・自分に（再帰）', 'pron', 0);
+  W('conmigo', '私といっしょに', 'pron', 0);
+  W('y', 'そして・〜と', 'conj', 0);
+  W('para', '〜のために・〜あての', 'prep', 0);
+  W('ya', 'もう', 'adv', 5);
+  W('favor', '（por favor で）お願い', 'phr', 5);
+  W('pronto', 'すぐに・近いうちに', 'adv', 4);
+  W('ojo', '目', 'n', 5, 'ojos');
+  W('noche', '夜', 'n', 5);
+  W('sol', '太陽', 'n', 5);
+  W('gato', 'ねこ', 'n', 5);
+  W('cuidado', '注意（tener cuidado＝気をつける）', 'n', 4);
+  W('miedo', '恐怖（tener miedo＝こわがる）', 'n', 4);
+  W('castillo', '城', 'n', 4);
+  W('volcán', '火山', 'n', 4);
+  W('arcoíris', '虹', 'n', 4);
+  W('pájaro', '鳥', 'n', 4, 'pájaros');
+  W('pez', '魚（生きている魚）', 'n', 4);
+  W('conejo', 'うさぎ', 'n', 4);
+  W('oso', 'くま', 'n', 4);
+  W('caballo', '馬', 'n', 4);
+  W('vaca', '牛', 'n', 4);
+  W('elefante', 'ぞう', 'n', 4);
+  W('león', 'ライオン', 'n', 4);
+  W('mono', 'さる', 'n', 4);
+  W('mariposa', 'ちょう', 'n', 4);
+  W('cerdo', 'ぶた', 'n', 4);
+  W('ratón', 'ねずみ', 'n', 4);
+  W('real', '王の・本物の（pavo real＝くじゃく）', 'adj', 4);
+  W('gallo', 'おんどり', 'n', 3);
+  W('loro', 'オウム', 'n', 3);
+  W('unicornio', 'ユニコーン', 'n', 3);
+  W('oveja', 'ひつじ', 'n', 3);
+  W('tortuga', 'かめ', 'n', 3);
+  W('zorro', 'きつね', 'n', 3);
+  W('hada', '妖精', 'n', 3);
+  W('abeja', 'みつばち', 'n', 3);
+  W('cangrejo', 'かに', 'n', 3);
+  W('águila', 'わし', 'n', 3);
+  W('dragón', 'ドラゴン', 'n', 3);
+  W('pulpo', 'タコ', 'n', 3);
+  W('delfín', 'イルカ', 'n', 3);
+  W('ballena', 'くじら', 'n', 3);
+  W('tiburón', 'サメ', 'n', 3);
+  W('ciervo', 'しか', 'n', 3);
+  W('pavo', '七面鳥（pavo real＝くじゃく）', 'n', 3);
+  W('pingüino', 'ペンギン', 'n', 3, 'pingüinos');
+  W('camello', 'らくだ', 'n', 3, 'camellos');
+  W('flamenco', 'フラミンゴ', 'n', 3, 'flamencos');
+  W('cisne', 'はくちょう', 'n', 3, 'cisnes');
+  W('genio', '精霊・ランプの魔人', 'n', 3, 'genios');
+  W('ardilla', 'りす', 'n', 3, 'ardillas');
+  W('rana', 'かえる', 'n', 3, 'ranas');
+  W('lobo', 'おおかみ', 'n', 3, 'lobos');
+  W('pollito', 'ひよこ', 'n', 3);
+  W('panda', 'パンダ', 'n', 3);
+  W('mariquita', 'てんとうむし', 'n', 3);
+  W('erizo', 'はりねずみ', 'n', 3);
+  W('búho', 'ふくろう', 'n', 3);
+  W('poner', '置く（poner la mesa＝食卓の用意をする）', 'v', 5, 'pon, pone, pones, pongo, ponga');
+  W('cerrar', '閉める', 'v', 4, 'cierras, cierra, cierre, cierro');
+  W('volver', 'もどる・帰る', 'v', 4, 'vuelvo, vuelva, vuelve');
+  W('levantarse', '起きる（levantar＝起こす ＋ se＝自分を）', 'v', 4, 'levanta, levántate');
+  W('sentarse', 'すわる（sentar＝すわらせる ＋ se＝自分を）', 'v', 4, 'siéntese, siéntate, siente, sienta');
+  F('hablar', 'hablas, hable, hablen, hablad, hables, habláis');
+  F('comer', 'comes, come, como, coma, coman, comed, comas, comen, cómelo, cómela, cómalo');
+  F('abrir', 'abres, abre, abra, abras, abrid, ábrela');
+  F('escuchar', 'escucha, escucho, escuche, escuchad');
+  F('dormir', 'duermo, duermes, duerme, dormimos');
+  F('jugar', 'juegas, juega');
+  F('venir', 'vienes, viene, ven, vengo, venga, vengan, venid');
+  F('tener', 'ten, tenga, tengas');
+  F('salir', 'sal, sales, salgo, salga, salgas, salgan');
+  F('hacer', 'haz, hace, hago, haga, hagas');
+  F('decir', 'di, digo, diga, dime');
+  F('ir', 've, vas, vaya, vayan, van');
+  F('ser', 'soy, sea, sean');
+  F('estar', 'estoy, esté, estén');
+  F('dar', 'doy, dé, da, den');
+  F('pasar', 'pasa, pase, pasas, pasen, pasan, pases');
+  F('bailar', 'bailad, bailas');
+  F('cantar', 'canto, cantas, cante, cantad, cantan');
+  F('leer', 'lees, lee, léelo, léela');
+  F('pensar', 'piensa, piensas');
+  F('empezar', 'empieza, empiezas');
+  F('contar', 'cuentas, cuenta');
+  F('ayudar', 'ayuda, ayúdame');
+  F('señor', 'señores');
+  F('chico', 'chicos');
+  /* 命令をまちがえて作った形（ひっかけの選択肢・まちがい探し用） */
+  W('dorme', '（この形はない。duerme が正しい）', 'bad', 0, 'jugas, cerra, cerre, tene, tenes, volva, vaye, empeza, conta, comela, comelo, levantate, díme, leelo, leela, ayudame, habl, er');
+
   window.ES_WORDS = {
     words: words,
     /* 人名・地名（単語として数えない・バルーンなし） */
-    names: ['Ana', 'Pablo', 'Carlos', 'Madrid', 'Sevilla', 'Barcelona', 'Japón', 'Tokio', 'Kioto', 'Osaka', 'Perú', 'Chile', 'México', 'París', 'Corea']
+    names: ['Ana', 'Pablo', 'Carlos', 'Madrid', 'Sevilla', 'Barcelona', 'Japón', 'Tokio', 'Kioto', 'Osaka', 'Perú', 'Chile', 'México', 'París', 'Corea', 'Pepe', 'Lola', 'Tomás', 'Marina']
   };
 })();
