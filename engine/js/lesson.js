@@ -372,10 +372,21 @@
   }
   function feedback(kind, html) {
     var fb = $('#lsFb');
-    if (!kind) { fb.className = 'ls-fb'; fb.innerHTML = ''; return; }
+    if (!kind) { fb.className = 'ls-fb'; fb.innerHTML = ''; var sc = $('#scr-lesson'); if (sc) sc.style.paddingBottom = ''; return; }
     fb.className = 'ls-fb show ' + kind;
     fb.innerHTML = html;
     gsap.fromTo(fb, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'back.out(2)' });
+    clearFoot();
+  }
+  /* 下に固定した判定（自分の答え・正解）が本文を隠さないように、その高さぶんの余白を取り、本文の終わりを判定の上まで上げる */
+  function clearFoot() {
+    var foot = $('.ls-foot'), scr = $('#scr-lesson'), st = $('#lsStage .ls-step');
+    if (!foot || !scr) return;
+    var h = foot.getBoundingClientRect().height;
+    scr.style.paddingBottom = Math.max(150, Math.ceil(h) + 16) + 'px';
+    if (!st) return;
+    var over = st.getBoundingClientRect().bottom - (window.innerHeight - h) + 8;
+    if (over > 0) window.scrollBy({ top: over, behavior: 'smooth' });
   }
   function gain(n, x, y) {
     P.xp += n;
@@ -420,14 +431,19 @@
     document.body.classList.remove('zone');
     FX3D.fever(false);
   }
-  function missed(msg) {
+  /* まちがえたとき：自分の答え（と正解）をならべる行。right を省くと「あなた」の行だけ（やり直す問題で正解を先に見せない） */
+  function cmpRows(you, right) {
+    return '<div class="cmp"><div class="cmp-row ng"><i>✕ あなた</i><span>' + you + '</span></div>' +
+      (right != null ? '<div class="cmp-row ok"><i>○ 正解</i><span>' + right + '</span></div>' : '') + '</div>';
+  }
+  function missed(msg, you) {
     zoneOut();
     P.combo = 0;
     if (P.first[P.i] === undefined) P.first[P.i] = false;
     Sfx.wrong();
     FX.shake(5);
     setMood('sad');
-    feedback('ng', '<b>おしい！</b><p>' + fmtG(msg || 'もう一度考えてみよう。') + '</p>');
+    feedback('ng', '<b>おしい！</b>' + (you != null ? cmpRows(you) : '') + '<p>' + fmtG(msg || 'もう一度考えてみよう。') + '</p>');
   }
   function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
 
@@ -610,7 +626,8 @@
         solved(ansEl, tries === 1, s.ok);
       } else {
         $$('.chipb', ansEl).forEach(function (b, k) { if (bad[k]) b.classList.add('bad'); else b.classList.add('ok'); });
-        missed(s.hint || '赤い項目の位置がちがうよ。赤をタップして戻し、並べ直そう。');
+        missed(s.hint || '赤い項目の位置がちがうよ。赤をタップして戻し、並べ直そう。',
+          ans.map(function (v, k) { return bad[k] ? '<b class="wrong">' + fmt(s.items[v]) + '</b>' : fmt(s.items[v]); }).join(' → '));
         setTimeout(function () { /* 間違った項目だけプールへ戻す */
           var keep = []; ans.forEach(function (v, k) { if (!bad[k] && keep.length === k) keep.push(v); });
           ans.slice(keep.length).forEach(function (v) { pool.push(v); });
@@ -653,7 +670,7 @@
           miss++;
           b.classList.add('bad'); setTimeout(function () { b.classList.remove('bad'); }, 500);
           gsap.fromTo(b, { x: -8 }, { x: 0, duration: 0.4, ease: 'elastic.out(1.5,0.3)' });
-          missed(s.hint || 'それより前に起きた出来事が残っているよ。');
+          missed(s.hint || 'それより前に起きた出来事が残っているよ。', '<b class="wrong">' + fmt(it.t) + '</b> を次にした');
         }
       });
     });
@@ -888,7 +905,7 @@
           miss++;
           c.classList.add('bad'); setTimeout(function () { c.classList.remove('bad'); }, 500);
           gsap.fromTo(c, { x: -8 }, { x: 0, duration: 0.4, ease: 'elastic.out(1.5,0.3)' });
-          missed((s.hints && s.hints[act]) || s.hint || 'その札はこの空欄には入らないよ。');
+          missed((s.hints && s.hints[act]) || s.hint || 'その札はこの空欄には入らないよ。', '<b class="wrong">' + fmt(v) + '</b> をこの空欄に');
         }
       });
     });
@@ -980,7 +997,7 @@
           miss++;
           c.classList.add('bad'); setTimeout(function () { c.classList.remove('bad'); }, 500);
           gsap.fromTo(c, { x: -8 }, { x: 0, duration: 0.4, ease: 'elastic.out(1.5,0.3)' });
-          missed(s.hint || 'その札は、ここではないよ。');
+          missed(s.hint || 'その札は、ここではないよ。', (k ? s.ans.slice(0, k).map(tex).join(' ') + ' ' : '') + '<b class="wrong">' + tex(c.dataset.v) + '</b>');
         }
       });
     });
@@ -1147,7 +1164,7 @@
           miss++;
           b.classList.add('bad'); setTimeout(function () { b.classList.remove('bad'); }, 500);
           gsap.fromTo(b, { x: -8 }, { x: 0, duration: 0.4, ease: 'elastic.out(1.5,0.3)' });
-          Sfx.wrong();
+          missed(s.hint || 'そのペアはちがうよ。もう一度！', fmt(s.pairs[sel][0]) + ' ⇄ <b class="wrong">' + fmt(s.pairs[+b.dataset.i][1]) + '</b>');
         }
       });
     });
@@ -1169,6 +1186,7 @@
       var v = normNum(inp.value);
       if (isNaN(v)) { gsap.fromTo(inp, { x: -6 }, { x: 0, duration: 0.3 }); return; }
       tries++;
+      var you = '<b class="wrong">' + esc(inp.value.trim()) + esc(s.unit || '') + '</b>';
       if (Math.abs(v - s.answer) <= (s.tol || 1e-9)) {
         inp.classList.add('ok'); inp.disabled = true; $('.num-check', body).style.display = 'none';
         solved(inp, tries === 1, s.ok || sol.join('\n'));
@@ -1177,8 +1195,8 @@
         if (tries >= 2 && sol.length) {
           $('.num-solve', body).innerHTML = '<div class="solve"><b>解き方</b><ol>' + sol.map(function (x) { return '<li>' + fmt(x) + '</li>'; }).join('') + '</ol></div>';
           gsap.from('.solve li', { opacity: 0, x: -20, stagger: 0.15 });
-          missed('解き方を見て、もう一度入力してみよう。答えは **' + s.answer + (s.unit || '') + '**。');
-        } else missed(s.hint || '計算をもう一度たしかめよう。');
+          missed('解き方を見て、もう一度入力してみよう。答えは **' + s.answer + (s.unit || '') + '**。', you);
+        } else missed(s.hint || '計算をもう一度たしかめよう。', you);
       }
     }
     $('.num-check', body).addEventListener('click', check);
@@ -1418,7 +1436,7 @@
   }
 
   window.Lesson = {
-    renderMap: renderMap, bossPreview: bossPreview, start: start, stage: stage, tex: tex, mviz: mviz, math: withMath, fmtG: fmtG, next: nextLesson, isDone: isDone, all: allLessons, no: lessonNo, label: label, fmt: fmt, bind: bind,
+    renderMap: renderMap, bossPreview: bossPreview, start: start, stage: stage, tex: tex, mviz: mviz, math: withMath, fmtG: fmtG, next: nextLesson, isDone: isDone, all: allLessons, no: lessonNo, label: label, fmt: fmt, bind: bind, cmpRows: cmpRows,
     active: function () { return !!P; }
   };
 })();

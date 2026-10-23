@@ -539,6 +539,7 @@
     timerTween = gsap.fromTo('#qTimer', { width: '0%' }, { width: '100%', duration: limit, ease: 'none' });
     session.t0 = performance.now();
   }
+  function correctOf(q) { return q.a != null ? q.a : 0; }
   /* 擬似言語のかんたんなシンタックスハイライト */
   function answer(k, ev) {
     if (!session || session.answered) return;
@@ -647,6 +648,9 @@
       gsap.to(o, { v: ok ? 100 : 0, duration: 1.1, delay: 0.5, ease: 'power3.out', onUpdate: function () { bar.style.width = o.v + '%'; val.textContent = Math.round(o.v) + '%'; } });
       if (rescue) gsap.fromTo($('.mem-stamp', mem), { scale: 3, opacity: 0, rotate: -25 }, { scale: 1, opacity: 1, rotate: -8, duration: 0.45, delay: 1.2, ease: 'back.out(3)', onStart: function () { Sfx.coin(); } });
     } else mem.style.display = 'none';
+    /* まちがえたら、自分の答えと正解をならべる（選択肢が画面の外に流れても見比べられる） */
+    var cmp = $('#fbCmp');
+    if (cmp) cmp.innerHTML = ok ? '' : Lesson.cmpRows(qfmt(q.o[session.order[k]]), qfmt(q.o[correctOf(q)]));
     $('#fbExp').innerHTML = C.math ? Lesson.fmtG(q.e || '') : qfmt(q.e || '');
     gsap.to(fb, { height: 'auto', opacity: 1, duration: 0.45, ease: 'power3.out', delay: ok ? 0.1 : 0.25 });
     setTimeout(function () {

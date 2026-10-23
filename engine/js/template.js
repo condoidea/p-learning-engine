@@ -131,6 +131,7 @@ window.LE_TEMPLATE = `
             <span class="fb-next" id="fbNext"></span>
           </div>
           <div class="mem" id="fbMem"></div>
+          <div class="fb-cmp" id="fbCmp"></div>
           <p class="fb-exp" id="fbExp"></p>
           <div class="fb-btns">
             <button class="btn-next" id="btnNext">次へ <kbd>Enter</kbd></button>

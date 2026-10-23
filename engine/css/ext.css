@@ -358,3 +358,16 @@ html { overflow-x: hidden; }
 .dr-how b { color: var(--gold); }
 .dr-how.open > b { color: var(--gold); }
 @media (max-width: 420px) { .dr-o { grid-template-columns: 1fr; } }
+
+/* ---------- まちがえたとき：自分の答えと正解をならべる（問題・レッスン共通） ---------- */
+.cmp { display: grid; gap: 4px; margin: 6px 0; }
+.cmp:empty { display: none; }
+.cmp-row { display: flex; gap: 8px; align-items: baseline; padding: 6px 10px; border-radius: 10px; font-size: 14.5px; line-height: 1.6; overflow-wrap: anywhere; }
+.cmp-row i { flex: none; font-style: normal; font-weight: 800; font-size: 12px; min-width: 4.4em; }
+.cmp-row.ng { background: color-mix(in srgb, var(--ng) 13%, transparent); }
+.cmp-row.ng i { color: var(--ng); }
+.cmp-row.ok { background: color-mix(in srgb, var(--ok) 12%, transparent); }
+.cmp-row.ok i { color: var(--ok); }
+.cmp-row > span { min-width: 0; }
+.cmp b.wrong, .cmp-row.ng > span > b.wrong { font: inherit; font-weight: 800; color: var(--ng); text-decoration: underline wavy var(--ng); text-underline-offset: 3px; }
+.feedback .cmp { margin: 10px 0 0; }
