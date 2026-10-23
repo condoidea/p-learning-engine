@@ -311,3 +311,16 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .bars { --bh: 56px; }
   .tes, .nes, .qes, .tles { font-size: 17px; }
 }
+
+/* ---------- まちがえたとき：自分の答え（と正解）をならべる ---------- */
+.cmp { display: grid; gap: 4px; margin: 8px 0; text-align: left; }
+.cmp-row { display: flex; gap: 8px; align-items: baseline; padding: 5px 10px; border-left: 3px solid; font-size: 14.5px; line-height: 1.6; overflow-wrap: anywhere; }
+.cmp-row i { flex: none; font-style: normal; font-weight: 700; font-size: 12px; min-width: 4.2em; }
+.cmp-row.ng { border-color: var(--red); background: rgba(163, 54, 42, .08); } .cmp-row.ng i { color: var(--red); }
+.cmp-row.ok { border-color: var(--green); background: rgba(77, 107, 53, .1); } .cmp-row.ok i { color: var(--green); }
+.cmp-row .es { font-family: var(--es); font-size: 16px; }
+.cmp b.wrong { color: var(--red); text-decoration: underline wavy var(--red); text-underline-offset: 3px; }
+.cmp b.fix { color: var(--green); text-decoration: underline var(--green); text-underline-offset: 3px; }
+.cl.tried { border-style: dashed; color: var(--ink2); }
+.cl.tried::before { content: '✕ '; color: var(--red); font-weight: 700; }
+.cmp-row span > .es { display: block; }

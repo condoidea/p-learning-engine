@@ -219,6 +219,28 @@
     }
   }
 
+  /* ----- まちがえたとき：自分の答え（と正解）をならべる ----- */
+  /* 法廷はやり直して正解を見つける形なので、ふつうは「あなた」の行だけ。正解も見せるときは right を渡す */
+  function cmpRows(you, right) {
+    return '<div class="cmp"><div class="cmp-row ng"><i>✕ あなた</i><span>' + you + '</span></div>' +
+      (right != null ? '<div class="cmp-row ok"><i>○ 正解</i><span>' + right + '</span></div>' : '') + '</div>';
+  }
+  /* 2つの文を語ごとにくらべ、共通でない語に印をつける（最長共通部分列） */
+  function wordDiff(a, b) {
+    var x = a.split(' '), y = b.split(' '), n = x.length, m = y.length, L = [], i, j;
+    for (i = 0; i <= n; i++) { L.push([]); for (j = 0; j <= m; j++) L[i][j] = 0; }
+    for (i = n - 1; i >= 0; i--) for (j = m - 1; j >= 0; j--) L[i][j] = norm(x[i]) === norm(y[j]) ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+    var kx = {}, ky = {};
+    for (i = 0, j = 0; i < n && j < m;) {
+      if (norm(x[i]) === norm(y[j])) { kx[i] = ky[j] = 1; i++; j++; } else if (L[i + 1][j] >= L[i][j + 1]) i++; else j++;
+    }
+    return {
+      a: x.map(function (w, k) { return kx[k] ? esc(w) : '<b class="wrong">' + esc(w) + '</b>'; }).join(' '),
+      b: y.map(function (w, k) { return ky[k] ? esc(w) : '<b class="fix">' + esc(w) + '</b>'; }).join(' ')
+    };
+  }
+  function evName(k) { var e = CASE && CASE.evidence[k]; return e ? e.e + ' ' + esc(e.n) : esc(k); }
+
   /* ----- ステップ ----- */
   var H = {};
   async function run(steps) { for (var i = 0; i < steps.length; i++) { if (X.quit) throw 'quit'; await H[steps[i].t](steps[i]); } }
@@ -402,10 +424,10 @@
     X.witness = st.who; drawStage(); setSpeaker(st.who);
     $('#talk').hidden = true; $('#ref').innerHTML = '';
     await slam('〜 証言 〜', 'banner');
-    var i = 0, wrong = 0, c = who(st.who), goal = st.lines.findIndex(function (l) { return l.ok; });
+    var i = 0, wrong = 0, c = who(st.who), goal = st.lines.findIndex(function (l) { return l.ok; }), tried = '';
     function draw() {
       var L = st.lines[i];
-      act().innerHTML = '<div class="testi"><div class="th">〜 ' + esc(c.e + ' ' + c.n) + '「' + esc(st.title) + '」 〜</div>' +
+      act().innerHTML = '<div class="testi"><div class="th">〜 ' + esc(c.e + ' ' + c.n) + '「' + esc(st.title) + '」 〜</div>' + tried +
         '<div class="tl"><span class="tno">' + (i + 1) + ' / ' + st.lines.length + '</span><p class="tles">' + es(L.es) + sayBtn(L.es) + '</p>' +
         '<p class="tlja' + (S.settings.ja ? ' open' : '') + '" role="button">' + esc(L.ja) + '</p></div></div>';
       $('#act .tlja').onclick = function (e) { e.currentTarget.classList.add('open'); };
@@ -439,6 +461,7 @@
       tray('');
       if (L.ok && L.ok.indexOf(k) >= 0) { clearAct(); await run(st.after || []); return; }
       wrong++;
+      tried = cmpRows('証言 ' + (i + 1) + ' に <b class="wrong">' + evName(k) + '</b> をつきつけた');
       await run([{ t: 'say', who: 'pavon', es: '¡Eso no tiene nada que ver!', x: 'その証拠は、この証言と関係ありませんな！' }]);
       await miss();
       if (wrong >= 2 && st.hint) await run([{ t: 'say', who: 'mimi', x: st.hint }]);
@@ -449,9 +472,9 @@
   /* 1つの主張に証拠をつきつける */
   H.present = async function (st) {
     $('#talk').hidden = true;
-    var wrong = 0;
+    var wrong = 0, tried = '';
     while (true) {
-      act().innerHTML = '<div class="q"><p class="qq">' + ja(st.q) + '</p></div>';
+      act().innerHTML = '<div class="q"><p class="qq">' + ja(st.q) + '</p>' + tried + '</div>';
       tray('<button class="btn obj wide" id="pObj">📁 ¡Protesto!<small>証拠をつきつける</small></button>');
       scrollAct();
       var k = await wait(function (done) {
@@ -462,6 +485,7 @@
       clearAct();
       if (st.ok.indexOf(k) >= 0) { await run(st.after || []); return; }
       wrong++;
+      tried = cmpRows('<b class="wrong">' + evName(k) + '</b> をつきつけた');
       await run([{ t: 'say', who: 'juez', x: 'ふむ…その証拠で…\nなにが言いたいのかね…？' }]);
       await miss();
       if (wrong >= 2 && st.hint) await run([{ t: 'say', who: 'mimi', x: st.hint }]);
@@ -472,12 +496,13 @@
   H.contra = async function (st) {
     if (st.who) { X.witness = st.who; drawStage(); setSpeaker(st.who); }
     $('#talk').hidden = true;
-    var c = who(st.who);
+    var c = who(st.who), last = [];
     while (true) {
       var picked = [];
       var ok = await wait(function (done) {
-        act().innerHTML = '<div class="testi"><div class="th">〜 ' + esc(c.e + ' ' + c.n) + '「' + esc(st.title || '証言') + '」 〜</div><p class="guide">ムジュンする <b>2つ</b> の証言をタップ</p>' +
-          st.lines.map(function (L, i) { return '<button class="cl" data-i="' + i + '"><span class="tles">' + es(L.es) + '</span><span class="tlja' + (S.settings.ja ? ' open' : '') + '">' + esc(L.ja) + '</span></button>'; }).join('') + '</div>';
+        act().innerHTML = '<div class="testi"><div class="th">〜 ' + esc(c.e + ' ' + c.n) + '「' + esc(st.title || '証言') + '」 〜</div>' +
+          (last.length ? cmpRows('<b class="wrong">✕ の2つ</b>はムジュンしていない') : '') + '<p class="guide">ムジュンする <b>2つ</b> の証言をタップ</p>' +
+          st.lines.map(function (L, i) { return '<button class="cl' + (last.indexOf(i) >= 0 ? ' tried' : '') + '" data-i="' + i + '"><span class="tles">' + es(L.es) + '</span><span class="tlja' + (S.settings.ja ? ' open' : '') + '">' + esc(L.ja) + '</span></button>'; }).join('') + '</div>';
         tray('<p class="hint2">訳は、文の下をタップすると見えます</p>');
         $$('#act .cl').forEach(function (b) {
           b.onclick = function (e) {
@@ -493,6 +518,7 @@
         cur.solve = function () { picked = []; done(true); };
       });
       if (ok) { await slam('¡Contradicción!'); clearAct(); await run(st.after || []); return; }
+      last = picked.slice();
       await sleep(250);
       await miss();
       if (st.hint) await run([{ t: 'say', who: 'mimi', x: st.hint }]);
@@ -504,11 +530,11 @@
   H.stop = async function (st) {
     if (st.who) setSpeaker(st.who);
     $('#talk').hidden = true;
-    var c = who(st.who);
+    var c = who(st.who), tried = '';
     while (true) {
       var i = 0, timer = null;
       var at = await wait(function (done) {
-        act().innerHTML = '<div class="testi roll"><div class="th">〜 ' + esc(c.e + ' ' + c.n) + '「' + esc(st.title || '主張') + '」 〜</div><div class="tl"><span class="tno"></span><p class="tles"></p><p class="tlja"></p></div><div class="rbar"><i></i></div></div>';
+        act().innerHTML = '<div class="testi roll"><div class="th">〜 ' + esc(c.e + ' ' + c.n) + '「' + esc(st.title || '主張') + '」 〜</div>' + tried + '<div class="tl"><span class="tno"></span><p class="tles"></p><p class="tlja"></p></div><div class="rbar"><i></i></div></div>';
         tray('<p class="hint2">ムジュンの行が出たら止めよう</p><button class="btn press wide" id="sStop">¡Un momento!<small>ここだ！</small></button>');
         function tick() {
           var L = st.lines[i];
@@ -527,6 +553,7 @@
       });
       clearInterval(timer);
       if (at === st.a) { await slam('¡Un momento!', 'press'); clearAct(); await run(st.after || []); return; }
+      tried = cmpRows('<b class="wrong">' + (at + 1) + '行め</b>「' + es(st.lines[at].es) + '」で止めた');
       clearAct();
       await run([{ t: 'say', who: st.who || 'pavon', x: 'おや？ その行に…\nおかしなところはありませんが？' }]);
       await miss();
@@ -560,10 +587,11 @@
   /* 順に並べる（タップした順） */
   H.order = async function (st) {
     $('#talk').hidden = true;
+    var tried = '';
     while (true) {
       var seq = [];
       var ok = await wait(function (done) {
-        act().innerHTML = '<div class="q"><p class="qq">' + ja(st.q) + '</p><div class="seq"></div></div>';
+        act().innerHTML = '<div class="q"><p class="qq">' + ja(st.q) + '</p>' + tried + '<div class="seq"></div></div>';
         tray('<div class="opts">' + st.items.map(function (it) { return '<button class="btn opt it" data-id="' + it.id + '"><span class="em">' + it.e + '</span>' + esc(it.n) + '</button>'; }).join('') + '</div>');
         function paint() { $('#act .seq').innerHTML = st.items.map(function (_, k) { var id = seq[k], it = st.items.filter(function (x) { return x.id === id; })[0]; return '<span class="slot">' + (k + 1) + ' ' + (it ? it.e + ' ' + esc(it.n) : '') + '</span>'; }).join(''); }
         paint();
@@ -577,6 +605,7 @@
         scrollAct();
       });
       if (ok) { Snd.ok(); await sleep(400); clearAct(); if (st.r) await run(st.r); return; }
+      tried = cmpRows(seq.map(function (id, k) { var it = st.items.filter(function (x) { return x.id === id; })[0]; var t = it.e + ' ' + esc(it.n); return id === st.a[k] ? t : '<b class="wrong">' + t + '</b>'; }).join(' → '));
       await miss();
       if (st.ng) await run([{ t: 'say', who: 'mimi', x: st.ng }]);
       $('#talk').hidden = true;
@@ -587,11 +616,11 @@
   function tilesOf(s) { return plain(s).replace(/[.!?¡¿,]/g, '').split(/\s+/).filter(Boolean); }
   H.build = async function (st) {
     $('#talk').hidden = true;
-    var goal = tilesOf(st.es), pool = shuffle(goal.concat(st.x || []).map(function (w, i) { return { w: w, i: i }; }));
+    var goal = tilesOf(st.es), pool = shuffle(goal.concat(st.x || []).map(function (w, i) { return { w: w, i: i }; })), tried = '';
     while (true) {
       var line = [];
       var ok = await wait(function (done) {
-        act().innerHTML = '<div class="q"><p class="qq">' + ja(st.q) + '</p><div class="line"></div></div>';
+        act().innerHTML = '<div class="q"><p class="qq">' + ja(st.q) + '</p>' + tried + '<div class="line"></div></div>';
         tray('<div class="tiles">' + pool.map(function (p) { return '<button class="btn tile" data-i="' + p.i + '">' + esc(p.w) + '</button>'; }).join('') + '</div>');
         function paint() {
           var L = $('#act .line');
@@ -616,6 +645,7 @@
         return;
       }
       $('#act .line').classList.add('bad');
+      tried = cmpRows('<span class="es">' + wordDiff(line.map(function (p) { return p.w; }).join(' '), goal.join(' ')).a + '</span>');
       await sleep(350);
       await miss();
     }
@@ -802,6 +832,12 @@
     $('#dT').onclick = function () { answer(true); };
     $('#dF').onclick = function () { answer(false); };
   }
+  /* ドリルでまちがえたとき：自分の判断と正解をならべる（ウソの証言は、グラフどおりの文とちがう語に色） */
+  function drillCmp(q) {
+    if (q.ok) return cmpRows('「<b class="wrong">ウソ</b>」と判断', '「<b class="fix">本当</b>」。グラフどおりの証言');
+    var d = wordDiff(plain(q.es), plain(q.fix));
+    return cmpRows('「<b class="wrong">本当</b>」と判断：<span class="es">' + d.a + '</span>', '「<b class="fix">ウソ</b>」。グラフどおりなら：<span class="es">' + d.b + '</span>');
+  }
   async function answer(v) {
     var q = DR.q;
     $$('#dTray .btn').forEach(function (b) { b.disabled = true; });
@@ -815,8 +851,7 @@
     }
     DR.combo = 0; DR.paused = true; DR.miss.push(q);
     Snd.ng();
-    $('#dBoard').insertAdjacentHTML('beforeend', '<div class="dfix"><b>' + (q.ok ? 'この証言は本当でした' : 'この証言はウソでした') + '</b>' +
-      (q.ok ? '<p class="nja">' + esc(q.ja) + '</p>' : '<p>グラフどおりなら：</p><p class="tles">' + es(q.fix) + '</p><p class="nja">' + esc(q.fixJa) + '</p>') + '</div>');
+    $('#dBoard').insertAdjacentHTML('beforeend', '<div class="dfix">' + drillCmp(q) + (q.ok ? '<p class="nja">' + esc(q.ja) + '</p>' : '<p class="nja">' + esc(q.fixJa) + '</p>') + '</div>');
     $('#dBoard').scrollTop = 1e4;
     $('#dTray').innerHTML = '<button class="btn main wide" id="dN">つぎの証言 ▶</button>';
     $('#dN').onclick = function () { DR.paused = false; nextDrill(); };
@@ -827,7 +862,7 @@
     var best = DR.score > S.drillBest; if (best) { S.drillBest = DR.score; save(); }
     var d = $('#done');
     d.innerHTML = '<div class="closed"><p class="cno">証言台ドリル</p><h2>' + DR.score + ' 点</h2>' + (best ? '<p class="fin">✨ 最高記録！</p>' : '<p class="ces">最高 ' + S.drillBest + ' 点</p>') +
-      (DR.miss.length ? '<h4>見のがした証言</h4>' + DR.miss.map(function (q) { return '<div class="nr"><p class="nes">' + es(q.es) + '</p><p class="nja">' + (q.ok ? '本当だった' : 'ウソ → ' + es(q.fix)) + '</p></div>'; }).join('') : '') +
+      (DR.miss.length ? '<h4>見のがした証言</h4>' + DR.miss.map(function (q) { return '<div class="nr">' + drillCmp(q) + '</div>'; }).join('') : '') +
       '<button class="btn main wide" id="drAgain">もう一度</button><button class="btn sub wide" id="drHome">表紙へもどる</button></div>';
     DR = null;
     show('done');
