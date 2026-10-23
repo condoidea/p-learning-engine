@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<script src="shared/cloud.js?v=1"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>LEARNING ENGINE｜コース選択</title>
 <meta name="theme-color" content="#05060f">
@@ -83,6 +84,12 @@
   .v-list .pct { display: block; flex: none; min-width: 3em; text-align: right; font-family: var(--f-latin); font-weight: 700; font-size: 14px; color: var(--c1); }
   .v-list .del, .v-banner .del { position: static; flex: none; width: 26px; height: 26px; font-size: 11px; }
   .v-banner .del { order: 1; }
+
+  /* クラウド保存（設定は cloud.html） */
+  .cloud-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 28px; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--glass); color: var(--muted); font-size: 13px; text-decoration: none; }
+  .cloud-link i { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .cloud-link i.on { background: var(--ok); }
+  .cloud-link i.ng { background: var(--ng); }
 </style>
 </head>
 <body>
@@ -108,6 +115,7 @@
     </div>
   </div>
   <div class="grid" id="grid"></div>
+  <a class="cloud-link" href="cloud.html"><i id="cloudDot"></i>クラウド保存：<span id="cloudSt">オフ</span></a>
 </div>
 
 <script src="courses/registry.js?v=20"></script>
@@ -182,6 +190,15 @@
     var b = e.target.closest('[data-view]');
     if (b && b.getAttribute('aria-pressed') !== 'true') setView(b.dataset.view, true);
   });
+
+  /* クラウド保存の状態 */
+  if (window.LECloud) {
+    var cs = LECloud.state();
+    if (cs.linked && !cs.broken) {
+      document.getElementById('cloudSt').textContent = cs.err ? '同期できていません' : 'オン（' + cs.email + '）';
+      document.getElementById('cloudDot').className = cs.err ? 'ng' : 'on';
+    } else if (cs.broken) document.getElementById('cloudSt').textContent = 'ログインし直してください';
+  }
 
   if (window.gsap) {
     gsap.from('.hub-head > *', { y: -20, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'expo.out' });
