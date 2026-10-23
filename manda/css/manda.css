@@ -566,3 +566,20 @@ details p { margin: 6px 0 0; padding: 8px 10px; border-radius: 12px; background:
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .sp.new { opacity: 1; }
 }
+
+/* ---------- まちがえたとき：自分の答えと正解をくらべる ---------- */
+.cmp { margin: 6px 0; display: grid; gap: 4px; }
+.cmp-row { position: relative; display: flex; gap: 8px; align-items: baseline; padding: 6px 10px; border-radius: 12px; font-size: 14.5px; line-height: 1.6; overflow-wrap: anywhere; }
+.cmp-row i { flex: none; font-style: normal; font-weight: 800; font-size: 12px; min-width: 4.2em; }
+.cmp-row.ng { background: rgba(255, 92, 108, .13); } .cmp-row.ng i { color: var(--ng); }
+.cmp-row.ok { background: rgba(93, 255, 164, .1); } .cmp-row.ok i { color: var(--ok); }
+.cmp-row span.es { font-size: 16px; font-weight: 700; }
+.cmp b.wrong { color: var(--ng); text-decoration: underline wavy var(--ng); text-underline-offset: 3px; }
+.cmp b.fix { color: var(--ok); text-decoration: underline var(--ok); text-underline-offset: 3px; }
+.cmp-row.has-say { padding-right: 46px; }
+.cmp-row .say { top: 50%; right: 6px; transform: translateY(-50%); }
+.misses { margin: 12px auto 0; max-width: 420px; text-align: left; }
+.misses summary { padding: 10px 12px; border-radius: 14px; background: var(--panel); color: var(--cmd); font-weight: 700; }
+.miss { position: relative; margin-top: 8px; padding: 10px 12px; border-radius: 14px; background: rgba(20, 14, 60, .85); border: 1px solid var(--line); }
+.miss .es-line { font-size: 16px; padding-right: 36px; }
+.miss .why { font-size: 13.5px; }

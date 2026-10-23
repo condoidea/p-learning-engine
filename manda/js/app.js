@@ -269,7 +269,7 @@
 
   /* ---------- 正解・まちがいの演出（コンボ・神の加護＝FEVER） ---------- */
   var PRAISE = ['¡Bien!', '¡Muy bien!', '¡Genial!', '¡Perfecto!', '¡Olé!', '¡Increíble!', '¡Fantástico!', '¡Divino!'];
-  function newRun() { return { combo: 0, best: 0, xp: 0, ok: 0, ng: 0, fever: false }; }
+  function newRun() { return { combo: 0, best: 0, xp: 0, ok: 0, ng: 0, fever: false, misses: [] }; }
   function feverOn() { document.body.classList.add('fever'); }
   function feverOff() { document.body.classList.remove('fever'); }
   function hit(run, src, base) {
@@ -319,6 +319,42 @@
   var WHO = ['tú（1人・仲よし）', 'usted（1人・ていねい）', 'vosotros（何人も・仲よし）', 'ustedes（何人も・ていねい）'];
   var PTAG = { 'tú': '→ tú へ（1人・仲よし）', 'usted': '→ usted へ（1人・ていねい）', 'vosotros': '→ vosotros へ（何人も・仲よし）', 'ustedes': '→ ustedes へ（何人も・ていねい）',
     'no-tú': '→ tú に「〜するな」　no ＿＿', 'no-usted': '→ usted に「〜しないでください」　no ＿＿' };
+  function fullOf(q) {
+    if (q.k === 'pick') return q.s.replace('___', '{' + q.o[q.a] + '}');
+    if (q.k === 'bug') return q.ok;
+    if (q.k === 'scene' || q.k === 'form') return q.o[q.a];
+    return q.s;
+  }
+  /* 2つの文を語ごとにくらべ、共通でない語に印をつける（最長共通部分列） */
+  function wordDiff(a, b) {
+    var x = a.split(' '), y = b.split(' '), n = x.length, m = y.length, L = [], i, j;
+    for (i = 0; i <= n; i++) { L.push([]); for (j = 0; j <= m; j++) L[i][j] = 0; }
+    for (i = n - 1; i >= 0; i--) for (j = m - 1; j >= 0; j--) L[i][j] = norm(x[i]) === norm(y[j]) ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+    var kx = {}, ky = {};
+    for (i = 0, j = 0; i < n && j < m;) {
+      if (norm(x[i]) === norm(y[j])) { kx[i] = ky[j] = 1; i++; j++; } else if (L[i + 1][j] >= L[i][j + 1]) i++; else j++;
+    }
+    return {
+      a: x.map(function (w, k) { return kx[k] ? esc(w) : '<b class="wrong">' + esc(w) + '</b>'; }).join(' '),
+      b: y.map(function (w, k) { return ky[k] ? esc(w) : '<b class="fix">' + esc(w) + '</b>'; }).join(' ')
+    };
+  }
+  function cmpRows(you, right, es, say) {
+    return '<div class="cmp"><div class="cmp-row ng"><i>✕ あなた</i><span' + (es ? ' class="es"' : '') + '>' + you + '</span></div>' +
+      '<div class="cmp-row ok' + (say ? ' has-say' : '') + '"><i>○ 正解</i><span' + (es ? ' class="es"' : '') + '>' + right + '</span>' + (say ? sayBtn(say) : '') + '</div></div>';
+  }
+  /* まちがえたとき：自分の答えと正解をならべる（ちがう所に色） */
+  function cmpHtml(q, chosen, withSay) {
+    var you, right, mark = function (w) { return '<b class="wrong">' + esc(w) + '</b>'; };
+    chosen = chosen == null ? '' : String(chosen);
+    if (q.k === 'pick') { you = esHtml(q.s.replace('___', '\u0001')).replace('\u0001', mark(chosen)); right = esHtml(fullOf(q)); }
+    else if (q.k === 'build' || q.k === 'listen' || q.k === 'scene' || q.k === 'form') { var df = wordDiff(chosen, fullOf(q)); you = df.a; right = df.b; }
+    else if (q.k === 'bug') { you = '「' + esc(chosen) + '」をまちがいにした'; right = 'まちがいは ' + mark(q.a) + ' → ' + esHtml(q.ok); }
+    else if (q.k === 'who') { you = esc(chosen); right = '<b class="fix">' + esc(WHO[q.a]) + '</b>'; }
+    else { you = esc(chosen); right = '<b class="fix">' + esc(q.o[q.a]) + '</b>'; }
+    var es = q.k !== 'who' && q.k !== 'ja';
+    return cmpRows(you, right, es, withSay && es ? fullOf(q) : '');
+  }
   function renderQ(q, card, T, opts, cb) {
     opts = opts || {};
     var t0 = Date.now(), done = false;
@@ -338,27 +374,23 @@
     glossAll(card);
     if (q.k === 'listen' && Speech.ok()) later(function () { if (!done) Speech.say(q.s); }, 350);
 
-    function finish(ok) {
+    function finish(ok, chosen) {
       if (done) return; done = true;
       var ms = Date.now() - t0;
       card.classList.add(ok ? 'is-ok' : 'is-ng');
-      if (!opts.fast) result(ok);
+      if (!ok && opts.run) opts.run.misses.push({ q: q, c: chosen });
+      if (!opts.fast) result(ok, chosen);
       cb(ok, ms);
     }
-    function full() {
-      if (q.k === 'pick') return q.s.replace('___', '{' + q.o[q.a] + '}');
-      if (q.k === 'bug') return q.ok;
-      if (q.k === 'scene' || q.k === 'form') return q.o[q.a];
-      return q.s;
-    }
-    function result(ok) {
-      var r = $('.qres', card), s = full();
+    function result(ok, chosen) {
+      var r = $('.qres', card), s = fullOf(q);
       var alt = card.hasAttribute('data-alt');
-      var showS = alt || !(ok && (q.k === 'ja' || q.k === 'who' || q.k === 'build'));
-      r.innerHTML = (ok ? '<b class="rk ok">⭕ ' + pick(PRAISE) + '</b>' : '<b class="rk ng">❌ おしい！</b>') +
+      /* まちがえたら「あなた／正解」の2行に正解の文が入る（意味・相手の問題は、文をもう一度見せる） */
+      var showS = ok ? alt || !(q.k === 'ja' || q.k === 'who' || q.k === 'build') : q.k === 'ja' || q.k === 'who';
+      r.innerHTML = (ok ? '<b class="rk ok">⭕ ' + pick(PRAISE) + '</b>' : '<b class="rk ng">❌ おしい！ くらべてみよう</b>' + cmpHtml(q, chosen, true)) +
         (alt ? '<p class="why">その語順でも正解！ 呼びかけの名前や por favor は、文の前でも後ろでも OK（コンマで区切る）。こんな言い方もあるよ：</p>' : '') +
         (showS ? '<div class="es-line ans">' + esHtml(s) + sayBtn(s) + '</div>' : '') +
-        (q.k === 'ja' ? '<div class="ja-line">' + esc(q.o[q.a]) + '</div>' : q.k === 'who' && !ok ? '<div class="ja-line">' + esc(WHO[q.a]) + '</div>' : q.k === 'listen' && q.ja ? '<div class="ja-line">' + esc(q.ja) + '</div>' : '') +
+        (q.k === 'ja' && ok ? '<div class="ja-line">' + esc(q.o[q.a]) + '</div>' : (q.k === 'listen' || q.k === 'build' && !ok) && q.ja ? '<div class="ja-line">' + esc(q.ja) + '</div>' : '') +
         (q.why ? '<p class="why">' + ja(q.why) + '</p>' : '');
       glossAll(r);
       autoSay(s);
@@ -372,7 +404,7 @@
         var ok = i === q.a;
         if (q.k === 'pick') { var bl = $('.blank', card); if (bl) { bl.textContent = q.o[i]; bl.className = 'blank filled ' + (ok ? 'ok' : 'ng'); } }
         markOpts(wrap, q.a, i);
-        finish(ok);
+        finish(ok, labels[i]);
       }, q.k === 'ja' || q.k === 'listen' || q.k === 'scene' || q.k === 'who' ? 'long' : '');
       return;
     }
@@ -385,7 +417,7 @@
           t.classList.add(ok ? 'ok' : 'ng');
           if (!ok) $$('.tok', card).forEach(function (u) { if (u.getAttribute('data-n') === norm(q.a)) u.classList.add('right'); });
           T.clear();
-          finish(ok);
+          finish(ok, t.textContent);
         });
       });
       return;
@@ -499,7 +531,7 @@
       line.classList.add(ok ? 'ok' : 'ng');
       $$('.tile', pool).forEach(function (t) { t.disabled = true; });
       if (caret) caret.remove();
-      finish(ok);
+      finish(ok, mine + end);
     }
     paint();
   }
@@ -705,7 +737,7 @@
         return;
       }
       markOpts(wrap, st.a, i);
-      res.innerHTML = ok ? '<b class="rk ok">⭕ ' + pick(PRAISE) + '</b>' : '<b class="rk ng">❌ 正解は「' + esc(st.o[st.a]) + '」</b>';
+      res.innerHTML = ok ? '<b class="rk ok">⭕ ' + pick(PRAISE) + '</b>' : '<b class="rk ng">❌ おしい！ くらべてみよう</b>' + cmpRows(esc(st.o[i]), '<b class="fix">' + esc(st.o[st.a]) + '</b>');
       if (ok) hit(run, b); else miss(run, c);
       later(function () { talk(ok ? (st.why || 'そのとおり！') : (st.why || 'もう一度、表を思い出してみよう。'), null, ok ? 'happy' : 'sad', function () { nextBtn(); }); }, 300);
     });
@@ -846,7 +878,7 @@
     talkHide();
     $$('.board-tbl', boardEl).forEach(function (t) { t.remove(); });   // 問題では表を見せない（思い出す練習）
     var c = boardSet(el('div', 'card qcard'));
-    renderQ(q, c, T1, { tag: tag }, function (ok) {
+    renderQ(q, c, T1, { tag: tag, run: run }, function (ok) {
       srs(q, ok); save();
       var src = $('.chosen', T1.el) || $('.tok.ok, .tok.ng', c) || c;
       if (ok) hit(run, src); else miss(run, c);
@@ -916,6 +948,12 @@
       (o.rewards && o.rewards.length ? '<ul class="rewards">' + o.rewards.map(function (r) { return '<li><span>' + r.icon + '</span>' + esc(r.t) + '</li>'; }).join('') + '</ul>' : '') +
       (o.card ? '<div class="newcard"><p>🃏 新しい住人！ タップでめくる</p>' + cardHtml(o.card, true) + '</div>' : '') +
       (o.note ? '<p class="res-note">' + o.note + '</p>' : '') +
+      (run.misses && run.misses.length ? '<details class="misses"' + (o.openMisses ? ' open' : '') + '><summary>📝 まちがえた問題を見直す（' + run.misses.length + '問）</summary>' +
+        run.misses.map(function (m) {
+          var full = fullOf(m.q);
+          return '<div class="miss"><div class="es-line">' + esHtml(full) + sayBtn(full) + '</div>' + (m.q.ja ? '<div class="ja-line">' + esc(m.q.ja) + '</div>' : '') +
+            cmpHtml(m.q, m.c) + (m.q.why ? '<p class="why">' + ja(m.q.why) + '</p>' : '') + '</div>';
+        }).join('') + '</details>' : '') +
       '<div class="res-btns"></div></div>';
     var bt = $('.res-btns', scr);
     if (o.retry) bt.appendChild(mkBtn(o.retry.label, 'go', o.retry.fn));
@@ -1011,7 +1049,7 @@
       var spd = $('#bSpd'), t0 = Date.now();
       clearInterval(zTimer);
       zTimer = setInterval(function () { var k = Math.max(0, 1 - (Date.now() - t0) / limit); spd.style.width = (k * 100) + '%'; spd.classList.toggle('low', k < 0.3); if (!k) clearInterval(zTimer); }, 80);
-      renderQ(q, c, T2, { tag: 'TURN ' + n }, function (ok, ms) {
+      renderQ(q, c, T2, { tag: 'TURN ' + n, run: zRun }, function (ok, ms) {
         clearInterval(zTimer);
         srs(q, ok); save();
         var face = $('#bFace');
@@ -1108,7 +1146,7 @@
       if (!zActive) return;
       if (qi >= queue.length) { queue = weighted(pool); qi = 0; }
       var q = queue[qi++], c = zCard();
-      renderQ(q, c, T2, { fast: true }, function (ok) {
+      renderQ(q, c, T2, { fast: true, run: zRun }, function (ok) {
         srs(q, ok);
         if (ok) {
           var pts = (100 + zRun.combo * 10) * (zRun.combo + 1 >= 5 ? 2 : 1);
@@ -1134,7 +1172,7 @@
     rewards = rewards.concat(missionDone('rush'));
     touchDay(); save();
     var up = addXp(zRun.xp); save();
-    showResult({ title: best ? 'NEW RECORD!!' : 'TIME UP!', sub: '60秒の神託ラッシュ', run: zRun, rewards: rewards, up: up, big: [score, best ? 'ハイスコア更新！' : 'ハイスコア ' + S.rushBest],
+    showResult({ openMisses: true, title: best ? 'NEW RECORD!!' : 'TIME UP!', sub: '60秒の神託ラッシュ', run: zRun, rewards: rewards, up: up, big: [score, best ? 'ハイスコア更新！' : 'ハイスコア ' + S.rushBest],
       note: '🎟 1500点で1枚・3500点で2枚・6000点で3枚', retry: { label: '⚡ もう一回！', fn: rushIntro } });
   }
 
@@ -1152,7 +1190,7 @@
       paint();
       if (k >= list.length) return end();
       var q = list[k++], c = zCard();
-      renderQ(q, c, T2, { tag: k + ' / ' + list.length + '　' + oracleNo(LESSON['L' + q.L]) }, function (ok) {
+      renderQ(q, c, T2, { tag: k + ' / ' + list.length + '　' + oracleNo(LESSON['L' + q.L]), run: zRun }, function (ok) {
         srs(q, ok); save();
         if (ok) hit(zRun, $('.chosen', T2.el) || c); else miss(zRun, c);
         paint();
@@ -1196,7 +1234,7 @@
       paint();
       if (k >= list.length) return end();
       var q = list[k++], c = zCard();
-      renderQ(q, c, T2, { tag: k + ' / ' + list.length + '　' + CARD[q.card].icon + ' ' + CARD[q.card].name }, function (ok) {
+      renderQ(q, c, T2, { tag: k + ' / ' + list.length + '　' + CARD[q.card].icon + ' ' + CARD[q.card].name, run: zRun }, function (ok) {
         if (ok) { S.cardp[q.card] = (S.cardp[q.card] || 0) + 1; hit(zRun, $('.chosen', T2.el) || c); } else miss(zRun, c);
         save(); paint();
         later(function () { T2.next(one, k < list.length ? '▶ つぎへ' : '▶ おわり！'); }, 250);
