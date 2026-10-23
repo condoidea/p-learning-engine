@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<script src="shared/cloud.js?v=1"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¡PROTESTO!｜森のどうぶつ裁判（スペイン語の比較）</title>
+<meta name="theme-color" content="#efe2c4">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Zen+Old+Mincho:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="protesto/css/protesto.css?v=1">
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ 表紙（事件をえらぶ） ============ -->
+  <section id="home" class="screen">
+    <header class="hbar">
+      <a class="back" href="index.html" aria-label="コース一覧へ">←</a>
+      <span class="hsub">スペイン語の比較 ・ 西検4級</span>
+    </header>
+    <h1 class="logo"><small>森のどうぶつ裁判</small><span>¡Protesto!</span></h1>
+    <div class="book" id="book"></div>
+    <div class="quick">
+      <button class="qb" id="hDrill"><span class="qi">📋</span><b>証言台ドリル</b><small id="hDrillBest"></small></button>
+      <button class="qb" id="hNotes"><span class="qi">📓</span><b>ミミのノート</b><small id="hNotesN"></small></button>
+    </div>
+    <div class="settings">
+      <label><input type="checkbox" id="tgSound"> 🔈 効果音</label>
+      <label><input type="checkbox" id="tgSpeak"> 🗣 スペイン語を読み上げる</label>
+      <label><input type="checkbox" id="tgJa"> 訳をはじめから見せる</label>
+      <button class="link" id="hReset">記録をリセット</button>
+    </div>
+  </section>
+
+  <!-- ============ 事件（捜査・法廷） ============ -->
+  <section id="play" class="screen fix" hidden>
+    <header class="pbar">
+      <button class="x" id="pQuit" aria-label="表紙へ">✕</button>
+      <b class="ptitle" id="pTitle"></b>
+      <span class="acorns" id="pAcorn" hidden></span>
+      <button class="rec" id="pRec" aria-label="法廷記録">📁</button>
+    </header>
+    <div class="stage" id="stage"></div>
+    <main class="board" id="board" aria-live="polite"><div id="ref"></div><div id="act"></div></main>
+    <div class="talk" id="talk" hidden></div>
+    <div class="tray" id="tray"></div>
+  </section>
+
+  <!-- ============ 証言台ドリル ============ -->
+  <section id="drill" class="screen fix" hidden>
+    <header class="pbar">
+      <button class="x" id="dQuit" aria-label="やめる">✕</button>
+      <b class="ptitle">証言台ドリル</b>
+      <span class="dscore" id="dScore"></span>
+    </header>
+    <div class="dtime"><i id="dTime"></i></div>
+    <main class="board" id="dBoard"></main>
+    <div class="tray" id="dTray"></div>
+  </section>
+
+  <section id="done" class="screen" hidden></section>
+</div>
+
+<div id="slam" aria-hidden="true"></div>
+<div id="modal" hidden><div class="mbox"><button class="mclose" aria-label="閉じる">✕</button><div id="mbody"></div></div></div>
+<div id="pop" hidden></div>
+
+<script src="shared/es-words.js?v=3"></script>
+<script src="protesto/js/data/cast.js?v=1"></script>
+<script src="protesto/js/data/case1.js?v=1"></script>
+<script src="protesto/js/data/case2.js?v=1"></script>
+<script src="protesto/js/data/case3.js?v=1"></script>
+<script src="protesto/js/data/case4.js?v=1"></script>
+<script src="protesto/js/data/case5.js?v=1"></script>
+<script src="protesto/js/data/case6.js?v=1"></script>
+<script src="protesto/js/data/drill.js?v=1"></script>
+<script src="engine/js/audio.js?v=10"></script>
+<script src="protesto/js/app.js?v=1"></script>
+<script src="news/news.js?v=2"></script>
+</body>
+</html>

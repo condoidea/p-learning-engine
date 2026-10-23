@@ -49,6 +49,13 @@ window.LE_COURSES = [
     desc: 'ちび神さまになって、島の人たちに命令！ tú・usted・vosotros・ustedes の命令、不規則な8つ、代名詞のくっつけ方、「〜するな」まで。命令が届くと島が育つ。西検4級。',
     color: '#ffcf4a', color2: '#6a4cff', lessons: 10
   },
+  /* ¡PROTESTO!（protesto/）：比較の法廷推理もの。独立アプリ。進み具合は lessons[id].done を数える（6つの事件） */
+  {
+    id: 'protesto', entry: 'protesto.html', storageKey: 'protesto.v1',
+    title: 'スペイン語 比較', brand: '¡PROTESTO!', icon: '⚖️',
+    desc: '森のどうぶつ裁判で、新米弁護士のキツネに。más・menos…que、tan…como、mejor・mayor、tanto…como、el más…de、-ísimo を、尋問・ムジュン・証拠のつきつけで。西検4級。',
+    color: '#a3362a', color2: '#c49a3a', lessons: 6
+  },
   /* ユーキ・クエスト（yuki/）：有機化学のRPG。独立アプリ。進み具合は lessons[id].done を数える（序章4＋1章4＋ボス2） */
   {
     id: 'yuki', entry: 'yuki.html', storageKey: 'yuki.v1',

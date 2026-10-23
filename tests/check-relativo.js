@@ -143,7 +143,24 @@ if (process.argv.indexOf('--memo') >= 0) {
     M.cards.forEach(c => add(c.es));
     mTexts.forEach(s => tokens(s).forEach(tok => { const e = index.get(tok); if (e && !names.has(tok)) usedM.set(e, (usedM.get(e) || 0) + 1); }));
   } catch (e) { warn('¡MANDA! のデータが読めない：' + e.message); }
-  const tot = e => (used.get(e) || 0) + (usedM.get(e) || 0);
+  /* ¡PROTESTO!（比較の法廷 protesto/）の文も数える：台本の es・選択肢・ノートの例文・タイル・ドリルの語 */
+  const usedP = new Map(), pTexts = [];
+  try {
+    const P = load(['shared/es-words.js', 'protesto/js/data/cast.js'].concat([1, 2, 3, 4, 5, 6].map(n => 'protesto/js/data/case' + n + '.js'), ['protesto/js/data/drill.js'])).PQ;
+    const add = s => { if (s && !JP.test(s)) pTexts.push(s); };
+    const walk = o => {
+      if (Array.isArray(o)) { o.forEach(walk); return; }
+      if (!o || typeof o !== 'object') return;
+      if (typeof o.es === 'string') add(o.es);
+      (o.o || []).forEach(add); (o.x && Array.isArray(o.x) ? o.x : []).forEach(add);
+      (o.rows || []).forEach(r => add(r[0]));
+      Object.keys(o).forEach(k => { if (typeof o[k] === 'object') walk(o[k]); });
+    };
+    P.cases.forEach(C => walk(C.steps));
+    P.drill.words().forEach(add);
+    pTexts.forEach(s => tokens(s).forEach(tok => { const e = index.get(tok); if (e && !names.has(tok)) usedP.set(e, (usedP.get(e) || 0) + 1); }));
+  } catch (e) { warn('¡PROTESTO! のデータが読めない：' + e.message); }
+  const tot = e => (used.get(e) || 0) + (usedM.get(e) || 0) + (usedP.get(e) || 0);
   const LV = { 5: '5級（基本）', 4: '4級', 3: '4級より上（アプリでバルーン説明）', 0: '機能語（冠詞・前置詞・代名詞など）' };
   const POS = { n: '名詞', v: '動詞', adj: '形容詞', adv: '副詞', pron: '代名詞', art: '冠詞', prep: '前置詞', conj: '接続詞', rel: '関係詞', int: '疑問詞', num: '数', det: '限定詞', phr: '表現' };
   const out = [];
@@ -152,7 +169,7 @@ if (process.argv.indexOf('--memo') >= 0) {
   out.push('スペイン語のアプリで、問題・例文に織り込んだ単語の一覧。**次のアプリを作るときに「どれを復習として使うか」「どれと被らないように新しく足すか」を決めるためのメモ。**');
   out.push('');
   out.push('- 元のデータは [shared/es-words.js](../shared/es-words.js)（共通の単語帳）。アプリはこれを読んで、難しめの語（4級・4級より上）にバルーンを出す');
-  out.push('- この文書は `node tests/check-relativo.js --memo` で作り直す（手で直さない）。回数は、そのアプリの例文・問題に出てきた回数（活用形もまとめて数える）。「よく出した語」は2つのアプリの合計');
+  out.push('- この文書は `node tests/check-relativo.js --memo` で作り直す（手で直さない）。回数は、そのアプリの例文・問題に出てきた回数（活用形もまとめて数える）。「よく出した語」はアプリの合計');
   out.push('- 「¡VAMOS!」の列：単語アプリ（vocab.html）のスペイン語デッキにもある語は ✓');
   out.push('- 新しいアプリを作ったら：使う語を単語帳に足し（ない語はチェックでエラーになる）、このスクリプトにそのアプリの文を集める処理と列を足す');
   out.push('- 次のアプリの語選びのめやす：**復習として使うなら「よく出した語」や 4級の語から**（このアプリで見慣れている）。**新しく足すなら、この表にない語**を選ぶと被らない');
@@ -163,10 +180,11 @@ if (process.argv.indexOf('--memo') >= 0) {
   out.push('|---|---|---|');
   out.push('| relativo | ¡QUE FUSIÓN!（relativo.html） | 関係詞（que・quien・前置詞＋冠詞＋que・donde・lo que・el que・cuyo）。西検4級 |');
   out.push('| manda | ¡MANDA!（manda.html） | 命令表現（tú・usted・vosotros・ustedes の命令、不規則な8つ、代名詞をくっつける、「〜するな」）。西検4級 |');
+  out.push('| protesto | ¡PROTESTO!（protesto.html） | 比較（más・menos…que、tan…como、mejor・peor・mayor・menor、tanto…como、el más…de、-ísimo、más de＋数）。西検4級 |');
   out.push('');
   out.push('## まとめ');
   out.push('');
-  const usedList = DICT.words.filter(e => (used.has(e) || usedM.has(e)) && e.pos !== 'bad');
+  const usedList = DICT.words.filter(e => (used.has(e) || usedM.has(e) || usedP.has(e)) && e.pos !== 'bad');
   const byLv = {};
   usedList.forEach(e => { byLv[e.lv] = (byLv[e.lv] || 0) + 1; });
   out.push('| 級 | 語数 |');
@@ -181,11 +199,11 @@ if (process.argv.indexOf('--memo') >= 0) {
     if (!list.length) return;
     out.push('## ' + LV[l]);
     out.push('');
-    out.push('| 単語 | 意味 | 品詞 | 出てきた形 | relativo | manda | ¡VAMOS! |');
-    out.push('|---|---|---|---|---|---|---|');
+    out.push('| 単語 | 意味 | 品詞 | 出てきた形 | relativo | manda | protesto | ¡VAMOS! |');
+    out.push('|---|---|---|---|---|---|---|---|');
     list.forEach(e => {
-      const forms = (e.f || []).filter(f => texts.some(t => tokens(t.es).indexOf(f.toLowerCase()) >= 0) || mTexts.some(t => tokens(t).indexOf(f.toLowerCase()) >= 0));
-      out.push('| ' + e.w + ' | ' + e.ja + ' | ' + (POS[e.pos] || e.pos || '') + ' | ' + forms.join(', ') + ' | ' + (used.get(e) || '') + ' | ' + (usedM.get(e) || '') + ' | ' + (vamos.has(e.w.toLowerCase()) ? '✓' : '') + ' |');
+      const forms = (e.f || []).filter(f => texts.some(t => tokens(t.es).indexOf(f.toLowerCase()) >= 0) || mTexts.some(t => tokens(t).indexOf(f.toLowerCase()) >= 0) || pTexts.some(t => tokens(t).indexOf(f.toLowerCase()) >= 0));
+      out.push('| ' + e.w + ' | ' + e.ja + ' | ' + (POS[e.pos] || e.pos || '') + ' | ' + forms.join(', ') + ' | ' + (used.get(e) || '') + ' | ' + (usedM.get(e) || '') + ' | ' + (usedP.get(e) || '') + ' | ' + (vamos.has(e.w.toLowerCase()) ? '✓' : '') + ' |');
     });
     out.push('');
   });
