@@ -733,3 +733,12 @@ details p { background: rgba(120, 80, 30, .1); color: var(--ink); }
 /* ---------- 叩きつけ文字 ---------- */
 .sl b { font-family: 'Cinzel', var(--f-min); font-weight: 900; color: #fff3c4; -webkit-text-stroke: 1px #3a1f08; text-shadow: 0 0 30px rgba(240, 180, 80, .7), 3px 3px 0 #3a1f08; }
 .sl.boss b { color: #ffcfb8; text-shadow: 0 0 34px #b8322a, 3px 3px 0 #2a0505; }
+
+/* ---------- まちがえたとき：自分の答えと正解をならべる ---------- */
+.row.me .bub.ng { background: linear-gradient(180deg, #7a2a22, #4f1712); border-color: #c0503f; }
+.cmp { display: grid; gap: 4px; margin: 0 0 8px; text-align: left; }
+.cmp-row { display: flex; gap: 8px; align-items: baseline; padding: 5px 10px; border-radius: 6px; border-left: 3px solid; font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
+.cmp-row i { flex: none; font-style: normal; font-weight: 800; font-size: 12px; min-width: 4.4em; }
+.cmp-row.ng { border-color: var(--crimson); background: rgba(142, 31, 31, .1); } .cmp-row.ng i, .cmp-row.ng b { color: var(--crimson); }
+.cmp-row.ng b { text-decoration: underline wavy var(--crimson); text-underline-offset: 3px; }
+.cmp-row.ok { border-color: var(--teal-ink); background: rgba(29, 92, 76, .1); } .cmp-row.ok i, .cmp-row.ok b { color: var(--teal-ink); }

@@ -90,7 +90,7 @@
     if (!tray.innerHTML) setTray('<p class="wait">👆 タップで先へ</p>');
     return wait(Math.max(1200, Math.min(3400, Y.plain(text).length * 60))).then(function () { alive(r); });
   }
-  function me(html) { row('me', '<div class="bub">' + html + '</div>', 'me'); }
+  function me(html, cls) { row('me', '<div class="bub' + (cls ? ' ' + cls : '') + '">' + html + '</div>', 'me'); }
 
   /* ---------- 経験値（EXP） ---------- */
   function gain(n, el) {
@@ -147,17 +147,17 @@
           $$('.op', tray).forEach(function (x, k) { x.disabled = true; if (k === s.a) x.classList.add('right'); });
           if (!ok) bt.classList.add('wrong');
           if (!s.pre) { if (ok) hit(bt); else miss(bt); } else Y.se('tap');
-          setTimeout(function () { setTray(''); me(s.mols ? esc(Y.MOLS[s.opts[i]].n) : fmt(s.opts[i])); res(i); }, ok ? 450 : 800);
+          setTimeout(function () { setTray(''); me((s.pre ? '' : ok ? '⭕ ' : '✕ ') + (s.mols ? esc(Y.MOLS[s.opts[i]].n) : fmt(s.opts[i])), s.pre ? '' : ok ? 'ok' : 'ng'); res(i); }, ok ? 450 : 800);
         };
       });
     }).then(function (i) {
       alive(r);
       var ok = i === s.a, ng = s.ng && (typeof s.ng === 'string' ? s.ng : s.ng[i]);
-      var ans = s.mols ? Y.MOLS[s.opts[s.a]].n : s.opts[s.a];
+      var ans = s.mols ? Y.MOLS[s.opts[s.a]].n : s.opts[s.a], mine = s.mols ? Y.MOLS[s.opts[i]].n : s.opts[i];
       var p;
       if (s.pre) p = say(ok ? (s.ok || 'いい読みだね！') : (ng || 'じつは…'), ok ? 'happy' : 'think');
       else if (ok) p = say(Y.pick(PRAISE) + (s.ok ? '\n' + s.ok : ''), r.combo >= 3 ? 'wow' : 'happy');
-      else p = say((ng ? ng + '\n' : 'おしい！ ') + '正解は「' + ans + '」。', 'oops');
+      else p = say((ng ? ng + '\n' : 'おしい！ ') + '「' + mine + '」ではなく、正解は「' + ans + '」。', 'oops');
       return p.then(function () { if (s.why && (!ok || s.pre)) return say(s.why); }).then(afterStep);
     });
   }
@@ -263,7 +263,8 @@
             [a, c].forEach(function (x) { x.classList.add('ng'); setTimeout(function () { x.classList.remove('ng'); }, 450); });
             var i = +a.getAttribute('data-i');
             if (missed.indexOf(i) < 0) missed.push(i);
-            mm.innerHTML = '<b class="ng">ちがう組み合わせ</b>　「' + fmt(String(pairs[i][0])) + '」の相手は…？';
+            var you = pairs[+c.getAttribute('data-i')][1];
+            mm.innerHTML = '<b class="ng">✕ 「' + fmt(String(pairs[i][0])) + '」⇄「' + (typeof you === 'object' ? 'その構造式' : fmt(String(you))) + '」はちがう組み合わせ</b><br>「' + fmt(String(pairs[i][0])) + '」の相手は…？';
           }
         };
       }

@@ -84,8 +84,10 @@
           setTimeout(next, 1250);
         } else {
           bossAttack(i < 0 ? '遅い！' : null);
-          var ans = q.mols ? Y.MOLS[q.opts[q.a]].n : q.opts[q.a];
-          panel.insertAdjacentHTML('beforeend', '<div class="bt-why"><p>正解は「' + fmt(ans) + '」</p>' + (q.why ? '<p>' + fmt(q.why) + '</p>' : '') + '<button class="btn">つづける ▶</button></div>');
+          var ans = q.mols ? Y.MOLS[q.opts[q.a]].n : q.opts[q.a], mine = i < 0 ? '' : q.mols ? Y.MOLS[q.opts[i]].n : q.opts[i];
+          /* まちがえたら、自分の答えと正解をならべる */
+          panel.insertAdjacentHTML('beforeend', '<div class="bt-why"><div class="cmp"><div class="cmp-row ng"><i>✕ あなた</i><span>' + (i < 0 ? '時間切れ' : '<b>' + fmt(mine) + '</b>') + '</span></div>' +
+            '<div class="cmp-row ok"><i>○ 正解</i><span><b>' + fmt(ans) + '</b></span></div></div>' + (q.why ? '<p>' + fmt(q.why) + '</p>' : '') + '<button class="btn">つづける ▶</button></div>');
           Y.glossify($('.bt-why', panel), {});
           $('.bt-why .btn', panel).onclick = next;
         }
