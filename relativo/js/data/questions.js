@@ -12,6 +12,7 @@
  *    ja     日本語の意味を選ぶ                     { s, o, a }
  *    build  タイルを並べて文を作る                 { s, d: [まぎらわしいタイル] }
  *    join   2つの文の合体として正しいものを選ぶ     { p: [文1, 文2], o, a }
+ *    ng     ___ に入らないもの（NG）を選ぶ         { s, o, a: NG の番号 }。テストの「適切でないものを選べ」
  *  共通：ja（日本語訳）・why（答えたあとに出す説明）
  *
  *  例文はこのアプリのためのオリジナル。
@@ -64,6 +65,8 @@ RQ.questions = [
   { id: 'l3-11', L: 3, k: 'ante', s: 'Mi hermana, quien vive en Japón, habla tres idiomas.', a: 'hermana', ja: '私の姉は、日本に住んでいて、3つの言語を話す。' },
   { id: 'l3-12', L: 3, k: 'pick', s: 'Nuestros vecinos, ___ son muy amables, nos ayudaron.', o: ['quienes', 'quien', 'quienas'], a: 0, ja: 'となりの人たちは、とても親切で、私たちを手伝ってくれた。' },
 
+  { id: 'ng-l3-1', L: 3, k: 'ng', s: 'Mis amigos, ___ son de México, hablan español.', o: ['quienes', 'que', 'quien'], a: 2, ja: '私の友だちは、メキシコ出身で、スペイン語を話す。', why: '先行詞が複数なので quien は NG（quienes）。コンマのあとは que も OK。' },
+
   /* ---------- L4：前置詞は前へ（con quien・de quien・en que） ---------- */
   { id: 'l4-join1', L: 4, k: 'join', p: ['Este es el amigo.', 'Viajé a Perú con el amigo.'], o: ['Este es el amigo con quien viajé a Perú.', 'Este es el amigo quien viajé a Perú con.', 'Este es el amigo que viajé a Perú con.'], a: 0, ja: 'これが、いっしょにペルーへ旅行した友だちだ。', why: '前置詞 con は関係詞とセットで前へ。後ろには残せない。' },
   { id: 'l4-01', L: 4, k: 'pick', s: 'La chica ___ hablo todos los días es de Chile.', o: ['con quien', 'quien', 'que con'], a: 0, ja: '私が毎日話している女の子は、チリ出身だ。', why: 'hablo con la chica → con quien hablo。' },
@@ -78,6 +81,8 @@ RQ.questions = [
   { id: 'l4-10', L: 4, k: 'ante', s: 'La señora de quien te hablé vive aquí.', a: 'señora', ja: '君に話した女の人は、ここに住んでいる。' },
   { id: 'l4-11', L: 4, k: 'pick', s: 'El año ___ nací fue 2010.', o: ['en que', 'que en', 'quien'], a: 0, ja: '私が生まれた年は、2010年だ。', why: 'nací en el año 〜 → en que。' },
   { id: 'l4-12', L: 4, k: 'build', s: 'Este es el pueblo en que nací.', d: ['quien'], ja: 'これが、私の生まれた村だ。' },
+
+  { id: 'ng-l4-1', L: 4, k: 'ng', s: 'Esta es la casa ___ nací.', o: ['en que', 'en quien', 'donde'], a: 1, ja: 'これが、私の生まれた家だ。', why: 'quien は人専用。ものなら en que・donde（L5 の en la que も OK）。' },
 
   /* ---------- L5：前置詞＋冠詞＋que・al que ---------- */
   { id: 'l5-01', L: 5, k: 'pick', s: 'Esta es la casa en ___ que vivo.', o: ['la', 'el', 'las'], a: 0, ja: 'これが、私の住んでいる家だ。', why: '先行詞 la casa（女性・単数）→ la。' },
@@ -94,6 +99,11 @@ RQ.questions = [
   { id: 'l5-12', L: 5, k: 'ante', s: 'La silla en la que estás sentado es de mi abuelo.', a: 'silla', ja: '君がすわっているいすは、祖父のものだ。' },
   { id: 'l5-13', L: 5, k: 'build', s: 'Son los amigos con los que viajé.', d: ['las'], ja: '（彼らは）いっしょに旅行した友だちだ。' },
 
+  { id: 'ng-l5-1', L: 5, k: 'ng', s: 'La chica ___ hablo es mi prima.', o: ['con la que', 'con quien', 'con que'], a: 2, ja: '私が話している女の子は、いとこだ。', why: '人を指すとき、前置詞のあとに冠詞なしの que は NG。con quien か con la que。' },
+  { id: 'ng-l5-2', L: 5, k: 'ng', s: 'El restaurante ___ comimos ayer es muy bueno.', o: ['en el que', 'en que', 'en la que', 'donde'], a: 2, ja: '昨日食べたレストランは、とてもいい。', why: 'restaurante は男性名詞なので en la que は NG（en el que）。ものなので en que・donde も OK。' },
+  { id: 'ng-l5-3', L: 5, k: 'ng', s: 'El chico ___ llamé ayer es mi primo.', o: ['al que', 'a quien', 'que', 'a el que'], a: 3, ja: '昨日電話した男の子は、私のいとこだ。', why: 'a ＋ el は al にくっつくので a el que は NG。「〜を」に当たる人なら、前置詞なしの que も OK。' },
+  { id: 'ng-l5-4', L: 5, k: 'ng', s: 'El chico ___ te hablé es este.', o: ['del que', 'de quien', 'de que'], a: 2, ja: '君に話した男の子は、この子だよ。', why: '人を指すとき、前置詞のあとの冠詞なし que は NG。de ＋ el que は del que。' },
+
   /* ---------- L6：donde と que の見分け ---------- */
   { id: 'l6-01', L: 6, k: 'pick', s: 'Esta es la ciudad ___ nací.', o: ['donde', 'que', 'quien'], a: 0, ja: 'ここが、私の生まれた町だ。', why: 'nací en la ciudad（町で生まれた）→ donde。' },
   { id: 'l6-02', L: 6, k: 'pick', s: 'Me gusta el barrio ___ vives.', o: ['donde', 'que', 'quien'], a: 0, ja: '君の住んでいる地区が好きだ。', why: 'vives en el barrio → donde。' },
@@ -107,6 +117,8 @@ RQ.questions = [
   { id: 'l6-10', L: 6, k: 'build', s: 'Esta es la ciudad donde nací.', d: ['que'], ja: 'ここが、私の生まれた町だ。' },
   { id: 'l6-11', L: 6, k: 'pick', s: 'El hotel ___ reservamos tiene piscina.', o: ['que', 'donde'], a: 0, ja: '私たちが予約したホテルには、プールがある。', why: 'reservamos el hotel（ホテルを予約した）→ que。' },
   { id: 'l6-12', L: 6, k: 'pick', s: 'Es la oficina ___ trabaja mi madre.', o: ['donde', 'que'], a: 0, ja: '母が働いている事務所だ。', why: 'trabaja en la oficina → donde。' },
+
+  { id: 'ng-l6-1', L: 6, k: 'ng', s: 'Esta es la ciudad ___ nací.', o: ['donde', 'en la que', 'en que', 'que'], a: 3, ja: 'ここが、私の生まれた町だ。', why: 'nací en la ciudad（町で）なので、en が必要。前置詞なしの que は NG。' },
 
   /* ---------- L7：lo que ---------- */
   { id: 'l7-01', L: 7, k: 'pick', s: 'No entiendo ___ dices.', o: ['lo que', 'que', 'el que'], a: 0, ja: '君の言うことが分からない。', why: '「言うこと」に当たる名詞がない → lo que。' },
@@ -136,6 +148,8 @@ RQ.questions = [
   { id: 'l8-11', L: 8, k: 'pick', s: '¿Qué chaqueta es tuya? —___ es negra.', o: ['La que', 'Lo que', 'El que'], a: 0, ja: 'どのジャケットが君の？ー黒いやつ。', why: '省いた名詞 chaqueta（女性）→ la que。' },
   { id: 'l8-12', L: 8, k: 'bug', s: 'Lo que llega primero gana.', a: 'Lo', ok: 'El que llega primero gana.', ja: '最初に着いた人が勝ち。', why: '「〜する人」→ el que。lo que は「こと」で、人には使わない。' },
 
+  { id: 'l8-13', L: 8, k: 'pick', s: 'Este es el libro ___ compré ayer.', o: ['que', 'el que', 'quien'], a: 0, ja: 'これが、昨日買った本だ。', why: '名詞のすぐ後ろ（前置詞なし）は que だけ。el que・quien は NG。' },
+
   /* ---------- L9：que の正体・アクセント ---------- */
   { id: 'l9-wh1', L: 9, k: 'which', s: 'Sé que vives aquí.', w: 'que', a: 1, ja: '君がここに住んでいることは知っている。', why: '前が動詞（sé）、後ろはそろった文（vives aquí）→ 接続詞「〜ということ」。' },
   { id: 'l9-wh2', L: 9, k: 'which', s: 'La casa que compramos es pequeña.', w: 'que', a: 0, ja: '私たちが買った家は、小さい。', why: '前が名詞（la casa）、後ろの compramos は「〜を」が欠けている → 関係詞。' },
@@ -163,5 +177,8 @@ RQ.questions = [
   { id: 'l10-08', L: 10, k: 'pick', s: 'La casa ___ ventanas son azules es mía.', o: ['cuyas', 'cuya', 'cuyos'], a: 0, ja: '窓が青い家は、私のだ。' },
   { id: 'l10-09', L: 10, k: 'ante', s: 'Tengo un amigo cuyo padre es piloto.', a: 'amigo', ja: 'お父さんがパイロットの友だちがいる。', why: 'cuyo の持ち主（先行詞）は amigo。padre は持ち物。' },
   { id: 'l10-10', L: 10, k: 'pick', s: 'Es una ciudad ___ calles son muy estrechas.', o: ['cuyas', 'cuya', 'donde'], a: 0, ja: '道がとてもせまい町だ。' },
+  { id: 'ng-l10-1', L: 10, k: 'ng', s: 'Mi abuela, ___ tiene ochenta años, todavía trabaja.', o: ['quien', 'que', 'la cual', 'quienes'], a: 3, ja: '祖母は、80歳だけど、まだ働いている。', why: '先行詞が1人なので quienes は NG。コンマのあとなら quien・que・la cual は OK。' },
+  { id: 'ng-l10-2', L: 10, k: 'ng', s: 'Es la universidad ___ estudio.', o: ['en la que', 'en la cual', 'donde', 'en quien'], a: 3, ja: '（ここが）私の勉強している大学だ。', why: 'quien は人専用。前置詞のあとの la cual は OK。' },
+  { id: 'ng-l10-3', L: 10, k: 'ng', s: 'Las chicas ___ trabajo son simpáticas.', o: ['con las que', 'con quienes', 'con las cuales', 'con que'], a: 3, ja: 'いっしょに働いている女の子たちは、感じがいい。', why: '人を指すとき、前置詞のあとの冠詞なし que は NG。' },
   { id: 'l10-11', L: 10, k: 'join', p: ['Tengo un amigo.', 'Su madre es profesora.'], o: ['Tengo un amigo cuya madre es profesora.', 'Tengo un amigo cuyo madre es profesora.', 'Tengo un amigo que madre es profesora.'], a: 0, ja: 'お母さんが先生の友だちがいる。', why: 'su（彼の）が cuyo に変身。形は持ち物 madre に合わせて cuya。' }
 ];

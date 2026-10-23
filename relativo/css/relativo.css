@@ -477,3 +477,21 @@ details p { margin: 6px 0 0; padding: 8px 10px; border-radius: 12px; background:
 .drop-caret { position: fixed; z-index: 98; width: 4px; border-radius: 4px; background: var(--rel); box-shadow: 0 0 10px var(--rel); pointer-events: none; animation: tapGlow .6s infinite; }
 .tile-hint { margin: 0 0 6px; text-align: center; color: var(--muted); font-size: 12px; }
 
+/* ---------- OK・NG 表／入らないものを選ぶ ---------- */
+.tbl-wrap { margin: 8px 0; overflow-x: auto; }
+table.oknd { width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 3px; font-size: 13px; line-height: 1.35; }
+.oknd col.c0 { width: 34%; }
+.oknd thead th { white-space: nowrap; }
+.oknd thead th { padding: 4px 2px; font-weight: 800; color: var(--prep); font-size: 12.5px; }
+.oknd tbody th { padding: 6px 6px; text-align: left; font-weight: 800; font-size: 12.5px; background: rgba(255, 255, 255, .06); border-radius: 8px; }
+.oknd tbody th small { display: block; font-weight: 700; color: var(--muted); font-size: 11px; }
+.oknd td { padding: 4px 2px; text-align: center; border-radius: 8px; vertical-align: middle; }
+.oknd td b { display: block; font-size: 18px; line-height: 1.1; }
+.oknd td small { display: block; font-size: 10.5px; color: var(--muted); }
+.oknd td.ok { background: rgba(77, 255, 154, .14); } .oknd td.ok b { color: var(--ok); }
+.oknd td.ng { background: rgba(255, 92, 92, .16); } .oknd td.ng b { color: var(--ng); }
+.oknd td.mid { background: rgba(255, 210, 63, .1); } .oknd td.mid b { color: var(--prep); }
+.tip-more { margin-top: 6px; padding: 8px 10px; border-radius: 12px; background: rgba(255, 255, 255, .06); font-size: 13.5px; }
+.ngok { margin: 4px 0; font-size: 14px; }
+.ngok b { color: var(--ok); } .ngok s { color: var(--ng); }
+.blank.ng-hit { background: rgba(255, 92, 92, .25); border-color: var(--ok); text-decoration: line-through; color: var(--ng); }

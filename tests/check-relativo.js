@@ -85,7 +85,7 @@ RQ.questions.forEach(q => {
   ids.add(q.id);
   const words = clean(q.s || '').split(/\s+/).map(w => w.replace(/[¿?¡!.,—:;]/g, ''));
   if (q.o && (q.a < 0 || q.a >= q.o.length)) err(q.id + '：正解の番号が選択肢の外');
-  if (q.k === 'pick' && !/___/.test(q.s)) err(q.id + '：pick なのに ___ がない');
+  if ((q.k === 'pick' || q.k === 'ng') && !/___/.test(q.s)) err(q.id + '：' + q.k + ' なのに ___ がない');
   if ((q.k === 'ante' || q.k === 'bug' || q.k === 'which') && words.indexOf(q.k === 'which' ? q.w : q.a) < 0) err(q.id + '：「' + (q.w || q.a) + '」が文の中にない');
   if (q.k === 'bug' && !q.ok) err(q.id + '：bug に ok（正しい文）がない');
   if (q.k === 'build' && q.s.split(/\s+/).length > 10) warn(q.id + '：build のタイルが多い（' + q.s.split(/\s+/).length + '枚）');

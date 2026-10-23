@@ -308,7 +308,7 @@
    *  cb(ok, ms)
    * ========================================================= */
   var KIND = { pick: ['🎯', '空いている所に入るのは？'], ante: ['👆', '先行詞をタップ'], bug: ['🐛', 'まちがい探し'], which: ['🕵️', 'この que の正体は？'],
-    ja: ['💬', '意味は？'], build: ['🧩', 'ならべて文を作ろう'], join: ['⚡', '正しい合体は？'], listen: ['🎧', '聞こえた文はどれ？'] };
+    ja: ['💬', '意味は？'], build: ['🧩', 'ならべて文を作ろう'], join: ['⚡', '正しい合体は？'], listen: ['🎧', '聞こえた文はどれ？'], ng: ['🚫', '＿＿ に入らない（NG）のはどれ？'] };
   var RELW = { que: 1, quien: 1, quienes: 1, donde: 1, cuyo: 1, cuya: 1, cuyos: 1, cuyas: 1 };
   function renderQ(q, card, T, opts, cb) {
     opts = opts || {};
@@ -316,7 +316,7 @@
     card.className = 'card qcard k-' + q.k + (opts.fast ? ' fast' : '');
     card.setAttribute('data-q', q.id);
     var body = '';
-    if (q.k === 'pick' || q.k === 'ja') body = '<div class="es-line">' + esHtml(q.s) + '</div>';
+    if (q.k === 'pick' || q.k === 'ja' || q.k === 'ng') body = '<div class="es-line">' + esHtml(q.s) + '</div>';
     else if (q.k === 'ante' || q.k === 'bug' || q.k === 'which') body = '<div class="es-line toks">' + toks(q.s, q.k === 'which' ? q.w : null) + '</div>';
     else if (q.k === 'build') body = '<div class="build-line"></div>';
     else if (q.k === 'listen') body = Speech.ok() ? '<div class="listen"><button class="say big" data-say="' + esc(q.s) + '" aria-label="もう一度聞く">🔊</button><button class="say slow" data-say="' + esc(q.s) + '" aria-label="ゆっくり聞く">🐢</button><small>何度でも聞けるよ</small></div>'
@@ -341,21 +341,25 @@
     }
     function full() {
       if (q.k === 'pick') return q.s.replace('___', '{' + q.o[q.a] + '}');
+      if (q.k === 'ng') return q.s.replace('___', '{' + q.o[q.a === 0 ? 1 : 0] + '}');
       if (q.k === 'bug') return q.ok;
       if (q.k === 'join') return q.o[q.a];
       return q.s;
     }
-    function result(ok) {
+    function result(ok, chosen) {
       var r = $('.qres', card), s = full();
-      r.innerHTML = (ok ? '<b class="rk ok">⭕ ' + PRAISE[Math.floor(Math.random() * 4)] + '</b>' : '<b class="rk ng">❌ おしい！</b>') +
-        (ok && q.k !== 'bug' && q.k !== 'join' && q.k !== 'pick' && q.k !== 'listen' ? '' : '<div class="es-line ans">' + esHtml(s) + sayBtn(s) + '</div>') +
+      var head = ok ? '<b class="rk ok">⭕ ' + PRAISE[Math.floor(Math.random() * 4)] + '</b>' : '<b class="rk ng">❌ おしい！</b>';
+      if (q.k === 'ng' && !ok) head = '<b class="rk ng">❌ 「' + esc(chosen) + '」は入る（OK）</b><p class="ngok">入らないのは <s>' + esc(q.o[q.a]) + '</s></p>';
+      r.innerHTML = head +
+        (q.k === 'ng' && ok ? '<p class="ngok">OK の形：' + q.o.filter(function (o, i) { return i !== q.a; }).map(function (o) { return '<b>' + esc(o) + '</b>'; }).join('・') + '　／　NG：<s>' + esc(q.o[q.a]) + '</s></p>' : '') +
+        (ok && q.k !== 'bug' && q.k !== 'join' && q.k !== 'pick' && q.k !== 'listen' && q.k !== 'ng' ? '' : '<div class="es-line ans">' + esHtml(s) + sayBtn(s) + '</div>') +
         (q.k === 'ja' ? '<div class="ja-line">' + esc(q.o[q.a]) + '</div>' : (q.k === 'join' || q.k === 'listen') && q.ja ? '<div class="ja-line">' + esc(q.ja) + '</div>' : '') +
         (q.why ? '<p class="why">' + ja(q.why) + '</p>' : '');
       glossAll(r);
       autoSay(s);
     }
 
-    if (q.k === 'pick' || q.k === 'ja' || q.k === 'join' || q.k === 'which' || q.k === 'listen') {
+    if (q.k === 'pick' || q.k === 'ja' || q.k === 'join' || q.k === 'which' || q.k === 'listen' || q.k === 'ng') {
       var labels = q.k === 'which' ? ['関係詞', '接続詞（〜ということ）', '疑問詞（何・どこ）'] : q.o;
       var ans = q.a;
       var list = labels.map(function (l, i) { return { label: l, i: i }; });
@@ -363,8 +367,9 @@
       T.options(list, function (i, b, wrap) {
         var ok = i === ans;
         if (q.k === 'pick') { var bl = $('.blank', card); if (bl) { bl.textContent = q.o[i]; bl.className = 'blank filled ' + (ok ? 'ok' : 'ng'); } }
+        if (q.k === 'ng') { var bn = $('.blank', card); if (bn) { bn.textContent = q.o[i]; bn.className = 'blank filled ' + (ok ? 'ng-hit' : 'ok'); } }
         markOpts(wrap, ans, i);
-        finish(ok);
+        finish(ok, q.k === 'which' ? labels[i] : q.o[i]);
       }, q.k === 'join' || q.k === 'ja' || q.k === 'listen' ? 'long' : '');
       return;
     }
@@ -593,11 +598,27 @@
       }, 350);
     });
   }
+  /* Tips カードの中身（レッスンと Tips ノートで共通）。tbl があれば OK・NG 表 */
+  var MARK = { o: ['ok', '○'], x: ['ng', '✕'], w: ['mid', '△'] };
+  function tipBody(st) {
+    var t = '';
+    if (st.tbl) {
+      t = '<div class="tbl-wrap"><table class="oknd"><colgroup><col class="c0"><col><col><col></colgroup><thead><tr>' + st.tbl.head.map(function (h) { return '<th>' + esc(h) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+        st.tbl.rows.map(function (r) {
+          return '<tr><th>' + r[0] + '</th>' + r.slice(1).map(function (c) {
+            var m = MARK[c.split('|')[0]], note = c.split('|')[1];
+            return '<td class="' + m[0] + '"><b>' + m[1] + '</b>' + (note ? '<small>' + esc(note) + '</small>' : '') + '</td>';
+          }).join('') + '</tr>';
+        }).join('') + '</tbody></table></div>';
+    }
+    return '<b class="tip-ti">' + esc(st.ti) + '</b>' + t + '<div class="tip-x">' + ja(st.x) + '</div>' +
+      (st.more ? '<div class="tip-more">' + ja(st.more) + '</div>' : '') +
+      (st.why ? '<details><summary>🤔 なぜ？</summary><p>' + ja(st.why) + '</p></details>' : '');
+  }
   function doTip(st, run) {
     var first = !S.tips[st.id];
     S.tips[st.id] = 1; save();
-    var c = addCard(el('div', 'card tip', '<div class="tip-h"><span>💡 TIP GET!</span>' + (first ? '<em>NEW</em>' : '') + '</div><b class="tip-ti">' + esc(st.ti) + '</b><div class="tip-x">' + ja(st.x) + '</div>' +
-      (st.why ? '<details><summary>🤔 なぜ？</summary><p>' + ja(st.why) + '</p></details>' : '')));
+    var c = addCard(el('div', 'card tip' + (st.tbl ? ' has-tbl' : ''), '<div class="tip-h"><span>💡 TIP GET!</span>' + (first ? '<em>NEW</em>' : '') + '</div>' + tipBody(st)));
     glossAll(c);
     if (first) { Sfx.coin(); var p = FX.at(c); FX.burst(p.x, p.y, { pal: 'gold', n: 30 }); bonus(run, 5, c, 'Tips'); }
     nextBtn();
@@ -1082,7 +1103,7 @@
     if (tab === 'tips') {
       body.innerHTML = '<p class="dex-note">レッスンで手に入れたコツ。🤔 なぜ？ を開くと理由が読めるよ。</p>' + TIPS.map(function (t) {
         var st = t.tip, have = S.tips[st.id];
-        return have ? '<div class="card tip"><div class="tip-h"><span>L' + t.L.no + '</span></div><b class="tip-ti">' + esc(st.ti) + '</b><div class="tip-x">' + ja(st.x) + '</div>' + (st.why ? '<details><summary>🤔 なぜ？</summary><p>' + ja(st.why) + '</p></details>' : '') + '</div>'
+        return have ? '<div class="card tip' + (st.tbl ? ' has-tbl' : '') + '"><div class="tip-h"><span>L' + t.L.no + '</span></div>' + tipBody(st) + '</div>'
           : '<div class="card tip locked"><b class="tip-ti">？？？</b><small>L' + t.L.no + ' でゲット</small></div>';
       }).join('');
       glossAll(body);
@@ -1155,7 +1176,7 @@
     $('#hRushBest').textContent = unlocked ? 'BEST ' + S.rushBest : '🔒';
     $('#hGachaN').textContent = '🎟 ' + S.tickets;
     $('#hDexN').textContent = Object.keys(S.cards).length + '/' + D.cards.length;
-    $('#hTipsN').textContent = Object.keys(S.tips).length + '/' + TIPS.length;
+    $('#hTipsN').textContent = TIPS.filter(function (t) { return S.tips[t.tip.id]; }).length + '/' + TIPS.length;
     $('#hReview').classList.toggle('alert', due > 0);
     $('#hGacha').classList.toggle('alert', S.tickets > 0 && cardPool().length > 0);
 

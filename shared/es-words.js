@@ -38,7 +38,7 @@
   W('donde', '（関係詞）〜する場所', 'rel', 0);
   W('dónde', 'どこ（疑問詞）', 'int', 0);
   W('cuyo', '（関係詞）その〜が。持ち物の性・数に合わせる', 'rel', 3, 'cuya, cuyos, cuyas');
-  W('cual', '（el cual・lo cual で）el que・lo que の書き言葉版', 'rel', 3);
+  W('cual', '（el cual・lo cual で）el que・lo que の書き言葉版', 'rel', 3, 'cuales');
   W('mi', '私の', 'det', 0, 'mis');
   W('tu', '君の', 'det', 0);
   W('su', '彼の・彼女の・あなたの', 'det', 0);

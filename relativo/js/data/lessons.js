@@ -154,12 +154,23 @@ RQ.lessons = [
         why: '冠詞は**先行詞**の性・数に合わせる。casa は女性名詞・単数 → la。' },
       { t: 'ex', es: 'Son los [amigos] ^con^ {los que} viajé a México.', ja: '（彼らは）私がいっしょにメキシコへ旅行した友だちだ。' },
       { t: 'say', x: '人のときは `^con^ {los que}` でも `^con^ {quienes}` でも OK。\n会話では el que の形がよく使われるよ。' },
+      { t: 'ask', pred: true, q: 'じゃあ、人のときに冠詞を抜いたら？', es: 'la chica con que hablo', o: ['使える', '使えない'], a: 1,
+        r: '**NG**！ 前置詞のあとで人を指すとき、\n冠詞なしの que は使えない。\n`^con^ {quien}` か `^con^ {la que}` にする。' },
+      { t: 'ask', pred: true, q: 'では、ものなら？（L4 で見た形）', es: 'la casa en que vivo', o: ['使える', '使えない'], a: 0,
+        r: '**OK**！ ものの話で、前置詞が en・de・con なら\n冠詞なしの que も使える。\n`^en^ {la que}` でも `^en^ {que}` でも正解。' },
       { t: 'ask', q: '冠詞はどれ？', es: 'Las chicas con ___ que trabajo son muy simpáticas.', o: ['el', 'la', 'los', 'las'], a: 3,
         why: '先行詞 las chicas（女性・複数）→ las。' },
       { t: 'say', x: 'もう1つ。a ＋ el は `al` にくっつくよね。\n関係詞でも同じで、**a ＋ el que → al que**。' },
       { t: 'ex', es: 'El [chico] ^al^ {que} llamé ayer es mi primo.', ja: '昨日電話した男の子は、私のいとこだ。' },
-      { t: 'tip', id: 't-safe', ti: '迷ったら「前置詞＋冠詞＋que」', x: '人でも、ものでも使える**安全運転**の形。\n・`^con^ {quien}` は人だけ\n・`^en^ {que}`（冠詞なし）は、ものの話で短い前置詞のとき',
-        why: '冠詞があると、que がどの名詞を指しているかがはっきりする。前置詞のあとに冠詞を入れてまちがいになることは、まずない。' },
+      { t: 'tip', id: 't-table', ti: '先行詞のあとの形 OK・NG 表', x: 'ここまでを表にまとめたよ。\nテストの「入らないものを選べ」は、この表で解ける。\n✕ の所に入る選択肢が「まちがい」の答え。',
+        tbl: { head: ['', 'que', '冠詞＋que', 'quien'], rows: [
+          ['前置詞なし<br>コンマなし<small>el libro ＿ compré</small>', 'o|ふつう', 'x', 'x'],
+          ['前置詞なし<br>コンマあり<small>mi hermana, ＿ vive</small>', 'o', 'w|少ない', 'o|人だけ'],
+          ['前置詞あり<br>もの<small>la casa en ＿ vivo</small>', 'o|en・de・con', 'o', 'x|人専用'],
+          ['前置詞あり<br>人<small>la chica con ＿ hablo</small>', 'x', 'o', 'o']] },
+        more: '・a ＋ el que → **al que**、de ＋ el que → **del que**（a el que・de el que は NG）\n・para・por・sin など長めの前置詞は、ものでも冠詞をつける（la razón por la que）\n・場所で「〜で」なら donde も OK（en la que ＝ donde）',
+        why: '前置詞がない名詞のすぐ後ろは、昔から que の指定席（L3 の quien と同じ）。冠詞をつけると逆に NG になる。前置詞のあとは、冠詞が「どの名詞を指すか」の名札になる。人を指すときは、名札つき（冠詞＋que）か、人専用の quien を使う。' },
+      { t: 'q', id: 'ng-l5-1' },
       { t: 'drill', n: 5 }
     ]
   },
@@ -224,6 +235,8 @@ RQ.lessons = [
         why: '省いた名詞 camisa を戻せる → la que。' },
       { t: 'ask', q: 'どっち？「先生の言うことが分からない」', es: 'No entiendo ___ dice el profesor.', o: ['el que', 'lo que'], a: 1,
         why: '戻せる名詞がない「こと」→ lo que。' },
+      { t: 'ask', pred: true, q: '名詞を省かずに書いたら？', es: 'Este es el libro el que compré.', o: ['使える', '使えない'], a: 1,
+        r: '**NG**！ 名詞のすぐ後ろ（前置詞なし）は `{que}` だけ。\n`el libro {que} compré` か、名詞を省いて `{el que} compré`。\n（L5 の OK・NG 表の1行目）' },
       { t: 'tip', id: 't-el-lo', ti: 'el que と lo que の見分け', x: '省いた名詞を**戻せる** → `{el / la / los / las que}`\n戻せる名詞がない「こと」 → `{lo que}`\n__名詞を戻してみる__',
         why: 'el・la・los・las は名詞の性・数を持っている。だから、戻せる名詞があるときだけ使える。lo は性も数もない「こと」の入れ物。' },
       { t: 'drill', n: 5 }
@@ -266,7 +279,7 @@ RQ.lessons = [
       { t: 'ask', q: 'どれ？', es: 'Es un chico ___ madre es médica.', o: ['cuyo', 'cuya', 'que su'], a: 1,
         why: '持ち物 madre（女性・単数）→ cuya。' },
       { t: 'say', x: '会話ではあまり使わないけど、文章ではよく見る。\n**見て意味が取れれば合格**だよ。' },
-      { t: 'tip', id: 't-cual', ti: '書き言葉の仲間：el cual', x: '`{el cual}` `{la cual}` `{lo cual}` …\nel que・lo que の書き言葉版。見かけたら同じ意味で読めば OK。' },
+      { t: 'tip', id: 't-cual', ti: '書き言葉の仲間：el cual', x: '`{el cual}` `{la cual}` `{lo cual}` …\nel que・lo que の書き言葉版。見かけたら同じ意味で読めば OK。\n使えるのは**前置詞のあと**か**コンマのあと**。\n（el libro el cual compré は NG。表の1行目と同じ）' },
       { t: 'ex', es: 'Llegó tarde, {lo cual} me molestó.', ja: '彼は遅れて来た。そのことに、私はイライラした。' },
       { t: 'drill', n: 5 }
     ]
