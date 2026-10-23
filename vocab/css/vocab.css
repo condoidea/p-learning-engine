@@ -502,3 +502,13 @@ mark { background: var(--mark); color: inherit; padding: 0 3px; border-radius: 4
 .bs-end-saved { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-width: 340px; }
 .bs-end-saved span { width: 52px; text-align: center; }
 .bs-end-saved small { display: block; font-family: var(--f-es); font-size: 10px; line-height: 1.1; overflow-wrap: anywhere; }
+
+/* ---- まちがえたとき：自分の答えと正解をならべる（ちがう文字に色） ---- */
+.cmp { display: grid; gap: 4px; margin: 8px 0 0; }
+.cmp-row { display: flex; gap: 10px; align-items: baseline; padding: 6px 12px; border-radius: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+.cmp-row i { flex: none; font-style: normal; font-weight: 800; font-size: 12px; min-width: 4.4em; }
+.cmp-row.ng { background: var(--ng-bg); } .cmp-row.ng i { color: var(--ng); }
+.cmp-row.ok { background: var(--ok-bg); } .cmp-row.ok i { color: var(--ok); }
+.cmp-row .es { font-family: var(--f-es); font-size: 22px; font-weight: 700; letter-spacing: .02em; }
+.cmp b.wrong { color: var(--ng); text-decoration: underline wavy var(--ng); text-underline-offset: 4px; }
+.cmp b.fix { color: var(--ok); text-decoration: underline var(--ok); text-underline-offset: 4px; }

@@ -466,7 +466,7 @@
         if (now.length >= w.w.length) {
           fin = true; draw();
           var ok = now === w.w;
-          if (!ok) slot.insertAdjacentHTML('afterend', '<span class="fix">→ ' + esc(w.w) + '</span>');
+          if (!ok) $('.spell', s).insertAdjacentHTML('afterend', cmpHtml(now, w.w));
           Speech.say(V.head(w));
           feedback(ok, slot, $('.q-card', s));
           done(ok, s);
@@ -476,6 +476,17 @@
     $('.undo', s).addEventListener('click', function () { if (!fin) { got.pop(); draw(); } });
   }
 
+  /* まちがえたつづり：自分の答えと正解をならべ、ちがう文字に色（文字ごとの最長共通部分列） */
+  function cmpHtml(you, right) {
+    var x = you.split(''), y = right.split(''), n = x.length, m = y.length, L = [], i, j;
+    for (i = 0; i <= n; i++) { L.push([]); for (j = 0; j <= m; j++) L[i][j] = 0; }
+    for (i = n - 1; i >= 0; i--) for (j = m - 1; j >= 0; j--) L[i][j] = x[i] === y[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+    var kx = {}, ky = {};
+    for (i = 0, j = 0; i < n && j < m;) { if (x[i] === y[j]) { kx[i] = ky[j] = 1; i++; j++; } else if (L[i + 1][j] >= L[i][j + 1]) i++; else j++; }
+    var mark = function (a, k, cls) { return a.map(function (c, q) { return k[q] ? esc(c) : '<b class="' + cls + '">' + esc(c) + '</b>'; }).join(''); };
+    return '<div class="cmp"><div class="cmp-row ng"><i>✕ あなた</i><span class="es">' + mark(x, kx, 'wrong') + '</span></div>' +
+      '<div class="cmp-row ok"><i>○ 正解</i><span class="es">' + mark(y, ky, 'fix') + '</span></div></div>';
+  }
   /* 読む時間が要る問題（英英の説明）は、正解しても自動で次へ進まない */
   function holdOf(s) { return !!$('.q-card.def', s); }
   function feedback(ok, el, card) {
@@ -904,7 +915,7 @@
       if (a === null || b === null) return;
       fin = true; $$('.tl', s).forEach(function (x) { x.disabled = true; });
       var got = sp.pre + a + (sp.perf ? ' ' : '') + b, ok = got === sp.full;
-      if (!ok) $('.spell', s).insertAdjacentHTML('beforeend', '<span class="fix">→ ' + esc(sp.full) + '</span>');
+      if (!ok) $('.spell', s).insertAdjacentHTML('afterend', cmpHtml(got, sp.full));
       Speech.say(sp.full);
       feedback(ok, $('.spell', s), $('.q-card', s));
       done(ok, s);
