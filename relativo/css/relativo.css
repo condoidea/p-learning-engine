@@ -495,3 +495,23 @@ table.oknd { width: 100%; table-layout: fixed; border-collapse: separate; border
 .ngok { margin: 4px 0; font-size: 14px; }
 .ngok b { color: var(--ok); } .ngok s { color: var(--ng); }
 .blank.ng-hit { background: rgba(255, 92, 92, .25); border-color: var(--ok); text-decoration: line-through; color: var(--ng); }
+
+/* ---------- まちがえたとき：自分の答えと正解をくらべる ---------- */
+.cmp { margin: 6px 0; display: grid; gap: 4px; }
+.cmp-row { display: flex; gap: 8px; align-items: baseline; padding: 6px 10px; border-radius: 12px; font-size: 14.5px; line-height: 1.6; }
+.cmp-row i { flex: none; font-style: normal; font-weight: 800; font-size: 12px; min-width: 4.2em; }
+.cmp-row.ng { background: rgba(255, 92, 92, .12); } .cmp-row.ng i { color: var(--ng); }
+.cmp-row.ok { background: rgba(77, 255, 154, .1); } .cmp-row.ok i { color: var(--ok); }
+.cmp-row span.es { font-size: 16px; font-weight: 700; }
+.cmp b.wrong { color: var(--ng); text-decoration: underline wavy var(--ng); text-underline-offset: 3px; }
+.cmp b.fix { color: var(--ok); text-decoration: underline var(--ok); text-underline-offset: 3px; }
+.cmp b.okw { color: var(--ok); }
+.misses { margin: 12px auto 0; max-width: 420px; text-align: left; }
+.misses summary { padding: 10px 12px; border-radius: 14px; background: var(--panel); color: var(--prep); }
+.miss { margin-top: 8px; padding: 10px 12px; border-radius: 14px; background: rgba(30, 14, 70, .82); border: 1px solid var(--line); position: relative; }
+.miss .es-line { padding-right: 36px; }
+.miss .say { top: 6px; right: 6px; }
+.cmp-row { position: relative; }
+.cmp-row.has-say { padding-right: 46px; }
+.cmp-row .say { top: 50%; right: 6px; transform: translateY(-50%); }
+
