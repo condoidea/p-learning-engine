@@ -70,7 +70,12 @@
       return wait(Math.max(900, Math.min(3000, plain.length * 55)));
     });
   }
-  function me(html) { row('me', '<div class="bub">' + html + '</div>', 'me'); M.snd.type(); }
+  function me(html, cls) { row('me', '<div class="bub' + (cls ? ' ' + cls : '') + '">' + html + '</div>', 'me'); M.snd.type(); }
+  /* まちがえたとき：自分の答えと正解をならべる2行 */
+  function cmpRows(you, right) {
+    return '<div class="cmp"><div class="cmp-row ng"><i>✕ あなた</i><span>' + you + '</span></div>' +
+      '<div class="cmp-row ok"><i>○ 正解</i><span>' + right + '</span></div></div>';
+  }
 
   /* ---------- 粒（ごほうび） ---------- */
   function refreshCount(bump) {
@@ -169,7 +174,7 @@
           $$('.op', tray).forEach(function (x, k) { x.disabled = true; if (k === s.a) x.classList.add('right'); });
           if (!ok) bt.classList.add('wrong');
           if (!s.pre) { if (ok) hit(bt); else miss(bt); }
-          setTimeout(function () { setTray(''); me(fmt(s.opts[i])); res(i); }, E2E ? 0 : (ok ? 450 : 750));
+          setTimeout(function () { setTray(''); me((s.pre ? '' : ok ? '⭕ ' : '✕ ') + fmt(s.opts[i]), s.pre ? '' : ok ? 'ok' : 'ng'); res(i); }, E2E ? 0 : (ok ? 450 : 750));
         };
         if (E2E) setTimeout(function () { $('[data-i="' + s.a + '"]', tray).click(); });
       });
@@ -179,7 +184,7 @@
       var p;
       if (s.pre) p = say(ok ? (s.ok || 'いい読みだね！') : (ng || 'じつは…'), ok ? 'happy' : 'think');
       else if (ok) p = say(M.pick(PRAISE) + (s.ok ? ' ' + s.ok : ''), r.combo >= 3 ? 'wow' : 'happy');
-      else p = say((ng ? ng + '\n' : 'おしい！ ') + '正解は「' + s.opts[s.a] + '」。', 'oops');
+      else p = say((ng ? ng + '\n' : 'おしい！ ') + '「' + s.opts[i] + '」ではなく、正解は「' + s.opts[s.a] + '」。', 'oops');
       return p.then(function () { if (s.why && (!ok || s.pre || r.mode !== 'lesson')) return say(s.why, s.pre ? 'normal' : 'normal'); });
     });
   }
@@ -223,7 +228,7 @@
 
   /* ---------- 数を入れる問題 ---------- */
   function num(s) {
-    var r = run, tries = 0;
+    var r = run, tries = 0, you = '';
     return say(s.num, 'normal', 'q').then(function () {
       log.lastElementChild.querySelector('.bub').insertAdjacentHTML('afterbegin', '<span class="qtag">Q</span>');
       return new Promise(function (res) {
@@ -231,7 +236,8 @@
           alive(r);
           tries++;
           var ok = same(v, s.ans);
-          me(fmt(t));
+          me((ok ? '⭕ ' : '✕ ') + fmt(t), ok ? 'ok' : 'ng');
+          you = fmt(t);
           if (ok) { if (tries === 1) hit($('.k-ok', tray)); else { M.snd.pop(); refreshCount(false); } setTray(''); res({ ok: true, tries: tries }); return; }
           if (tries === 1) miss($('.k-ok', tray));
           clear();
@@ -252,14 +258,14 @@
           .then(function () { return say('2つつなげると、答えは ' + M.numText(s.ans) + (s.unit ? ' ' + s.unit : '') + '。\nこれで、さっきの問題も解けたね！', 'proud'); });
       }
       return say('おしい！ いっしょに解いてみよう。', 'oops').then(function () {
-        return steps(s.steps || [], s.ans, s.unit);
+        return steps(s.steps || [], s.ans, s.unit, you);
       });
     });
   }
-  function steps(lines, ans, unit) {
-    var r = run;
+  function steps(lines, ans, unit, you) {
+    var r = run, right = fmt(M.numText(ans) + (unit ? ' ' + unit : ''));
     var d = row('t wide', '<div class="card steps"><h4>解き方</h4><ol>' + lines.map(function (l) { return '<li>' + fmt(l) + '</li>'; }).join('') + '</ol>' +
-      '<p class="ans">答えは ' + fmt(M.numText(ans) + (unit ? ' ' + unit : '')) + '</p></div>', 't');
+      (you ? cmpRows('<b class="wrong">' + you + '</b>', '<b>' + right + '</b>') : '<p class="ans">答えは ' + right + '</p>') + '</div>', 't');
     gl(d);
     if (M.G && !E2E) M.G.from($$('li', d), { x: -14, opacity: 0, duration: 0.3, stagger: 0.25 });
     return wait(900 + lines.length * 500).then(function () { alive(r); return reply(['わかった']); });
@@ -277,7 +283,7 @@
           d.onclick = null;
           var i = +b.getAttribute('data-l'), ok = i === s.bad;
           $$('.ol', d).forEach(function (x, k) { x.disabled = true; if (k === s.bad) x.classList.add('bad'); });
-          if (ok) hit(b); else miss(b);
+          if (ok) hit(b); else { miss(b); b.classList.add('pick'); }
           setTray('');
           res(ok);
         };
@@ -285,7 +291,7 @@
       });
     }).then(function (ok) {
       alive(r);
-      return say(ok ? 'あっ…バレた！ 見つけてくれてありがとう。' : 'まちがいは、赤くなった行だったの。', 'oops').then(function () { return say(s.fix, 'normal'); });
+      return say(ok ? 'あっ…バレた！ 見つけてくれてありがとう。' : '✕ をつけた行は合っていたの。まちがいは、赤くなった行だよ。', 'oops').then(function () { return say(s.fix, 'normal'); });
     });
   }
 
@@ -351,7 +357,7 @@
     function one() {
       alive(r);
       if (i >= qs.length) return Promise.resolve();
-      var q = qs[i++], limit = q.num != null ? 30 : 12, t0 = Date.now(), raf = 0;
+      var q = qs[i++], limit = q.num != null ? 30 : 12, t0 = Date.now(), raf = 0, you = '';
       $('.rs-n', ov).textContent = i + ' / ' + qs.length;
       var qe = $('.rs-q', ov), ae = $('.rs-a', ov), bar = $('.rs-timer i', ov);
       qe.innerHTML = fmt(q.num != null ? q.num : q.ask); gl(qe);
@@ -367,7 +373,7 @@
           res({ ok: ok, el: el });
         }
         if (q.num != null) {
-          var kp = keypad(q.unit, function (v, t) { judge(same(v, q.ans), $('.k-ok', ae)); });
+          var kp = keypad(q.unit, function (v, t) { you = fmt(t); judge(same(v, q.ans), $('.k-ok', ae)); });
           ae.innerHTML = kp.html; kp.bind(ae.firstChild);
           if (E2E) setTimeout(function () { kp.set(e2eStr(q.ans)); $('.k-ok', ae).disabled = false; $('.k-ok', ae).click(); });
         } else {
@@ -377,6 +383,7 @@
             var k = +b.getAttribute('data-i');
             $$('.op', ae).forEach(function (x, j) { x.disabled = true; if (j === q.a) x.classList.add('right'); });
             if (k !== q.a) b.classList.add('wrong');
+            you = fmt(q.opts[k]);
             judge(k === q.a, b);
           };
           if (E2E) setTimeout(function () { $('[data-i="' + q.a + '"]', ae).click(); });
@@ -384,9 +391,10 @@
       }).then(function (o) {
         alive(r);
         if (o.ok) { okN++; return wait(650).then(one); }
-        /* まちがえたら、答えと解き方を見てから次へ */
-        var expl = q.num != null ? (q.steps || []).map(fmt).join('<br>') + '<br><b>答えは ' + fmt(M.numText(q.ans) + (q.unit ? ' ' + q.unit : '')) + '</b>'
-          : '<b>正解は ' + fmt(q.opts[q.a]) + '</b>' + (q.why ? '<br>' + fmt(q.why) : '');
+        /* まちがえたら、自分の答えと正解をならべ、解き方を見てから次へ */
+        var right = q.num != null ? fmt(M.numText(q.ans) + (q.unit ? ' ' + q.unit : '')) : fmt(q.opts[q.a]);
+        var expl = cmpRows('<b class="wrong">' + you + '</b>', '<b>' + right + '</b>') +
+          (q.num != null ? (q.steps || []).map(fmt).join('<br>') : q.why ? fmt(q.why) : '');
         ae.innerHTML = '<div class="rs-ex">' + expl + '</div><button class="main-s rs-next">つぎへ ▶</button>';
         gl(ae);
         return new Promise(function (res) { $('.rs-next', ae).onclick = res; if (E2E) setTimeout(res); }).then(one);

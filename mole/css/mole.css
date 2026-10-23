@@ -371,3 +371,15 @@ mark.k { color: inherit; font-weight: 800; padding: 0 1px; background: linear-gr
 /* 読んでいる間のトレイ（タップで先へ） */
 #tray .wait { margin: 0; text-align: center; font-size: 13px; font-weight: 700; color: var(--muted); animation: waitp 1.6s ease-in-out infinite; cursor: pointer; }
 @keyframes waitp { 50% { opacity: .45; } }
+
+/* ---------- まちがえたとき：自分の答えと正解をならべる ---------- */
+.row.me .bub.ng { background: linear-gradient(135deg, #ff8a8a, #e85a5a); box-shadow: 0 3px 10px -6px #c03c3c; }
+.cmp { display: grid; gap: 4px; margin: 8px 0 4px; }
+.cmp-row { display: flex; gap: 8px; align-items: baseline; padding: 6px 10px; border-radius: 12px; font-size: 15px; line-height: 1.6; overflow-wrap: anywhere; }
+.cmp-row i { flex: none; font-style: normal; font-weight: 800; font-size: 12px; min-width: 4.4em; }
+.cmp-row.ng { background: #fff0f0; } .cmp-row.ng i { color: var(--ng); }
+.cmp-row.ok { background: #e8fbf2; } .cmp-row.ok i { color: var(--ok); }
+.cmp b.wrong { color: var(--ng); text-decoration: underline wavy var(--ng); text-underline-offset: 3px; }
+.cmp-row.ok b { color: var(--ok); }
+.ol.pick { border-color: var(--ink); }
+.ol.pick::before { content: '✕ '; color: var(--ng); font-weight: 800; }
