@@ -26,7 +26,7 @@ function load(files) {
   return ctx.window;
 }
 
-const W = load(['shared/es-words.js', 'relativo/js/data/lessons.js', 'relativo/js/data/questions.js', 'relativo/js/data/cards.js']);
+const W = load(['shared/es-words.js', 'relativo/js/data/lessons.js', 'relativo/js/data/questions.js', 'relativo/js/data/dojo.js', 'relativo/js/data/cards.js']);
 const RQ = W.RQ, DICT = W.ES_WORDS;
 let errors = 0, warns = 0;
 function err(m) { errors++; console.log('❌ ' + m); }
@@ -62,6 +62,7 @@ RQ.questions.forEach(q => {
   addEs(src, q.s); addEs(src, q.ok);
   (q.p || []).forEach(p => addEs(src, p));
   (q.d || []).forEach(d => addEs(src, d));
+  (q.items || []).forEach(it => addEs(src, it.t));
   if (q.k !== 'ja') (q.o || []).forEach(o => { if (!/^（/.test(o)) addEs(src, o); });
   addTicks(src, q.why);
 });
@@ -85,7 +86,7 @@ RQ.questions.forEach(q => {
   ids.add(q.id);
   const words = clean(q.s || '').split(/\s+/).map(w => w.replace(/[¿?¡!.,—:;]/g, ''));
   if (q.o && (q.a < 0 || q.a >= q.o.length)) err(q.id + '：正解の番号が選択肢の外');
-  if ((q.k === 'pick' || q.k === 'ng') && !/___/.test(q.s)) err(q.id + '：' + q.k + ' なのに ___ がない');
+  if ((q.k === 'pick' || q.k === 'ng' || q.k === 'judge') && !/___/.test(q.s)) err(q.id + '：' + q.k + ' なのに ___ がない');
   if ((q.k === 'ante' || q.k === 'bug' || q.k === 'which') && words.indexOf(q.k === 'which' ? q.w : q.a) < 0) err(q.id + '：「' + (q.w || q.a) + '」が文の中にない');
   if (q.k === 'bug' && !q.ok) err(q.id + '：bug に ok（正しい文）がない');
   if (q.k === 'build' && q.s.split(/\s+/).length > 10) warn(q.id + '：build のタイルが多い（' + q.s.split(/\s+/).length + '枚）');

@@ -70,12 +70,12 @@
   W('madre', '母', 'n', 5);
   W('hermano', '兄・弟（hermana＝姉・妹）', 'n', 5, 'hermana, hermanos');
   W('niño', '子ども', 'n', 5, 'niños');
-  W('profesor', '先生', 'n', 5, 'profesora');
+  W('profesor', '先生', 'n', 5, 'profesora, profesores');
   W('estudiante', '学生', 'n', 5, 'estudiantes');
   W('día', '日（todos los días＝毎日）', 'n', 5, 'días');
   W('año', '年・〜歳', 'n', 5, 'años');
   W('hora', '時間・〜時', 'n', 5);
-  W('ciudad', '町・都市', 'n', 5);
+  W('ciudad', '町・都市', 'n', 5, 'ciudades');
   W('tren', '電車', 'n', 5);
   W('coche', '車', 'n', 5, 'coches');
   W('café', 'コーヒー・カフェ', 'n', 5);
@@ -86,7 +86,7 @@
   W('escuela', '学校', 'n', 5);
   W('hotel', 'ホテル', 'n', 5);
   W('restaurante', 'レストラン', 'n', 5);
-  W('parque', '公園', 'n', 5);
+  W('parque', '公園', 'n', 5, 'parques');
   W('playa', '海辺・ビーチ', 'n', 5);
   W('tienda', '店', 'n', 5);
   W('museo', '博物館・美術館', 'n', 5);
@@ -164,7 +164,7 @@
   W('delicioso', 'とてもおいしい', 'adj', 4);
   W('precioso', 'すばらしい・とてもきれいな', 'adj', 4, 'preciosa, preciosas');
   W('famoso', '有名な', 'adj', 4, 'famosas');
-  W('enorme', 'とても大きい', 'adj', 4);
+  W('enorme', 'とても大きい', 'adj', 4, 'enormes');
   W('contento', 'うれしい・満足した', 'adj', 4, 'contentas');
   W('cansado', '疲れた', 'adj', 4);
   W('sentado', 'すわっている', 'adj', 4);
@@ -191,8 +191,8 @@
   W('haber', '（hay で）〜がある・いる', 'v', 5, 'hay');
   W('ir', '行く（ir a ＋ 原形＝〜するつもり）', 'v', 5, 'va, voy, fuimos');
   W('venir', '来る', 'v', 5, 'vienen');
-  W('vivir', '住む', 'v', 5, 'vivo, vive, viven, vives');
-  W('hablar', '話す', 'v', 5, 'habla, hablan, hablo, hablé, hablaste');
+  W('vivir', '住む', 'v', 5, 'vivo, vive, viven, vives, viví');
+  W('hablar', '話す', 'v', 5, 'habla, hablan, hablo, hablé, hablaste, hablamos');
   W('comprar', '買う', 'v', 5, 'compré, compra, compramos, compro');
   W('ver', '見る', 'v', 5, 'vi, ves, vimos');
   W('leer', '読む', 'v', 5, 'leo');
@@ -208,7 +208,7 @@
   W('dar', 'あげる・くれる', 'v', 5, 'diste');
   W('saber', '知っている', 'v', 5, 'sé');
   W('estudiar', '勉強する', 'v', 5, 'estudia, estudian, estudio');
-  W('trabajar', '働く（trabajo＝私は働く／仕事）', 'v', 5, 'trabaja, trabajo');
+  W('trabajar', '働く（trabajo＝私は働く／仕事）', 'v', 5, 'trabaja, trabajo, trabajan');
   W('jugar', '遊ぶ・（スポーツを）する', 'v', 5, 'juegan, juego, jugamos, jugábamos');
   W('bailar', '踊る', 'v', 5, 'baila, bailan');
   W('cantar', '歌う', 'v', 5, 'canta');

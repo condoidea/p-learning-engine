@@ -80,7 +80,7 @@ svg.bot { display: block; width: 100%; height: auto; overflow: visible; }
 @keyframes ctaGlow { 50% { background-position: 100% 0; filter: brightness(1.15); } }
 @keyframes shiver { 0%, 90%, 100% { transform: none; } 92% { transform: translateX(-3px) rotate(-1deg); } 94% { transform: translateX(3px) rotate(1deg); } 96% { transform: translateX(-2px); } }
 
-.quick { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 16px 0; }
+.quick { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 16px 0; }
 .qb { position: relative; display: flex; flex-direction: column; align-items: center; gap: 0; padding: 8px 2px 6px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); }
 .qb:active { transform: scale(.95); }
 .qi { font-size: 24px; line-height: 1.2; }
@@ -515,3 +515,22 @@ table.oknd { width: 100%; table-layout: fixed; border-collapse: separate; border
 .cmp-row.has-say { padding-right: 46px; }
 .cmp-row .say { top: 50%; right: 6px; transform: translateY(-50%); }
 
+/* ---------- ○✕ジャッジ（使い分け道場） ---------- */
+.jrows { display: grid; gap: 6px; margin-top: 8px; }
+.jrow { display: grid; grid-template-columns: 1fr 46px 46px; gap: 6px; align-items: center; padding: 6px 8px; border-radius: 12px; background: rgba(255, 255, 255, .06); }
+.jt { font-weight: 800; font-size: 17px; }
+.jb { height: 40px; border: 2px solid var(--line); border-radius: 12px; background: var(--panel2); font-size: 18px; font-weight: 800; }
+.jb[data-m="o"].on { background: rgba(77, 255, 154, .25); border-color: var(--ok); color: var(--ok); }
+.jb[data-m="x"].on { background: rgba(255, 92, 92, .25); border-color: var(--ng); color: var(--ng); }
+.jb:disabled { cursor: default; }
+.jb:disabled:not(.on) { opacity: .35; }
+.jrow.ok { background: rgba(77, 255, 154, .1); }
+.jrow.ng { background: rgba(255, 92, 92, .14); outline: 2px solid var(--ng); }
+.jw { grid-column: 1 / -1; font-size: 12.5px; line-height: 1.5; color: #e5dcff; }
+.jrow.ng .jw { color: #ffd6d6; font-weight: 700; }
+.jpath { margin: 6px 0; padding: 8px 10px; border-radius: 12px; background: rgba(56, 232, 255, .08); font-size: 13.5px; line-height: 1.6; }
+.jpath b { color: var(--ante); }
+.c-ok { color: var(--ok); } .c-ng { color: var(--ng); }
+.qb b { white-space: nowrap; }
+.jb.should { opacity: 1 !important; border: 2px dashed var(--ok); color: var(--ok); background: rgba(77, 255, 154, .12); }
+.cmp .ji { display: inline-block; white-space: nowrap; margin-right: 10px; }

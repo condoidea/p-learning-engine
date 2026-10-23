@@ -294,6 +294,8 @@
     if (ok) { r.ok++; r.lv = Math.min(r.lv + 1, IV.length - 1); r.due = Date.now() + IV[r.lv] * DAY - 2 * 3600e3; }
     else { r.ng++; r.lv = 0; r.due = Date.now() + 10 * 60e3; }
   }
+  /* ○✕ジャッジは1問が長いので、ほかのモードでは max 問までにする（道場ではぜんぶ） */
+  function capJudge(list, max) { var j = 0; return list.filter(function (q) { return q.k !== 'judge' || j++ < max; }); }
   /* 出す順：期限切れ → 苦手 → まだ出ていない → ほか */
   function weighted(list) {
     var now = Date.now();
@@ -308,10 +310,19 @@
    *  cb(ok, ms)
    * ========================================================= */
   var KIND = { pick: ['🎯', '空いている所に入るのは？'], ante: ['👆', '先行詞をタップ'], bug: ['🐛', 'まちがい探し'], which: ['🕵️', 'この que の正体は？'],
-    ja: ['💬', '意味は？'], build: ['🧩', 'ならべて文を作ろう'], join: ['⚡', '正しい合体は？'], listen: ['🎧', '聞こえた文はどれ？'], ng: ['🚫', '＿＿ に入らない（NG）のはどれ？'] };
+    ja: ['💬', '意味は？'], build: ['🧩', 'ならべて文を作ろう'], join: ['⚡', '正しい合体は？'], listen: ['🎧', '聞こえた文はどれ？'], ng: ['🚫', '＿＿ に入らない（NG）のはどれ？'], judge: ['⚖️', '○✕ジャッジ：＿＿ に入る？入らない？'] };
   var RELW = { que: 1, quien: 1, quienes: 1, donde: 1, cuyo: 1, cuya: 1, cuyos: 1, cuyas: 1 };
   var WHICH = ['関係詞', '接続詞（〜ということ）', '疑問詞（何・どこ）'];
+  function firstOk(q) { for (var i = 0; i < q.items.length; i++) if (q.items[i].ok) return q.items[i].t; }
+  /* ○✕ジャッジの「3つのチェック」と、表のその行 */
+  var JROW = { 1: 'que ○・冠詞＋que ✕・quien ✕', 2: 'que ○・冠詞＋que △・quien ○（人）', 3: 'que ○（en・de・con）・冠詞＋que ○・quien ✕', 4: 'que ✕・冠詞＋que ○・quien ○' };
+  function pathHtml(q) {
+    var p = q.path;
+    return '<p class="jpath">🔍 前置詞 <b>' + (p.prep ? 'あり（' + p.prep + '）' : 'なし') + '</b>・コンマ <b>' + (p.comma ? 'あり' : 'なし') + '</b>・先行詞 <b>' + (p.hum ? '人' : 'もの') + '</b>　' + esc(p.tag) +
+      '<br>→ OK・NG 表の <b>' + p.row + '行目</b>：' + JROW[p.row] + (p.note ? '<br>💡 ' + esc(p.note) : '') + '</p>';
+  }
   function fullOf(q) {
+    if (q.k === 'judge') return q.s.replace('___', '{' + firstOk(q) + '}');
     if (q.k === 'pick') return q.s.replace('___', '{' + q.o[q.a] + '}');
     if (q.k === 'ng') return q.s.replace('___', '{' + q.o[q.a === 0 ? 1 : 0] + '}');
     if (q.k === 'bug') return q.ok;
@@ -348,6 +359,11 @@
     else if (q.k === 'ante') { you = '「' + esc(chosen) + '」をタップ'; right = '先行詞は「<b class="fix">' + esc(q.a) + '</b>」'; }
     else if (q.k === 'bug') { you = '「' + esc(chosen) + '」をまちがいにした'; right = 'まちがいは ' + mark(q.a) + ' → ' + esHtml(q.ok); }
     else if (q.k === 'which') { you = esc(chosen); right = '<b class="fix">' + WHICH[q.a] + '</b>'; }
+    else if (q.k === 'judge') {
+      var cm = chosen.split('');
+      you = q.items.map(function (it, i) { var m = cm[i] === 'o' ? '○' : '✕', good = (cm[i] === 'o') === it.ok; return '<span class="ji">' + (good ? m + ' ' + esc(it.t) : '<b class="wrong">' + m + ' ' + esc(it.t) + '</b>') + '</span>'; }).join(' ');
+      right = q.items.map(function (it, i) { var m = it.ok ? '○' : '✕', good = (cm[i] === 'o') === it.ok; return '<span class="ji">' + (good ? m + ' ' + esc(it.t) : '<b class="fix">' + m + ' ' + esc(it.t) + '</b>') + '</span>'; }).join(' ');
+    }
     else { you = esc(chosen); right = '<b class="fix">' + esc(q.o[q.a]) + '</b>'; }
     var es = q.k === 'pick' || q.k === 'build' || q.k === 'join' || q.k === 'listen' || q.k === 'bug';
     return '<div class="cmp"><div class="cmp-row ng"><i>✕ あなた</i><span' + (es ? ' class="es"' : '') + '>' + you + '</span></div>' +
@@ -360,6 +376,7 @@
     card.setAttribute('data-q', q.id);
     var body = '';
     if (q.k === 'pick' || q.k === 'ja' || q.k === 'ng') body = '<div class="es-line">' + esHtml(q.s) + '</div>';
+    else if (q.k === 'judge') body = '<div class="es-line">' + esHtml(q.s) + '</div>';
     else if (q.k === 'ante' || q.k === 'bug' || q.k === 'which') body = '<div class="es-line toks">' + toks(q.s, q.k === 'which' ? q.w : null) + '</div>';
     else if (q.k === 'build') body = '<div class="build-line"></div>';
     else if (q.k === 'listen') body = Speech.ok() ? '<div class="listen"><button class="say big" data-say="' + esc(q.s) + '" aria-label="もう一度聞く">🔊</button><button class="say slow" data-say="' + esc(q.s) + '" aria-label="ゆっくり聞く">🐢</button><small>何度でも聞けるよ</small></div>'
@@ -367,7 +384,7 @@
     else if (q.k === 'join') body = '<div class="join"><div class="es-line sm">' + esHtml(q.p[0]) + '</div><div class="fz-plus">＋</div><div class="es-line sm">' + esHtml(q.p[1]) + '</div></div>';
     var showJa = q.ja && q.k !== 'ja' && q.k !== 'join' && q.k !== 'listen';
     card.innerHTML = '<div class="qtag"><span>' + KIND[q.k][0] + '</span> ' + KIND[q.k][1] + (opts.tag ? '<em>' + esc(opts.tag) + '</em>' : '') + '</div>' + body +
-      (showJa ? '<div class="ja-line">' + esc(q.ja) + '</div>' : '') + '<div class="qres"></div>';
+      (showJa ? '<div class="ja-line">' + esc(q.ja) + '</div>' : '') + (q.k === 'judge' ? '<div class="jrows"></div>' : '') + '<div class="qres"></div>';
     glossEs(card);
     if (q.k === 'listen' && Speech.ok()) later(function () { if (!done) Speech.say(q.s); }, 350);
     if (q.k === 'ante') {
@@ -385,6 +402,12 @@
     }
     function result(ok, chosen) {
       var r = $('.qres', card), s = fullOf(q);
+      if (q.k === 'judge') {
+        r.innerHTML = (ok ? '<b class="rk ok">⭕ 全部正解！</b>' : '<b class="rk ng">❌ 赤い行を見てみよう（あなた → 正解）</b>') + pathHtml(q) +
+          '<div class="es-line ans">' + esHtml(s) + sayBtn(s) + '</div>';
+        glossAll(r); autoSay(s);
+        return;
+      }
       var head = ok ? '<b class="rk ok">⭕ ' + PRAISE[Math.floor(Math.random() * 4)] + '</b>' : '<b class="rk ng">❌ おしい！ くらべてみよう</b>' + cmpHtml(q, chosen, true);
       r.innerHTML = head +
         (q.k === 'ng' && ok ? '<p class="ngok">OK の形：' + q.o.filter(function (o, i) { return i !== q.a; }).map(function (o) { return '<b>' + esc(o) + '</b>'; }).join('・') + '　／　NG：<s>' + esc(q.o[q.a]) + '</s></p>' : '') +
@@ -407,6 +430,36 @@
         markOpts(wrap, ans, i);
         finish(ok, q.k === 'which' ? labels[i] : q.o[i]);
       }, q.k === 'join' || q.k === 'ja' || q.k === 'listen' ? 'long' : '');
+      return;
+    }
+    if (q.k === 'judge') {
+      var box = $('.jrows', card), marks = {}, nMarked = 0;
+      box.innerHTML = shuffle(q.items.map(function (x, i) { return i; })).map(function (i) {
+        return '<div class="jrow" data-i="' + i + '"><span class="jt">' + esc(q.items[i].t) + '</span><button class="jb" data-m="o" aria-label="入る">○</button><button class="jb" data-m="x" aria-label="入らない">✕</button></div>';
+      }).join('');
+      T.hint('全部の形に <b class="c-ok">○（入る）</b>か <b class="c-ng">✕（入らない）</b>をつけよう');
+      $$('.jb', box).forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (done) return;
+          var r = b.parentNode, i = +r.getAttribute('data-i');
+          if (!marks[i]) nMarked++;
+          marks[i] = b.getAttribute('data-m'); Sfx.tap();
+          $$('.jb', r).forEach(function (x) { x.classList.toggle('on', x === b); });
+          if (nMarked === q.items.length) T.next(judge, '⚖️ 判定！');
+        });
+      });
+      function judge() {
+        var ok = true;
+        $$('.jrow', box).forEach(function (r) {
+          var i = +r.getAttribute('data-i'), it = q.items[i], hitR = marks[i] === (it.ok ? 'o' : 'x');
+          if (!hitR) ok = false;
+          r.classList.add(hitR ? 'ok' : 'ng');
+          r.insertAdjacentHTML('beforeend', '<small class="jw">' + (hitR ? (it.ok ? '○ ' : '✕ ') : 'あなた ' + (marks[i] === 'o' ? '○' : '✕') + ' → 正解 ' + (it.ok ? '○' : '✕') + '　') + esc(it.why) + '</small>');
+          $$('.jb', r).forEach(function (x) { x.disabled = true; if (!hitR && x.getAttribute('data-m') === (it.ok ? 'o' : 'x')) x.classList.add('should'); });
+        });
+        T.clear();
+        finish(ok, q.items.map(function (x, i) { return marks[i]; }).join(''));
+      }
       return;
     }
     if (q.k === 'ante' || q.k === 'bug') {
@@ -673,7 +726,7 @@
   function doQ(st, run) { lessonQ(QBY[st.id], run, nextBtn); }
   function doDrill(st, run) {
     var pool = D.questions.filter(function (q) { return q.L === cur.L.no && !cur.used[q.id]; });
-    var list = weighted(pool).slice(0, st.n);
+    var list = capJudge(weighted(pool), 1).slice(0, st.n);
     addBot('よし、仕上げの **ドリル** だ！\n' + list.length + '問、連続正解で FEVER をねらえ🔥', 'happy');
     FX.slam('DRILL ×' + list.length, 'gold');
     var k = 0, me = cur;
@@ -737,7 +790,7 @@
         run.misses.map(function (m) {
           var full = fullOf(m.q);
           return '<div class="miss"><div class="es-line sm">' + esHtml(full) + sayBtn(full) + '</div>' + (m.q.ja ? '<div class="ja-line">' + esc(m.q.ja) + '</div>' : '') +
-            cmpHtml(m.q, m.c) + (m.q.why ? '<p class="why">' + ja(m.q.why) + '</p>' : '') + '</div>';
+            cmpHtml(m.q, m.c) + (m.q.k === 'judge' ? pathHtml(m.q) : '') + (m.q.why ? '<p class="why">' + ja(m.q.why) + '</p>' : '') + '</div>';
         }).join('') + '</details>' : '') +
       '<div class="res-btns"></div></div>';
     var bt = $('.res-btns', scr);
@@ -812,7 +865,7 @@
     T2.next(function () { bossFight(B); }, '⚔ たたかう！', 'boss');
   }
   function bossFight(B) {
-    var pool = D.questions.filter(function (q) { return B.from.indexOf('L' + q.L) >= 0; });
+    var pool = capJudge(shuffle(D.questions.filter(function (q) { return B.from.indexOf('L' + q.L) >= 0; })), 3);
     var queue = weighted(pool), qi = 0;
     var hpMax = 1000, hp = hpMax, hearts = 3, dmgBase = Math.ceil(hpMax / B.n), n = 0;
     zRun = newRun(); zActive = true;
@@ -830,7 +883,7 @@
       if (qi >= queue.length) { queue = weighted(pool); qi = 0; }
       var q = queue[qi++]; n++;
       var c = zCard();
-      var limit = q.k === 'build' ? 14000 : q.k === 'join' || q.k === 'ja' ? 9000 : 6000;
+      var limit = q.k === 'build' || q.k === 'judge' ? 18000 : q.k === 'join' || q.k === 'ja' ? 9000 : 6000;
       renderQ(q, c, T2, { run: zRun, tag: 'TURN ' + n }, function (ok, ms) {
         srs(q, ok); save();
         var face = $('#bFace');
@@ -889,7 +942,7 @@
 
   /* ----- ラッシュ（60秒） ----- */
   function rushIntro() {
-    var pool = unlockedQs().filter(function (q) { return q.k !== 'build' && q.k !== 'join'; });
+    var pool = unlockedQs().filter(function (q) { return q.k !== 'build' && q.k !== 'join' && q.k !== 'judge'; });
     if (!pool.length) return toast('🔒 L1 をクリアすると、ラッシュが遊べるよ');
     zStop(); show('quiz');
     $('#zTitle').textContent = '⚡ ラッシュ'; $('#zProg').style.width = '100%'; $('#zRight').innerHTML = '';
@@ -959,10 +1012,44 @@
   }
 
   /* ----- 復習 ----- */
+  /* ----- 使い分け道場（○✕ジャッジだけ。苦手な文から8問） ----- */
+  function judgeQs() { return D.questions.filter(function (q) { return q.k === 'judge'; }); }
+  function dojoGo() {
+    if (!lessonDone(5)) return toast('🔒 L5 をクリアすると、道場が開くよ');
+    var list = weighted(judgeQs()).slice(0, 8), k = 0;
+    zStop(); show('quiz'); zActive = true; zRun = newRun();
+    $('#zTitle').textContent = '🥋 使い分け道場'; zHud.innerHTML = '';
+    FX.slam('DOJO', 'gold', 'que・quien・冠詞＋que');
+    function paint() { $('#zProg').style.width = Math.round(k / list.length * 100) + '%'; $('#zRight').innerHTML = '<small>XP</small><b>' + zRun.xp + '</b>'; }
+    function one() {
+      paint();
+      if (k >= list.length) return end();
+      var q = list[k++], c = zCard();
+      renderQ(q, c, T2, { run: zRun, tag: k + ' / ' + list.length }, function (ok) {
+        srs(q, ok); save();
+        if (ok) hit(zRun, c, 15); else miss(zRun, c);
+        paint();
+        later(function () { T2.next(one, k < list.length ? '▶ つぎへ' : '▶ おわり！'); }, 250);
+      });
+    }
+    function end() {
+      zStop();
+      S.tickets += 1;
+      var rewards = [{ icon: '🎟', t: '道場やりきり +1' }];
+      touchDay();
+      zRun.xp += 20;
+      var up = addXp(zRun.xp); save();
+      var acc = zRun.ok / list.length;
+      showResult({ title: acc === 1 ? 'PERFECT!!' : 'DOJO CLEAR!', sub: '使い分け道場 ' + list.length + '問', stars: acc >= 0.9 ? 3 : acc >= 0.7 ? 2 : 1, run: zRun, rewards: rewards, up: up,
+        note: 'まちがえた文は、苦手として先に出てくるよ。全部 ○ になるまでくり返そう。', retry: { label: '🥋 もう8問', fn: dojoGo } });
+    }
+    one();
+  }
+
   function reviewGo() {
     var all = unlockedQs();
     if (!all.length) return toast('🔒 L1 をクリアすると、復習ができるよ');
-    var list = weighted(all).slice(0, 10), k = 0;
+    var list = capJudge(weighted(all), 3).slice(0, 10), k = 0;
     zStop(); show('quiz'); zActive = true; zRun = newRun();
     $('#zTitle').textContent = '🔁 復習'; zHud.innerHTML = '';
     var due = dueQs().length;
@@ -1217,6 +1304,8 @@
     var unlocked = unlockedQs().length > 0;
     $('#hDue').innerHTML = !unlocked ? '🔒' : due ? '<em>' + due + '</em> 問' : 'OK';
     $('#hRushBest').textContent = unlocked ? 'BEST ' + S.rushBest : '🔒';
+    var jq = judgeQs();
+    $('#hDojoN').textContent = lessonDone(5) ? jq.filter(function (q) { return S.q[q.id] && S.q[q.id].lv >= 2; }).length + '/' + jq.length : '🔒';
     $('#hGachaN').textContent = '🎟 ' + S.tickets;
     $('#hDexN').textContent = Object.keys(S.cards).length + '/' + D.cards.length;
     $('#hTipsN').textContent = TIPS.filter(function (t) { return S.tips[t.tip.id]; }).length + '/' + TIPS.length;
@@ -1246,8 +1335,8 @@
         }
       });
       if (!nodes.length) {
-        html += '<div class="extra"><button class="mini" data-act="review">🔁 復習</button><button class="mini" data-act="rush">⚡ ラッシュ</button>' + (dd.d === 7 ? '<button class="mini" data-act="final">👑 ラスボス</button>' : '') + '</div>';
-      }
+        html += '<div class="extra"><button class="mini" data-act="dojo">🥋 道場</button><button class="mini" data-act="review">🔁 復習</button><button class="mini" data-act="rush">⚡ ラッシュ</button>' + (dd.d === 7 ? '<button class="mini" data-act="final">👑 ラスボス</button>' : '') + '</div>';
+      } else if (dd.d >= 3) html += '<div class="extra"><button class="mini" data-act="dojo">🥋 使い分け道場</button></div>';
       html += '</div></div>';
     });
     map.innerHTML = html;
@@ -1256,7 +1345,7 @@
       b.addEventListener('click', function () {
         Sfx.unlock(); Sfx.tap();
         var a = b.getAttribute('data-act');
-        if (a === 'review') reviewGo(); else if (a === 'rush') rushIntro();
+        if (a === 'review') reviewGo(); else if (a === 'rush') rushIntro(); else if (a === 'dojo') dojoGo();
         else { var fi = ORDER.length - 1; openNode(fi); }
       });
     });
@@ -1266,6 +1355,7 @@
   }
   $('#hReview').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); reviewGo(); });
   $('#hRush').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); rushIntro(); });
+  $('#hDojo').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); dojoGo(); });
   $('#hGacha').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); gachaScreen(); });
   $('#hDex').addEventListener('click', function () { Sfx.tap(); dexScreen('cards'); });
   $('#hTips').addEventListener('click', function () { Sfx.tap(); dexScreen('tips'); });
