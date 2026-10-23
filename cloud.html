@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<script src="shared/cloud.js?v=1"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LEARNING ENGINE｜クラウド保存</title>
+<meta name="theme-color" content="#05060f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="engine/css/style.css?v=10">
+<style>
+  body { background: radial-gradient(ellipse at 20% 0%, #1a1550 0%, var(--bg) 55%) fixed; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
+  .back { color: var(--muted); font-size: 14px; text-decoration: none; }
+  h1 { margin: 12px 0 4px; font-size: 24px; }
+  .lead { margin: 0 0 20px; color: var(--muted); font-size: 14px; }
+  .box { padding: 18px; border-radius: var(--radius); background: var(--glass); border: 1px solid var(--line); margin-bottom: 16px; }
+  .box h2 { margin: 0 0 10px; font-size: 17px; }
+  .box p { margin: 0 0 10px; font-size: 14px; color: #c9d4ef; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  label { display: block; margin: 0 0 12px; font-size: 13px; color: var(--muted); }
+  input, select { display: block; width: 100%; margin-top: 4px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: rgba(0,0,0,.35); color: var(--text); font: inherit; font-size: 16px; }
+  button.b { padding: 10px 18px; border-radius: 10px; border: 0; background: linear-gradient(120deg, var(--accent), var(--accent2)); color: #05060f; font: inherit; font-weight: 700; font-size: 15px; cursor: pointer; }
+  button.b.sub { background: rgba(255,255,255,.1); color: var(--text); border: 1px solid var(--line); font-weight: 500; }
+  button.b:disabled { opacity: .5; cursor: default; }
+  .st { display: flex; align-items: center; gap: 10px; font-size: 15px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex: none; }
+  .dot.on { background: var(--ok); }
+  .dot.ng { background: var(--ng); }
+  .msg { min-height: 1.5em; margin: 10px 0 0; font-size: 14px; }
+  .msg.ng { color: var(--ng); }
+  ul.keys { margin: 0 0 12px; padding-left: 1.2em; font-size: 14px; }
+  .hist { list-style: none; margin: 10px 0 0; padding: 0; }
+  .hist li { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 14px; }
+  .hist small { color: var(--muted); }
+  details summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← コース選択へ</a>
+  <h1>☁ クラウド保存</h1>
+  <p class="lead">学習の記録はいつもどおりこの端末に保存されます。ログインすると、同じ記録をクラウドにも置き、ほかの端末と同じ続きから学べます。</p>
+
+  <!-- 未設定 -->
+  <section class="box" id="vConf" hidden>
+    <h2>まだ使えません</h2>
+    <p>クラウド（Supabase）の準備がまだです。準備のしかたは docs/クラウド保存.md にあります。</p>
+    <details><summary>この端末だけで試す（URL と anon key を入れる）</summary>
+      <label>Project URL<input id="cUrl" placeholder="https://xxxx.supabase.co" autocomplete="off"></label>
+      <label>anon key<input id="cAnon" autocomplete="off"></label>
+      <button class="b sub" id="cSave">この端末に保存</button>
+    </details>
+  </section>
+
+  <!-- ログイン -->
+  <section class="box" id="vLogin" hidden>
+    <h2>ログイン</h2>
+    <p id="loginNote">Supabase に登録したメールアドレスとパスワードを入れてください。</p>
+    <form id="fLogin">
+      <label>メールアドレス<input id="lMail" type="email" autocomplete="username" required></label>
+      <label>パスワード<input id="lPass" type="password" autocomplete="current-password" required></label>
+      <button class="b" type="submit">ログイン</button>
+    </form>
+  </section>
+
+  <!-- はじめてつなぐ -->
+  <section class="box" id="vLink" hidden>
+    <h2>この端末をつなぐ</h2>
+    <p id="linkSum"></p>
+    <div id="linkPick" hidden>
+      <p>次の記録は、この端末とクラウドで中身がちがいます。どちらを残しますか？（残さなかったほうもクラウドの履歴に保存されるので、あとで戻せます）</p>
+      <ul class="keys" id="linkKeys"></ul>
+      <div class="row">
+        <button class="b" data-link="cloud">クラウドの記録を残す</button>
+        <button class="b sub" data-link="device">この端末の記録を残す</button>
+      </div>
+    </div>
+    <div id="linkGo" hidden><button class="b" data-link="cloud">つなぐ</button></div>
+  </section>
+
+  <!-- つながっている -->
+  <section class="box" id="vOn" hidden>
+    <div class="st"><span class="dot" id="dot"></span><span id="stText"></span></div>
+    <p class="msg" id="stSub"></p>
+    <div class="row">
+      <button class="b" id="bSync">今すぐ同期</button>
+      <button class="b sub" id="bOut">ログアウト</button>
+    </div>
+  </section>
+
+  <section class="box" id="vHist" hidden>
+    <h2>前の記録に戻す</h2>
+    <p>クラウドには、1時間に1回まで前の版が残ります（30日分）。同期でぶつかって使わなかったほうの記録も残ります。</p>
+    <label>どの記録？<select id="hKey"></select></label>
+    <ul class="hist" id="hList"></ul>
+  </section>
+
+  <p class="msg" id="msg"></p>
+</div>
+
+<script src="courses/registry.js?v=20"></script>
+<script src="vocab/js/decks.js?v=15"></script>
+<script>
+(function () {
+  'use strict';
+  var C = window.LECloud;
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function msg(t, ng) { $('msg').textContent = t || ''; $('msg').className = 'msg' + (ng ? ' ng' : ''); }
+  function fail(e) { msg(String(e && e.message || e).replace(/^400 .*(invalid_grant|invalid_credentials|Invalid login).*$/,'メールアドレスかパスワードがちがいます'), true); }
+  function when(t) { return new Date(t).toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+
+  /* キーの呼び名 */
+  var names = { 'le.profile.v1': 'レベル・ストリーク（全コース共通）', 'vocab.decks.v1': '読み込んだ単語デッキの一覧', 'le.hub.view': 'コース一覧の表示のしかた' };
+  (window.LE_COURSES || []).forEach(function (c) { names[c.storageKey] = c.title; });
+  (window.VocabDecks ? VocabDecks.list() : []).forEach(function (d) {
+    names['vocab.' + d.id + '.v1'] = d.title + '（進み具合）';
+    names['vocab.deck.' + d.id] = d.title + '（単語データ）';
+  });
+  function label(k) { return names[k] || k; }
+
+  function show(id) { ['vConf', 'vLogin', 'vLink', 'vOn', 'vHist'].forEach(function (v) { $(v).hidden = id.indexOf(v) < 0; }); }
+
+  function render() {
+    var s = C.state();
+    if (!s.configured) return show(['vConf']);
+    if (!s.email || s.broken) {
+      if (s.broken) $('loginNote').textContent = 'ログインの期限が切れました。もう一度ログインしてください（記録はこの端末に残っています）。';
+      if (s.email) $('lMail').value = s.email;
+      return show(['vLogin']);
+    }
+    if (!s.linked) { show(['vLink']); return prepareLink(); }
+    show(['vOn', 'vHist']);
+    $('dot').className = 'dot ' + (s.err ? 'ng' : 'on');
+    $('stText').textContent = s.email + ' でつながっています';
+    $('stSub').textContent = s.err ? '最後の同期に失敗しました：' + s.err : s.ok ? '最後に同期：' + when(s.ok) : '';
+    $('stSub').className = 'msg' + (s.err ? ' ng' : '');
+    fillKeys();
+  }
+
+  function prepareLink() {
+    $('linkSum').textContent = 'クラウドの記録を調べています…';
+    $('linkPick').hidden = $('linkGo').hidden = true;
+    C.preview().then(function (p) {
+      $('linkSum').textContent = 'クラウドに ' + p.cloud + ' 件、この端末に ' + p.device + ' 件の記録があります。' +
+        (p.differ.length ? '' : '片方にしかない記録は、もう片方にも入れます。');
+      if (p.differ.length) {
+        $('linkKeys').innerHTML = p.differ.map(function (k) { return '<li>' + esc(label(k)) + '</li>'; }).join('');
+        $('linkPick').hidden = false;
+      } else $('linkGo').hidden = false;
+    }).catch(fail);
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-link]'); if (!b) return;
+    document.querySelectorAll('[data-link]').forEach(function (x) { x.disabled = true; });
+    msg('つないでいます…');
+    C.link(b.dataset.link).then(function () { msg('つなぎました。ほかの端末でも同じアカウントでログインしてください。'); render(); })
+      .catch(fail).then(function () { document.querySelectorAll('[data-link]').forEach(function (x) { x.disabled = false; }); });
+  });
+
+  $('fLogin').addEventListener('submit', function (e) {
+    e.preventDefault();
+    msg('ログインしています…');
+    C.login($('lMail').value.trim(), $('lPass').value).then(function () { $('lPass').value = ''; msg(''); render(); }).catch(fail);
+  });
+  $('bSync').addEventListener('click', function () {
+    this.disabled = true; var b = this;
+    C.sync().then(function () { msg(''); }).catch(fail).then(function () { b.disabled = false; render(); });
+  });
+  $('bOut').addEventListener('click', function () {
+    if (!confirm('ログアウトしますか？\nこの端末の記録はそのまま残ります（クラウドとの同期だけ止まります）。')) return;
+    C.logout(); msg('ログアウトしました。'); render();
+  });
+  $('cSave').addEventListener('click', function () {
+    var url = $('cUrl').value.trim().replace(/\/+$/, ''), anon = $('cAnon').value.trim();
+    if (!url || !anon) return msg('URL と anon key の両方を入れてください', true);
+    localStorage.setItem('cloud.conf', JSON.stringify({ url: url, anon: anon }));
+    location.reload();
+  });
+
+  /* 履歴 */
+  function fillKeys() {
+    var cur = $('hKey').value;
+    var ks = C.keys().sort(function (a, b) { return label(a).localeCompare(label(b), 'ja'); });
+    $('hKey').innerHTML = '<option value="">（えらぶ）</option>' + ks.map(function (k) { return '<option value="' + esc(k) + '">' + esc(label(k)) + '</option>'; }).join('');
+    $('hKey').value = cur;
+  }
+  var REASON = { auto: '自動で保存', 'conflict-device': 'この端末で使わなかった版', 'conflict-cloud': 'ほかの端末で使わなかった版', 'link-device': 'つないだとき残さなかった端末の版', 'link-cloud': 'つないだとき残さなかったクラウドの版', 'before-restore': '戻す前の版' };
+  $('hKey').addEventListener('change', loadHist);
+  function loadHist() {
+    var k = $('hKey').value;
+    $('hList').innerHTML = '';
+    if (!k) return;
+    C.history(k).then(function (rows) {
+      $('hList').innerHTML = rows.length ? rows.map(function (r) {
+        return '<li><span>' + when(r.saved_at) + '<br><small>' + esc(REASON[r.reason] || r.reason || '') + '</small></span><button class="b sub" data-restore="' + r.id + '">この版に戻す</button></li>';
+      }).join('') : '<li><small>まだ履歴はありません（1時間以上たって記録が変わると残ります）</small></li>';
+    }).catch(fail);
+  }
+  $('hList').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-restore]'); if (!b) return;
+    if (!confirm('「' + label($('hKey').value) + '」をこの版に戻しますか？\n今の記録も履歴に残すので、あとでまた戻せます。')) return;
+    C.restore(b.dataset.restore).then(function (k) { msg('「' + label(k) + '」を戻しました。'); loadHist(); }).catch(fail);
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
