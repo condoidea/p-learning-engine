@@ -15,8 +15,8 @@
 (function () {
   'use strict';
   /* Supabase のプロジェクト（Project Settings → API）。anon key は公開してよい鍵（中身は行単位の権限で守る） */
-  var SB_URL = '';
-  var SB_ANON = '';
+  var SB_URL = 'https://iuhgjbvlklznuhmnwsbo.supabase.co';
+  var SB_ANON = 'sb_publishable_ZvJywJ40bY7E-G8ZY7300Q_Ijx4OJlj';
 
   var AUTH_KEY = 'cloud.auth', META_KEY = 'cloud.meta';
   var PAGE_START = Date.now();
