@@ -83,6 +83,27 @@ MQ.cards = [
   { id: 'c10-4', L: 10, r: 'SR', icon: '🦉', name: 'ふくろう', es: '[Búho], no {abras} la puerta.', ja: 'ふくろうよ、ドアを開けるな。', tag: 'no' },
   { id: 'c10-5', L: 10, r: 'SSR', icon: '🛡️', name: 'まもりのたて', es: '[Pepe], no {tengas} miedo, por favor.', ja: 'ペペ、こわがらないで、お願い。', tag: 'no' },
 
+  /* ---- L11 港の市場 ---- */
+  { id: 'c11-1', L: 11, r: 'N', icon: '🍚', name: 'おこめ', es: '{Traiga} el arroz, por favor.', ja: 'お米を持ってきてください。', tag: 'usted' },
+  { id: 'c11-2', L: 11, r: 'N', icon: '🎶', name: 'おんがく', es: '[Paco], {oiga} la música, por favor.', ja: 'パコさん、音楽を聞いてください。', tag: 'usted' },
+  { id: 'c11-3', L: 11, r: 'R', icon: '🛒', name: 'いちばのカート', es: '[Paco], {pida} el pan, por favor.', ja: 'パコさん、パンを注文してください。', tag: 'usted' },
+  { id: 'c11-4', L: 11, r: 'SR', icon: '🦙', name: 'ラマ', es: '{Repita}, por favor, [Paco].', ja: 'パコさん、もう一度言ってください。', tag: 'usted' },
+  { id: 'c11-5', L: 11, r: 'SSR', icon: '⛵', name: 'パコの船', es: '[Paco], {conozca} la isla, por favor.', ja: 'パコさん、島を見て回ってください。', tag: 'usted' },
+
+  /* ---- L12 つづりの書きかえ ---- */
+  { id: 'c12-1', L: 12, r: 'N', icon: '🤝', name: 'やくそく', es: 'No {llegues} tarde, [Pepe].', ja: 'ペペ、遅れないでね。', tag: 'no' },
+  { id: 'c12-2', L: 12, r: 'N', icon: '🪨', name: 'くろい石', es: 'No lo {toques}, [Lola].', ja: 'ロラ、それにさわらないで。', tag: 'no' },
+  { id: 'c12-3', L: 12, r: 'R', icon: '🔎', name: 'ルーペ', es: '{Busque} el libro, por favor.', ja: 'どうぞ、本をさがしてください。', tag: 'usted' },
+  { id: 'c12-4', L: 12, r: 'SR', icon: '💰', name: 'おかね', es: '[Marina], {pague} aquí, por favor.', ja: 'マリーナさま、ここで払ってください。', tag: 'usted' },
+  { id: 'c12-5', L: 12, r: 'SSR', icon: '🎪', name: 'おまつりテント', es: '[Marina], {empiece} la fiesta, por favor.', ja: 'マリーナさま、お祭りを始めてください。', tag: 'usted' },
+
+  /* ---- L13 代名詞2つ・再帰の禁止 ---- */
+  { id: 'c13-1', L: 13, r: 'N', icon: '🍇', name: 'ぶどう', es: '[Pepe], {dámela}, por favor.', ja: 'ペペ、それを私にちょうだい、お願い。', tag: 'くっつく' },
+  { id: 'c13-2', L: 13, r: 'N', icon: '🍰', name: 'ケーキ', es: '{Dásela} a Marina, [Pepe].', ja: 'ペペ、それをマリーナさまにあげて。', tag: 'くっつく' },
+  { id: 'c13-3', L: 13, r: 'R', icon: '🥂', name: 'かんぱい', es: 'No me lo {digas}, [Lola].', ja: 'ロラ、それを私に言わないで。', tag: 'no' },
+  { id: 'c13-4', L: 13, r: 'SR', icon: '🕊️', name: 'はと', es: 'No te {preocupes}, [Lola].', ja: 'ロラ、心配しないで。', tag: 'no' },
+  { id: 'c13-5', L: 13, r: 'SSR', icon: '👑', name: 'かんむり', es: 'No se {preocupe}, [Marina].', ja: 'マリーナさま、ご心配なく。', tag: 'no' },
+
   /* ---- UR：ボスを倒した証 ---- */
   { id: 'u-B1', boss: 'B1', r: 'UR', icon: '🌈', name: '虹のかけら', es: '[Arcoíris], {ven} aquí, por favor.', ja: '虹よ、ここに来て、お願い。', tag: 'tú' },
   { id: 'u-B2', boss: 'B2', r: 'UR', icon: '🌋', name: 'しずまった火山', es: '[Volcán], {sea} amable, por favor.', ja: '火山よ、おだやかでいてください。', tag: 'usted' },

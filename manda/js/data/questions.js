@@ -43,6 +43,8 @@ MQ.questions = [
   { id: 'l1-10', L: 1, k: 'ja', s: '{Come} mucho, [Pepe].', o: ['ペペ、たくさん食べなさい。', 'ペペはたくさん食べる。', 'ペペ、食べないで。'], a: 0, why: '`comes` の s を取った `{come}` は命令。「たくさん食べなさい」の意味になる。' },
   { id: 'l1-11', L: 1, k: 'bug', s: 'Lola, escuchas la música.', a: 'escuchas', ok: 'Lola, escucha la música.', ja: 'ロラ、音楽を聞いて。', why: '`escuchas` は「君は聞く」。命令にするには s を取って `{escucha}`。' },
   { id: 'l1-12', L: 1, k: 'build', s: 'Baila con Lola, Pepe.', d: ['Bailas'], ja: 'ペペ、ロラと踊って。' },
+  { id: 'l1-13', L: 1, k: 'pick', s: '[Lola], ___ el pan con Pepe.', o: ['como', 'come', 'comes'], a: 1, ja: 'ロラ、ペペといっしょにパンを食べて。', why: '`Lola,` と呼びかけているので tú への命令。`comes`（君は食べる）から s を取って `{come}`。`como` は「私は食べる」。' },
+  { id: 'l1-14', L: 1, k: 'pick', s: '[Pepe], ___ un libro con Lola.', o: ['lees', 'leo', 'lee'], a: 2, ja: 'ペペ、ロラといっしょに本を読んで。', why: '`Pepe,` と呼びかけているので tú への命令。`lees`（君は読む）から s を取って `{lee}`。`Lola` は「いっしょにする相手」で、呼びかけではない。' },
 
   /* ================= L2 つづりが変わる動詞・por favor ================= */
   { id: 'l2-01', L: 2, k: 'pick', s: '[Pepe], ___ ya, por favor.', o: ['duermes', 'duerme', 'dorme'], a: 1, ja: 'ペペ、もう寝て、お願い。', why: '`duermes`（君は寝る）から s を取って `{duerme}`。ue は残す。`dorme` という形はない。' },
@@ -57,6 +59,8 @@ MQ.questions = [
   { id: 'l2-10', L: 2, k: 'pick', s: '[Lola], ___ la tienda, por favor.', o: ['cerra', 'cierras', 'cierra'], a: 2, ja: 'ロラ、店を閉めて、お願い。', why: '`cierras` から s を取って `{cierra}`。`cierras` のままだと「君は閉める」になる。' },
   { id: 'l2-11', L: 2, k: 'bug', s: 'Lola, juegas con Pepe.', a: 'juegas', ok: 'Lola, juega con Pepe.', ja: 'ロラ、ペペと遊んで。', why: '`juegas` は「君は遊ぶ」。命令にするには s を取って `{juega}`。' },
   { id: 'l2-12', L: 2, k: 'ja', s: '{Duerme}, [Pepe].', o: ['ペペ、寝なさい。', 'ペペは寝る。', 'ペペ、寝ないで。'], a: 0, why: '`duermes` から s を取った `{duerme}` は「寝なさい」という命令。名前は後ろに置いてもよい。' },
+  { id: 'l2-13', L: 2, k: 'pick', s: '[Lola], ___ la ventana: hace frío.', o: ['cierras', 'cierra', 'cerra'], a: 1, ja: 'ロラ、窓を閉めて。寒いよ。', why: '呼びかけが Lola（仲よし）なので tú への命令。`cierras` から s を取って `{cierra}`。e → ie のつづりは残す。' },
+  { id: 'l2-14', L: 2, k: 'pick', s: '[Pepe], ___ la fiesta ya.', o: ['empieza', 'empiezas', 'empeza'], a: 0, ja: 'ペペ、もうお祭りを始めて。', why: '呼びかけが Pepe（仲よし）なので tú への命令。`empiezas` から s を取って `{empieza}`。`empiezas` のままだと「君は始める」の文になる。' },
 
   /* ================= L3 不規則な命令 ven・ten・pon・sal ================= */
   { id: 'l3-01', L: 3, k: 'pick', s: '[Pepe], ___ aquí.', o: ['viene', 'ven', 'vienes'], a: 1, ja: 'ペペ、ここに来て。', why: '`venir` の命令は原形から -ir を取った `{ven}`。`viene` は「彼は来る」、`vienes` は「君は来る」。' },
@@ -71,6 +75,8 @@ MQ.questions = [
   { id: 'l3-10', L: 3, k: 'form', v: 'poner', p: 'tú', o: ['pone', 'pones', 'pon'], a: 2, why: '`poner` は原形の最後の `-er` を取って `{pon}`。' },
   { id: 'l3-11', L: 3, k: 'scene', sit: 'ロラが遠くでぼんやり立っている。そばに呼ぶ', o: ['Ven aquí, Lola.', 'Vienes aquí, Lola.', 'Viene aquí, Lola.'], a: 0, why: '`venir` の命令は `{ven}`。`vienes` は「君は来る」、`viene` は「彼女は来る」。' },
   { id: 'l3-12', L: 3, k: 'build', s: 'Sal de la casa, Lola.', d: ['Sale'], ja: 'ロラ、家から出なさい。' },
+  { id: 'l3-13', L: 3, k: 'pick', s: '[Lola], ___ el libro en la mesa.', o: ['pones', 'pone', 'pon'], a: 2, ja: 'ロラ、本をテーブルに置いて。', why: '呼びかけが Lola（仲よし）なので tú への命令。`poner` の命令は原形から -er を取った `{pon}`。`pone` は「彼女は置く」。' },
+  { id: 'l3-14', L: 3, k: 'pick', s: '[Pepe], ___ cuidado con el gato.', o: ['ten', 'tiene', 'tienes'], a: 0, ja: 'ペペ、ねこに気をつけて。', why: '呼びかけが Pepe（仲よし）なので tú への命令。`tener` の命令は原形から -er を取った `{ten}`。`tienes` は「君は持っている」。' },
 
   /* ================= L4 覚える4つ haz・di・ve・sé ================= */
   { id: 'l4-01', L: 4, k: 'pick', s: '[Pepe], ___ una casa.', o: ['hace', 'haz', 'haces'], a: 1, ja: 'ペペ、家を作って。', why: '`hacer` の命令は覚える形 `{haz}`。`hace` は「彼は作る」、`haces` は「君は作る」。' },
@@ -85,6 +91,8 @@ MQ.questions = [
   { id: 'l4-10', L: 4, k: 'scene', sit: 'テーブルの上が空っぽ。ロラに「パンをテーブルに置いて」と言う', o: ['Pone el pan en la mesa, Lola.', 'Poner el pan en la mesa, Lola.', 'Pon el pan en la mesa, Lola.'], a: 2, why: '`poner` の命令は原形から -er を取った `{pon}`。`pone` は「彼は置く」、`poner` は原形。' },
   { id: 'l4-11', L: 4, k: 'pick', s: '[Lola], ___ de la casa.', o: ['sal', 'sales', 'sale'], a: 0, ja: 'ロラ、家から出て。', why: '`salir` の命令は原形から -ir を取った `{sal}`。`sale` は「彼は出る」。' },
   { id: 'l4-12', L: 4, k: 'build', s: 'Ve a la playa, Lola.', d: ['Va'], ja: 'ロラ、浜へ行きなさい。' },
+  { id: 'l4-13', L: 4, k: 'pick', s: '[Lola], ___ a casa: ya es tarde.', o: ['va', 'vas', 've'], a: 2, ja: 'ロラ、家へ帰って。もう遅いよ。', why: '呼びかけが Lola（仲よし）なので tú への命令。`ir` の命令は覚える形 `{ve}`。`vas` は「君は行く」、`va` は「彼女は行く」。' },
+  { id: 'l4-14', L: 4, k: 'pick', s: '[Pepe], ___ bueno con el gato.', o: ['sé', 'eres', 'es'], a: 0, ja: 'ペペ、ねこにやさしくして。', why: '呼びかけが Pepe（仲よし）なので tú への命令。`ser` の命令は覚える形 `{sé}`。`eres` は「君は〜だ」、`es` は「彼は〜だ」。' },
 
   /* ================= L5 usted へのていねいな命令 ================= */
   { id: 'l5-01', L: 5, k: 'pick', s: '[Marina], ___ el pan, por favor.', o: ['come', 'coma', 'comes'], a: 1, ja: 'マリーナさま、パンを召し上がってください。', why: '女神さまには usted の命令。`come` の e を a にして `{coma}`。`come` は tú への命令。' },
@@ -99,6 +107,8 @@ MQ.questions = [
   { id: 'l5-10', L: 5, k: 'build', s: 'Coma el pan, por favor.', d: ['Come'], ja: 'パンを召し上がってください。' },
   { id: 'l5-11', L: 5, k: 'form', v: 'comer', p: 'usted', o: ['coma', 'come', 'comas'], a: 0, why: '-er の動詞は、tú の命令 `come` の e を a にして `{coma}`。' },
   { id: 'l5-12', L: 5, k: 'pick', s: '[Marina], ___ una canción, por favor.', o: ['canta', 'cantas', 'cante'], a: 2, ja: 'マリーナさま、歌を歌ってください。', why: '-ar の動詞は、tú の命令 `canta` の a を e にして `{cante}`。' },
+  { id: 'l5-13', L: 5, k: 'pick', s: '[Marina], ___ usted la puerta, por favor.', o: ['abra', 'abre', 'abres'], a: 0, ja: 'マリーナさま、ドアを開けてください。', why: '文の中に `usted` があり、相手は目上のマリーナさま。tú の命令 `abre` の e を a にして `{abra}`。`abre` は仲よしへの命令。' },
+  { id: 'l5-14', L: 5, k: 'pick', s: '[Lola], ___ la puerta, por favor.', o: ['abra', 'abre', 'abres'], a: 1, ja: 'ロラ、ドアを開けて、お願い。', why: '呼びかけが Lola（仲よし）なので tú への命令。`abres` から s を取って `{abre}`。`abra` は usted（目上）への命令。por favor があっても、相手は変わらない。' },
 
   /* ================= L6 usted の命令は yo の形から ================= */
   { id: 'l6-01', L: 6, k: 'pick', s: '[Marina], ___ conmigo, por favor.', o: ['ven', 'viene', 'venga'], a: 2, ja: 'マリーナさま、わたしといっしょに来てください。', why: '`vengo`（私は来る）の o を取って a をつけ `{venga}`。`ven` は tú への命令。' },
@@ -113,6 +123,8 @@ MQ.questions = [
   { id: 'l6-10', L: 6, k: 'scene', sit: 'マリーナさまに「本当のことを言ってください」とお願いする', o: ['Di la verdad, por favor.', 'Diga la verdad, por favor.', 'Dice la verdad, por favor.'], a: 1, why: '`digo` の o を取って a をつけ `{diga}`。`di` は tú への命令。' },
   { id: 'l6-11', L: 6, k: 'pick', s: '[Marina], ___ el libro en la mesa.', o: ['ponga', 'pon', 'pone'], a: 0, ja: 'マリーナさま、本をテーブルに置いてください。', why: '`pongo` の o を取って a をつけ `{ponga}`。`pon` は tú への命令。' },
   { id: 'l6-12', L: 6, k: 'who', s: '{Tenga} cuidado, por favor.', a: 1, ja: 'どうぞ、気をつけてください。', why: '`tenga` は yo の形 tengo から作った usted への命令。tú なら `{ten}`。' },
+  { id: 'l6-13', L: 6, k: 'pick', s: '[Marina], ___ cuidado con la puerta, por favor.', o: ['ten', 'tenga', 'tiene'], a: 1, ja: 'マリーナさま、ドアに気をつけてください。', why: '相手は目上のマリーナさまなので usted。`tengo` の o を取って a をつけ `{tenga}`。`ten` は tú（仲よし）への命令。' },
+  { id: 'l6-14', L: 6, k: 'pick', s: '[Pepe], ___ la verdad a Lola.', o: ['diga', 'dice', 'di'], a: 2, ja: 'ペペ、ロラに本当のことを言いなさい。', why: '呼びかけが Pepe（仲よし）なので tú への命令。`decir` の命令は覚える形 `{di}`。`diga` は usted への命令、`dice` は「彼は言う」。' },
 
   /* ================= L7 yo の形から作れない4つ・ustedes ================= */
   { id: 'l7-01', L: 7, k: 'pick', s: '[Marina], ___ por esta calle.', o: ['va', 've', 'vaya'], a: 2, ja: 'マリーナさま、この道を行ってください。', why: '`voy` は -oy で終わり、o を取る作り方が使えない。usted の `ir` は特別な形 `{vaya}`。' },
@@ -127,6 +139,8 @@ MQ.questions = [
   { id: 'l7-10', L: 7, k: 'scene', sit: '旅の一行に「いっしょに来てください」と言う', o: ['Vienen conmigo.', 'Vengan conmigo.', 'Venga conmigo.'], a: 1, why: 'usted の `venga` に n をつけて `{vengan}`。`vienen` は「彼らは来る」、`venga` は1人への命令。' },
   { id: 'l7-11', L: 7, k: 'pick', s: '[Marina], ___ el pan a Pepe, por favor.', o: ['da', 'dé', 'dar'], a: 1, ja: 'マリーナさま、ペペにパンをあげてください。', why: '`doy` は -oy で終わるので、usted の `dar` は特別な形 `{dé}`。アクセント記号を忘れずに。' },
   { id: 'l7-12', L: 7, k: 'build', s: 'Vayan por esta calle.', d: ['Van'], ja: 'みなさん、この道を行ってください。' },
+  { id: 'l7-13', L: 7, k: 'pick', s: 'Señores, ___ por esta calle, por favor.', o: ['vaya', 'van', 'vayan'], a: 2, ja: 'みなさん、この道を行ってください。', why: '`Señores` と何人もに、ていねいに呼びかけているので ustedes。usted の `vaya` に n をつけて `{vayan}`。`vaya` は1人への命令、`van` は「彼らは行く」。' },
+  { id: 'l7-14', L: 7, k: 'pick', s: '[Marina], ___ amable con Pepe, por favor.', o: ['sé', 'sea', 'eres'], a: 1, ja: 'マリーナさま、ペペにやさしくしてください。', why: '相手は目上のマリーナさまなので usted。`soy` は -oy で終わり、o を取る作り方が使えないので、特別な形 `{sea}`。`sé` は tú（仲よし）への命令。' },
 
   /* ================= L8 vosotros への命令・だれに言う？ ================= */
   { id: 'l8-01', L: 8, k: 'pick', s: '[Pepe] y [Lola], ___ con la música.', o: ['bailad', 'bailan', 'bailar'], a: 0, ja: 'ペペとロラ、音楽に合わせて踊りなさい。', why: '仲よしの2人（vosotros）には、原形 `bailar` の r を d にして `{bailad}`。`bailan` は「彼らは踊る」。' },
@@ -141,6 +155,8 @@ MQ.questions = [
   { id: 'l8-10', L: 8, k: 'bug', s: 'Chicos, escuchas la música.', a: 'escuchas', ok: 'Chicos, escuchad la música.', ja: 'みんな、音楽を聞いて。', why: '何人もの仲よしには、原形 `escuchar` の r を d にして `{escuchad}`。`escuchas` は1人の tú の形。' },
   { id: 'l8-11', L: 8, k: 'build', s: 'Cantad una canción, amigos.', d: ['Cantan'], ja: 'みんな、歌を歌え。' },
   { id: 'l8-12', L: 8, k: 'build', s: 'Abrid la puerta, amigos.', d: ['Abrir'], ja: 'みんな、ドアを開けなさい。' },
+  { id: 'l8-13', L: 8, k: 'pick', s: 'Chicos, ___ la ventana, que hace frío.', o: ['cerrad', 'cierra', 'cierren'], a: 0, ja: 'みんな、窓を閉めなさい。寒いよ。', why: '`Chicos` は仲よしの何人もの相手（vosotros）。原形 `cerrar` の r を d にして `{cerrad}`。`cierra` は1人の tú、`cierren` は ustedes（ていねい）への命令。' },
+  { id: 'l8-14', L: 8, k: 'pick', s: 'Señores, ___ la ventana, por favor.', o: ['cerrad', 'cierren', 'cierra'], a: 1, ja: 'みなさん、窓を閉めてください。', why: '`Señores` と `por favor` で、ていねいな何人もの相手（ustedes）。usted の `cierre` に n をつけて `{cierren}`。`cerrad` は仲よしの何人もへの命令。' },
 
   /* ================= L9 命令に lo・la・me・te・se をくっつける ================= */
   { id: 'l9-01', L: 9, k: 'pick', s: 'Aquí está el pan, [Pepe]: ___.', o: ['cómelo', 'comelo', 'lo come'], a: 0, ja: 'ここにパンがあるよ、ペペ。それを食べなさい。', why: '命令では `lo` を後ろにくっつける。強く読む「コ」に ´ をつけて `{cómelo}`。`lo come` は「彼はそれを食べる」。' },
@@ -155,6 +171,8 @@ MQ.questions = [
   { id: 'l9-10', L: 9, k: 'scene', sit: 'ペペに手紙（la carta）が届いた。「それを読みなさい」と言う', o: ['Léela, Pepe.', 'La lee, Pepe.', 'Leela, Pepe.'], a: 0, why: '手紙（la carta）は女性なので `la`。`lee` ＋ `la` で `{léela}`。´ を忘れずに。' },
   { id: 'l9-11', L: 9, k: 'scene', sit: 'マリーナさまにパン（el pan）をすすめる。「それを召し上がってください」と言う', o: ['Cómelo, por favor.', 'Cómalo, por favor.', 'Come lo, por favor.'], a: 1, why: 'usted への命令 `coma` に `lo` をくっつけ、´ をつけて `{cómalo}`。`cómelo` は tú への命令。' },
   { id: 'l9-12', L: 9, k: 'who', s: '{Siéntate}, [Lola].', a: 0, ja: 'すわりなさい、ロラ。', why: '`sienta` ＋ `te` で `{siéntate}`。te は tú の「自分を」なので、仲よしのロラへの命令。usted なら `{siéntese}`。' },
+  { id: 'l9-13', L: 9, k: 'pick', s: 'Señor, ___ usted aquí, por favor.', o: ['siéntese', 'siéntate', 'se sienta'], a: 0, ja: 'お客さま、ここにおすわりください。', why: '`Señor` と `usted` があるので、ていねいな相手。usted の命令 `siente` に `se` をくっつけて `{siéntese}`。`siéntate` は tú（仲よし）への命令。' },
+  { id: 'l9-14', L: 9, k: 'pick', s: '[Pepe], ___, por favor: tengo una canción.', o: ['escúchame', 'escuchame', 'me escucha'], a: 0, ja: 'ペペ、私の言うことを聞いて、お願い。歌があるの。', why: '`escucha` に `me` をくっつけると、強く読む「ク」の位置がずれるので ´ をつけて `{escúchame}`。´ のない `escuchame` はまちがい。' },
 
   /* ================= L10 「〜するな」の命令 ================= */
   { id: 'l10-01', L: 10, k: 'pick', s: '[Pepe], no ___ de la casa.', o: ['salgas', 'sales', 'salga'], a: 0, ja: 'ペペ、家から出ないで。', why: 'tú に「〜するな」は no ＋ usted の命令 `salga` ＋ s で `no {salgas}`。`sales` は「君は出る」。' },
@@ -168,5 +186,49 @@ MQ.questions = [
   { id: 'l10-09', L: 10, k: 'who', s: 'No {salgan} de la casa, por favor.', a: 3, ja: 'どうぞ、家から出ないでください。', why: 'usted の命令 `salga` に n をつけた `salgan` に no をつけた形。ustedes（何人も・ていねい）への禁止。' },
   { id: 'l10-10', L: 10, k: 'ja', s: 'No {hagas} esto, [Pepe].', o: ['ペペ、これをするな。', 'ペペはこれをしない。', 'ペペ、これをして。'], a: 0, why: 'usted の命令 `haga` に s をつけた `no {hagas}` は「〜するな」。`haz` の禁止形ではない。' },
   { id: 'l10-11', L: 10, k: 'bug', s: 'Pepe, no come el pan.', a: 'come', ok: 'Pepe, no comas el pan.', ja: 'ペペ、パンを食べるな。', why: '禁止は no ＋ usted の命令 ＋ s。`no come` は「彼は食べない」の文。`no {comas}`。' },
-  { id: 'l10-12', L: 10, k: 'build', s: 'No lo comas, Pepe.', d: ['cómelo'], ja: 'ペペ、それを食べちゃだめだ。' }
+  { id: 'l10-12', L: 10, k: 'build', s: 'No lo comas, Pepe.', d: ['cómelo'], ja: 'ペペ、それを食べちゃだめだ。' },
+  { id: 'l10-13', L: 10, k: 'pick', s: '[Marina], no ___ la puerta, por favor.', o: ['abras', 'abra', 'abre'], a: 1, ja: 'マリーナさま、ドアを開けないでください。', why: '相手は目上のマリーナさまなので usted。usted への禁止は no ＋ usted の命令だけで `no {abra}`。s がつく `abras` は tú への禁止。' },
+  { id: 'l10-14', L: 10, k: 'pick', s: '[Lola], no ___ eso.', o: ['hagas', 'haga', 'haces'], a: 0, ja: 'ロラ、それをしないで。', why: '呼びかけが Lola（仲よし）なので tú への禁止。no ＋ usted の命令 `haga` ＋ s で `no {hagas}`。`no haces` は「君はしない」の文。' },
+
+  /* ================= L11 港の市場：yo の形がクセものの usted の命令 ================= */
+  { id: 'l11-01', L: 11, k: 'pick', s: '[Paco], ___ el arroz aquí, por favor.', o: ['trae', 'traigo', 'traiga'], a: 2, ja: 'パコさん、ここにお米を持ってきてください。', why: 'パコさんは、はじめて会う商人なので usted。`traigo`（私は持ってくる）の o を取って a をつけ `{traiga}`。g が残る。`trae` は tú への命令。' },
+  { id: 'l11-02', L: 11, k: 'form', v: 'oír', p: 'usted', o: ['oiga', 'oye', 'oia'], a: 0, why: '`oigo`（私は聞く）の o を取って a をつけ `{oiga}`。g が残る。`oye` は tú への命令。' },
+  { id: 'l11-03', L: 11, k: 'scene', sit: 'パコさんが、パンを買いたそうにしている。「パンを注文してください」とすすめる', o: ['Pide pan, por favor.', 'Pida pan, por favor.', 'Pido pan, por favor.'], a: 1, why: 'パコさんは usted の相手。`pido`（私は頼む）の o を取って a をつけ `{pida}`。i は残る。`pide` は tú への命令、`pido` は「私は頼む」。' },
+  { id: 'l11-04', L: 11, k: 'pick', s: '[Paco], ___ la isla con Lola, por favor.', o: ['conozca', 'conoce', 'conozco'], a: 0, ja: 'パコさん、ロラと島を見て回ってください。', why: 'パコさんは usted の相手。`conozco`（私は知っている）の o を取って a をつけ `{conozca}`。zc が残る。`conoce` は tú への命令。' },
+  { id: 'l11-05', L: 11, k: 'who', s: '{Vea} la isla, [Paco].', a: 1, ja: 'パコさん、島を見てください。', why: '`vea` は `veo`（私は見る）の o を取って a をつけた形。パコさんは usted で話す相手なので、usted（1人・ていねい）への命令。' },
+  { id: 'l11-06', L: 11, k: 'ja', s: '{Repita}, por favor.', o: ['彼はくり返す。', 'もう一度見てください。', 'もう一度言ってください。'], a: 2, why: '`repito`（私はくり返す）の o を取って a をつけた `{repita}` は、usted への命令。「もう一度言ってください」の決まった言い方。' },
+  { id: 'l11-07', L: 11, k: 'bug', s: 'Paco, trae el arroz, por favor.', a: 'trae', ok: 'Paco, traiga el arroz, por favor.', ja: 'パコさん、お米を持ってきてください。', why: 'パコさんは usted の相手。`trae` は tú への命令なので、`traigo` の o を取って a をつけ `{traiga}`。' },
+  { id: 'l11-08', L: 11, k: 'build', s: 'Pida pan, por favor.', d: ['Pide'], ja: 'パンを注文してください。' },
+  { id: 'l11-09', L: 11, k: 'form', v: 'ver', p: 'usted', o: ['ve', 'veo', 'vea'], a: 2, why: '`veo`（私は見る）の o を取って a をつけ `{vea}`。`ve` は tú への命令。' },
+  { id: 'l11-10', L: 11, k: 'scene', sit: 'パコさんに、ロラを紹介する。「ロラと知り合ってください」と言う', o: ['Conozca a Lola, por favor.', 'Conoce a Lola, por favor.', 'Conozco a Lola, por favor.'], a: 0, why: 'パコさんは usted の相手。`conozco` の o を取って a をつけ `{conozca}`。`conoce` は tú への命令、`conozco` は「私は知っている」。' },
+  { id: 'l11-11', L: 11, k: 'build', s: 'Repita otra vez, por favor.', d: ['Repite'], ja: 'もう一度言ってください。' },
+  { id: 'l11-12', L: 11, k: 'pick', s: '[Paco], ___ esta música, por favor.', o: ['oye', 'oiga', 'oigo'], a: 1, ja: 'パコさん、この音楽を聞いてください。', why: 'パコさんは usted の相手。`oigo` の o を取って a をつけ `{oiga}`。`oye` は tú への命令、`oigo` は「私は聞く」。' },
+
+  /* ================= L12 つづりの書きかえ ================= */
+  { id: 'l12-01', L: 12, k: 'pick', s: '[Marina], ___ pronto, por favor.', o: ['llegue', 'llega', 'llege'], a: 0, ja: 'マリーナさま、早く着いてください。', why: 'マリーナさまは usted。`llego` の o を取って e をつけると `llege`（リェヘ）の音になる。音を守るために g → gu で `{llegue}`。`llega` は tú への命令。' },
+  { id: 'l12-02', L: 12, k: 'pick', s: '[Pepe], no ___ tarde.', o: ['llegas', 'lleges', 'llegues'], a: 2, ja: 'ペペ、遅れないで。', why: 'tú への禁止は no ＋ usted の命令 `llegue` ＋ s。g → gu はそのまま残して `{llegues}`。`lleges` は「リェヘス」の音になり、`llegas` は「君は着く」。' },
+  { id: 'l12-03', L: 12, k: 'form', v: 'jugar', p: 'usted', o: ['juega', 'juegue', 'juege'], a: 1, why: '`juego` の o を取って e をつけると ge（ヘ）の音になる。音を守るために g → gu で `{juegue}`。ue は残る。`juega` は tú への命令。' },
+  { id: 'l12-04', L: 12, k: 'form', v: 'tocar', p: 'no-tú', o: ['toques', 'tocas', 'toces'], a: 0, why: 'usted の命令 `toque`（c → qu）に s をつけて `no {toques}`。`toces` は ce（セ）の音になってしまう。' },
+  { id: 'l12-05', L: 12, k: 'scene', sit: '市場で、マリーナさまがパンを買った。「ここで払ってください」と言う', o: ['Pague aquí, por favor.', 'Paga aquí, por favor.', 'Page aquí, por favor.'], a: 0, why: '相手は usted。`pago` の o を取って e をつけると ge（ヘ）の音になるので、g → gu で `{pague}`。`paga` は tú への命令、`page` は音が変わる。' },
+  { id: 'l12-06', L: 12, k: 'pick', s: '[Marina], ___ la fiesta, por favor.', o: ['empieze', 'empieza', 'empiece'], a: 2, ja: 'マリーナさま、お祭りを始めてください。', why: '`empiezo` の o を取って e をつけると ze になる。z は e の前に書かないので c にして `{empiece}`。`empieza` は tú への命令。' },
+  { id: 'l12-07', L: 12, k: 'who', s: '{Busque} el libro, por favor.', a: 1, ja: 'どうぞ、本をさがしてください。', why: '`busque` は `busco` の o を取って e をつけ、c を qu に書きかえた形。usted（1人・ていねい）への命令。tú なら `busca`。' },
+  { id: 'l12-08', L: 12, k: 'ja', s: 'No {juegues} aquí, [Lola].', o: ['ロラ、ここで遊ぶな。', 'ロラはここで遊ばない。', 'ロラ、ここで遊んで。'], a: 0, why: 'usted の命令 `juegue` に s をつけた `no {juegues}` は、tú への「〜するな」。`no juega` なら「彼女は遊ばない」の文になる。' },
+  { id: 'l12-09', L: 12, k: 'bug', s: 'Pepe, no toces el pan.', a: 'toces', ok: 'Pepe, no toques el pan.', ja: 'ペペ、パンにさわるな。', why: '`toce` と書くと「トセ」と読めてしまう。音を守るために c → qu で `no {toques}`。' },
+  { id: 'l12-10', L: 12, k: 'scene', sit: 'ロラが、ペペの作ったお城（el castillo）に手をのばしている。「さわらないで」と言う', o: ['No toces el castillo, Lola.', 'No tocas el castillo, Lola.', 'No toques el castillo, Lola.'], a: 2, why: 'tú への禁止は no ＋ usted の命令 `toque` ＋ s。c → qu のまま `no {toques}`。`no tocas` は「君はさわらない」の文。' },
+  { id: 'l12-11', L: 12, k: 'build', s: 'Busque el pan, por favor.', d: ['Busca'], ja: 'パンをさがしてください。' },
+  { id: 'l12-12', L: 12, k: 'build', s: 'No llegues tarde, Pepe.', d: ['lleges'], ja: 'ペペ、遅れないで。' },
+
+  /* ================= L13 代名詞2つ・再帰の禁止 ================= */
+  { id: 'l13-01', L: 13, k: 'pick', s: 'Tienes el pan, [Pepe]. ___, por favor.', o: ['Damelo', 'Dámelo', 'Dalome'], a: 1, ja: 'ペペ、パンを持ってるね。私にちょうだい、お願い。', why: '`da` の後ろに「だれに（me）」→「何を（lo）」の順でくっつけ、強く読む「ダ」に ´ をつけて `{dámelo}`。順番が逆の `dalome` や、´ のない `damelo` はまちがい。' },
+  { id: 'l13-02', L: 13, k: 'pick', s: 'Aquí está la carta, [Lola]. ___ a Marina.', o: ['Dálela', 'Dáselo', 'Dásela'], a: 2, ja: 'ここに手紙があるわ、ロラ。それをマリーナさまにあげて。', why: 'le（マリーナさまに）が la（手紙）の前に来ると、le は se に変わる。手紙は女性の物なので `{dásela}`。`dálela` は le のまま、`dáselo` は男性の物の形。' },
+  { id: 'l13-03', L: 13, k: 'form', v: 'dar ＋ me ＋ lo', p: 'tú', o: ['dalome', 'damelo', 'dámelo'], a: 2, why: '`da` の後ろに「だれに（me）」→「何を（lo）」の順でくっつけ、強く読む「ダ」に ´ をつけて `{dámelo}`。' },
+  { id: 'l13-04', L: 13, k: 'form', v: 'decir ＋ me ＋ lo', p: 'tú', o: ['dímelo', 'dilome', 'dimelo'], a: 0, why: '`di` の後ろに me → lo の順でくっつけ、強く読む「ディ」に ´ をつけて `{dímelo}`。´ なしの `dimelo` はまちがい。' },
+  { id: 'l13-05', L: 13, k: 'scene', sit: 'ロラが、悪いしらせを知っているらしい。でも聞きたくない。「それを私に言わないで」と言う', o: ['No me lo dices, Lola.', 'No me lo digas, Lola.', 'No dímelo, Lola.'], a: 1, why: '「〜するな」では me・lo は動詞の前に置く。`diga` ＋ s で `no me lo {digas}`。`no dímelo` のようにくっつけるのは、「〜しろ」の命令のときだけ。' },
+  { id: 'l13-06', L: 13, k: 'scene', sit: 'ロラが、ペペのパン（el pan）を持っている。「それをペペにあげて」と言う', o: ['Dáselo a Pepe, Lola.', 'Dálelo a Pepe, Lola.', 'Dámelo a Pepe, Lola.'], a: 0, why: 'le（ペペに）が lo（パン）の前に来ると se に変わって `{dáselo}`。パンは男性の物なので lo。`dálelo` は le のまま、`dámelo` は「私に」になる。' },
+  { id: 'l13-07', L: 13, k: 'who', s: 'No se {preocupe}, [Marina].', a: 1, ja: 'ご心配なく、マリーナさま。', why: '`preocupe` は usted の命令。マリーナさまは目上なので usted（1人・ていねい）への禁止。この se は usted の「自分を」。tú なら `no te {preocupes}`。' },
+  { id: 'l13-08', L: 13, k: 'pick', s: '[Lola], no te ___ por Pepe.', o: ['preocupa', 'preocupas', 'preocupes'], a: 2, ja: 'ロラ、ペペのことは心配しないで。', why: '呼びかけが Lola（仲よし）なので tú への禁止。te は動詞の前で、usted の命令 `preocupe` ＋ s の `{preocupes}`。`preocupas` は「君は心配する」の文。' },
+  { id: 'l13-09', L: 13, k: 'pick', s: 'No se ___ por mí, [Marina].', o: ['preocupes', 'preocupe', 'preocupa'], a: 1, ja: 'わたしのことは心配しないでください、マリーナさま。', why: 'マリーナさまは目上なので usted。`no se` の後ろは usted の命令 `{preocupe}`。s がつく `preocupes` は tú への形。' },
+  { id: 'l13-10', L: 13, k: 'ja', s: '{Dímelo}, [Lola].', o: ['ロラ、それを私に言って。', 'ロラは私にそれを言う。', 'ロラ、それを私に言うな。'], a: 0, why: '`di` ＋ me ＋ lo。「だれに」→「何を」の順で、強く読む「ディ」に ´ をつけた `{dímelo}` は、「〜しろ」の命令。言うなは `no me lo {digas}`。' },
+  { id: 'l13-11', L: 13, k: 'bug', s: 'Pepe, damelo, por favor.', a: 'damelo', ok: 'Pepe, dámelo, por favor.', ja: 'ペペ、私にそれをちょうだい、お願い。', why: '`da` に me・lo をくっつけると語が長くなり、強く読む「ダ」の位置がずれる。´ をつけて `{dámelo}`。' },
+  { id: 'l13-12', L: 13, k: 'build', s: 'Dásela a Marina, Pepe.', d: ['Dálela'], ja: 'ペペ、それをマリーナさまにあげて。' }
 ];

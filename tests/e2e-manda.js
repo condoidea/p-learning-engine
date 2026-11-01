@@ -5,6 +5,7 @@
  *     var s = document.createElement('script'); s.src = 'tests/e2e-manda.js'; document.body.appendChild(s);
  *   のあと  await mandaE2E(['L1', 'L2'])   … レッスンを正解で最後まで進め、重なり・横スクロール・エラーを返す
  *          await mandaBoss('B1')          … ボスを正解で倒す
+ *          await mandaRemedy()            … ホームの「🩹 おさらい」を正解で最後まで
  *  画面の高さはスマホの実際の高さ（375×550 など）にしておく。
  *  重なりは、スクロールで隠れている部分を除いて数える（演出の飛び文字・コンボ表示は数えない）
  * ========================================================= */
@@ -60,8 +61,9 @@
     }
     var b = opt(T, q.k === 'who' ? __manda.WHO[q.a] : q.o[q.a]); if (b) b.click(); return !!b;
   }
-  async function runLesson(id) {
-    __manda.start(id); await SL(1200);
+  async function runLesson(id, start) {
+    if (start) start(); else __manda.start(id);
+    await SL(1200);
     for (var guard = 0; guard < 400; guard++) {
       await SL(250);
       var cur = __manda.cur(); if (!cur) return 'end';
@@ -102,6 +104,13 @@
     }
     await SL(800); ov(id + ' 結果');
     return { screen: document.body.dataset.screen, overlaps: OV, errors: ERR };
+  };
+  /* ホームのボタンから「🩹 おさらい」を始めて、最後まで正解で進める */
+  window.mandaRemedy = async function () {
+    OV = [];
+    var r = await runLesson('remedy', function () { document.querySelector('#hCta').click(); });
+    ov('remedy 結果');
+    return { res: r, screen: document.body.dataset.screen, overlaps: OV, errors: ERR };
   };
   window.mandaOverlaps = overlaps;
 })();

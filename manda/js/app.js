@@ -35,7 +35,7 @@
   var KEY = SANDBOX ? 'manda.sandbox' : 'manda.v1';
   function fresh() {
     return { v: 1, xp: 0, tickets: 0, streak: { n: 0, last: '' }, lessons: {}, bosses: {}, q: {}, cards: {}, tips: {},
-      mis: { d: '', done: {}, bonus: false }, rushBest: 0, pulls: 0, sets: {}, cardp: {}, seen: {}, settings: { sound: true, speak: true, auto: true } };
+      mis: { d: '', done: {}, bonus: false }, rushBest: 0, pulls: 0, sets: {}, cardp: {}, seen: {}, weak: {}, mockBest: 0, settings: { sound: true, speak: true, auto: true } };
   }
   function load() {
     try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) { var f = fresh(); for (var k in s) f[k] = s[k]; return f; } } catch (e) { /* 保存領域が使えない */ }
@@ -51,6 +51,7 @@
   D.bosses.forEach(function (b) { BOSS[b.id] = b; });
   D.questions.forEach(function (q) { QBY[q.id] = q; });
   D.cards.forEach(function (c) { CARD[c.id] = c; });
+  D.lessons.forEach(function (L, i) { L.ord = i + 1; });
   var ORDER = [];
   D.lessons.forEach(function (L) {
     ORDER.push({ type: 'L', id: L.id, day: L.day });
@@ -63,7 +64,7 @@
   function unlockedQs() { return D.questions.filter(function (q) { return lessonDone(q.L); }); }
   function dueQs() { var now = Date.now(); return unlockedQs().filter(function (q) { var r = S.q[q.id]; return r && r.due <= now; }); }
   function cardPool() { return D.cards.filter(function (c) { return c.L && lessonDone(c.L); }); }
-  function oracleNo(L) { return '第' + L.no + 'の神託'; }
+  function oracleNo(L) { return '第' + L.ord + 'の神託'; }
 
   /* 単語帳（バルーン用） */
   var WORD = {};
@@ -679,12 +680,12 @@
   function startLesson(L) {
     show('play');
     boardEl.innerHTML = ''; T1.clear(); talkHide();
-    $('#pTitle').textContent = oracleNo(L) + '　' + L.ti;
-    cur = { L: L, i: 0, run: newRun(), used: {}, log: [] };
+    $('#pTitle').textContent = L.remedy ? '🩹 おさらい　' + oracleNo(L.base) : oracleNo(L) + '　' + L.ti;
+    cur = { L: L, i: 0, run: newRun(), used: {}, log: [], qok: {} };
     L.steps.forEach(function (st) { if (st.t === 'q') cur.used[st.id] = 1; });
     stageSet(L.actors || []);
-    boardSet(el('div', 'card lesson-title', '<small>ORÁCULO ' + L.no + '</small><b>' + L.icon + ' ' + esc(L.ti) + '</b><span>' + esc(L.sub) + '</span>'));
-    FX.slam('ORÁCULO ' + L.no, 'gold', L.ti);
+    boardSet(el('div', 'card lesson-title', '<small>' + (L.remedy ? '🩹 REPASO' : 'ORÁCULO ' + L.ord) + '</small><b>' + L.icon + ' ' + esc(L.ti) + '</b><span>' + esc(L.sub) + '</span>'));
+    FX.slam(L.remedy ? 'REPASO' : 'ORÁCULO ' + L.ord, 'gold', L.remedy ? 'おさらい：' + L.base.ti : L.ti);
     sfxDivine();
     later(step, 900);
   }
@@ -879,14 +880,14 @@
     $$('.board-tbl', boardEl).forEach(function (t) { t.remove(); });   // 問題では表を見せない（思い出す練習）
     var c = boardSet(el('div', 'card qcard'));
     renderQ(q, c, T1, { tag: tag, run: run }, function (ok) {
-      srs(q, ok); save();
+      srs(q, ok); if (cur) cur.qok[q.id] = ok; save();
       var src = $('.chosen', T1.el) || $('.tok.ok, .tok.ng', c) || c;
       if (ok) hit(run, src); else miss(run, c);
       boardScroll();
       later(then, 250);
     });
   }
-  function doQ(st, run) { lessonQ(QBY[st.id], run, function () { nextBtn('▶ つぎへ'); }); }
+  function doQ(st, run) { lessonQ(QBY[st.id], run, function () { nextBtn('▶ つぎへ'); }, st.tag); }
   function doDrill(st, run) {
     var pool = D.questions.filter(function (q) { return q.L === cur.L.no && !cur.used[q.id]; });
     var list = weighted(pool).slice(0, st.n);
@@ -903,6 +904,7 @@
     }
   }
   function finishLesson() {
+    if (cur.L.remedy) return finishRemedy();
     var L = cur.L, run = cur.run, rec = S.lessons[L.id] || {}, first = !rec.done;
     var acc = run.ok + run.ng ? run.ok / (run.ok + run.ng) : 1;
     var stars = acc >= 0.9 ? 3 : acc >= 0.7 ? 2 : 1;
@@ -954,10 +956,16 @@
           return '<div class="miss"><div class="es-line">' + esHtml(full) + sayBtn(full) + '</div>' + (m.q.ja ? '<div class="ja-line">' + esc(m.q.ja) + '</div>' : '') +
             cmpHtml(m.q, m.c) + (m.q.why ? '<p class="why">' + ja(m.q.why) + '</p>' : '') + '</div>';
         }).join('') + '</details>' : '') +
+      (o.weak && o.weak.length ? '<div class="weakbox"><h3>🩹 あやしい所をおさらい</h3><p>1回読んだだけで全部は覚えられない。まちがえた神託の要点を、もう一度さっと回ろう。</p>' +
+        o.weak.map(function (no, i) { var L = LESSON['L' + no]; return '<button class="tb ' + (i ? 'sub' : 'go') + ' wk" data-no="' + no + '">' + esc(oracleNo(L)) + '　' + esc(L.ti) + ' <small>まちがえた問題 ' + S.weak[no].ids.length + ' 問</small></button>'; }).join('') + '</div>' : '') +
+      (o.extra || '') +
       '<div class="res-btns"></div></div>';
+    $$('.weakbox .wk', scr).forEach(function (b) { b.addEventListener('click', function () { Sfx.tap(); startLesson(remedyLesson(+b.getAttribute('data-no'))); }); });
+    if (o.after) o.after(scr);
     var bt = $('.res-btns', scr);
-    if (o.retry) bt.appendChild(mkBtn(o.retry.label, 'go', o.retry.fn));
-    if (o.next) bt.appendChild(mkBtn(o.next.label, o.retry ? 'sub' : 'go', o.next.fn));
+    var hasWeak = o.weak && o.weak.length;
+    if (o.retry) bt.appendChild(mkBtn(o.retry.label, hasWeak ? 'sub' : 'go', o.retry.fn));
+    if (o.next) bt.appendChild(mkBtn(o.next.label, o.retry || hasWeak ? 'sub' : 'go', o.next.fn));
     if (!o.noHome) bt.appendChild(mkBtn('🏝 島へ', 'sub', function () { home(); }));
     if (o.lose) { Sfx.wrong(); FX.shake(null, true); }
     else { FX.slam(o.title, o.rank === 'S' || o.stars === 3 ? 'gold' : 'cyan'); FX.confetti(o.stars === 3 || o.rank === 'S' ? 160 : 80, 'divine'); Sfx.levelUp(); }
@@ -1005,7 +1013,7 @@
    * ボス戦・ラッシュ・復習（1問ずつの画面）
    * ========================================================= */
   var zMain = $('#zMain'), zHud = $('#zHud'), zRun = null, zTimer = 0, zActive = false;
-  function zStop() { zActive = false; clearInterval(zTimer); Speech.stop(); }
+  function zStop() { zActive = false; clearInterval(zTimer); Speech.stop(); $('#quiz').classList.remove('exam'); }
   $('#zQuit').addEventListener('click', function () {
     if (zActive && !confirm('やめる？（ここまでの XP はもらえません）')) return;
     zStop(); home();
@@ -1084,6 +1092,7 @@
   }
   function bossEnd(B, win, hearts) {
     zStop();
+    var weak = markWeak(zRun);
     var rewards = [], card = null, rank = win ? (hearts === 3 ? 'S' : hearts === 2 ? 'A' : 'B') : null;
     var rec = S.bosses[B.id] || {}, first = win && !rec.win;
     if (win) {
@@ -1099,7 +1108,7 @@
     touchDay();
     var up = addXp(zRun.xp);
     save();
-    showResult({ title: win ? (B.final ? 'CREACIÓN!!' : 'K.O.!!') : 'GAME OVER', sub: win ? B.win : B.name + ' に島をあらされた…', lose: !win, rank: rank, run: zRun, rewards: rewards, card: card, up: up,
+    showResult({ title: win ? (B.final ? 'CREACIÓN!!' : 'K.O.!!') : 'GAME OVER', sub: win ? B.win : B.name + ' に島をあらされた…', lose: !win, rank: rank, run: zRun, rewards: rewards, card: card, up: up, weak: weak,
       note: win ? (B.final && rank !== 'S' ? 'ノーミスで S ランクをねらってみよう！' : '') : '答えた問題は復習に入ったよ。Tips を見直して、もう一回！',
       retry: win ? null : { label: '⚡ もう一回！', fn: function () { bossIntro(B); } },
       next: win ? { label: first ? '🏝 島へもどる（島が育つ！）' : '🏝 島へもどる', fn: function () { home(first ? { grow: B.id } : null); } } : null, noHome: win });
@@ -1165,6 +1174,7 @@
     paint(); one();
   }
   function rushEnd(score) {
+    var weak = markWeak(zRun);
     var best = score > S.rushBest, tix = score >= 6000 ? 3 : score >= 3500 ? 2 : score >= 1500 ? 1 : 0;
     if (best) S.rushBest = score;
     S.tickets += tix;
@@ -1172,7 +1182,7 @@
     rewards = rewards.concat(missionDone('rush'));
     touchDay(); save();
     var up = addXp(zRun.xp); save();
-    showResult({ openMisses: true, title: best ? 'NEW RECORD!!' : 'TIME UP!', sub: '60秒の神託ラッシュ', run: zRun, rewards: rewards, up: up, big: [score, best ? 'ハイスコア更新！' : 'ハイスコア ' + S.rushBest],
+    showResult({ openMisses: true, title: best ? 'NEW RECORD!!' : 'TIME UP!', sub: '60秒の神託ラッシュ', run: zRun, weak: weak, rewards: rewards, up: up, big: [score, best ? 'ハイスコア更新！' : 'ハイスコア ' + S.rushBest],
       note: '🎟 1500点で1枚・3500点で2枚・6000点で3枚', retry: { label: '⚡ もう一回！', fn: rushIntro } });
   }
 
@@ -1194,7 +1204,8 @@
         srs(q, ok); save();
         if (ok) hit(zRun, $('.chosen', T2.el) || c); else miss(zRun, c);
         paint();
-        later(function () { T2.next(one, k < list.length ? '▶ つぎへ' : '▶ おわり！'); }, 250);
+        var nx = k < list.length ? '▶ つぎへ' : '▶ おわり！';
+        later(function () { if (ok) T2.next(one, nx); else T2.btns([{ t: nx, cls: 'go', fn: one }, { t: '📜 ヒントを見る', cls: 'sub', fn: function () { hintModal(q.L); } }]); }, 250);
       });
     }
     function end() {
@@ -1202,10 +1213,138 @@
       S.tickets += 1;
       var rewards = [{ icon: '🎟', t: '復習やりきり +1' }].concat(missionDone('review'));
       touchDay();
+      var weak = markWeak(zRun);
       var up = addXp(zRun.xp + 20); zRun.xp += 20; save();
       var acc = zRun.ok / list.length;
-      showResult({ title: acc === 1 ? 'PERFECT!!' : 'ORACIÓN CLEAR!', sub: '祈りの復習 ' + list.length + '問', stars: acc >= 0.9 ? 3 : acc >= 0.7 ? 2 : 1, run: zRun, rewards: rewards, up: up,
+      showResult({ title: acc === 1 ? 'PERFECT!!' : 'ORACIÓN CLEAR!', sub: '祈りの復習 ' + list.length + '問', stars: acc >= 0.9 ? 3 : acc >= 0.7 ? 2 : 1, run: zRun, rewards: rewards, up: up, weak: weak,
         note: 'まちがえた問題は、10分後からまた出てくるよ。正解した問題は、1日後・2日後・4日後…と間をあけて出る。', retry: { label: '🔁 もう10問', fn: reviewGo } });
+    }
+    one();
+  }
+
+  /* =========================================================
+   * 🩹 あやしい所 → おさらい神託
+   *  人は1回読んだだけでは覚えきれない。復習・ボス・ラッシュ・西検チャレンジでまちがえた問題を
+   *  神託ごとに S.weak に残し、その神託の要点（表・その説明・形を作る操作・命令・予想の問い・Tips）を短く回り直して、
+   *  最後にまちがえた問題そのものにリベンジする。正解できた問題だけ S.weak から消える。
+   * ========================================================= */
+  function markWeak(run) {
+    var got = {};
+    (run.misses || []).forEach(function (m) {
+      var q = m.q; if (!q || !q.L || !QBY[q.id]) return;
+      var w = S.weak[q.L] || (S.weak[q.L] = { ids: [], at: 0 });
+      if (w.ids.indexOf(q.id) < 0) w.ids.push(q.id);
+      w.at = Date.now(); got[q.L] = 1;
+    });
+    save();
+    return Object.keys(got).map(Number).sort(function (a, b) { return LESSON['L' + a].ord - LESSON['L' + b].ord; });
+  }
+  /* いちばんあやしい神託（まちがえた問題が多い順・同じなら前の神託から） */
+  function weakNext() {
+    var list = Object.keys(S.weak).map(Number).filter(function (no) { return LESSON['L' + no] && S.weak[no].ids.length; });
+    list.sort(function (a, b) { return S.weak[b].ids.length - S.weak[a].ids.length || LESSON['L' + a].ord - LESSON['L' + b].ord; });
+    return list[0] || 0;
+  }
+  var REMEDY_KEEP = { show: 1, forge: 1, cast: 1, tapwho: 1, ask: 1, tip: 1 };
+  function remedyLesson(no) {
+    var L = LESSON['L' + no], ids = (S.weak[no] ? S.weak[no].ids : []).slice(0, 4), steps = [];
+    steps.push({ t: 'say', x: oracleNo(L) + '「' + L.ti + '」で、\nまちがえた問題があったね。\n1回で覚えきれないのは、あたりまえ。\n要点だけ、さっともう一度いこう！' });
+    L.steps.forEach(function (st, i) {
+      var prev = L.steps[i - 1];
+      if (REMEDY_KEEP[st.t] || (st.t === 'say' && !st.who && ((prev && prev.t === 'show') || String(st.x).indexOf('**') >= 0))) steps.push(st);   // 表の説明・覚えること（**）の入った説明は残す
+    });
+    if (ids.length) {
+      steps.push({ t: 'say', x: 'では、まちがえた問題にリベンジ！\n' + ids.length + '問。さっきの要点を思い出して。' });
+      ids.forEach(function (id, k) { steps.push({ t: 'q', id: id, tag: 'リベンジ ' + (k + 1) + ' / ' + ids.length }); });
+    }
+    return { id: 'R' + no, no: no, ord: L.ord, remedy: true, base: L, icon: '🩹', ti: L.ti, sub: 'おさらい：' + L.sub, actors: L.actors, steps: steps };
+  }
+  function finishRemedy() {
+    var L = cur.L, run = cur.run, base = L.base, w = S.weak[base.no], fixed = 0, left = 0;
+    if (w) {
+      w.ids = w.ids.filter(function (id) { if (cur.qok[id] === true) { fixed++; return false; } if (cur.qok[id] === false) left++; return true; });
+      if (!w.ids.length) delete S.weak[base.no];
+    }
+    run.xp += 20 + fixed * 10;
+    touchDay();
+    var up = addXp(run.xp);
+    save(); cur = null;
+    var more = weakNext();
+    showResult({ title: left ? 'REPASO OK!' : 'REPASO PERFECTO!!', sub: '🩹 おさらい：' + oracleNo(base) + '　' + base.ti, stars: left ? 2 : 3, run: run, up: up,
+      rewards: fixed ? [{ icon: '🩹', t: 'まちがえた問題 ' + fixed + ' 問をクリア' }] : [],
+      note: left ? 'まだ ' + left + ' 問があやしい。また今度、おさらいで出てくるよ。' : 'この神託のあやしい所は、ぜんぶ消えた！ 忘れかけたころに、復習でまた出てくるよ。',
+      next: more ? { label: '🩹 つぎのおさらい：' + oracleNo(LESSON['L' + more]), fn: function () { startLesson(remedyLesson(more)); } } : { label: '🏝 島へもどる', fn: function () { home(); } }, noHome: !more });
+  }
+  /* 復習でまちがえたときの「📜 ヒント」：その神託の Tips と表 */
+  function hintModal(no) {
+    var L = LESSON['L' + no], tip = L.steps.filter(function (st) { return st.t === 'tip'; })[0], shows = L.steps.filter(function (st) { return st.t === 'show' && st.tbl; });
+    modal('<h3 class="m-h">📜 ' + esc(oracleNo(L)) + '　' + esc(L.ti) + '</h3>' +
+      (tip ? '<div class="card tip"><b class="tip-ti">' + esc(tip.ti) + '</b><div class="tip-x">' + ja(tip.x) + '</div>' + (tip.why ? '<details><summary>🤔 なぜ？</summary><p>' + ja(tip.why) + '</p></details>' : '') + '</div>' : '') +
+      shows.map(function (st) { return '<div class="card board-tbl"><div class="qtag">📋 ' + esc(st.cap || '') + '</div><table class="tbl">' + st.tbl.map(function (r) { return '<tr><th class="es-cell">' + esHtml(r[0]) + '</th><td class="es-cell">' + esHtml(r[1]) + '</td></tr>'; }).join('') + '</table></div>'; }).join('') +
+      '<p class="m-note">この神託は、復習のあとで「🩹 おさらい」できるよ。</p>', 'hint-m');
+    glossAll($('#mbody'));
+  }
+
+  /* =========================================================
+   * 🎓 西検チャレンジ：試験と同じ形の20問を分野ごとに。答え合わせは最後にまとめて。
+   *  分野ごとの正解数を出し、まちがえた神託は「🩹 おさらい」へ。合格ライン 70%
+   * ========================================================= */
+  var TOPICS = [
+    { id: 'tu', ti: 'tú の命令（s を取る・つづりが変わる動詞）', L: [1, 2], n: 3 },
+    { id: 'irr', ti: '不規則な8つ（ven・ten・pon・sal・haz・di・ve・sé）', L: [3, 4], n: 3 },
+    { id: 'ud', ti: 'usted・ustedes（yo の形から・-oy の4つ）', L: [5, 6, 7, 11], n: 4 },
+    { id: 'who', ti: '相手の使い分け・vosotros', L: [8], n: 2 },
+    { id: 'pron', ti: '代名詞（cómelo・siéntese・dámelo・dásela）', L: [9, 13], n: 4 },
+    { id: 'neg', ti: '「〜するな」（no hables・no llegues・no te preocupes）', L: [10, 12], n: 4 }
+  ];
+  var EXAMK = { pick: 1, form: 1, scene: 1, who: 1, bug: 1, ja: 1 };
+  function topicOf(q) { for (var i = 0; i < TOPICS.length; i++) if (TOPICS[i].L.indexOf(q.L) >= 0) return TOPICS[i]; }
+  function allLessonsDone() { return D.lessons.every(function (L) { return lessonDone(L.no); }); }
+  function mockGo() {
+    if (!allLessonsDone()) return toast('🔒 神託をぜんぶクリアすると、西検チャレンジが開くよ');
+    var list = [];
+    TOPICS.forEach(function (tp) {
+      var pool = D.questions.filter(function (q) { return tp.L.indexOf(q.L) >= 0 && EXAMK[q.k]; });
+      /* 空所を選ぶ形（試験でいちばん多い）を先に、その中で苦手・期限切れから */
+      var picks = weighted(pool.filter(function (q) { return q.k === 'pick'; })), rest = weighted(pool.filter(function (q) { return q.k !== 'pick'; }));
+      picks.slice(0, Math.ceil(tp.n / 2)).concat(rest).slice(0, tp.n).forEach(function (q) { list.push(q); });
+    });
+    list = shuffle(list);
+    var k = 0, ok = 0, got = {};
+    zStop(); show('quiz'); $('#quiz').classList.add('exam'); zActive = true; zRun = newRun();
+    $('#zTitle').textContent = '🎓 西検チャレンジ'; zHud.innerHTML = '';
+    FX.slam('EXAMEN', 'gold', '試験と同じ形で ' + list.length + '問');
+    function paint() { $('#zProg').style.width = Math.round(k / list.length * 100) + '%'; $('#zRight').innerHTML = '<small>問</small><b>' + Math.min(k + 1, list.length) + '/' + list.length + '</b>'; }
+    function one() {
+      paint();
+      if (k >= list.length) return end();
+      var q = list[k++], c = zCard();
+      renderQ(q, c, T2, { run: zRun, fast: true, tag: '第' + k + '問' }, function (good) {
+        if (good) { ok++; zRun.ok++; } else zRun.ng++;
+        got[q.id] = good;
+        srs(q, good); save();
+        later(one, 450);
+      });
+    }
+    function end() {
+      zStop();
+      var weak = markWeak(zRun);
+      var pct = Math.round(ok / list.length * 100), pass = pct >= 70, best = S.mockBest || 0;
+      S.mockBest = Math.max(best, pct);
+      var tix = pct >= 90 ? 5 : pass ? 3 : 1;
+      S.tickets += tix;
+      touchDay();
+      zRun.xp = ok * 10 + (pass ? 50 : 0);
+      var up = addXp(zRun.xp); save();
+      var rows = TOPICS.map(function (tp) {
+        var qs = list.filter(function (q) { return topicOf(q) === tp; }), n = qs.filter(function (q) { return got[q.id]; }).length, all = qs.length;
+        return '<div class="tp' + (n < all ? ' weak' : '') + '"><div class="tp-h"><b>' + esc(tp.ti) + '</b><span>' + n + ' / ' + all + '</span></div><span class="tp-bar"><i style="width:' + Math.round(n / all * 100) + '%"></i></span></div>';
+      }).join('');
+      showResult({ title: pct >= 90 ? 'EXCELENTE!!' : pass ? 'APROBADO!!' : 'もう一歩！', sub: '🎓 西検チャレンジ（合格ライン 70%）', lose: !pass, run: zRun, up: up, openMisses: true, weak: weak,
+        big: [pct + '%', ok + ' / ' + list.length + ' 問正解' + (pct > best ? '　自己ベスト更新！' : '　自己ベスト ' + S.mockBest + '%')],
+        rewards: [{ icon: '🎟', t: (pass ? '合格' : 'チャレンジ') + ' +' + tix }],
+        extra: '<div class="topics"><h3>分野ごとの結果</h3>' + rows + '</div>',
+        retry: { label: '🎓 もう一回（問題は入れかわる）', fn: mockGo } });
     }
     one();
   }
@@ -1390,12 +1529,12 @@
               (br && br.win ? '<span class="ns rk">' + br.rank + '</span>' : '') + '</button>';
           }
         });
-        if (!nodes.length) html += '<div class="extra"><button class="mini" data-act="review">🔁 祈りの復習</button><button class="mini" data-act="rush">⚡ ラッシュ</button></div>';
+        if (!nodes.length || dd.d === 7) html += '<div class="extra"><button class="mini" data-act="review">🔁 祈りの復習</button><button class="mini" data-act="rush">⚡ ラッシュ</button>' + (dd.d === 7 ? '<button class="mini" data-act="mock">🎓 西検チャレンジ</button>' : '') + '</div>';
         html += '</div></div>';
       });
       body.innerHTML = html;
       $$('.node', body).forEach(function (b) { b.addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); openNode(+b.getAttribute('data-i')); }); });
-      $$('.mini', body).forEach(function (b) { b.addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); if (b.getAttribute('data-act') === 'review') reviewGo(); else rushIntro(); }); });
+      $$('.mini', body).forEach(function (b) { b.addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); var a = b.getAttribute('data-act'); if (a === 'review') reviewGo(); else if (a === 'mock') mockGo(); else rushIntro(); }); });
       return;
     }
     var html2 = '<button class="tb go" id="dPractice"' + (own ? '' : ' disabled') + '>🃏 カードで練習 <small>住人の命令で 🎧聞き取り・🧩並べ替え 10問</small></button>' +
@@ -1476,13 +1615,32 @@
       cta.className = 'cta';
       evEl.innerHTML = '<span class="ev-f">' + who.e + '</span><p><b>' + esc(who.n) + '</b>' + esc(NL.ev.line) + '</p>';
     }
-    cta.onclick = function () { Sfx.unlock(); Sfx.tap(); stopAuto(); if (ni < 0) rushIntro(); else openNode(ni); };
+    var go = function () { if (ni < 0) { if ((S.mockBest || 0) < 70) mockGo(); else rushIntro(); } else openNode(ni); };
+    if (ni < 0) {
+      cta.innerHTML = (S.mockBest || 0) < 70 ? '<small>🎓 仕上げ（合格ライン 70%）</small>西検チャレンジ 20問' : '<small>🎓 西検チャレンジ 合格！ 自己ベスト ' + S.mockBest + '%</small>⚡ ラッシュでハイスコア！';
+      evEl.innerHTML = '<span class="ev-f">🦉</span><p>' + ((S.mockBest || 0) < 70 ? '島の創世、おめでとう！<br>仕上げは、試験と同じ形の20問。合格ラインは 70% だよ。' : '西検チャレンジ合格！<br>あとは忘れないように、復習とラッシュで。') + '</p>';
+    }
+    var wk = weakNext(), skip = $('#hSkip');
+    skip.hidden = true;
+    if (wk) {
+      var WL = LESSON['L' + wk];
+      cta.innerHTML = '<small>🩹 先におさらい（まちがえた問題 ' + S.weak[wk].ids.length + ' 問）</small>' + esc(oracleNo(WL)) + '　' + esc(WL.ti);
+      cta.className = 'cta remedy';
+      evEl.className = 'ev';
+      evEl.innerHTML = '<span class="ev-f">🦉</span><p><b>ブーホ</b>' + esc(oracleNo(WL)) + 'で、まちがえた問題があったよ。1回で覚えきれないのは、あたりまえ。要点だけ、さっともう一度！</p>';
+      skip.hidden = false;
+      skip.textContent = ni < 0 ? 'おさらいはあとで（西検チャレンジ・ラッシュへ）' : 'おさらいはあとで → ' + nodeLabel(ORDER[ni]).replace(/^⚔ /, '');
+      skip.onclick = function () { Sfx.unlock(); Sfx.tap(); stopAuto(); go(); };
+    }
+    cta.onclick = function () { Sfx.unlock(); Sfx.tap(); stopAuto(); if (wk) startLesson(remedyLesson(wk)); else go(); };
 
     var unlocked = unlockedQs().length > 0, due = dueQs().length;
     $('#hDue').innerHTML = !unlocked ? '🔒' : due ? '<em>' + due + '</em> 問' : 'OK';
     $('#hRushBest').textContent = unlocked ? 'BEST ' + S.rushBest : '🔒';
     $('#hGachaN').textContent = '🎟 ' + S.tickets;
     $('#hBookN').textContent = Object.keys(S.cards).length + '人';
+    $('#hMockN').textContent = allLessonsDone() ? (S.mockBest ? 'BEST ' + S.mockBest + '%' : '20問') : '🔒';
+    $('#hMock').classList.toggle('alert', allLessonsDone() && (S.mockBest || 0) < 70);
     $('#hReview').classList.toggle('alert', due >= 3);
     $('#hGacha').classList.toggle('alert', S.tickets > 0 && cardPool().length > 0);
     var m = mis(), md = MIS.filter(function (x) { return m.done[x.id]; }).length;
@@ -1512,7 +1670,7 @@
     function after() {
       later(function () {
         var ev = $('#hEv'); ev.classList.add('on'); Sfx.whoosh();
-        if (ni < 0 || !S.settings.auto || !$('#home') || $('#home').hidden) return;
+        if ((ni < 0 && !weakNext()) || !S.settings.auto || !$('#home') || $('#home').hidden) return;
         /* 自動スタート（数秒のカウント。「あとで」で止まる） */
         var cta = $('#hCta'), left = 5;
         cta.classList.add('counting'); cta.style.setProperty('--cd', '0%');
@@ -1529,6 +1687,7 @@
   $('#hStop').addEventListener('click', function () { Sfx.tap(); stopAuto(); toast('🦉 了解。つづきは、また今度ね'); });
   $('#hReview').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); reviewGo(); });
   $('#hRush').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); rushIntro(); });
+  $('#hMock').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); mockGo(); });
   $('#hGacha').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); gachaScreen(); });
   $('#hBook').addEventListener('click', function () { Sfx.tap(); dexScreen('book'); });
   $('#hMis').addEventListener('click', function () {

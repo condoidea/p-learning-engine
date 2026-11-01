@@ -46,8 +46,8 @@ window.LE_COURSES = [
   {
     id: 'manda', entry: 'manda.html', storageKey: 'manda.v1',
     title: 'スペイン語 命令表現', brand: '¡MANDA!', icon: '🦉',
-    desc: 'ちび神さまになって、島の人たちに命令！ tú・usted・vosotros・ustedes の命令、不規則な8つ、代名詞のくっつけ方、「〜するな」まで。命令が届くと島が育つ。西検4級。',
-    color: '#ffcf4a', color2: '#6a4cff', lessons: 10
+    desc: 'ちび神さまになって、島の人たちに命令！ tú・usted・vosotros・ustedes、不規則な形、つづりの書きかえ、代名詞2つ、「〜するな」まで西検4級の命令をぜんぶ。まちがえた所は🩹おさらい、仕上げは🎓西検チャレンジ。',
+    color: '#ffcf4a', color2: '#6a4cff', lessons: 13
   },
   /* ¡PROTESTO!（protesto/）：比較の法廷推理もの。独立アプリ。進み具合は lessons[id].done を数える（6つの事件） */
   {

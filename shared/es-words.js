@@ -342,8 +342,31 @@
   F('ayudar', 'ayuda, ayúdame');
   F('señor', 'señores');
   F('chico', 'chicos');
+  /* 市場（L11）・つづりの書きかえ（L12）・代名詞2つ（L13） */
+  W('oír', '聞く・聞こえる（¡Oiga!＝すみません！）', 'v', 4, 'oigo, oiga, oye, oíd');
+  W('pedir', '頼む・注文する', 'v', 4, 'pido, pida, pide');
+  W('repetir', 'くり返す', 'v', 4, 'repito, repita, repite');
+  W('tocar', 'さわる・演奏する', 'v', 4, 'toco, toque, toques, tocas');
+  W('preocuparse', '心配する', 'v', 4, 'preocupe, preocupes, preocupa, preocupas, preocúpate');
+  W('isla', '島', 'n', 4);
+  W('arroz', '米・ごはん', 'n', 4);
+  W('vez', '回・度（otra vez＝もう一度）', 'n', 4);
+  W('frío', '寒さ・冷たさ（hace frío＝寒い）', 'n', 5);
+  W('le', '彼に・彼女に・あなたに（lo・la の前では se になる）', 'pron', 0);
+  F('ver', 'veo, vea');
+  F('conocer', 'conoce, conozco, conozca');
+  F('llegar', 'llego, llegue, llegues, llegas');
+  F('empezar', 'empiezo, empiece');
+  F('buscar', 'busco, busca, busque');
+  F('pagar', 'pago, pague');
+  F('jugar', 'juegue, juegues');
+  F('dar', 'das, dámelo, dámela, dásela, dáselo');
+  F('decir', 'dímelo, digas');
+  F('escuchar', 'escúchame');
+  F('cerrar', 'cierren, cerrad');
   /* 命令をまちがえて作った形（ひっかけの選択肢・まちがい探し用） */
   W('dorme', '（この形はない。duerme が正しい）', 'bad', 0, 'jugas, cerra, cerre, tene, tenes, volva, vaye, empeza, conta, comela, comelo, levantate, díme, leelo, leela, ayudame, habl, er');
+  W('llege', '（この形はない。llegue が正しい）', 'bad', 0, 'lleges, toce, toces, empieze, page, juege, traya, oia, conoza, repeta, damelo, dalome, dálame, dálela, dálelo, dilome, dimelo, escuchame, toc, ce, ge, gue');
 
   /* ---------- ¡PROTESTO!（比較の法廷 protesto/）で足した語・形 ---------- */
   /* 比べる言い方 */
@@ -494,7 +517,7 @@
   W('pesar', '重さが〜ある', 'v', 4, 'pesa');
   W('amar', '愛する', 'v', 4, 'amamos');
   W('devolver', '返す', 'v', 4, 'devolvemos');
-  W('traer', '持ってくる', 'v', 4, 'trae');
+  W('traer', '持ってくる', 'v', 4, 'trae, traigo, traiga');
   W('caber', '入る・おさまる', 'v', 3, 'cabe');
   W('jurar', '誓う', 'v', 3, 'juro');
   W('desaparecer', '消える', 'v', 3, 'desapareció');
@@ -528,6 +551,6 @@
   window.ES_WORDS = {
     words: words,
     /* 人名・地名（単語として数えない・バルーンなし） */
-    names: ['Ana', 'Pablo', 'Carlos', 'Madrid', 'Sevilla', 'Barcelona', 'Japón', 'Tokio', 'Kioto', 'Osaka', 'Perú', 'Chile', 'México', 'París', 'Corea', 'Pepe', 'Lola', 'Tomás', 'Marina', 'Coco', 'Nico', 'Mimí', 'Pavón', 'Nacho', 'Lupe', 'Pata', 'Lili', 'Tito', 'Mateo', 'Pancho', 'Hilda']
+    names: ['Ana', 'Pablo', 'Carlos', 'Madrid', 'Sevilla', 'Barcelona', 'Japón', 'Tokio', 'Kioto', 'Osaka', 'Perú', 'Chile', 'México', 'París', 'Corea', 'Pepe', 'Lola', 'Tomás', 'Marina', 'Paco', 'Coco', 'Nico', 'Mimí', 'Pavón', 'Nacho', 'Lupe', 'Pata', 'Lili', 'Tito', 'Mateo', 'Pancho', 'Hilda']
   };
 })();
