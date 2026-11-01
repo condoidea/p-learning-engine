@@ -23,6 +23,7 @@
  *    morph { es, out, ja, hint }             1つの文の |…| をタップして形を変える
  *    ask   { q, es, o, a, pred, r, why }     問い。pred:true は予想（採点しない）。o の最初が正解とは限らない（a が正解の番号）
  *    tip   { id, ti, x, why }                TIP カード（Tipsノートに入る）
+ *    pair  { o: [文A, 文B], a, c: [原因A, 原因B], r: [結果A, 結果B] }  1か所だけちがう2文。どっちが ✕ かを選ぶと、両方に原因 → 結果が出る
  *    q     { id }                            問題バンクの1問
  *    drill { n }                             このレッスンの問題から n 問
  *
@@ -162,7 +163,7 @@ RQ.lessons = [
         why: '先行詞 las chicas（女性・複数）→ las。' },
       { t: 'say', x: 'もう1つ。a ＋ el は `al` にくっつくよね。\n関係詞でも同じで、**a ＋ el que → al que**。' },
       { t: 'ex', es: 'El [chico] ^al^ {que} llamé ayer es mi primo.', ja: '昨日電話した男の子は、私のいとこだ。' },
-      { t: 'tip', id: 't-table', ti: '先行詞のあとの形 OK・NG 表', x: 'ここまでを表にまとめたよ。\nテストの「入らないものを選べ」は、この表で解ける。\n✕ の所に入る選択肢が「まちがい」の答え。',
+      { t: 'tip', id: 't-table', ti: '先行詞のあとの形 OK・NG 表', x: 'ここまでを表にまとめたよ。\nTips ノートでいつでも見られるよ。\n使い分けは「L6+ 使い分けマスター」でくわしく練習する。',
         tbl: { head: ['', 'que', '冠詞＋que', 'quien'], rows: [
           ['前置詞なし<br>コンマなし<small>el libro ＿ compré</small>', 'o|ふつう', 'x', 'x'],
           ['前置詞なし<br>コンマあり<small>mi hermana, ＿ vive</small>', 'o', 'w|少ない', 'o|人だけ'],
@@ -171,12 +172,6 @@ RQ.lessons = [
         more: '・a ＋ el que → **al que**、de ＋ el que → **del que**（a el que・de el que は NG）\n・para・por・sin など長めの前置詞は、ものでも冠詞をつける（la razón por la que）\n・場所で「〜で」なら donde も OK（en la que ＝ donde）',
         why: '前置詞がない名詞のすぐ後ろは、昔から que の指定席（L3 の quien と同じ）。冠詞をつけると逆に NG になる。前置詞のあとは、冠詞が「どの名詞を指すか」の名札になる。人を指すときは、名札つき（冠詞＋que）か、人専用の quien を使う。' },
       { t: 'q', id: 'ng-l5-1' },
-      { t: 'say', x: '表を使うときは、**3つのチェック**だけでいい。\n① ＿の前に前置詞がある？\n② コンマがある？\n③ 先行詞は人？もの？\n入りそうな形に、1つずつ ○✕ をつけてみよう。' },
-      { t: 'q', id: 'dj-p1' },
-      { t: 'tip', id: 't-3check', ti: '使い分けの3つのチェック', x: '① ＿の前に**前置詞**がある？\n② **コンマ**がある？\n③ 先行詞は**人**？**もの**？\nこれで表の行が決まる。あとは形を合わせる：\n・冠詞は先行詞の**性・数**（la chica → la que）\n・quien は**数**だけ（quienes）。quien に冠詞はつかない',
-        why: '使い分けで迷うのは、前置詞・コンマ・人かものか、の3つが一度に見えるから。1つずつ順にチェックすると表の行が決まり、○✕ は表どおりに出せる。' },
-      { t: 'q', id: 'dj-t2' },
-      { t: 'say', x: 'この ○✕ ジャッジは、ホームの **🥋 道場** で\nいつでもくり返せる。苦手な文から先に出るよ。' },
       { t: 'drill', n: 5 }
     ]
   },
@@ -200,6 +195,37 @@ RQ.lessons = [
       { t: 'ask', q: 'どっち？', es: 'El museo ___ visitamos ayer es famoso.', o: ['donde', 'que'], a: 1,
         why: 'visitamos el museo（博物館**を**訪れた）→ 目的語なので que。' },
       { t: 'drill', n: 5 }
+    ]
+  },
+  {
+    id: 'L11', no: 11, label: '6+', day: 3, icon: '⚖️', ti: '使い分けマスター', sub: 'que・quien・冠詞＋que・donde',
+    steps: [
+      { t: 'say', x: 'ここからは、**どの形を使うか**を決める練習。\n決め手は、いつも文の中の**手がかり**だよ。' },
+      { t: 'say', x: '手がかりは3つ。\n① 先行詞は **人**？**もの**？**場所**？\n② ＿ の前に**前置詞**が要る？（動詞とのペアで決まる）\n③ **コンマ**ではさんでいる？' },
+      { t: 'say', x: 'まずは、1か所だけちがう2つの文をくらべよう。\nちがう所が「原因」、使える・使えないが「結果」。' },
+      { t: 'pair', o: ['El libro {el que} compré es bueno.', 'El libro {del que} te hablé es bueno.'], a: 0,
+        c: ['comprar 〜（〜を買う）：前置詞が要らない', 'hablar de 〜（〜について話す）：前置詞 de が要る'],
+        r: ['名詞のすぐ後ろは que だけ → el que は使えない', '前置詞のあと → 冠詞＋que が使える（de＋el → del que）'] },
+      { t: 'pair', o: ['Es la llave {con que} abro la puerta.', 'Es la chica {con que} hablo.'], a: 1,
+        c: ['前置詞 con のあと ＋ 先行詞 llave＝もの', '前置詞 con のあと ＋ 先行詞 chica＝人'],
+        r: ['冠詞のない que も使える', '冠詞のない que は使えない → con la que／con quien'] },
+      { t: 'pair', o: ['El chico {quien} vive allí es Pablo.', 'Mi hermana, {quien} vive en Japón, habla tres idiomas.'], a: 0,
+        c: ['コンマも前置詞もない', 'コンマではさんだ説明 ＋ 人'],
+        r: ['quien は使えない → que', 'quien が使える'] },
+      { t: 'pair', o: ['Es la ciudad {donde} nací.', 'Es la ciudad {donde} visité.'], a: 1,
+        c: ['nacer en 〜（〜で生まれる）：場所 ＋「〜で」', 'visitar 〜（〜を訪れる）：「〜を」で、「〜で」ではない'],
+        r: ['donde が使える', 'donde は使えない → que'] },
+      { t: 'pair', o: ['El chico {del que} te hablé es este.', 'El chico {de el que} te hablé es este.'], a: 1,
+        c: ['de ＋ el が del にくっついている', 'de ＋ el がくっついていない'],
+        r: ['使える', '使えない（de＋el はかならず del。a＋el も al）'] },
+      { t: 'tip', id: 't-rules', ti: '使い分けのきまり', rules: true, x: 'どの問題でも、右上の「📋 きまり」でこのまとめを開けるよ。',
+        why: 'que・quien・冠詞＋que・donde は、意味はほとんど同じ。ちがうのは「使える場所」だけ。だから、場所を決める手がかり（前置詞・コンマ・人かものか）さえ見れば、使える形が決まる。' },
+      { t: 'say', x: '解くときは、先に**手がかり**を2つ選んでから、\n形の1つずつに ○✕ をつけるよ。' },
+      { t: 'q', id: 'dj-p1' },
+      { t: 'q', id: 'dj-o1' },
+      { t: 'q', id: 'dj-e6' },
+      { t: 'drill', n: 3 },
+      { t: 'say', x: 'この練習は、ホームの **🥋 道場** でいつでもくり返せる。\nまちがえた文から先に出るよ。' }
     ]
   },
   /* ================= DAY 4 ================= */
@@ -242,7 +268,7 @@ RQ.lessons = [
       { t: 'ask', q: 'どっち？「先生の言うことが分からない」', es: 'No entiendo ___ dice el profesor.', o: ['el que', 'lo que'], a: 1,
         why: '戻せる名詞がない「こと」→ lo que。' },
       { t: 'ask', pred: true, q: '名詞を省かずに書いたら？', es: 'Este es el libro el que compré.', o: ['使える', '使えない'], a: 1,
-        r: '**NG**！ 名詞のすぐ後ろ（前置詞なし）は `{que}` だけ。\n`el libro {que} compré` か、名詞を省いて `{el que} compré`。\n（L5 の OK・NG 表の1行目）' },
+        r: '**使えない**！\n原因：comprar 〜（〜を買う）は前置詞が要らない\n結果：名詞のすぐ後ろは `{que}` だけ\n`el libro {que} compré` か、名詞を省いて `{el que} compré`。' },
       { t: 'tip', id: 't-el-lo', ti: 'el que と lo que の見分け', x: '省いた名詞を**戻せる** → `{el / la / los / las que}`\n戻せる名詞がない「こと」 → `{lo que}`\n__名詞を戻してみる__',
         why: 'el・la・los・las は名詞の性・数を持っている。だから、戻せる名詞があるときだけ使える。lo は性も数もない「こと」の入れ物。' },
       { t: 'drill', n: 5 }
@@ -285,7 +311,7 @@ RQ.lessons = [
       { t: 'ask', q: 'どれ？', es: 'Es un chico ___ madre es médica.', o: ['cuyo', 'cuya', 'que su'], a: 1,
         why: '持ち物 madre（女性・単数）→ cuya。' },
       { t: 'say', x: '会話ではあまり使わないけど、文章ではよく見る。\n**見て意味が取れれば合格**だよ。' },
-      { t: 'tip', id: 't-cual', ti: '書き言葉の仲間：el cual', x: '`{el cual}` `{la cual}` `{lo cual}` …\nel que・lo que の書き言葉版。見かけたら同じ意味で読めば OK。\n使えるのは**前置詞のあと**か**コンマのあと**。\n（el libro el cual compré は NG。表の1行目と同じ）' },
+      { t: 'tip', id: 't-cual', ti: '書き言葉の仲間：el cual', x: '`{el cual}` `{la cual}` `{lo cual}` …\nel que・lo que の書き言葉版。見かけたら同じ意味で読めば OK。\n使えるのは**前置詞のあと**か**コンマのあと**。\n前置詞もコンマもない名詞のすぐ後ろでは使えない。\n（el libro el cual compré は ✕）' },
       { t: 'ex', es: 'Llegó tarde, {lo cual} me molestó.', ja: '彼は遅れて来た。そのことに、私はイライラした。' },
       { t: 'drill', n: 5 }
     ]
@@ -300,9 +326,9 @@ RQ.bosses = [
     line: '前置詞ハ…後ロニ…置イテイケ……', n: 8 },
   { id: 'B3', after: 'L6', day: 3, from: ['L5', 'L6'], name: 'カンシ・ツインズ', en: 'EL & LA', face: '👯', col: '#7dffb0',
     line: 'エルかラか、ロスかラスか…当ててごらん♪', n: 8 },
-  { id: 'B4', after: 'L8', day: 4, from: ['L7', 'L8'], name: 'ロケ・ファントム', en: 'LOQUE PHANTOM', face: '🎭', col: '#d58bff',
+  { id: 'B4', after: 'L8', day: 4, from: ['L7', 'L8', 'L11'], name: 'ロケ・ファントム', en: 'LOQUE PHANTOM', face: '🎭', col: '#d58bff',
     line: '名詞は…どこへ消えたのかな……？', n: 8 },
-  { id: 'B5', after: 'L10', day: 5, final: true, from: ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8', 'L9', 'L10'], name: 'エル・ヘフェ・クーヨ', en: 'EL JEFE CUYO', face: '👑', col: '#ff5fa2',
+  { id: 'B5', after: 'L10', day: 5, final: true, from: ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L11', 'L7', 'L8', 'L9', 'L10'], name: 'エル・ヘフェ・クーヨ', en: 'EL JEFE CUYO', face: '👑', col: '#ff5fa2',
     line: 'すべての関係詞を…わがものに……！', n: 14 }
 ];
 
@@ -324,9 +350,9 @@ RQ.gloss = {
 RQ.days = [
   { d: 1, ti: 'que の基本', x: 'L1・L2 → ボス1' },
   { d: 2, ti: 'quien と前置詞', x: 'L3・L4 → ボス2・復習' },
-  { d: 3, ti: '冠詞と donde', x: 'L5・L6 → ボス3・🥋道場' },
+  { d: 3, ti: '冠詞・donde・使い分け', x: 'L5・L6 → ボス3 → L6+ 使い分けマスター' },
   { d: 4, ti: 'lo que・el que', x: 'L7・L8 → ボス4・🥋道場・復習' },
   { d: 5, ti: '見分けと cuyo', x: 'L9・L10 → ラスボス・🥋道場' },
-  { d: 6, ti: '総復習', x: '🥋道場・復習・ラッシュで苦手つぶし' },
-  { d: 7, ti: '仕上げ', x: '🥋道場を全部 ○ に・ラスボスに S ランク' }
+  { d: 6, ti: '総復習', x: '🎓 西検チャレンジで苦手を見つけて、🥋道場・復習でつぶす' },
+  { d: 7, ti: '仕上げ', x: '🎓 西検チャレンジで 70% 以上・ラスボスに S ランク' }
 ];

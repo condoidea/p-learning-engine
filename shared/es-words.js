@@ -224,6 +224,7 @@
   W('nacer', '生まれる', 'v', 4, 'nací');
   W('entender', '分かる・理解する', 'v', 4, 'entiendo');
   W('creer', '思う・信じる', 'v', 4, 'creo');
+  W('confiar', '信頼する（confiar en 〜＝〜を信頼する）', 'v', 4, 'confío');
   W('necesitar', '必要とする', 'v', 4, 'necesito');
   W('buscar', 'さがす', 'v', 4, 'buscas');
   W('llevar', '身につけている・持っていく', 'v', 4, 'lleva, llevas');

@@ -534,3 +534,56 @@ table.oknd { width: 100%; table-layout: fixed; border-collapse: separate; border
 .qb b { white-space: nowrap; }
 .jb.should { opacity: 1 !important; border: 2px dashed var(--ok); color: var(--ok); background: rgba(77, 255, 154, .12); }
 .cmp .ji { display: inline-block; white-space: nowrap; margin-right: 10px; }
+
+/* ---------- 使い分け：手がかり（原因）→ 結果 ---------- */
+.qtag .rules-btn { float: right; margin: -4px 0 0 6px; padding: 2px 10px; border: 1px solid var(--line); border-radius: 99px; background: var(--panel2); font-size: 12px; font-weight: 800; color: var(--text); }
+.jclue { margin-top: 8px; padding: 8px 10px; border-radius: 12px; background: rgba(56, 232, 255, .08); font-size: 14px; line-height: 1.6; }
+.jclue:empty { display: none; }
+.jclue p { margin: 2px 0; }
+.jclue p + p { margin-top: 6px; }
+.jclue .jc-h { font-weight: 800; color: var(--prep); }
+.jclue .jc-h small { display: block; font-weight: 700; color: var(--muted); font-size: 12px; }
+.jclue p.ok { color: #d9ffe9; } .jclue p.ng { color: #ffd6d6; }
+.jrows .jc-h { margin: 4px 0 0; font-weight: 800; color: var(--prep); font-size: 14px; }
+.c-prep { color: var(--prep); }
+.jw .jyou { color: var(--ng); }
+.cz { color: #cfe9ff; }
+.jarr { color: var(--muted); font-size: 11.5px; white-space: nowrap; }
+.rz { color: var(--ok); } .rz.no { color: #ff9d9d; }
+.jsum { margin: 4px 0; font-size: 14px; } .jsum b { color: var(--ok); }
+.opts.four { grid-template-columns: repeat(4, 1fr); }
+.rules-box .rl { display: grid; grid-template-columns: 1fr; gap: 0; margin: 8px 0; padding: 8px 10px; border-radius: 12px; background: rgba(255, 255, 255, .06); font-size: 14px; line-height: 1.6; }
+.rl-c { font-weight: 800; color: #cfe9ff; }
+.rl-a { font-size: 11.5px; color: var(--muted); }
+.rl-note { margin: 2px 0 0; font-size: 12px; color: var(--muted); }
+.jwhy { margin: 6px 0 0; padding-left: 0; list-style: none; font-size: 13px; line-height: 1.6; }
+.jwhy li { margin: 4px 0; }
+
+/* ---------- 1か所だけちがう2文 ---------- */
+.pair .pr { display: grid; grid-template-columns: 30px 1fr; gap: 4px 8px; align-items: start; margin-top: 8px; padding: 8px; border-radius: 14px; background: rgba(255, 255, 255, .05); border: 2px solid transparent; }
+.pair .pr-k { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--panel2); font-weight: 800; }
+.pair .pr .es-line { line-height: 1.8; }
+.pair .pr.bad { border-color: var(--ng); background: rgba(255, 92, 92, .1); } .pair .pr.bad .pr-k { background: var(--ng); color: #fff; }
+.pair .pr.good { border-color: var(--ok); background: rgba(77, 255, 154, .08); } .pair .pr.good .pr-k { background: var(--ok); color: #12062b; }
+.pr-why { grid-column: 1 / -1; font-size: 13.5px; line-height: 1.6; }
+.pr-why p { margin: 3px 0; }
+.pr-why .lb { display: inline-block; margin-right: 6px; padding: 0 8px; border-radius: 99px; background: rgba(56, 232, 255, .2); color: var(--ante); font-size: 11.5px; font-weight: 800; }
+.pr-why .lb.r { background: rgba(255, 210, 63, .2); color: var(--prep); }
+.pr.bad .pr-why p:last-child { color: #ffd6d6; font-weight: 700; }
+.pr.good .pr-why p:last-child { color: #d9ffe9; font-weight: 700; }
+
+/* ---------- 西検チャレンジ ---------- */
+#quiz.exam .opt.ok, #quiz.exam .opt.ng { border-color: #fff; background: var(--panel2); box-shadow: none; }
+#quiz.exam .qcard.is-ok, #quiz.exam .qcard.is-ng { border-color: var(--line); box-shadow: none; }
+#quiz.exam .blank.filled { background: rgba(255, 255, 255, .12); border-color: #fff; text-decoration: none; color: #fff; }
+#quiz.exam .tok.ok, #quiz.exam .tok.ng, #quiz.exam .tok.right { background: rgba(255, 255, 255, .15); outline: 2px solid #fff; text-decoration: none; }
+.topics { margin: 12px auto 0; max-width: 420px; text-align: left; }
+.topics h3 { margin: 0 0 6px; font-size: 15px; }
+.tp { margin: 6px 0; padding: 8px 10px; border-radius: 12px; background: var(--panel); }
+.tp-h { display: flex; justify-content: space-between; gap: 8px; font-size: 13.5px; }
+.tp-h span { font-family: var(--f-latin); color: var(--prep); flex: none; }
+.tp-bar { display: block; height: 6px; margin: 4px 0; border-radius: 99px; background: rgba(255, 255, 255, .1); overflow: hidden; }
+.tp-bar i { display: block; height: 100%; background: var(--ok); }
+.tp.weak .tp-bar i { background: var(--prep); }
+.tp .mini { margin-top: 4px; padding: 6px 12px; font-size: 13px; }
+#modal.rules-m .mbox { padding-top: 50px; }

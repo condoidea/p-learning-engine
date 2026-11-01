@@ -40,7 +40,7 @@ window.LE_COURSES = [
     id: 'relativo', entry: 'relativo.html', storageKey: 'relativo.v1',
     title: 'スペイン語 関係詞', brand: '¡QUE FUSIÓN!', icon: '⚡',
     desc: '2つの文をタップで合体！ que・quien・前置詞＋冠詞＋que・donde・lo que・cuyo まで、西検4級の関係詞を1日30分×7日で。ボス戦・60秒ラッシュ・フレーズガチャつき。',
-    color: '#ff4fa3', color2: '#38e8ff', lessons: 10
+    color: '#ff4fa3', color2: '#38e8ff', lessons: 11
   },
   /* ¡MANDA!（manda/）：命令表現の独立アプリ。進み具合は lessons[id].done を数える（10の神託。ボスは数えない） */
   {

@@ -54,6 +54,7 @@
   function nodeDone(n) { return n.type === 'L' ? !!(S.lessons[n.id] && S.lessons[n.id].done) : !!(S.bosses[n.id] && S.bosses[n.id].win); }
   function nodeOpen(i) { return i === 0 || nodeDone(ORDER[i]) || nodeDone(ORDER[i - 1]); }
   function nextIdx() { for (var i = 0; i < ORDER.length; i++) if (!nodeDone(ORDER[i])) return i; return -1; }
+  function ln(L) { return L.label || L.no; }
   function lessonDone(no) { return !!(S.lessons['L' + no] && S.lessons['L' + no].done); }
   function unlockedQs() { return D.questions.filter(function (q) { return lessonDone(q.L); }); }
   function dueQs() { var now = Date.now(); return unlockedQs().filter(function (q) { var r = S.q[q.id]; return r && r.due <= now; }); }
@@ -314,12 +315,22 @@
   var RELW = { que: 1, quien: 1, quienes: 1, donde: 1, cuyo: 1, cuya: 1, cuyos: 1, cuyas: 1 };
   var WHICH = ['関係詞', '接続詞（〜ということ）', '疑問詞（何・どこ）'];
   function firstOk(q) { for (var i = 0; i < q.items.length; i++) if (q.items[i].ok) return q.items[i].t; }
-  /* ○✕ジャッジの「3つのチェック」と、表のその行 */
-  var JROW = { 1: 'que ○・冠詞＋que ✕・quien ✕', 2: 'que ○・冠詞＋que △・quien ○（人）', 3: 'que ○（en・de・con）・冠詞＋que ○・quien ✕', 4: 'que ✕・冠詞＋que ○・quien ○' };
-  function pathHtml(q) {
-    var p = q.path;
-    return '<p class="jpath">🔍 前置詞 <b>' + (p.prep ? 'あり（' + p.prep + '）' : 'なし') + '</b>・コンマ <b>' + (p.comma ? 'あり' : 'なし') + '</b>・先行詞 <b>' + (p.hum ? '人' : 'もの') + '</b>　' + esc(p.tag) +
-      '<br>→ OK・NG 表の <b>' + p.row + '行目</b>：' + JROW[p.row] + (p.note ? '<br>💡 ' + esc(p.note) : '') + '</p>';
+  /* ○✕ジャッジ：手がかり（原因）と、きまり（原因 → 結果） */
+  var WHO = { hum: '人', thing: 'もの', place: '場所' }, WHOK = ['hum', 'thing', 'place'], PREPS = ['なし', 'en', 'con', 'de'];
+  function whoClue(c) { return '先行詞 <b class="c-ante">' + esc(c.w) + '</b> → <b>' + WHO[c.who] + '</b>（' + c.gn + '）'; }
+  function prepClue(c) {
+    return '<b>' + esc(c.vf) + '</b> ← ' + esc(c.vi) + '（' + esc(c.vm) + '）<br>→ ' + (c.prep ? '前置詞 <b class="c-prep">' + c.prep + '</b> が要る' : '前置詞は<b>要らない</b>');
+  }
+  function commaClue() { return 'コンマではさんでいる → <b>かっこの説明</b>'; }
+  function clueHtml(q) {
+    var c = q.clue;
+    return '<div class="jclue"><p class="jc-h">🔎 手がかり</p><p>' + whoClue(c) + '</p><p>' + prepClue(c) + '</p>' + (c.comma ? '<p>' + commaClue() + '</p>' : '') + '</div>';
+  }
+  function becauseHtml(it) { return '<span class="cz">' + esc(it.c) + '</span> <span class="jarr">なので →</span> <b class="rz' + (it.ok ? '' : ' no') + '">' + esc(it.r) + '</b>'; }
+  function rulesHtml() {
+    return '<div class="rules-box"><b class="tip-ti">📋 使い分けのきまり</b><p class="rl-note">上が「原因」、下が「結果」</p>' + D.rules.map(function (r) {
+      return '<div class="rl"><span class="rl-c">' + esc(r.c) + '</span><span class="rl-a">なので →</span><span class="rl-r">' + ja(r.r) + '</span></div>';
+    }).join('') + '</div>';
   }
   function fullOf(q) {
     if (q.k === 'judge') return q.s.replace('___', '{' + firstOk(q) + '}');
@@ -360,9 +371,11 @@
     else if (q.k === 'bug') { you = '「' + esc(chosen) + '」をまちがいにした'; right = 'まちがいは ' + mark(q.a) + ' → ' + esHtml(q.ok); }
     else if (q.k === 'which') { you = esc(chosen); right = '<b class="fix">' + WHICH[q.a] + '</b>'; }
     else if (q.k === 'judge') {
-      var cm = chosen.split('');
+      var parts = chosen.split('|'), cm = parts[0].split(''), cq = q.clue;
       you = q.items.map(function (it, i) { var m = cm[i] === 'o' ? '○' : '✕', good = (cm[i] === 'o') === it.ok; return '<span class="ji">' + (good ? m + ' ' + esc(it.t) : '<b class="wrong">' + m + ' ' + esc(it.t) + '</b>') + '</span>'; }).join(' ');
       right = q.items.map(function (it, i) { var m = it.ok ? '○' : '✕', good = (cm[i] === 'o') === it.ok; return '<span class="ji">' + (good ? m + ' ' + esc(it.t) : '<b class="fix">' + m + ' ' + esc(it.t) + '</b>') + '</span>'; }).join(' ');
+      if (parts[1] && parts[1] !== cq.who && !(cq.who === 'place' && parts[1] === 'thing')) { you = '先行詞 ' + mark(WHO[parts[1]]) + '<br>' + you; right = '先行詞 <b class="fix">' + WHO[cq.who] + '</b><br>' + right; }
+      if (parts.length > 2 && parts[2] !== (cq.prep || '')) { you = '前置詞 ' + mark(parts[2] || 'なし') + '<br>' + you; right = '前置詞 <b class="fix">' + (cq.prep || 'なし') + '</b><br>' + right; }
     }
     else { you = esc(chosen); right = '<b class="fix">' + esc(q.o[q.a]) + '</b>'; }
     var es = q.k === 'pick' || q.k === 'build' || q.k === 'join' || q.k === 'listen' || q.k === 'bug';
@@ -376,15 +389,17 @@
     card.setAttribute('data-q', q.id);
     var body = '';
     if (q.k === 'pick' || q.k === 'ja' || q.k === 'ng') body = '<div class="es-line">' + esHtml(q.s) + '</div>';
-    else if (q.k === 'judge') body = '<div class="es-line">' + esHtml(q.s) + '</div>';
+    else if (q.k === 'judge') body = '<div class="es-line">' + esHtml(q.s.replace(q.clue.w, '[' + q.clue.w + ']')) + '</div>';
     else if (q.k === 'ante' || q.k === 'bug' || q.k === 'which') body = '<div class="es-line toks">' + toks(q.s, q.k === 'which' ? q.w : null) + '</div>';
     else if (q.k === 'build') body = '<div class="build-line"></div>';
     else if (q.k === 'listen') body = Speech.ok() ? '<div class="listen"><button class="say big" data-say="' + esc(q.s) + '" aria-label="もう一度聞く">🔊</button><button class="say slow" data-say="' + esc(q.s) + '" aria-label="ゆっくり聞く">🐢</button><small>何度でも聞けるよ</small></div>'
       : '<p class="why">（この端末ではスペイン語の音声が使えないので、日本語の意味から選ぼう）</p><div class="es-line">' + esc(q.ja) + '</div>';
     else if (q.k === 'join') body = '<div class="join"><div class="es-line sm">' + esHtml(q.p[0]) + '</div><div class="fz-plus">＋</div><div class="es-line sm">' + esHtml(q.p[1]) + '</div></div>';
     var showJa = q.ja && q.k !== 'ja' && q.k !== 'join' && q.k !== 'listen';
-    card.innerHTML = '<div class="qtag"><span>' + KIND[q.k][0] + '</span> ' + KIND[q.k][1] + (opts.tag ? '<em>' + esc(opts.tag) + '</em>' : '') + '</div>' + body +
-      (showJa ? '<div class="ja-line">' + esc(q.ja) + '</div>' : '') + (q.k === 'judge' ? '<div class="jrows"></div>' : '') + '<div class="qres"></div>';
+    card.innerHTML = '<div class="qtag"><span>' + KIND[q.k][0] + '</span> ' + KIND[q.k][1] + (opts.tag ? '<em>' + esc(opts.tag) + '</em>' : '') +
+      (q.k === 'judge' ? '<button type="button" class="rules-btn">📋 きまり</button>' : '') + '</div>' + body +
+      (showJa ? '<div class="ja-line">' + esc(q.ja) + '</div>' : '') + (q.k === 'judge' ? '<div class="jclue"></div><div class="jrows" hidden></div>' : '') + '<div class="qres"></div>';
+    if (q.k === 'judge') $('.rules-btn', card).addEventListener('click', function () { Sfx.tap(); modal(rulesHtml(), 'rules-m'); });
     glossEs(card);
     if (q.k === 'listen' && Speech.ok()) later(function () { if (!done) Speech.say(q.s); }, 350);
     if (q.k === 'ante') {
@@ -403,7 +418,8 @@
     function result(ok, chosen) {
       var r = $('.qres', card), s = fullOf(q);
       if (q.k === 'judge') {
-        r.innerHTML = (ok ? '<b class="rk ok">⭕ 全部正解！</b>' : '<b class="rk ng">❌ 赤い行を見てみよう（あなた → 正解）</b>') + pathHtml(q) +
+        r.innerHTML = (ok ? '<b class="rk ok">⭕ 全部正解！</b>' : '<b class="rk ng">❌ 赤い所を見てみよう</b>') +
+          '<p class="jsum">使える形：' + q.items.filter(function (it) { return it.ok; }).map(function (it) { return '<b>' + esc(it.t) + '</b>'; }).join('・') + '</p>' +
           '<div class="es-line ans">' + esHtml(s) + sayBtn(s) + '</div>';
         glossAll(r); autoSay(s);
         return;
@@ -433,32 +449,61 @@
       return;
     }
     if (q.k === 'judge') {
-      var box = $('.jrows', card), marks = {}, nMarked = 0;
-      box.innerHTML = shuffle(q.items.map(function (x, i) { return i; })).map(function (i) {
-        return '<div class="jrow" data-i="' + i + '"><span class="jt">' + esc(q.items[i].t) + '</span><button class="jb" data-m="o" aria-label="入る">○</button><button class="jb" data-m="x" aria-label="入らない">✕</button></div>';
-      }).join('');
-      T.hint('全部の形に <b class="c-ok">○（入る）</b>か <b class="c-ng">✕（入らない）</b>をつけよう');
-      $$('.jb', box).forEach(function (b) {
-        b.addEventListener('click', function () {
-          if (done) return;
-          var r = b.parentNode, i = +r.getAttribute('data-i');
-          if (!marks[i]) nMarked++;
-          marks[i] = b.getAttribute('data-m'); Sfx.tap();
-          $$('.jb', r).forEach(function (x) { x.classList.toggle('on', x === b); });
-          if (nMarked === q.items.length) T.next(judge, '⚖️ 判定！');
-        });
+      var cq = q.clue, box = $('.jrows', card), cl = $('.jclue', card), marks = {}, nMarked = 0, pick1 = '', pick2 = '', okClue = true;
+      var see = function (e) { if (e.scrollIntoView) e.scrollIntoView({ block: 'nearest', behavior: FX.RM ? 'auto' : 'smooth' }); };
+      cl.innerHTML = '<p class="jc-h">🔎 手がかり1：先行詞 <b class="c-ante">' + esc(cq.w) + '</b> は？</p>';
+      T.options(['人', 'もの', '場所'].map(function (l, i) { return { label: l, i: i }; }), function (i, b, wrap) {
+        pick1 = WHOK[i];
+        var good = pick1 === cq.who || (cq.who === 'place' && pick1 === 'thing');
+        if (!good) okClue = false;
+        markOpts(wrap, WHOK.indexOf(cq.who), good ? -1 : i);
+        cl.innerHTML = '<p class="' + (good ? 'ok' : 'ng') + '">' + (good ? '⭕ ' : '❌ あなた：' + WHO[pick1] + '　正解：') + whoClue(cq) + (cq.who === 'place' && pick1 === 'thing' ? '（場所も、ものの仲間）' : '') + '</p>';
+        later(step2, 600);
       });
+      function step2() {
+        if (done) return;
+        cl.insertAdjacentHTML('beforeend', '<p class="jc-h">🔎 手がかり2：＿ の前に前置詞は要る？<small>動詞 <b>' + esc(cq.vf) + '</b> とのペアで決まる</small></p>');
+        see(cl);
+        T.options(PREPS.map(function (l, i) { return { label: l, i: i }; }), function (i, b, wrap) {
+          pick2 = i ? PREPS[i] : '';
+          var good = pick2 === (cq.prep || '');
+          if (!good) okClue = false;
+          markOpts(wrap, PREPS.indexOf(cq.prep || 'なし'), good ? -1 : i);
+          $$('.jc-h', cl).pop().remove();
+          cl.insertAdjacentHTML('beforeend', '<p class="' + (good ? 'ok' : 'ng') + '">' + (good ? '⭕ ' : '❌ あなた：' + PREPS[i] + '　正解：') + prepClue(cq) + '</p>' + (cq.comma ? '<p>' + commaClue() + '</p>' : ''));
+          later(step3, 600);
+        }, 'four');
+      }
+      function step3() {
+        if (done) return;
+        box.hidden = false;
+        box.innerHTML = '<p class="jc-h">⚖️ 形の1つずつに ○（使える）か ✕（使えない）</p>' + shuffle(q.items.map(function (x, i) { return i; })).map(function (i) {
+          return '<div class="jrow" data-i="' + i + '"><span class="jt">' + esc(q.items[i].t) + '</span><button class="jb" data-m="o" aria-label="使える">○</button><button class="jb" data-m="x" aria-label="使えない">✕</button></div>';
+        }).join('');
+        T.hint('手がかりから、1つずつ <b class="c-ok">○（使える）</b>か <b class="c-ng">✕（使えない）</b>');
+        see(box);
+        $$('.jb', box).forEach(function (b) {
+          b.addEventListener('click', function () {
+            if (done) return;
+            var r = b.parentNode, i = +r.getAttribute('data-i');
+            if (!marks[i]) nMarked++;
+            marks[i] = b.getAttribute('data-m'); Sfx.tap();
+            $$('.jb', r).forEach(function (x) { x.classList.toggle('on', x === b); });
+            if (nMarked === q.items.length) T.next(judge, '⚖️ 判定！');
+          });
+        });
+      }
       function judge() {
-        var ok = true;
+        var ok = okClue;
         $$('.jrow', box).forEach(function (r) {
-          var i = +r.getAttribute('data-i'), it = q.items[i], hitR = marks[i] === (it.ok ? 'o' : 'x');
+          var i = +r.getAttribute('data-i'), it = q.items[i], right = it.ok ? 'o' : 'x', hitR = marks[i] === right;
           if (!hitR) ok = false;
           r.classList.add(hitR ? 'ok' : 'ng');
-          r.insertAdjacentHTML('beforeend', '<small class="jw">' + (hitR ? (it.ok ? '○ ' : '✕ ') : 'あなた ' + (marks[i] === 'o' ? '○' : '✕') + ' → 正解 ' + (it.ok ? '○' : '✕') + '　') + esc(it.why) + '</small>');
-          $$('.jb', r).forEach(function (x) { x.disabled = true; if (!hitR && x.getAttribute('data-m') === (it.ok ? 'o' : 'x')) x.classList.add('should'); });
+          r.insertAdjacentHTML('beforeend', '<small class="jw">' + (hitR ? '' : '<b class="jyou">あなた ' + (marks[i] === 'o' ? '○' : '✕') + ' → 正解 ' + (it.ok ? '○' : '✕') + '</b><br>') + becauseHtml(it) + '</small>');
+          $$('.jb', r).forEach(function (x) { x.disabled = true; if (!hitR && x.getAttribute('data-m') === right) x.classList.add('should'); });
         });
         T.clear();
-        finish(ok, q.items.map(function (x, i) { return marks[i]; }).join(''));
+        finish(ok, q.items.map(function (x, i) { return marks[i]; }).join('') + '|' + pick1 + '|' + pick2);
       }
       return;
     }
@@ -592,12 +637,12 @@
   function startLesson(L) {
     show('play');
     feed.innerHTML = ''; T1.clear();
-    $('#pTitle').textContent = 'L' + L.no + '  ' + L.ti;
+    $('#pTitle').textContent = 'L' + ln(L) + '  ' + L.ti;
     cur = { L: L, i: 0, run: newRun(), used: {}, tips: [] };
     L.steps.forEach(function (st) { if (st.t === 'q') cur.used[st.id] = 1; });
-    var intro = el('div', 'card lesson-title', '<small>LESSON ' + L.no + '</small><b>' + L.icon + ' ' + esc(L.ti) + '</b><span>' + esc(L.sub) + '</span>');
+    var intro = el('div', 'card lesson-title', '<small>LESSON ' + ln(L) + '</small><b>' + L.icon + ' ' + esc(L.ti) + '</b><span>' + esc(L.sub) + '</span>');
     addCard(intro);
-    FX.slam('LESSON ' + L.no, 'cyan', L.ti);
+    FX.slam('LESSON ' + ln(L), 'cyan', L.ti);
     later(step, 500);
   }
   function setProg() { if (!cur) return; $('#pProg').style.width = Math.round(cur.i / cur.L.steps.length * 100) + '%'; $('#pXp').textContent = cur.run.xp; }
@@ -607,7 +652,7 @@
     setProg();
     if (cur.i >= cur.L.steps.length) return finishLesson();
     var st = cur.L.steps[cur.i++], run = cur.run;
-    ({ say: doSay, ex: doEx, fuse: doFuse, morph: doMorph, ask: doAsk, tip: doTip, q: doQ, drill: doDrill })[st.t](st, run);
+    ({ say: doSay, ex: doEx, fuse: doFuse, morph: doMorph, ask: doAsk, pair: doPair, tip: doTip, q: doQ, drill: doDrill })[st.t](st, run);
   }
   function nextBtn() { if (!cur) return; setProg(); T1.next(step); }
 
@@ -701,9 +746,29 @@
           }).join('') + '</tr>';
         }).join('') + '</tbody></table></div>';
     }
+    if (st.rules) t += rulesHtml();
     return '<b class="tip-ti">' + esc(st.ti) + '</b>' + t + '<div class="tip-x">' + ja(st.x) + '</div>' +
       (st.more ? '<div class="tip-more">' + ja(st.more) + '</div>' : '') +
       (st.why ? '<details><summary>🤔 なぜ？</summary><p>' + ja(st.why) + '</p></details>' : '');
+  }
+  /* 1か所だけちがう2文：どっちが ✕？ → 両方の文の下に「原因 → 結果」 */
+  function doPair(st, run) {
+    var c = addCard(el('div', 'card pair', '<div class="qtag">🔍 1か所だけちがう2文 <em>どっちが ✕（使えない）？</em></div>' +
+      st.o.map(function (o, i) { return '<div class="pr"><span class="pr-k">' + 'AB'[i] + '</span><div class="es-line sm">' + esHtml(o) + '</div></div>'; }).join('')));
+    glossEs(c);
+    T1.options([{ label: 'A が ✕', i: 0 }, { label: 'B が ✕', i: 1 }], function (i, b, wrap) {
+      var ok = i === st.a;
+      markOpts(wrap, st.a, i);
+      if (ok) hit(run, b); else miss(run, c);
+      $$('.pr', c).forEach(function (row, k) {
+        var bad = k === st.a;
+        row.classList.add(bad ? 'bad' : 'good');
+        $('.pr-k', row).textContent = bad ? '✕' : '○';
+        row.insertAdjacentHTML('beforeend', '<div class="pr-why"><p><span class="lb">原因</span>' + esc(st.c[k]) + '</p><p><span class="lb r">結果</span>' + esc(st.r[k]) + '</p></div>');
+      });
+      addMe((ok ? '⭕ ' : '✕ ') + 'AB'[i] + ' が ✕');
+      later(nextBtn, 350);
+    });
   }
   function doTip(st, run) {
     var first = !S.tips[st.id];
@@ -726,7 +791,7 @@
   function doQ(st, run) { lessonQ(QBY[st.id], run, nextBtn); }
   function doDrill(st, run) {
     var pool = D.questions.filter(function (q) { return q.L === cur.L.no && !cur.used[q.id]; });
-    var list = capJudge(weighted(pool), 1).slice(0, st.n);
+    var list = (cur.L.no === 11 ? weighted(pool) : capJudge(weighted(pool), 1)).slice(0, st.n);
     addBot('よし、仕上げの **ドリル** だ！\n' + list.length + '問、連続正解で FEVER をねらえ🔥', 'happy');
     FX.slam('DRILL ×' + list.length, 'gold');
     var k = 0, me = cur;
@@ -759,7 +824,7 @@
     var up = addXp(run.xp);
     save(); cur = null;
     var ni = nextIdx();
-    showResult({ title: 'STAGE CLEAR!!', sub: 'L' + L.no + ' ' + L.ti, stars: stars, run: run, rewards: rewards, card: card, up: up, unlock: first && ni >= 0 ? ORDER[ni] : null,
+    showResult({ title: 'STAGE CLEAR!!', sub: 'L' + ln(L) + ' ' + L.ti, stars: stars, run: run, rewards: rewards, card: card, up: up, unlock: first && ni >= 0 ? ORDER[ni] : null,
       next: ni >= 0 ? { label: nodeLabel(ORDER[ni]), fn: function () { openNode(ni); } } : null });
   }
   $('#pQuit').addEventListener('click', function () {
@@ -770,7 +835,7 @@
   /* =========================================================
    * 結果画面
    * ========================================================= */
-  function nodeLabel(n) { if (n.type === 'L') { var L = LESSON[n.id]; return '▶ L' + L.no + ' ' + L.ti; } var B = BOSS[n.id]; return '⚔ ボス戦：' + B.name; }
+  function nodeLabel(n) { if (n.type === 'L') { var L = LESSON[n.id]; return '▶ L' + ln(L) + ' ' + L.ti; } var B = BOSS[n.id]; return '⚔ ボス戦：' + B.name; }
   function showResult(o) {
     var scr = $('#done'); show('done');
     var run = o.run || newRun();
@@ -790,9 +855,9 @@
         run.misses.map(function (m) {
           var full = fullOf(m.q);
           return '<div class="miss"><div class="es-line sm">' + esHtml(full) + sayBtn(full) + '</div>' + (m.q.ja ? '<div class="ja-line">' + esc(m.q.ja) + '</div>' : '') +
-            cmpHtml(m.q, m.c) + (m.q.k === 'judge' ? pathHtml(m.q) : '') + (m.q.why ? '<p class="why">' + ja(m.q.why) + '</p>' : '') + '</div>';
+            cmpHtml(m.q, m.c) + (m.q.k === 'judge' ? clueHtml(m.q) + '<ul class="jwhy">' + m.q.items.map(function (it) { return '<li><b>' + (it.ok ? '○ ' : '✕ ') + esc(it.t) + '</b>　' + becauseHtml(it) + '</li>'; }).join('') + '</ul>' : '') + (m.q.why ? '<p class="why">' + ja(m.q.why) + '</p>' : '') + '</div>';
         }).join('') + '</details>' : '') +
-      '<div class="res-btns"></div></div>';
+      (o.extra || '') + '<div class="res-btns"></div></div>';
     var bt = $('.res-btns', scr);
     if (o.retry) bt.appendChild(mkBtn(o.retry.label, 'go', o.retry.fn));
     if (o.next) bt.appendChild(mkBtn(o.next.label, o.retry ? 'sub' : 'go', o.next.fn));
@@ -808,6 +873,7 @@
       $('#rBar').style.width = (lvNow.lv > lvBefore.lv ? 100 : Math.round(lvNow.cur / lvNow.need * 100)) + '%';
     }, 700);
     if (o.up) later(function () { $('#rLv').textContent = lvNow.lv; $('#rBar').style.width = Math.round(lvNow.cur / lvNow.need * 100) + '%'; levelUp(o.up); }, 1700);
+    if (o.after) o.after(scr);
     var nc = $('.newcard .pcard', scr);
     if (nc) nc.addEventListener('click', function () { flipCard(nc); });
   }
@@ -844,7 +910,7 @@
    * ボス戦・ラッシュ・復習（1問ずつの画面）
    * ========================================================= */
   var zMain = $('#zMain'), zHud = $('#zHud'), zRun = null, zTimer = 0, zActive = false;
-  function zStop() { zActive = false; clearInterval(zTimer); Speech.stop(); }
+  function zStop() { zActive = false; clearInterval(zTimer); Speech.stop(); $('#quiz').classList.remove('exam'); }
   $('#zQuit').addEventListener('click', function () {
     if (zActive && !confirm('やめる？（ここまでの XP はもらえません）')) return;
     zStop(); home();
@@ -859,7 +925,7 @@
     var rec = S.bosses[B.id];
     zMain.innerHTML = '<div class="boss-intro" style="--bc:' + B.col + '"><div class="bface big">' + B.face + '</div><small>' + esc(B.en) + '</small><h2>' + esc(B.name) + '</h2>' +
       '<p class="bline">「' + esc(B.line) + '」</p>' +
-      '<ul class="rules"><li>❤️ ライフは3つ。まちがえると1つ減る</li><li>⚡ すばやく正解するとクリティカル（ダメージ1.5倍）</li><li>🏆 ノーミスで S ランク</li><li>📚 出題：' + B.from.map(function (id) { return 'L' + LESSON[id].no; }).join('・') + '</li></ul>' +
+      '<ul class="rules"><li>❤️ ライフは3つ。まちがえると1つ減る</li><li>⚡ すばやく正解するとクリティカル（ダメージ1.5倍）</li><li>🏆 ノーミスで S ランク</li><li>📚 出題：' + B.from.map(function (id) { return 'L' + ln(LESSON[id]); }).join('・') + '</li></ul>' +
       (rec && rec.win ? '<p class="best">これまでの最高：<b>' + rec.rank + '</b> ランク</p>' : '') + '</div>';
     Sfx.combo(10); FX.shake(null, true);
     T2.next(function () { bossFight(B); }, '⚔ たたかう！', 'boss');
@@ -1012,10 +1078,84 @@
   }
 
   /* ----- 復習 ----- */
+  /* ----- 🎓 西検チャレンジ（試験と同じ形の20問。答え合わせは最後にまとめて） ----- */
+  var TOPICS = [
+    { id: 'que', ti: 'que の基本・省略しない', L: [1, 2], n: 2 },
+    { id: 'quien', ti: 'quien（コンマの説明・人）', L: [3], n: 2 },
+    { id: 'prep', ti: '前置詞＋関係詞（冠詞・al／del）', L: [4, 5], n: 3 },
+    { id: 'donde', ti: 'donde（「〜で」と「〜を」）', L: [6], n: 2 },
+    { id: 'use', ti: '使い分け（入らないものを選ぶ）', L: [11], n: 4 },
+    { id: 'lo', ti: 'lo que・el que', L: [7, 8], n: 3 },
+    { id: 'which', ti: 'que の正体・アクセント', L: [9], n: 2 },
+    { id: 'cuyo', ti: 'cuyo・el cual', L: [10], n: 2 }
+  ];
+  var EXAMK = { pick: 1, ng: 1, which: 1, bug: 1, ja: 1 };
+  function topicOf(q) { for (var i = 0; i < TOPICS.length; i++) if (TOPICS[i].L.indexOf(q.L) >= 0) return TOPICS[i]; }
+  /* 使い分けの文（○✕ジャッジ）から、試験の「入らないものを選べ」を作る */
+  function judgeToNg(q) {
+    var oks = q.items.filter(function (it) { return it.ok; }), bads = q.items.filter(function (it) { return !it.ok; });
+    var bad = bads[Math.floor(Math.random() * bads.length)];
+    var o = shuffle(oks.slice(0, 3).concat([bad]));
+    return { id: q.id, L: q.L, k: 'ng', s: q.s, ja: q.ja, o: o.map(function (it) { return it.t; }), a: o.indexOf(bad), why: bad.c + '　なので → ' + bad.r };
+  }
+  function allLessonsDone() { return D.lessons.every(function (L) { return lessonDone(L.no); }); }
+  function mockGo() {
+    if (!allLessonsDone()) return toast('🔒 レッスンをぜんぶクリアすると、西検チャレンジが開くよ');
+    var list = [];
+    TOPICS.forEach(function (tp) {
+      var pool = D.questions.filter(function (q) { return tp.L.indexOf(q.L) >= 0 && (EXAMK[q.k] || q.k === 'judge'); });
+      weighted(pool).slice(0, tp.n).forEach(function (q) { list.push(q.k === 'judge' ? judgeToNg(q) : q); });
+    });
+    list = shuffle(list);
+    var k = 0, ok = 0;
+    zStop(); show('quiz'); $('#quiz').classList.add('exam'); zActive = true; zRun = newRun();
+    $('#zTitle').textContent = '🎓 西検チャレンジ'; zHud.innerHTML = '';
+    FX.slam('EXAM', 'gold', '試験と同じ形で ' + list.length + '問');
+    function paint() { $('#zProg').style.width = Math.round(k / list.length * 100) + '%'; $('#zRight').innerHTML = '<small>問</small><b>' + Math.min(k + 1, list.length) + '/' + list.length + '</b>'; }
+    function one() {
+      paint();
+      if (k >= list.length) return end();
+      var q = list[k++], c = zCard();
+      renderQ(q, c, T2, { run: zRun, fast: true, tag: '第' + k + '問' }, function (good) {
+        if (good) { ok++; zRun.ok++; } else zRun.ng++;
+        q.correct = good;
+        srs(QBY[q.id] || q, good); save();
+        later(one, 450);
+      });
+    }
+    function end() {
+      zStop();
+      var pct = Math.round(ok / list.length * 100), pass = pct >= 70, best = S.mockBest || 0;
+      S.mockBest = Math.max(best, pct);
+      var tix = pct >= 90 ? 5 : pass ? 3 : 1;
+      S.tickets += tix;
+      touchDay();
+      zRun.xp = ok * 10 + (pass ? 50 : 0);
+      var up = addXp(zRun.xp); save();
+      var rows = TOPICS.map(function (tp) {
+        var qs = list.filter(function (q) { return topicOf(q) === tp; }), n = qs.filter(function (q) { return q.correct; }).length, all = qs.length;
+        var weak = n < all, Lid = 'L' + tp.L[tp.L.length - 1];
+        return '<div class="tp' + (weak ? ' weak' : '') + '"><div class="tp-h"><b>' + esc(tp.ti) + '</b><span>' + n + ' / ' + all + '</span></div><span class="tp-bar"><i style="width:' + Math.round(n / all * 100) + '%"></i></span>' +
+          (weak ? '<button class="mini" data-go="' + (tp.id === 'use' ? 'dojo' : Lid) + '">' + (tp.id === 'use' ? '🥋 道場で練習' : '📘 L' + ln(LESSON[Lid]) + ' をもう一度') + '</button>' : '') + '</div>';
+      }).join('');
+      showResult({ title: pct >= 90 ? 'EXCELLENT!!' : pass ? 'PASS!!' : 'もう一歩！', sub: '西検チャレンジ（合格ライン 70%）', lose: !pass, run: zRun, up: up, openMisses: true,
+        big: [pct + '%', ok + ' / ' + list.length + ' 問正解' + (pct > best ? '　自己ベスト更新！' : '　自己ベスト ' + S.mockBest + '%')],
+        rewards: [{ icon: '🎟', t: (pass ? '合格' : 'チャレンジ') + ' +' + tix }],
+        extra: '<div class="topics"><h3>分野ごとの結果</h3>' + rows + '</div>',
+        after: function (scr) {
+          $$('.topics [data-go]', scr).forEach(function (b) {
+            b.addEventListener('click', function () { Sfx.tap(); var g = b.getAttribute('data-go'); if (g === 'dojo') dojoGo(); else startLesson(LESSON[g]); });
+          });
+        },
+        retry: { label: '🎓 もう一回（問題は入れかわる）', fn: mockGo } });
+    }
+    one();
+  }
+
   /* ----- 使い分け道場（○✕ジャッジだけ。苦手な文から8問） ----- */
   function judgeQs() { return D.questions.filter(function (q) { return q.k === 'judge'; }); }
   function dojoGo() {
-    if (!lessonDone(5)) return toast('🔒 L5 をクリアすると、道場が開くよ');
+    if (!lessonDone(11)) return toast('🔒 「L6+ 使い分けマスター」をクリアすると、道場が開くよ');
     var list = weighted(judgeQs()).slice(0, 8), k = 0;
     zStop(); show('quiz'); zActive = true; zRun = newRun();
     $('#zTitle').textContent = '🥋 使い分け道場'; zHud.innerHTML = '';
@@ -1059,7 +1199,7 @@
       paint();
       if (k >= list.length) return end();
       var q = list[k++], c = zCard();
-      renderQ(q, c, T2, { run: zRun, tag: k + ' / ' + list.length + '　L' + q.L }, function (ok) {
+      renderQ(q, c, T2, { run: zRun, tag: k + ' / ' + list.length + '　L' + ln(LESSON['L' + q.L]) }, function (ok) {
         srs(q, ok); save();
         if (ok) hit(zRun, $('.chosen', T2.el) || c); else miss(zRun, c);
         paint();
@@ -1131,7 +1271,7 @@
     var got = [];
     D.lessons.forEach(function (L) {
       var mine = D.cards.filter(function (c) { return c.L === L.no; });
-      if (S.sets[L.no] || !mine.every(function (c) { return S.cards[c.id]; })) return;
+      if (!mine.length || S.sets[L.no] || !mine.every(function (c) { return S.cards[c.id]; })) return;
       S.sets[L.no] = Date.now(); S.tickets += SET_TIX; S.xp += SET_XP;
       got.push({ icon: '🏆', t: 'L' + L.no + ' カード5枚コンプリート！ 🎟+' + SET_TIX + '・+' + SET_XP + ' XP', set: L.no });
     });
@@ -1233,8 +1373,8 @@
     if (tab === 'tips') {
       body.innerHTML = '<p class="dex-note">レッスンで手に入れたコツ。🤔 なぜ？ を開くと理由が読めるよ。</p>' + TIPS.map(function (t) {
         var st = t.tip, have = S.tips[st.id];
-        return have ? '<div class="card tip' + (st.tbl ? ' has-tbl' : '') + '"><div class="tip-h"><span>L' + t.L.no + '</span></div>' + tipBody(st) + '</div>'
-          : '<div class="card tip locked"><b class="tip-ti">？？？</b><small>L' + t.L.no + ' でゲット</small></div>';
+        return have ? '<div class="card tip' + (st.tbl ? ' has-tbl' : '') + '"><div class="tip-h"><span>L' + ln(t.L) + '</span></div>' + tipBody(st) + '</div>'
+          : '<div class="card tip locked"><b class="tip-ti">？？？</b><small>L' + ln(t.L) + ' でゲット</small></div>';
       }).join('');
       glossAll(body);
       return;
@@ -1243,6 +1383,7 @@
       '<p class="dex-note">カードをタップすると、その1枚だけで練習もできるよ。<br>🏆 レッスンごとに5枚そろえると 🎟+3・+50 XP</p>';
     D.lessons.forEach(function (L) {
       var mine = D.cards.filter(function (c) { return c.L === L.no; }), have = mine.filter(function (c) { return S.cards[c.id]; }).length;
+      if (!mine.length) return;
       html += '<h3 class="dex-h">L' + L.no + ' ' + esc(L.ti) + (S.sets[L.no] ? '<span class="set done">🏆 COMPLETE</span>' : '<span class="set">' + have + ' / ' + mine.length + '</span>') + '</h3><div class="dex-grid">' + D.cards.filter(function (c) { return c.L === L.no; }).map(slot).join('') + '</div>';
     });
     html += '<h3 class="dex-h">👑 ボス撃破の証（UR）</h3><div class="dex-grid">' + D.cards.filter(function (c) { return c.boss; }).map(slot).join('') + '</div>';
@@ -1291,21 +1432,21 @@
     var due = dueQs().length, ni = nextIdx(), started = Object.keys(S.lessons).length > 0;
     $('#hBot').innerHTML = FX.bot(ni < 0 ? 'happy' : due ? 'wow' : '');
     var greet = !started ? '¡Hola! ボクは<b>ケボット</b>。\n関係詞は「2つの文の<b>合体</b>」。いっしょにマスターしよう⚡'
-      : ni < 0 ? '<b>ぜんぶクリア！</b> ¡Increíble!\nラスボスに S ランクで勝てるかな？ ラッシュのハイスコアもねらおう🔥'
+      : ni < 0 ? '<b>ぜんぶクリア！</b> ¡Increíble!\n仕上げは<b>西検チャレンジ</b>。試験と同じ形の20問で、合格ライン 70% をこえよう🔥'
       : due >= 5 ? '復習が <b>' + due + '問</b> たまってるよ。\n忘れる前にサクッと！ ⏰'
-      : '¡Vamos! つづきは「' + (ORDER[ni].type === 'L' ? 'L' + LESSON[ORDER[ni].id].no + ' ' + LESSON[ORDER[ni].id].ti : 'ボス戦') + '」から！';
+      : '¡Vamos! つづきは「' + (ORDER[ni].type === 'L' ? 'L' + ln(LESSON[ORDER[ni].id]) + ' ' + LESSON[ORDER[ni].id].ti : 'ボス戦') + '」から！';
     $('#hGreet').innerHTML = greet.replace(/\n/g, '<br>');
     var cta = $('#hCta');
-    cta.innerHTML = ni < 0 ? '⚡ ラッシュでハイスコア！' : ORDER[ni].type === 'B' ? '<small>⚔ ボス戦</small>' + BOSS[ORDER[ni].id].face + ' ' + esc(BOSS[ORDER[ni].id].name)
-      : '<small>' + (started ? '▶ つづき' : '▶ はじめる') + '　L' + LESSON[ORDER[ni].id].no + '</small>' + esc(LESSON[ORDER[ni].id].ti);
+    cta.innerHTML = ni < 0 ? '<small>🎓 仕上げ</small>西検チャレンジ（20問）' : ORDER[ni].type === 'B' ? '<small>⚔ ボス戦</small>' + BOSS[ORDER[ni].id].face + ' ' + esc(BOSS[ORDER[ni].id].name)
+      : '<small>' + (started ? '▶ つづき' : '▶ はじめる') + '　L' + ln(LESSON[ORDER[ni].id]) + '</small>' + esc(LESSON[ORDER[ni].id].ti);
     cta.className = 'cta' + (ni >= 0 && ORDER[ni].type === 'B' ? ' boss' : '');
-    cta.onclick = function () { Sfx.unlock(); Sfx.tap(); if (ni < 0) rushIntro(); else openNode(ni); };
+    cta.onclick = function () { Sfx.unlock(); Sfx.tap(); if (ni < 0) mockGo(); else openNode(ni); };
 
     var unlocked = unlockedQs().length > 0;
     $('#hDue').innerHTML = !unlocked ? '🔒' : due ? '<em>' + due + '</em> 問' : 'OK';
     $('#hRushBest').textContent = unlocked ? 'BEST ' + S.rushBest : '🔒';
     var jq = judgeQs();
-    $('#hDojoN').textContent = lessonDone(5) ? jq.filter(function (q) { return S.q[q.id] && S.q[q.id].lv >= 2; }).length + '/' + jq.length : '🔒';
+    $('#hDojoN').textContent = lessonDone(11) ? jq.filter(function (q) { return S.q[q.id] && S.q[q.id].lv >= 2; }).length + '/' + jq.length : '🔒';
     $('#hGachaN').textContent = '🎟 ' + S.tickets;
     $('#hDexN').textContent = Object.keys(S.cards).length + '/' + D.cards.length;
     $('#hTipsN').textContent = TIPS.filter(function (t) { return S.tips[t.tip.id]; }).length + '/' + TIPS.length;
@@ -1326,7 +1467,7 @@
         var st = (done ? ' done' : '') + (open ? '' : ' lock') + (now ? ' now' : '');
         if (n.type === 'L') {
           var L = LESSON[n.id], rec = S.lessons[n.id];
-          html += '<button class="node' + st + '" data-i="' + x.i + '"><span class="ni">' + (open ? L.icon : '🔒') + '</span><span class="nt"><small>L' + L.no + '</small>' + esc(L.ti) + '</span>' +
+          html += '<button class="node' + st + '" data-i="' + x.i + '"><span class="ni">' + (open ? L.icon : '🔒') + '</span><span class="nt"><small>L' + ln(L) + '</small>' + esc(L.ti) + '</span>' +
             (rec ? '<span class="ns">' + [1, 2, 3].map(function (k) { return k <= rec.stars ? '★' : '☆'; }).join('') + '</span>' : '') + '</button>';
         } else {
           var B = BOSS[n.id], br = S.bosses[n.id];
@@ -1335,7 +1476,7 @@
         }
       });
       if (!nodes.length) {
-        html += '<div class="extra"><button class="mini" data-act="dojo">🥋 道場</button><button class="mini" data-act="review">🔁 復習</button><button class="mini" data-act="rush">⚡ ラッシュ</button>' + (dd.d === 7 ? '<button class="mini" data-act="final">👑 ラスボス</button>' : '') + '</div>';
+        html += '<div class="extra"><button class="mini" data-act="dojo">🥋 道場</button><button class="mini" data-act="review">🔁 復習</button><button class="mini" data-act="rush">⚡ ラッシュ</button>' + (dd.d >= 6 ? '<button class="mini" data-act="mock">🎓 西検チャレンジ</button>' : '') + (dd.d === 7 ? '<button class="mini" data-act="final">👑 ラスボス</button>' : '') + '</div>';
       } else if (dd.d >= 3) html += '<div class="extra"><button class="mini" data-act="dojo">🥋 使い分け道場</button></div>';
       html += '</div></div>';
     });
@@ -1345,7 +1486,7 @@
       b.addEventListener('click', function () {
         Sfx.unlock(); Sfx.tap();
         var a = b.getAttribute('data-act');
-        if (a === 'review') reviewGo(); else if (a === 'rush') rushIntro(); else if (a === 'dojo') dojoGo();
+        if (a === 'review') reviewGo(); else if (a === 'rush') rushIntro(); else if (a === 'dojo') dojoGo(); else if (a === 'mock') mockGo();
         else { var fi = ORDER.length - 1; openNode(fi); }
       });
     });
