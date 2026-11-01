@@ -30,7 +30,7 @@
   var KEY = SANDBOX ? 'relativo.sandbox' : 'relativo.v1';
   function fresh() {
     return { v: 1, xp: 0, tickets: 0, streak: { n: 0, last: '' }, lessons: {}, bosses: {}, q: {}, cards: {}, tips: {},
-      mis: { d: '', done: {}, bonus: false }, rushBest: 0, pulls: 0, sets: {}, cardp: {}, settings: { sound: true, speak: true } };
+      mis: { d: '', done: {}, bonus: false }, rushBest: 0, pulls: 0, sets: {}, cardp: {}, weak: {}, settings: { sound: true, speak: true } };
   }
   function load() {
     try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) { var f = fresh(); for (var k in s) f[k] = s[k]; return f; } } catch (e) { /* 保存領域が使えない */ }
@@ -637,12 +637,12 @@
   function startLesson(L) {
     show('play');
     feed.innerHTML = ''; T1.clear();
-    $('#pTitle').textContent = 'L' + ln(L) + '  ' + L.ti;
-    cur = { L: L, i: 0, run: newRun(), used: {}, tips: [] };
+    $('#pTitle').textContent = L.remedy ? '🩹 おさらい　L' + ln(L) + '  ' + L.ti : 'L' + ln(L) + '  ' + L.ti;
+    cur = { L: L, i: 0, run: newRun(), used: {}, tips: [], qok: {} };
     L.steps.forEach(function (st) { if (st.t === 'q') cur.used[st.id] = 1; });
-    var intro = el('div', 'card lesson-title', '<small>LESSON ' + ln(L) + '</small><b>' + L.icon + ' ' + esc(L.ti) + '</b><span>' + esc(L.sub) + '</span>');
+    var intro = el('div', 'card lesson-title', '<small>' + (L.remedy ? '🩹 REPASO　L' + ln(L) : 'LESSON ' + ln(L)) + '</small><b>' + L.icon + ' ' + esc(L.ti) + '</b><span>' + esc(L.sub) + '</span>');
     addCard(intro);
-    FX.slam('LESSON ' + ln(L), 'cyan', L.ti);
+    FX.slam(L.remedy ? 'REPASO' : 'LESSON ' + ln(L), 'cyan', L.remedy ? 'おさらい：' + L.ti : L.ti);
     later(step, 500);
   }
   function setProg() { if (!cur) return; $('#pProg').style.width = Math.round(cur.i / cur.L.steps.length * 100) + '%'; $('#pXp').textContent = cur.run.xp; }
@@ -778,17 +778,17 @@
     if (first) { Sfx.coin(); var p = FX.at(c); FX.burst(p.x, p.y, { pal: 'gold', n: 30 }); bonus(run, 5, c, 'Tips'); }
     nextBtn();
   }
-  function lessonQ(q, run, then) {
+  function lessonQ(q, run, then, tag) {
     var c = addCard(el('div', 'card qcard'));
-    renderQ(q, c, T1, { run: run }, function (ok) {
-      srs(q, ok); save();
+    renderQ(q, c, T1, { run: run, tag: tag }, function (ok) {
+      srs(q, ok); if (cur) cur.qok[q.id] = ok; save();
       var src = $('.chosen', T1.el) || $('.tok.ok, .tok.ng', c) || c;
       if (ok) hit(run, src); else miss(run, c);
       scrollFeed();
       later(then, 250);
     });
   }
-  function doQ(st, run) { lessonQ(QBY[st.id], run, nextBtn); }
+  function doQ(st, run) { lessonQ(QBY[st.id], run, nextBtn, st.tag); }
   function doDrill(st, run) {
     var pool = D.questions.filter(function (q) { return q.L === cur.L.no && !cur.used[q.id]; });
     var list = (cur.L.no === 11 ? weighted(pool) : capJudge(weighted(pool), 1)).slice(0, st.n);
@@ -804,6 +804,7 @@
     later(one, 700);
   }
   function finishLesson() {
+    if (cur.L.remedy) return finishRemedy();
     var L = cur.L, run = cur.run, rec = S.lessons[L.id] || {}, first = !rec.done;
     var acc = run.ok + run.ng ? run.ok / (run.ok + run.ng) : 1;
     var stars = acc >= 0.9 ? 3 : acc >= 0.7 ? 2 : 1;
@@ -857,6 +858,8 @@
           return '<div class="miss"><div class="es-line sm">' + esHtml(full) + sayBtn(full) + '</div>' + (m.q.ja ? '<div class="ja-line">' + esc(m.q.ja) + '</div>' : '') +
             cmpHtml(m.q, m.c) + (m.q.k === 'judge' ? clueHtml(m.q) + '<ul class="jwhy">' + m.q.items.map(function (it) { return '<li><b>' + (it.ok ? '○ ' : '✕ ') + esc(it.t) + '</b>　' + becauseHtml(it) + '</li>'; }).join('') + '</ul>' : '') + (m.q.why ? '<p class="why">' + ja(m.q.why) + '</p>' : '') + '</div>';
         }).join('') + '</details>' : '') +
+      (o.weak && o.weak.length ? '<div class="weakbox"><h3>🩹 あやしい所をおさらい</h3><p>1回読んだだけで全部は覚えられない。まちがえたレッスンの要点を、もう一度さっと回ろう。</p>' +
+        o.weak.map(function (no, i) { var L = LESSON['L' + no]; return '<button class="tb ' + (i ? 'sub' : 'go') + ' wk" data-no="' + no + '">🩹 L' + ln(L) + '　' + esc(L.ti) + ' <small>まちがえた問題 ' + S.weak[no].ids.length + ' 問</small></button>'; }).join('') + '</div>' : '') +
       (o.extra || '') + '<div class="res-btns"></div></div>';
     var bt = $('.res-btns', scr);
     if (o.retry) bt.appendChild(mkBtn(o.retry.label, 'go', o.retry.fn));
@@ -874,6 +877,7 @@
     }, 700);
     if (o.up) later(function () { $('#rLv').textContent = lvNow.lv; $('#rBar').style.width = Math.round(lvNow.cur / lvNow.need * 100) + '%'; levelUp(o.up); }, 1700);
     if (o.after) o.after(scr);
+    $$('.weakbox .wk', scr).forEach(function (b) { b.addEventListener('click', function () { Sfx.tap(); startLesson(remedyLesson(+b.getAttribute('data-no'))); }); });
     var nc = $('.newcard .pcard', scr);
     if (nc) nc.addEventListener('click', function () { flipCard(nc); });
   }
@@ -974,7 +978,7 @@
           later(function () {
             FX.shake(null, true); FX.flash('#ff0040'); paint();
             if (hearts <= 0) return later(function () { bossEnd(B, false, 0); }, 900);
-            T2.next(one, '▶ 立て直す（❤️ ' + hearts + '）');
+            T2.btns([{ t: '▶ 立て直す（❤️ ' + hearts + '）', cls: 'go', fn: one }, { t: '📖 L' + ln(LESSON['L' + q.L]) + ' の要点', cls: 'sub', fn: function () { hintModal(q.L); } }]);
           }, 300);
         }
       });
@@ -999,7 +1003,8 @@
     var up = addXp(zRun.xp);
     save();
     var ni = nextIdx();
-    showResult({ title: win ? (B.final ? 'ALL CLEAR!!' : 'K.O.!!') : 'GAME OVER', sub: B.name + (win ? ' を倒した！' : ' にやられた…'), lose: !win, rank: rank, run: zRun, rewards: rewards, card: card, up: up,
+    var weakB = markWeak(zRun);
+    showResult({ weak: weakB, title: win ? (B.final ? 'ALL CLEAR!!' : 'K.O.!!') : 'GAME OVER', sub: B.name + (win ? ' を倒した！' : ' にやられた…'), lose: !win, rank: rank, run: zRun, rewards: rewards, card: card, up: up,
       unlock: win && !rec.win && ni >= 0 ? ORDER[ni] : null,
       note: win ? (B.final && rank !== 'S' ? 'ノーミスで S ランクをねらってみよう！' : '') : '答えた問題は復習に入ったよ。説明を思い出して、もう一回！',
       retry: win ? null : { label: '⚔ もう一回！', fn: function () { bossIntro(B); } },
@@ -1073,11 +1078,73 @@
     rewards = rewards.concat(missionDone('rush'));
     touchDay(); save();
     var up = addXp(zRun.xp); save();
-    showResult({ openMisses: true, title: best ? 'NEW RECORD!!' : 'TIME UP!', sub: '60秒ラッシュ', run: zRun, rewards: rewards, up: up, big: [score, best ? 'ハイスコア更新！' : 'ハイスコア ' + S.rushBest],
+    showResult({ weak: markWeak(zRun), openMisses: true, title: best ? 'NEW RECORD!!' : 'TIME UP!', sub: '60秒ラッシュ', run: zRun, rewards: rewards, up: up, big: [score, best ? 'ハイスコア更新！' : 'ハイスコア ' + S.rushBest],
       note: '🎟 1500点で1枚・3500点で2枚・6000点で3枚', retry: { label: '⚡ もう一回！', fn: rushIntro } });
   }
 
   /* ----- 復習 ----- */
+  /* =========================================================
+   * 🩹 あやしい所 → おさらい（ノウハウ原則23）
+   *  人は1回読んだだけでは覚えきれない。復習・道場・ボス・ラッシュ・西検チャレンジでまちがえた問題を
+   *  レッスンごとに S.weak に残し、そのレッスンの要点（例文・合体・くらべる2文・予想の問い・Tips・** の説明）を
+   *  短く回り直して、最後にまちがえた問題そのものにリベンジする。正解できた問題だけ S.weak から消える。
+   * ========================================================= */
+  function lessonIdx(no) { return D.lessons.indexOf(LESSON['L' + no]); }
+  function markWeak(run) {
+    var got = {};
+    (run.misses || []).forEach(function (m) {
+      var q = QBY[m.q && m.q.id]; if (!q || !q.L || !LESSON['L' + q.L]) return;
+      var w = S.weak[q.L] || (S.weak[q.L] = { ids: [], at: 0 });
+      if (w.ids.indexOf(q.id) < 0) w.ids.push(q.id);
+      w.at = Date.now(); got[q.L] = 1;
+    });
+    save();
+    return Object.keys(got).map(Number).sort(function (a, b) { return lessonIdx(a) - lessonIdx(b); });
+  }
+  /* いちばんあやしいレッスン（まちがえた問題が多い順・同じなら前のレッスンから） */
+  function weakNext() {
+    var list = Object.keys(S.weak).map(Number).filter(function (no) { return LESSON['L' + no] && S.weak[no].ids.length; });
+    list.sort(function (a, b) { return S.weak[b].ids.length - S.weak[a].ids.length || lessonIdx(a) - lessonIdx(b); });
+    return list[0] || 0;
+  }
+  var REMEDY_KEEP = { ex: 1, fuse: 1, morph: 1, pair: 1, ask: 1, tip: 1 };
+  function remedyLesson(no) {
+    var L = LESSON['L' + no], ids = (S.weak[no] ? S.weak[no].ids : []).slice(0, 4), steps = [];
+    steps.push({ t: 'say', x: 'L' + ln(L) + '「' + L.ti + '」で、\nまちがえた問題があったね。\n1回で覚えきれないのは、あたりまえ。\n要点だけ、さっともう一度いこう！' });
+    L.steps.forEach(function (st) {
+      if (REMEDY_KEEP[st.t] || (st.t === 'say' && String(st.x).indexOf('**') >= 0)) steps.push(st);   // 覚えること（**）の入った説明は残す
+    });
+    if (ids.length) {
+      steps.push({ t: 'say', x: 'では、まちがえた問題にリベンジ！\n' + ids.length + '問。さっきの要点を思い出して。' });
+      ids.forEach(function (id, k) { steps.push({ t: 'q', id: id, tag: 'リベンジ ' + (k + 1) + ' / ' + ids.length }); });
+    }
+    return { id: 'R' + no, no: no, label: L.label, remedy: true, base: L, icon: '🩹', ti: L.ti, sub: 'おさらい：' + L.sub, steps: steps };
+  }
+  function finishRemedy() {
+    var L = cur.L, run = cur.run, base = L.base, w = S.weak[base.no], fixed = 0, left = 0;
+    if (w) {
+      w.ids = w.ids.filter(function (id) { if (cur.qok[id] === true) { fixed++; return false; } if (cur.qok[id] === false) left++; return true; });
+      if (!w.ids.length) delete S.weak[base.no];
+    }
+    run.xp += 20 + fixed * 10;
+    touchDay();
+    var up = addXp(run.xp);
+    save(); cur = null;
+    var more = weakNext();
+    showResult({ title: left ? 'REPASO OK!' : 'REPASO PERFECTO!!', sub: '🩹 おさらい：L' + ln(base) + '　' + base.ti, stars: left ? 2 : 3, run: run, up: up,
+      rewards: fixed ? [{ icon: '🩹', t: 'まちがえた問題 ' + fixed + ' 問をクリア' }] : [],
+      note: left ? 'まだ ' + left + ' 問があやしい。また今度、おさらいで出てくるよ。' : 'このレッスンのあやしい所は、ぜんぶ消えた！ 忘れかけたころに、復習でまた出てくるよ。',
+      next: more ? { label: '🩹 つぎのおさらい：L' + ln(LESSON['L' + more]), fn: function () { startLesson(remedyLesson(more)); } } : null });
+  }
+  /* まちがえたその場の「📖 要点」：そのレッスンの Tips（表・きまりも） */
+  function hintModal(no) {
+    var L = LESSON['L' + no], tips = L.steps.filter(function (st) { return st.t === 'tip'; });
+    modal('<h3 class="m-h">📖 L' + ln(L) + '　' + esc(L.ti) + '</h3>' +
+      tips.map(function (st) { return '<div class="card tip' + (st.tbl ? ' has-tbl' : '') + '">' + tipBody(st) + '</div>'; }).join('') +
+      '<p class="m-note">このレッスンは、終わったあとに「🩹 おさらい」で回り直せるよ。</p>', 'hint-m');
+    glossAll($('#mbody'));
+  }
+
   /* ----- 🎓 西検チャレンジ（試験と同じ形の20問。答え合わせは最後にまとめて） ----- */
   var TOPICS = [
     { id: 'que', ti: 'que の基本・省略しない', L: [1, 2], n: 2 },
@@ -1138,7 +1205,7 @@
         return '<div class="tp' + (weak ? ' weak' : '') + '"><div class="tp-h"><b>' + esc(tp.ti) + '</b><span>' + n + ' / ' + all + '</span></div><span class="tp-bar"><i style="width:' + Math.round(n / all * 100) + '%"></i></span>' +
           (weak ? '<button class="mini" data-go="' + (tp.id === 'use' ? 'dojo' : Lid) + '">' + (tp.id === 'use' ? '🥋 道場で練習' : '📘 L' + ln(LESSON[Lid]) + ' をもう一度') + '</button>' : '') + '</div>';
       }).join('');
-      showResult({ title: pct >= 90 ? 'EXCELLENT!!' : pass ? 'PASS!!' : 'もう一歩！', sub: '西検チャレンジ（合格ライン 70%）', lose: !pass, run: zRun, up: up, openMisses: true,
+      showResult({ weak: markWeak(zRun), title: pct >= 90 ? 'EXCELLENT!!' : pass ? 'PASS!!' : 'もう一歩！', sub: '西検チャレンジ（合格ライン 70%）', lose: !pass, run: zRun, up: up, openMisses: true,
         big: [pct + '%', ok + ' / ' + list.length + ' 問正解' + (pct > best ? '　自己ベスト更新！' : '　自己ベスト ' + S.mockBest + '%')],
         rewards: [{ icon: '🎟', t: (pass ? '合格' : 'チャレンジ') + ' +' + tix }],
         extra: '<div class="topics"><h3>分野ごとの結果</h3>' + rows + '</div>',
@@ -1169,7 +1236,7 @@
         srs(q, ok); save();
         if (ok) hit(zRun, c, 15); else miss(zRun, c);
         paint();
-        later(function () { T2.next(one, k < list.length ? '▶ つぎへ' : '▶ おわり！'); }, 250);
+        later(function () { var nx = k < list.length ? '▶ つぎへ' : '▶ おわり！'; if (ok) T2.next(one, nx); else T2.btns([{ t: nx, cls: 'go', fn: one }, { t: '📖 L' + ln(LESSON['L' + q.L]) + ' の要点', cls: 'sub', fn: function () { hintModal(q.L); } }]); }, 250);
       });
     }
     function end() {
@@ -1180,7 +1247,7 @@
       zRun.xp += 20;
       var up = addXp(zRun.xp); save();
       var acc = zRun.ok / list.length;
-      showResult({ title: acc === 1 ? 'PERFECT!!' : 'DOJO CLEAR!', sub: '使い分け道場 ' + list.length + '問', stars: acc >= 0.9 ? 3 : acc >= 0.7 ? 2 : 1, run: zRun, rewards: rewards, up: up,
+      showResult({ weak: markWeak(zRun), title: acc === 1 ? 'PERFECT!!' : 'DOJO CLEAR!', sub: '使い分け道場 ' + list.length + '問', stars: acc >= 0.9 ? 3 : acc >= 0.7 ? 2 : 1, run: zRun, rewards: rewards, up: up,
         note: 'まちがえた文は、苦手として先に出てくるよ。全部 ○ になるまでくり返そう。', retry: { label: '🥋 もう8問', fn: dojoGo } });
     }
     one();
@@ -1203,7 +1270,7 @@
         srs(q, ok); save();
         if (ok) hit(zRun, $('.chosen', T2.el) || c); else miss(zRun, c);
         paint();
-        later(function () { T2.next(one, k < list.length ? '▶ つぎへ' : '▶ おわり！'); }, 250);
+        later(function () { var nx = k < list.length ? '▶ つぎへ' : '▶ おわり！'; if (ok) T2.next(one, nx); else T2.btns([{ t: nx, cls: 'go', fn: one }, { t: '📖 L' + ln(LESSON['L' + q.L]) + ' の要点', cls: 'sub', fn: function () { hintModal(q.L); } }]); }, 250);
       });
     }
     function end() {
@@ -1213,7 +1280,7 @@
       touchDay();
       var up = addXp(zRun.xp + 20); zRun.xp += 20; save();
       var acc = zRun.ok / list.length;
-      showResult({ title: acc === 1 ? 'PERFECT!!' : 'REVIEW CLEAR!', sub: '復習 ' + list.length + '問', stars: acc >= 0.9 ? 3 : acc >= 0.7 ? 2 : 1, run: zRun, rewards: rewards, up: up,
+      showResult({ weak: markWeak(zRun), title: acc === 1 ? 'PERFECT!!' : 'REVIEW CLEAR!', sub: '復習 ' + list.length + '問', stars: acc >= 0.9 ? 3 : acc >= 0.7 ? 2 : 1, run: zRun, rewards: rewards, up: up,
         note: 'まちがえた問題は、10分後からまた出てくるよ。正解した問題は、1日後・2日後・4日後…と間をあけて出る。', retry: { label: '🔁 もう10問', fn: reviewGo } });
     }
     one();
@@ -1440,7 +1507,19 @@
     cta.innerHTML = ni < 0 ? '<small>🎓 仕上げ</small>西検チャレンジ（20問）' : ORDER[ni].type === 'B' ? '<small>⚔ ボス戦</small>' + BOSS[ORDER[ni].id].face + ' ' + esc(BOSS[ORDER[ni].id].name)
       : '<small>' + (started ? '▶ つづき' : '▶ はじめる') + '　L' + ln(LESSON[ORDER[ni].id]) + '</small>' + esc(LESSON[ORDER[ni].id].ti);
     cta.className = 'cta' + (ni >= 0 && ORDER[ni].type === 'B' ? ' boss' : '');
-    cta.onclick = function () { Sfx.unlock(); Sfx.tap(); if (ni < 0) mockGo(); else openNode(ni); };
+    var go = function () { if (ni < 0) mockGo(); else openNode(ni); };
+    var wk = weakNext(), skip = $('#hSkip');
+    skip.hidden = true;
+    if (wk) {
+      var WL = LESSON['L' + wk];
+      cta.innerHTML = '<small>🩹 先におさらい（まちがえた問題 ' + S.weak[wk].ids.length + ' 問）</small>L' + ln(WL) + '　' + esc(WL.ti);
+      cta.className = 'cta remedy';
+      $('#hGreet').innerHTML = 'L' + ln(WL) + ' で、まちがえた問題があったよ。<br>1回で覚えきれないのは、あたりまえ。<b>要点だけ</b>、さっともう一度！';
+      skip.hidden = false;
+      skip.textContent = ni < 0 ? 'おさらいはあとで（西検チャレンジへ）' : 'おさらいはあとで → ' + nodeLabel(ORDER[ni]).replace(/^[▶⚔] /, '');
+      skip.onclick = function () { Sfx.unlock(); Sfx.tap(); go(); };
+    }
+    cta.onclick = function () { Sfx.unlock(); Sfx.tap(); if (wk) startLesson(remedyLesson(wk)); else go(); };
 
     var unlocked = unlockedQs().length > 0;
     $('#hDue').innerHTML = !unlocked ? '🔒' : due ? '<em>' + due + '</em> 問' : 'OK';

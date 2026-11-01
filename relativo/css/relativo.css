@@ -587,3 +587,15 @@ table.oknd { width: 100%; table-layout: fixed; border-collapse: separate; border
 .tp.weak .tp-bar i { background: var(--prep); }
 .tp .mini { margin-top: 4px; padding: 6px 12px; font-size: 13px; }
 #modal.rules-m .mbox { padding-top: 50px; }
+
+/* ---------- 🩹 おさらい ---------- */
+.cta.remedy { background: linear-gradient(120deg, #2fbf8f, #38e8ff); box-shadow: 0 6px 0 #1d6b56, 0 0 30px rgba(56, 232, 255, .45); }
+.skip { display: block; margin: 8px auto 0; padding: 4px 10px; border: 0; background: none; color: var(--muted); font-size: 12.5px; text-decoration: underline; }
+.weakbox { margin: 12px auto 0; max-width: 420px; padding: 12px; border-radius: 16px; background: rgba(56, 232, 255, .08); border: 1px solid rgba(56, 232, 255, .35); text-align: left; }
+.weakbox h3 { margin: 0 0 4px; font-size: 15px; }
+.weakbox p { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
+.weakbox .tb { margin-top: 8px; text-align: left; font-size: 15px; }
+.weakbox .tb small { display: block; font-size: 11.5px; opacity: .85; }
+.m-h { margin: 0 0 8px; font-size: 16px; }
+#modal.hint-m .mbox { padding-top: 50px; }
+
