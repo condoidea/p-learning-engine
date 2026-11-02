@@ -47,6 +47,7 @@
   document.write('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>');
   css(FONTS);
   if (C.fonts) css(C.fonts);                         // コース専用の書体（Google Fonts の URL）
+  js('shared/smooth-fonts.js?v=1');                  // Windows で日本語の書体がガタガタになるのを直す（書体の <link> より後ろ）
   (C.extCss || []).forEach(css);                     // 外部ライブラリのCSS（KaTeX など）
   ENGINE_CSS.forEach(function (n) { css('engine/css/' + n + '.css' + V); });
   (C.css || []).forEach(function (f) { css(courseDir + f + V); });

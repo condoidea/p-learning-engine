@@ -310,7 +310,7 @@ body[data-screen=lesson] #topbar { display: none; }
 }
 
 /* ---- 数字は「0」に斜線が入らない書体で（2進数学習で Ø と紛らわしいため） ---- */
-:root { --f-num: 'Dela Gothic One', 'Zen Kaku Gothic New', sans-serif; }
+:root { --f-num: 'Dela Gothic One', 'Zen Kaku Gothic New', 'Yu Gothic UI', 'Meiryo', sans-serif; }
 .ring-center b, .meter-label b, .rs b, .combo b, .f-num b, .lu-num, .mock-score b, .tb-streak b, .lv-badge b, .q-rew, .chip b,
 .float-text, .bit b, .bo-val b, .bits-goal b, .unit-prog b, .node-disc, .lc-stats b, .ls-xp, .sq-box i, .sq-got i, .lamp b, .sw b,
 .num-in, .big, .dt b, .mock-score b, #luTo, #luFrom, #loginStreak { font-family: var(--f-num); font-weight: 400; }

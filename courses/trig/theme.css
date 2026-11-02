@@ -16,8 +16,8 @@
   --muted: #9aa6cf;
   --glass: rgba(14, 18, 42, 0.78);
   --line: rgba(160, 190, 255, 0.18);
-  --f-display: 'M PLUS Rounded 1c', 'Zen Kaku Gothic New', sans-serif;
-  --f-body: 'M PLUS Rounded 1c', 'Zen Kaku Gothic New', sans-serif;
+  --f-display: 'M PLUS Rounded 1c', 'Zen Kaku Gothic New', 'Yu Gothic UI', 'Meiryo', sans-serif;
+  --f-body: 'M PLUS Rounded 1c', 'Zen Kaku Gothic New', 'Yu Gothic UI', 'Meiryo', sans-serif;
   --fx-confetti: #ff5fa2, #38d9ff, #ffd84d, #5cffb0, #b48cff, #ffffff;
   --sin: #ff5fa2; --cos: #38d9ff; --tan: #ffd84d;
 }

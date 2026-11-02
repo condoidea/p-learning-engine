@@ -5,8 +5,8 @@
 :root {
   --bg: #12062b; --bg2: #200b4a; --panel: rgba(255, 255, 255, .07); --panel2: rgba(255, 255, 255, .12); --line: rgba(199, 184, 255, .22);
   --text: #f6f1ff; --muted: #b9a9e6; --ante: #38e8ff; --rel: #ff4fa3; --prep: #ffd23f; --ok: #4dff9a; --ng: #ff5c5c; --gold: #ffd23f;
-  --f-disp: 'Dela Gothic One', 'M PLUS Rounded 1c', sans-serif; --f-latin: 'Bungee', 'Dela Gothic One', sans-serif;
-  --f-body: 'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', 'Hiragino Sans', system-ui, sans-serif;
+  --f-disp: 'Dela Gothic One', 'M PLUS Rounded 1c', 'Yu Gothic UI', 'Meiryo', sans-serif; --f-latin: 'Bungee', 'Dela Gothic One', sans-serif;
+  --f-body: 'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', system-ui, sans-serif;
   --safe-b: env(safe-area-inset-bottom, 0px);
 }
 * { box-sizing: border-box; }

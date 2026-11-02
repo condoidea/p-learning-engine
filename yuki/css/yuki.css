@@ -9,9 +9,9 @@
   --txt: #f2e6cc; --muted: #b9a582; --gold: #f0c75e; --gold2: #c99230;
   --thunder: #fff36b; --wind: #7dffcf; --sand: #ffb45a; --forge: #b98cff; --ng: #ff6b7a; --ok: #6bffb0;
   --ac: var(--gold);
-  --f-body: 'M PLUS Rounded 1c', system-ui, sans-serif;
+  --f-body: 'M PLUS Rounded 1c', 'Yu Gothic UI', 'Meiryo', system-ui, sans-serif;
   --f-disp: 'Cinzel', 'Shippori Mincho B1', serif;
-  --f-min: 'Shippori Mincho B1', 'Hiragino Mincho ProN', serif;
+  --f-min: 'Shippori Mincho B1', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }

@@ -7,8 +7,8 @@
   --bg: #eafaf4; --bg2: #f6fffb; --ink: #33414d; --muted: #7a8a96; --card: #fff; --line: #d6e8e1;
   --mint: #5fd3b0; --mint-d: #2fae8a; --amber: #ffb020; --pink: #ff5fa2; --green: #2bb673; --blue: #3a8dff; --purple: #9b5cff;
   --ok: #2bb673; --ng: #ff5a5a;
-  --f-ja: 'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', 'Hiragino Sans', system-ui, sans-serif;
-  --f-num: 'Dela Gothic One', 'M PLUS Rounded 1c', sans-serif;
+  --f-ja: 'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', system-ui, sans-serif;
+  --f-num: 'Dela Gothic One', 'M PLUS Rounded 1c', 'Yu Gothic UI', 'Meiryo', sans-serif;
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; background: var(--bg); color-scheme: light; }

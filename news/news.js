@@ -73,7 +73,7 @@
     '.le-news-bg{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(20,30,40,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);opacity:0;transition:opacity .3s}',
     '.le-news-bg.on{opacity:1}',
     '.le-news{position:relative;width:100%;max-width:360px;max-height:calc(100vh - 32px);overflow-y:auto;padding:22px 20px 18px;border-radius:26px;background:linear-gradient(170deg,#f6fffb,#eafaf4 60%,#f3edff);color:#33414d;text-align:center;',
-    'font-family:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Hiragino Sans",system-ui,sans-serif;font-size:15px;line-height:1.7;-webkit-text-size-adjust:100%;box-shadow:0 24px 60px -20px rgba(75,47,122,.6);transform:translateY(30px) scale(.9);transition:transform .45s cubic-bezier(.2,1.6,.4,1)}',
+    'font-family:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic UI","Meiryo",system-ui,sans-serif;font-size:15px;line-height:1.7;-webkit-text-size-adjust:100%;box-shadow:0 24px 60px -20px rgba(75,47,122,.6);transform:translateY(30px) scale(.9);transition:transform .45s cubic-bezier(.2,1.6,.4,1)}',
     '.le-news-bg.on .le-news{transform:none}',
     '.le-news *{box-sizing:border-box}',
     '.le-news-tag{display:inline-block;padding:2px 12px;border-radius:999px;background:#ff5fa2;color:#fff;font-size:12px;font-weight:800;letter-spacing:.08em}',
