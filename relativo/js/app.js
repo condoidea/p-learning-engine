@@ -814,8 +814,9 @@
       S.tickets += 3; rewards.push({ icon: '🎟', t: '初クリア +3' });
       var mine = D.cards.filter(function (c) { return c.L === L.no; });
       var fresh2 = mine.filter(function (c) { return !S.cards[c.id]; });
-      card = (fresh2.length ? fresh2 : mine)[0];
-      S.cards[card.id] = (S.cards[card.id] || 0) + 1;
+      /* カードのないレッスン（L6+ 使い分けマスター）もある */
+      card = (fresh2.length ? fresh2 : mine)[0] || null;
+      if (card) S.cards[card.id] = (S.cards[card.id] || 0) + 1;
     }
     S.lessons[L.id] = { done: true, stars: Math.max(stars, rec.stars || 0), at: Date.now() };
     var sets = setRewards();
