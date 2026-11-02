@@ -493,6 +493,7 @@ mark { background: var(--mark); color: inherit; padding: 0 3px; border-radius: 4
 .bs-name { position: absolute; left: 0; right: 0; bottom: 6px; margin: 0; text-align: center; color: #e7dcff; font-size: 12px; font-weight: 700; }
 .bs-q { display: flex; flex-direction: column; gap: 8px; }
 .bs-p { min-height: 64px; display: flex; align-items: center; justify-content: center; padding: 8px 12px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); font-family: var(--f-es); font-weight: 800; font-size: 26px; text-align: center; }
+.bs-p .art { margin-right: .3em; }   /* flex の中では冠詞と単語の間の空白が消えるので */
 .bs-p.ja { font-family: var(--f-ja); font-size: 22px; }
 .bs-p .q-def { font-size: 17px; font-weight: 400; }
 .bs-p .big-say { width: 64px; height: 64px; font-size: 28px; }
