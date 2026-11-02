@@ -232,6 +232,7 @@
     document.body.setAttribute('data-screen', id);
     window.scrollTo(0, 0);
     if (id !== 'quiz' && id !== 'play') { feverOff(); FX.combo(0); }
+    $('#modal').hidden = true; Speech.stop();   // 前の画面で開いたもの（レベルアップなど）を、次の画面に持ちこまない
     stopAuto();
   }
 
@@ -239,14 +240,18 @@
   function Tray(t) {
     function btn(label, cls, fn) {
       var b = el('button', 'tb ' + (cls || ''), label);
-      b.addEventListener('click', function () { if (b.disabled) return; if (window.Sfx) Sfx.tap(); fn(b); });
+      b.addEventListener('click', function () {
+        /* 同じボタンのすばやい2度押しで2回進まないように（ダブルタップ） */
+        var now = Date.now(); if (b.disabled || now - (b._t || 0) < 350) return; b._t = now;
+        if (window.Sfx) Sfx.tap(); fn(b);
+      });
       return b;
     }
     return {
       el: t,
       clear: function () { t.innerHTML = ''; },
       hint: function (html) { t.innerHTML = '<p class="thint">' + html + '</p>'; },
-      next: function (fn, label, cls) { t.innerHTML = ''; var b = btn(label || '▶ つぎへ', 'go ' + (cls || ''), function () { fn(); }); t.appendChild(b); if (!FX.RM && b.animate) b.animate([{ transform: 'translateY(24px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 240, easing: 'cubic-bezier(.2,1.5,.4,1)' }); },
+      next: function (fn, label, cls) { t.innerHTML = ''; var b = btn(label || '▶ つぎへ', 'go ' + (cls || ''), function () { b.disabled = true; fn(); }); t.appendChild(b); if (!FX.RM && b.animate) b.animate([{ transform: 'translateY(24px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 240, easing: 'cubic-bezier(.2,1.5,.4,1)' }); },
       btns: function (list) { t.innerHTML = ''; var w = el('div', 'tbs'); list.forEach(function (x) { w.appendChild(btn(x.t, x.cls, x.fn)); }); t.appendChild(w); },
       options: function (list, cb, cls) {
         t.innerHTML = '';
@@ -936,8 +941,11 @@
    * 結果画面
    * ========================================================= */
   function nodeLabel(n) { if (n.type === 'L') { var L = LESSON[n.id]; return oracleNo(L) + '　' + L.ti; } var B = BOSS[n.id]; return '⚔ ' + B.name; }
+  var resTok = 0;
   function showResult(o) {
     var scr = $('#done'); show('done');
+    /* 結果画面の演出（星・XP・レベルアップ）は、まだこの結果画面にいるときだけ。先に島へもどったら出さない */
+    var tok = ++resTok, onRes = function () { return tok === resTok && !scr.hidden; };
     var run = o.run || newRun();
     var lvBefore = levelOf(S.xp - run.xp), lvNow = levelOf(S.xp);
     scr.innerHTML = '<div class="res">' +
@@ -960,7 +968,7 @@
         o.weak.map(function (no, i) { var L = LESSON['L' + no]; return '<button class="tb ' + (i ? 'sub' : 'go') + ' wk" data-no="' + no + '">' + esc(oracleNo(L)) + '　' + esc(L.ti) + ' <small>まちがえた問題 ' + S.weak[no].ids.length + ' 問</small></button>'; }).join('') + '</div>' : '') +
       (o.extra || '') +
       '<div class="res-btns"></div></div>';
-    $$('.weakbox .wk', scr).forEach(function (b) { b.addEventListener('click', function () { Sfx.tap(); startLesson(remedyLesson(+b.getAttribute('data-no'))); }); });
+    $$('.weakbox .wk', scr).forEach(function (b) { b.addEventListener('click', function () { if (!onRes()) return; resTok++; Sfx.tap(); startLesson(remedyLesson(+b.getAttribute('data-no'))); }); });
     if (o.after) o.after(scr);
     var bt = $('.res-btns', scr);
     var hasWeak = o.weak && o.weak.length;
@@ -969,18 +977,20 @@
     if (!o.noHome) bt.appendChild(mkBtn('🏝 島へ', 'sub', function () { home(); }));
     if (o.lose) { Sfx.wrong(); FX.shake(null, true); }
     else { FX.slam(o.title, o.rank === 'S' || o.stars === 3 ? 'gold' : 'cyan'); FX.confetti(o.stars === 3 || o.rank === 'S' ? 160 : 80, 'divine'); Sfx.levelUp(); }
-    $$('.stars i.on', scr).forEach(function (s, k) { later(function () { s.classList.add('pop'); Sfx.coin(); var p = FX.at(s); FX.burst(p.x, p.y, { pal: 'gold', n: 18 }); }, 500 + k * 280); });
+    $$('.stars i.on', scr).forEach(function (s, k) { later(function () { if (!onRes()) return; s.classList.add('pop'); Sfx.coin(); var p = FX.at(s); FX.burst(p.x, p.y, { pal: 'gold', n: 18 }); }, 500 + k * 280); });
     var xpEl = $('#rXp'), t0 = 0, dur = 900;
     later(function () {
+      if (!onRes()) return;
       t0 = performance.now();
       (function tick(t) { var k = Math.min(1, (t - t0) / dur); xpEl.textContent = Math.round(run.xp * k); if (k < 1) requestAnimationFrame(tick); })(t0);
       $('#rBar').style.width = (lvNow.lv > lvBefore.lv ? 100 : Math.round(lvNow.cur / lvNow.need * 100)) + '%';
     }, 700);
-    if (o.up) later(function () { $('#rLv').textContent = lvNow.lv; $('#rBar').style.width = Math.round(lvNow.cur / lvNow.need * 100) + '%'; levelUp(o.up); }, 1700);
+    if (o.up) later(function () { if (!onRes()) return; $('#rLv').textContent = lvNow.lv; $('#rBar').style.width = Math.round(lvNow.cur / lvNow.need * 100) + '%'; levelUp(o.up); }, 1700);
     var nc = $('.newcard .pcard', scr);
     if (nc) nc.addEventListener('click', function () { flipCard(nc); });
   }
-  function mkBtn(label, cls, fn) { var b = el('button', 'tb ' + cls, esc(label)); b.addEventListener('click', function () { Sfx.tap(); fn(); }); return b; }
+  /* 結果画面のボタンは1回だけ（2度押しで島の演出・自動スタートが二重に動かないように） */
+  function mkBtn(label, cls, fn) { var b = el('button', 'tb ' + cls, esc(label)); b.addEventListener('click', function () { if (b.disabled || $('#done').hidden) return; b.disabled = true; Sfx.tap(); fn(); }); return b; }
   function levelUp(lv) {
     Sfx.levelUp(); FX.confetti(200, 'divine'); FX.flash('#ffd23f');
     modal('<div class="lvup"><small>神格 UP!!</small><b>' + lv + '</b><span>' + esc(titleOf(lv)) + '</span>' + FX.owl('happy') + '</div>', 'lvup-m');
@@ -1564,6 +1574,7 @@
 
   function modal(html, cls) {
     var m = $('#modal'); $('#mbody').innerHTML = html; m.className = cls || ''; m.hidden = false;
+    stopAuto();   // 何か開いたら、ホームの自動スタートは止める（後ろで勝手に始まらないように）
     var box = $('.mbox', m); if (box.animate && !FX.RM) box.animate([{ transform: 'scale(.7)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 320, easing: 'cubic-bezier(.2,1.5,.4,1)' });
   }
   $('#modal').addEventListener('click', function (e) { if (e.target.id === 'modal' || e.target.closest('.mclose')) { $('#modal').hidden = true; Speech.stop(); } });
@@ -1577,11 +1588,12 @@
     var n = ORDER[i];
     if (n.type === 'L') startLesson(LESSON[n.id]); else bossIntro(BOSS[n.id]);
   }
-  var autoT = 0;
+  var autoT = 0, homeGen = 0;
   function stopAuto() { clearInterval(autoT); autoT = 0; var c = $('#hCta'); if (c) c.classList.remove('counting'); var s = $('#hStop'); if (s) s.hidden = true; }
   function home(opts) {
     opts = opts || {};
     zStop(); cur = null; show('home');
+    var gen = ++homeGen;   // 前のホームの演出（島が育つ・自動スタート）は、ここで無効になる
     var sets = setRewards();
     if (sets.length) { save(); setFx(sets); toast(sets.map(function (g) { return g.icon + ' ' + esc(g.t); }).join('<br>')); }
     var L = levelOf(S.xp);
@@ -1647,14 +1659,16 @@
     $('#hMis').innerHTML = '📅 今日のミッション <b>' + MIS.map(function (x) { return m.done[x.id] ? '●' : '○'; }).join('') + '</b>' + (m.bonus ? ' コンプリート！' : ' <small>' + md + '/3</small>');
     $('#tgSound').checked = S.settings.sound; $('#tgSpeak').checked = S.settings.speak; $('#tgAuto').checked = S.settings.auto;
 
-    if (growId) growFx(growId, popOld, popNow, ni);
+    if (growId) growFx(growId, popOld, popNow, ni, gen);
     else { evEl.classList.add('on'); }
   }
   /* 島が育つ演出 → 次の神託の頼みごと → 自動スタート */
-  function growFx(id, popOld, popNow, ni) {
+  function growFx(id, popOld, popNow, ni, gen) {
     var news = $$('#isle .sp.new'), k = 0;
-    later(function () { FX.slam(id === 'B3' ? '¡CREACIÓN!' : '¡CRECE!', 'gold', W.msg[id] || '島が育った！'); sfxDivine(); }, 300);
+    var live = function () { return gen === homeGen && !$('#home').hidden; };
+    later(function () { if (!live()) return; FX.slam(id === 'B3' ? '¡CREACIÓN!' : '¡CRECE!', 'gold', W.msg[id] || '島が育った！'); sfxDivine(); }, 300);
     (function one() {
+      if (!live()) return;
       if (k >= news.length) return after();
       var s = news[k++];
       s.classList.add('in');
@@ -1663,27 +1677,33 @@
     })();
     var t0 = performance.now(), popEl = $('#hPop b');
     later(function () {
+      if (!live()) return;
       FX.pop($('#hPop'), 1.3);
       (function tick(t) { var q = Math.min(1, (t - t0 - 900) / 1200); if (q < 0) q = 0; popEl.textContent = num(Math.round(popOld + (popNow - popOld) * q)); if (q < 1) requestAnimationFrame(tick); })(performance.now());
       var pp = FX.at($('#hPop')); FX.floatText(pp.x, pp.y + 10, '👥 +' + num(popNow - popOld), '#7dffb0');
     }, 900);
     function after() {
       later(function () {
+        if (!live()) return;
         var ev = $('#hEv'); ev.classList.add('on'); Sfx.whoosh();
-        if ((ni < 0 && !weakNext()) || !S.settings.auto || !$('#home') || $('#home').hidden) return;
+        if ((ni < 0 && !weakNext()) || !S.settings.auto || !$('#modal').hidden) return;
         /* 自動スタート（数秒のカウント。「あとで」で止まる） */
         var cta = $('#hCta'), left = 5;
         cta.classList.add('counting'); cta.style.setProperty('--cd', '0%');
         $('#hStop').hidden = false;
         var tStart = Date.now();
-        autoT = setInterval(function () {
+        stopAuto(); cta.classList.add('counting'); $('#hStop').hidden = false;
+        var me = autoT = setInterval(function () {
+          /* 自分が止められた・別のホームになった・何か開いている → このタイマーは自分で消える */
+          if (me !== autoT || !live() || !$('#modal').hidden) { clearInterval(me); if (me === autoT) stopAuto(); return; }
           var q = Math.min(1, (Date.now() - tStart) / (left * 1000));
           cta.style.setProperty('--cd', Math.round(q * 100) + '%');
-          if (q >= 1) { stopAuto(); if (!$('#home').hidden) cta.onclick(); }
+          if (q >= 1) { stopAuto(); cta.onclick(); }
         }, 60);
       }, 700);
     }
   }
+  document.addEventListener('visibilitychange', function () { if (document.hidden) stopAuto(); });
   $('#hStop').addEventListener('click', function () { Sfx.tap(); stopAuto(); toast('🦉 了解。つづきは、また今度ね'); });
   $('#hReview').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); reviewGo(); });
   $('#hRush').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); rushIntro(); });

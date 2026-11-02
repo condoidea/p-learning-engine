@@ -19,6 +19,10 @@
     ng: ['#ff5c5c', '#ff9a9a', '#7a2b55']
   };
   function loop() {
+    try { draw(); } catch (e) { parts = []; cx.clearRect(0, 0, innerWidth, innerHeight); }   // 描画で何か起きても、紙吹雪が止まったまま残らないように
+    raf = parts.length ? requestAnimationFrame(loop) : 0;
+  }
+  function draw() {
     cx.clearRect(0, 0, innerWidth, innerHeight);
     for (var i = parts.length - 1; i >= 0; i--) {
       var p = parts[i];
@@ -32,7 +36,6 @@
       else { cx.beginPath(); cx.arc(0, 0, p.r, 0, 7); cx.fill(); }
       cx.restore();
     }
-    raf = parts.length ? requestAnimationFrame(loop) : 0;
   }
   function star(r) {
     cx.beginPath();

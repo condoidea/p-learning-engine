@@ -30,7 +30,7 @@ body.fever .bg i { opacity: .34; }
 @keyframes fevbg { to { filter: hue-rotate(360deg); } }
 body.fever #app::after { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 30; box-shadow: inset 0 0 40px rgba(255, 210, 63, .55); border: 3px solid transparent; border-image: linear-gradient(90deg, #ffd23f, #fff3b0, #ff5fa8, #5fe3ff, #ffd23f) 1; animation: fevbg 1.2s linear infinite; }
 
-#fx { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 60; pointer-events: none; }
+#fx { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 85; pointer-events: none; }
 #app { position: relative; z-index: 1; max-width: 560px; margin: 0 auto; min-height: 100vh; }
 .screen { min-height: 100vh; }
 body.sandbox::before { content: 'SANDBOX'; position: fixed; left: 6px; bottom: 6px; z-index: 99; font: 10px sans-serif; color: var(--cmd); opacity: .7; }
