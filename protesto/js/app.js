@@ -28,7 +28,7 @@
   /* ---------- 保存 ---------- */
   var SANDBOX = /[?&]sandbox\b/.test(location.search);
   var KEY = SANDBOX ? 'protesto.sandbox' : 'protesto.v1';
-  function fresh() { return { v: 1, lessons: {}, notes: {}, drillBest: 0, page: 0, settings: { sound: true, speak: true, ja: false } }; }
+  function fresh() { return { v: 1, lessons: {}, notes: {}, words: {}, drillBest: 0, page: 0, settings: { sound: true, speak: true, ja: false } }; }
   function load() {
     try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) { var f = fresh(); for (var k in s) f[k] = s[k]; return f; } } catch (e) { /* 保存できない環境 */ }
     return fresh();
@@ -43,20 +43,35 @@
   DICT.words.forEach(function (e) { [e.w].concat(e.f || []).forEach(function (f) { if (!WORD.has(f.toLowerCase())) WORD.set(f.toLowerCase(), e); }); });
   var CMP = { 'más': 'up', mejor: 'up', mayor: 'up', mejores: 'up', mayores: 'up', menos: 'dn', peor: 'dn', menor: 'dn', peores: 'dn', menores: 'dn',
     tan: 'eq', tanto: 'eq', tanta: 'eq', tantos: 'eq', tantas: 'eq', que: 'ref', como: 'ref', de: 'ref', del: 'ref' };
-  /* スペイン語の文：[ ] の中は比べる部分（más＝朱、menos＝藍、tan＝緑、que・como・de＝黄土） */
-  function es(s) {
+  /* スペイン語の文：[ ] の中は比べる部分（más＝朱、menos＝藍、tan＝緑、que・como・de＝黄土）
+   *  意味のある語（5級〜4級より上）はどれもタップで意味が出る。4級以上は点線で目印。
+   *  事件・ドリルの画面で出た語は「単語の復習」に集める（hl：その語に色をつける） */
+  var NAMES = new Set((DICT.names || []).map(function (n) { return n.toLowerCase(); }));
+  function es(s, hl) {
     var out = '', inCmp = false;
     String(s).split(/(\[|\]|[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+)/).forEach(function (t) {
       if (!t) return;
-      if (t === '[') { inCmp = true; out += '<span class="cmp">'; return; }
+      if (t === '[') { inCmp = true; out += '<span class="cpt">'; return; }
       if (t === ']') { inCmp = false; out += '</span>'; return; }
       if (!/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/.test(t)) { out += esc(t); return; }
-      var k = t.toLowerCase(), e = WORD.get(k), cls = [];
+      var k = t.toLowerCase(), e = NAMES.has(k) ? null : WORD.get(k), cls = [];
       if (inCmp && CMP[k]) cls.push('k-' + CMP[k]);
-      if (e && (e.lv === 4 || e.lv === 3)) { cls.push('gl'); out += '<span class="' + cls.join(' ') + '" role="button" data-gl="' + esc(e.w + '：' + e.ja) + '">' + esc(t) + '</span>'; return; }
+      if (e && hl && e === hl) cls.push('hl');
+      if (e && e.lv >= 3 && e.pos !== 'bad') {
+        collect(e, s);
+        cls.push(e.lv === 5 ? 'gl g5' : 'gl');
+        out += '<span class="' + cls.join(' ') + '" role="button" data-w="' + esc(e.w) + '" data-gl="' + esc(e.w + '：' + e.ja) + '">' + esc(t) + '</span>';
+        return;
+      }
       out += cls.length ? '<span class="' + cls.join(' ') + '">' + esc(t) + '</span>' : esc(t);
     });
     return out;
+  }
+  /* 単語帳に集める（事件とドリルの画面だけ。例文は最初に出会った文） */
+  function collect(e, s) {
+    var scr = document.body.dataset.screen;
+    if (scr !== 'play' && scr !== 'drill') return;
+    if (!S.words[e.w]) S.words[e.w] = { t: Date.now(), ex: plain(s).replace(/___/g, '…'), c: CASE && scr === 'play' ? CASE.id : 'drill', box: 0, due: 0, n: 0 };
   }
   /* 日本語：**覚えること** __覚え方__ ((呼び方)) `スペイン語` */
   function ja(s) {
@@ -126,6 +141,7 @@
     if (g) {
       e.stopPropagation();
       p.textContent = g.dataset.gl; p.hidden = false;
+      var wd = S.words[g.dataset.w]; if (wd && !wd.look) { wd.look = true; save(); }   // 調べた語は復習で先に出す
       var r = g.getBoundingClientRect(), w = Math.min(280, innerWidth - 24);
       p.style.maxWidth = w + 'px';
       var x = Math.max(12, Math.min(innerWidth - w - 12, r.left + r.width / 2 - w / 2));
@@ -334,12 +350,23 @@
     return h + '</div></div>';
   }
 
+  /* 選択肢：スペイン語の文は「文（語をタップで調べられる）＋右の端の選ぶボタン」の行、日本語だけなら札のボタン */
+  function isEs(o) { return /[a-záéíóúñ]/i.test(o) && !/[぀-ヿ一-鿿]/.test(o); }
+  function optsHtml(o) {
+    if (o.some(isEs)) return '<div class="orows">' + o.map(function (x, i) {
+      return '<div class="orow"><p class="otext">' + (isEs(x) ? es(x) : esc(x)) + '</p><button class="btn opt pk" data-i="' + i + '" aria-label="これをえらぶ">えらぶ</button></div>';
+    }).join('') + '</div>';
+    var long = o.some(function (x) { return x.length > 10; });
+    return '<div class="opts' + (long ? ' col' : '') + '">' + o.map(function (x, i) { return '<button class="btn opt" data-i="' + i + '">' + esc(x) + '</button>'; }).join('') + '</div>';
+  }
+  /* 正解・まちがいの色は、行があれば行ごと */
+  function mark(b, cls) { b.classList.add(cls); var r = b.closest('.orow'); if (r) r.classList.add(cls); }
+
   /* 選ぶ問い（法廷ではまちがえるとどんぐり −1） */
   H.ask = async function (st) {
     $('#talk').hidden = true;
     act().innerHTML = '<div class="q"><p class="qq">' + ja(st.q) + '</p>' + (st.es ? '<p class="qes">' + es(st.es) + sayBtn(st.es) + '</p>' : '') + '<p class="ng" hidden></p></div>';
-    var long = st.o.some(function (o) { return o.length > 14; });
-    tray('<div class="opts' + (long ? ' col' : '') + '">' + st.o.map(function (o, i) { return '<button class="btn opt" data-i="' + i + '">' + (/[a-záéíóúñ]/i.test(o) && !/[぀-ヿ一-鿿]/.test(o) ? es(o) : esc(o)) + '</button>'; }).join('') + '</div>');
+    tray(optsHtml(st.o));
     scrollAct();
     await wait(function (done) {
       $$('#tray .opt').forEach(function (b) {
@@ -347,12 +374,12 @@
           if (e.target.closest('.gl')) return;
           var i = +b.dataset.i;
           if (i === st.a) {
-            Snd.ok(); b.classList.add('right');
+            Snd.ok(); mark(b, 'right');
             $$('#tray .opt').forEach(function (x) { x.disabled = true; });
             if (/[a-z]/i.test(st.o[i]) && !/[぀-ヿ一-鿿]/.test(st.o[i])) autoSay(st.o[i]);
             await sleep(450); done();
           } else {
-            b.classList.add('wrong'); b.disabled = true;
+            mark(b, 'wrong'); b.disabled = true;
             if (st.ng) { var n = $('#act .ng'); n.hidden = false; n.innerHTML = '💡 ' + ja(st.ng); }
             await miss();
           }
@@ -786,6 +813,8 @@
     if ($('#bRe')) $('#bRe').onclick = function () { unlockAudio(); playCase(C, true); };
     $('#hDrillBest').textContent = S.drillBest ? '最高 ' + S.drillBest : '60秒';
     $('#hNotesN').textContent = Object.keys(S.notes).length + ' ページ';
+    var wq = wordQueue();
+    $('#hWordsN').textContent = Object.keys(S.words).length ? (wq.due + wq.fresh ? '今日 ' + Math.min(10, wq.due + wq.fresh) + ' 語' : '今日はおわり') : 'まだ 0 語';
     $('#tgSound').checked = S.settings.sound; $('#tgSpeak').checked = S.settings.speak; $('#tgJa').checked = S.settings.ja;
   }
   function turn(d) { renderHome(); var p = $('#book .page'); p.classList.add(d > 0 ? 'fromR' : 'fromL'); }
@@ -870,6 +899,99 @@
     $('#drHome').onclick = function () { renderHome(); show('home'); };
   }
   $('#hDrill').addEventListener('click', startDrill);
+
+  /* =========================================================
+   * 単語の復習：事件・ドリルで出会った語を、意味の4択で（間隔反復）
+   *  S.words[見出し語] = { t 出会った時, ex 最初の例文, c 事件, box 0〜5, due 次の日時, n 復習した回数, look 調べた }
+   *  正解で box が1つ上がり、次は 1・3・7・14・30 日後。まちがえたら box 0 にもどり、その回の最後にもう一度
+   * ========================================================= */
+  var DAY = 864e5, GAP = [0, 1, 3, 7, 14, 30];
+  function entry(w) { return DICT.words.filter(function (e) { return e.w === w; })[0]; }
+  function wordQueue() {
+    var now = Date.now(), all = Object.keys(S.words);
+    var due = all.filter(function (w) { return S.words[w].n > 0 && S.words[w].due <= now; })
+      .sort(function (a, b) { return S.words[a].due - S.words[b].due; });
+    var fresh = all.filter(function (w) { return !S.words[w].n; })
+      .sort(function (a, b) { return (S.words[b].look ? 1 : 0) - (S.words[a].look ? 1 : 0) || S.words[a].t - S.words[b].t; });
+    return { list: due.concat(fresh).slice(0, 10), due: due.length, fresh: fresh.length };
+  }
+  var WR = null;
+  function startWords() {
+    var q = wordQueue();
+    if (!Object.keys(S.words).length) { modal('<h3>🗂 単語の復習</h3><p>事件を読み進めたり、証言台ドリルをしたりすると、出てきた単語がここに集まります。<br>文の中の単語は、タップすると意味が見られます。</p>'); return; }
+    if (!q.list.length) { modal('<h3>🗂 単語の復習</h3><p>今日の復習はおわりです。<br>また明日、忘れかけたころに出します。</p><button class="btn sub wide" id="wlOpen">📇 集めた単語の一覧</button>'); $('#wlOpen').onclick = wordList; return; }
+    unlockAudio();
+    WR = { q: q.list.slice(), i: 0, ok: 0, again: {}, missed: [] };
+    show('words');
+    nextWord();
+  }
+  function nextWord() {
+    if (WR.i >= WR.q.length) { endWords(); return; }
+    var w = WR.q[WR.i], E = entry(w), rec0 = S.words[w];
+    if (!E) { WR.i++; nextWord(); return; }
+    $('#wProg').textContent = (WR.i + 1) + ' / ' + WR.q.length;
+    /* 意味の選択肢：同じ品詞で、意味がちがう語から3つ */
+    var pool = DICT.words.filter(function (e) { return e !== E && e.lv >= 3 && e.pos !== 'bad' && e.ja !== E.ja; });
+    var same = pool.filter(function (e) { return e.pos === E.pos; });
+    var others = shuffle(same.length >= 3 ? same : pool).slice(0, 3);
+    var opts = shuffle([E].concat(others));
+    var c = D.cases.filter(function (x) { return x.id === rec0.c; })[0];
+    $('#wBoard').innerHTML = '<div class="wcard"><p class="wfrom">' + (c ? '第' + c.no + '話 ' + esc(c.title) : '証言台ドリル') + 'で出会った単語' + (rec0.look ? ' ・ 🔍 調べた' : '') + '</p>' +
+      '<p class="ww">' + esc(E.w) + sayBtn(E.w) + '</p>' +
+      '<p class="wex">' + es(rec0.ex, E) + sayBtn(rec0.ex) + '</p></div><p class="guide">意味は？</p><div class="wfb" hidden></div>';
+    $('#wTray').innerHTML = '<div class="opts col">' + opts.map(function (e, i) { return '<button class="btn opt" data-i="' + i + '">' + esc(e.ja) + '</button>'; }).join('') + '</div>';
+    autoSay(E.w);
+    $$('#wTray .opt').forEach(function (b) {
+      b.onclick = function () {
+        var right = opts[+b.dataset.i] === E;
+        $$('#wTray .opt').forEach(function (x) { x.disabled = true; if (opts[+x.dataset.i] === E) x.classList.add('right'); });
+        var r = S.words[w];
+        if (right) {
+          Snd.ok(); WR.ok++;
+          if (!WR.again[w]) { r.box = Math.min(5, r.box + 1); r.due = Date.now() + GAP[r.box] * DAY; }
+          r.n++;
+        } else {
+          Snd.ng(); b.classList.add('wrong');
+          r.box = 0; r.due = Date.now(); r.n++;
+          if (!WR.again[w]) { WR.again[w] = true; WR.q.push(w); WR.missed.push(w); }
+        }
+        save();
+        var fb = $('#wBoard .wfb'); fb.hidden = false;
+        fb.className = 'wfb ' + (right ? 'good' : 'bad');
+        fb.innerHTML = '<b>' + (right ? '○ 正解' : '✕ 正しくは') + '</b>　' + esc(E.w) + '＝' + esc(E.ja) + (right ? '<br><small>次は ' + GAP[r.box] + ' 日後</small>' : '<br><small>この回の最後に、もう一度出ます</small>');
+        $('#wTray').insertAdjacentHTML('beforeend', '<button class="btn main wide" id="wNext">つぎへ ▶</button>');
+        $('#wNext').onclick = function () { WR.i++; nextWord(); };
+        $('#wBoard').scrollTop = 1e4;
+      };
+    });
+  }
+  function endWords() {
+    var d = $('#done'), n = WR.q.length - WR.missed.length;
+    d.innerHTML = '<div class="closed"><p class="cno">単語の復習</p><h2>' + n + ' / ' + (WR.q.length - WR.missed.length + WR.missed.length) + ' 語</h2>' +
+      '<p class="ces">' + (WR.missed.length ? '1回目でまちがえた語は、また明日出します' : 'ぜんぶ1回目で正解！') + '</p>' +
+      (WR.missed.length ? '<h4>まちがえた語</h4>' + WR.missed.map(function (w) { var E = entry(w); return '<div class="nr"><p class="nes">' + esc(w) + '</p><p class="nja">' + esc(E ? E.ja : '') + '</p></div>'; }).join('') : '') +
+      '<button class="btn main wide" id="wAgain">つづけて復習</button><button class="btn sub wide" id="wHome">表紙へもどる</button></div>';
+    WR = null;
+    show('done');
+    $('#wAgain').onclick = startWords;
+    $('#wHome').onclick = function () { renderHome(); show('home'); };
+  }
+  /* 集めた単語の一覧（事件ごと） */
+  function wordList() {
+    var h = '<h3>📇 集めた単語（' + Object.keys(S.words).length + ' 語）</h3><p class="empty">★ の数は覚えぐあい（正解で1つふえる）。🔍 は調べた語。</p>';
+    D.cases.map(function (c) { return { id: c.id, t: '第' + c.no + '話 ' + c.title }; }).concat([{ id: 'drill', t: '証言台ドリル' }]).forEach(function (g) {
+      var ws = Object.keys(S.words).filter(function (w) { return S.words[w].c === g.id; }).sort(function (a, b) { return a.localeCompare(b, 'es'); });
+      if (!ws.length) return;
+      h += '<h4>' + esc(g.t) + '<small>' + ws.length + ' 語</small></h4><div class="wlist">' + ws.map(function (w) {
+        var E = entry(w), r = S.words[w];
+        return '<div class="wl"><b>' + esc(w) + '</b><span>' + esc(E ? E.ja : '') + '</span><i>' + '★'.repeat(r.box) + (r.look ? ' 🔍' : '') + '</i></div>';
+      }).join('') + '</div>';
+    });
+    modal(h, 'evm');
+  }
+  $('#hWords').addEventListener('click', startWords);
+  $('#wList').addEventListener('click', wordList);
+  $('#wQuit').addEventListener('click', function () { WR = null; renderHome(); show('home'); });
   $('#dQuit').addEventListener('click', function () { if (DR) { clearInterval(DR.timer); DR = null; } renderHome(); show('home'); });
 
   /* ---------- 起動 ---------- */
