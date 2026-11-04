@@ -95,19 +95,19 @@ MQ.questions = [
   { id: 'l4-14', L: 4, k: 'pick', s: '[Pepe], ___ bueno con el gato.', o: ['sé', 'eres', 'es'], a: 0, ja: 'ペペ、ねこにやさしくして。', why: '呼びかけが Pepe（仲よし）なので tú への命令。`ser` の命令は覚える形 `{sé}`。`eres` は「君は〜だ」、`es` は「彼は〜だ」。' },
 
   /* ================= L5 usted へのていねいな命令 ================= */
-  { id: 'l5-01', L: 5, k: 'pick', s: '[Marina], ___ el pan, por favor.', o: ['come', 'coma', 'comes'], a: 1, ja: 'マリーナさま、パンを召し上がってください。', why: '女神さまには usted の命令。`come` の e を a にして `{coma}`。`come` は tú への命令。' },
-  { id: 'l5-02', L: 5, k: 'form', v: 'hablar', p: 'usted', o: ['hable', 'habla', 'hables'], a: 0, why: '-ar の動詞は、tú の命令 `habla` の a を e にして `{hable}`。' },
-  { id: 'l5-03', L: 5, k: 'scene', sit: 'マリーナさまが小屋の入り口で待っている。「どうぞ入ってください」と言う', o: ['Pasas, por favor.', 'Pasa, por favor.', 'Pase, por favor.'], a: 2, why: '`pasa` は仲よしへの命令。女神さまには a を e にして `{pase}`。`pasas` は「君は通る」。' },
-  { id: 'l5-04', L: 5, k: 'scene', sit: 'マリーナさまに「聞いてください」とお願いする', o: ['Escucha, por favor.', 'Escuche, por favor.', 'Escuchas, por favor.'], a: 1, why: '`escuchar` は -ar の動詞。usted には a を e にして `{escuche}`。' },
-  { id: 'l5-05', L: 5, k: 'who', s: '{Pase}, por favor.', a: 1, ja: 'どうぞ、お入りください。', why: '`pase` は a を e にした形で、usted（1人・ていねい）への命令。' },
+  { id: 'l5-01', L: 5, k: 'pick', s: '[Marina], ___ el pan, por favor.', o: ['come', 'coma', 'comes'], a: 1, ja: 'マリーナさま、パンを召し上がってください。', why: '女神さまには usted の命令。yo の形 `como` の o を取って、-er なので a。`{coma}`。`come` は tú への命令。' },
+  { id: 'l5-02', L: 5, k: 'form', v: 'hablar', p: 'usted', o: ['hable', 'habla', 'hables'], a: 0, why: 'yo の形 `hablo` の o を取って、-ar なので e。`{hable}`。' },
+  { id: 'l5-03', L: 5, k: 'scene', sit: 'マリーナさまが小屋の入り口で待っている。「どうぞ入ってください」と言う', o: ['Pasas, por favor.', 'Pasa, por favor.', 'Pase, por favor.'], a: 2, why: '`pasa` は仲よしへの命令。女神さまには yo の形 paso の o を取って e で `{pase}`。`pasas` は「君は通る」。' },
+  { id: 'l5-04', L: 5, k: 'scene', sit: 'マリーナさまに「聞いてください」とお願いする', o: ['Escucha, por favor.', 'Escuche, por favor.', 'Escuchas, por favor.'], a: 1, why: '`escuchar` は -ar の動詞。usted には yo の形 escucho の o を取って e で `{escuche}`。' },
+  { id: 'l5-05', L: 5, k: 'who', s: '{Pase}, por favor.', a: 1, ja: 'どうぞ、お入りください。', why: '`pase` は yo の形 paso の o を e にした形で、usted（1人・ていねい）への命令。' },
   { id: 'l5-06', L: 5, k: 'who', s: '{Abre} la puerta, [Lola].', a: 0, ja: 'ロラ、ドアを開けて。', why: '`abre` は tú の形から s を取った命令。仲よしのロラへ。usted なら `{abra}`。' },
   { id: 'l5-07', L: 5, k: 'ja', s: '{Coma}, por favor.', o: ['彼は食べる。', 'どうぞ、召し上がってください。', '食べないでください。'], a: 1, why: '`{coma}` は `comer` の usted への命令。「どうぞ召し上がってください」とすすめる言い方。' },
-  { id: 'l5-08', L: 5, k: 'bug', s: 'Marina, escucha la música, por favor.', a: 'escucha', ok: 'Marina, escuche la música, por favor.', ja: 'マリーナさま、音楽を聞いてください。', why: '女神さまは usted の相手。`escucha` は tú への命令なので、a を e にして `{escuche}`。' },
+  { id: 'l5-08', L: 5, k: 'bug', s: 'Marina, escucha la música, por favor.', a: 'escucha', ok: 'Marina, escuche la música, por favor.', ja: 'マリーナさま、音楽を聞いてください。', why: '女神さまは usted の相手。`escucha` は tú への命令。yo の形 escucho の o を取って e で `{escuche}`。' },
   { id: 'l5-09', L: 5, k: 'build', s: 'Pase, por favor.', d: ['Pasa'], ja: 'どうぞ、お入りください。' },
   { id: 'l5-10', L: 5, k: 'build', s: 'Coma el pan, por favor.', d: ['Come'], ja: 'パンを召し上がってください。' },
-  { id: 'l5-11', L: 5, k: 'form', v: 'comer', p: 'usted', o: ['coma', 'come', 'comas'], a: 0, why: '-er の動詞は、tú の命令 `come` の e を a にして `{coma}`。' },
-  { id: 'l5-12', L: 5, k: 'pick', s: '[Marina], ___ una canción, por favor.', o: ['canta', 'cantas', 'cante'], a: 2, ja: 'マリーナさま、歌を歌ってください。', why: '-ar の動詞は、tú の命令 `canta` の a を e にして `{cante}`。' },
-  { id: 'l5-13', L: 5, k: 'pick', s: '[Marina], ___ usted la puerta, por favor.', o: ['abra', 'abre', 'abres'], a: 0, ja: 'マリーナさま、ドアを開けてください。', why: '文の中に `usted` があり、相手は目上のマリーナさま。tú の命令 `abre` の e を a にして `{abra}`。`abre` は仲よしへの命令。' },
+  { id: 'l5-11', L: 5, k: 'form', v: 'comer', p: 'usted', o: ['coma', 'come', 'comas'], a: 0, why: 'yo の形 `como` の o を取って、-er なので a。`{coma}`。' },
+  { id: 'l5-12', L: 5, k: 'pick', s: '[Marina], ___ una canción, por favor.', o: ['canta', 'cantas', 'cante'], a: 2, ja: 'マリーナさま、歌を歌ってください。', why: 'yo の形 `canto` の o を取って、-ar なので e。`{cante}`。' },
+  { id: 'l5-13', L: 5, k: 'pick', s: '[Marina], ___ usted la puerta, por favor.', o: ['abra', 'abre', 'abres'], a: 0, ja: 'マリーナさま、ドアを開けてください。', why: '文の中に `usted` があり、相手は目上のマリーナさま。yo の形 abro の o を取って、-ir なので a。`{abra}`。`abre` は仲よしへの命令。' },
   { id: 'l5-14', L: 5, k: 'pick', s: '[Lola], ___ la puerta, por favor.', o: ['abra', 'abre', 'abres'], a: 1, ja: 'ロラ、ドアを開けて、お願い。', why: '呼びかけが Lola（仲よし）なので tú への命令。`abres` から s を取って `{abre}`。`abra` は usted（目上）への命令。por favor があっても、相手は変わらない。' },
 
   /* ================= L6 usted の命令は yo の形から ================= */

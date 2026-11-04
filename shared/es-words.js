@@ -365,7 +365,7 @@
   F('escuchar', 'escúchame');
   F('cerrar', 'cierren, cerrad');
   /* 命令をまちがえて作った形（ひっかけの選択肢・まちがい探し用） */
-  W('dorme', '（この形はない。duerme が正しい）', 'bad', 0, 'jugas, cerra, cerre, tene, tenes, volva, vaye, empeza, conta, comela, comelo, levantate, díme, leelo, leela, ayudame, habl, er');
+  W('dorme', '（この形はない。duerme が正しい）', 'bad', 0, 'jugas, cerra, cerre, tene, tenes, volva, vaye, empeza, conta, comela, comelo, levantate, díme, leelo, leela, ayudame, habl, er, veng, vienga');
   W('llege', '（この形はない。llegue が正しい）', 'bad', 0, 'lleges, toce, toces, empieze, page, juege, traya, oia, conoza, repeta, damelo, dalome, dálame, dálela, dálelo, dilome, dimelo, escuchame, toc, ce, ge, gue');
 
   /* ---------- ¡PROTESTO!（比較の法廷 protesto/）で足した語・形 ---------- */
