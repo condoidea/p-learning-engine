@@ -887,8 +887,16 @@
       if (!DR.paused) DR.left -= now - last;
       last = now;
       $('#dTime').style.width = Math.max(0, DR.left / 600) + '%';
-      if (DR.left <= 0) endDrill();
+      if (DR.left <= 0) lastDrill();
     }, 100);
+  }
+  /* 時間切れ：いま出ている証言は最後まで答えられる（答えたら結果へ）。勝手に終わらせない */
+  function lastDrill() {
+    if (DR.over) return;
+    DR.over = true;
+    clearInterval(DR.timer);
+    $('#dBoard').insertAdjacentHTML('afterbegin', '<p class="dlast">⏰ タイムアップ！ この証言が最後です。時間は気にせず、ゆっくり答えてね</p>');
+    $('#dBoard').scrollTop = 0;
   }
   function nextDrill() {
     var q = DR.q = D.drill.make(DR.forms);
@@ -914,15 +922,15 @@
       Snd.ok();
       if (!v) await slam('¡PROTESTO!');
       else { $('#dBoard .tl').classList.add('good'); await sleep(350); }
-      if (DR && DR.left > 0) nextDrill();
+      if (DR) { if (DR.over) endDrill(); else nextDrill(); }
       return;
     }
     DR.combo = 0; DR.paused = true; DR.miss.push(q);
     Snd.ng();
     $('#dBoard').insertAdjacentHTML('beforeend', '<div class="dfix">' + drillCmp(q) + (q.ok ? '<p class="nja">' + esc(q.ja) + '</p>' : '<p class="nja">' + esc(q.fixJa) + '</p>') + '</div>');
     $('#dBoard').scrollTop = 1e4;
-    $('#dTray').innerHTML = '<button class="btn main wide" id="dN">つぎの証言 ▶</button>';
-    $('#dN').onclick = function () { DR.paused = false; nextDrill(); };
+    $('#dTray').innerHTML = '<button class="btn main wide" id="dN">' + (DR.over ? '結果を見る ▶' : 'つぎの証言 ▶') + '</button>';
+    $('#dN').onclick = function () { if (DR.over) { endDrill(); return; } DR.paused = false; nextDrill(); };
   }
   function endDrill() {
     if (!DR) return;
