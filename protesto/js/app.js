@@ -173,7 +173,13 @@
     if (g) {
       e.stopPropagation();
       p.textContent = g.dataset.gl; p.hidden = false;
-      var wd = S.words[g.dataset.w]; if (wd && !wd.look) { wd.look = true; save(); }   // 調べた語は復習で先に出す
+      /* 事件・ドリルの中で調べた語は、復習でいちばん先に出す。もう復習した語でも、調べた＝忘れかけ → すぐ復習にもどす */
+      var wd = S.words[g.dataset.w], scr = document.body.dataset.screen;
+      if (wd && (scr === 'play' || scr === 'drill')) {
+        wd.look = true; wd.lt = Date.now();
+        if (wd.n > 0 && wd.due > wd.lt) { wd.due = wd.lt; wd.box = Math.max(0, wd.box - 1); }
+        save();
+      }
       var r = g.getBoundingClientRect(), w = Math.min(280, innerWidth - 24);
       p.style.maxWidth = w + 'px';
       var x = Math.max(12, Math.min(innerWidth - w - 12, r.left + r.width / 2 - w / 2));
@@ -942,13 +948,16 @@
   function entry(w) { return DICT.words.filter(function (e) { return e.w === w; })[0]; }
   /* 復習するのは4級以上の語だけ（前に集めた5級の語も外す） */
   function wordKeys() { return Object.keys(S.words).filter(function (w) { var E = entry(w); return E && E.lv !== 5; }); }
+  /* 出す順：① レッスン中に調べた語（新しく調べた順）② 期限が来た語 ③ まだ復習していない語 */
   function wordQueue() {
-    var now = Date.now(), all = wordKeys();
-    var due = all.filter(function (w) { return S.words[w].n > 0 && S.words[w].due <= now; })
-      .sort(function (a, b) { return S.words[a].due - S.words[b].due; });
-    var fresh = all.filter(function (w) { return !S.words[w].n; })
-      .sort(function (a, b) { return (S.words[b].look ? 1 : 0) - (S.words[a].look ? 1 : 0) || S.words[a].t - S.words[b].t; });
-    return { list: due.concat(fresh).slice(0, 10), due: due.length, fresh: fresh.length };
+    var now = Date.now(), all = wordKeys(), W = S.words;
+    function ready(w) { return !W[w].n || W[w].due <= now; }
+    var looked = all.filter(function (w) { return W[w].look && ready(w) && (!W[w].n || (W[w].lt || 0) >= (W[w].rt || 0)); })
+      .sort(function (a, b) { return (W[b].lt || 0) - (W[a].lt || 0); });
+    var rest = all.filter(function (w) { return looked.indexOf(w) < 0; });
+    var due = rest.filter(function (w) { return W[w].n > 0 && W[w].due <= now; }).sort(function (a, b) { return W[a].due - W[b].due; });
+    var fresh = rest.filter(function (w) { return !W[w].n; }).sort(function (a, b) { return W[a].t - W[b].t; });
+    return { list: looked.concat(due, fresh).slice(0, 10), due: looked.length + due.length, fresh: fresh.length };
   }
   var WR = null;
   function startWords() {
@@ -982,6 +991,7 @@
         var right = opts[+b.dataset.i] === E;
         $$('#wTray .opt').forEach(function (x) { x.disabled = true; if (opts[+x.dataset.i] === E) x.classList.add('right'); });
         var r = S.words[w];
+        r.rt = Date.now();
         if (right) {
           Snd.ok(); WR.ok++;
           if (!WR.again[w]) { r.box = Math.min(5, r.box + 1); r.due = Date.now() + GAP[r.box] * DAY; }
