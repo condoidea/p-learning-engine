@@ -250,6 +250,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .wfrom { margin: 0; font-size: 13px; color: var(--ink2); }
 .ww { margin: 6px 0; font-family: var(--es); font-size: 36px; line-height: 1.2; }
 .wex { margin: 4px 0 0; font-family: var(--es); font-size: 19px; line-height: 1.45; color: var(--ink2); }
+.wja { margin: 8px 0 0; padding-top: 6px; border-top: 1px dashed var(--ink3); font-size: 15px; color: var(--ink); }
 .wfb { margin-top: 10px; padding: 8px 12px; font-size: 16px; border-left: 3px solid; }
 .wfb.good { border-color: var(--green); background: rgba(77, 107, 53, .1); } .wfb.bad { border-color: var(--red); background: rgba(163, 54, 42, .08); }
 .wfb small { color: var(--ink2); font-size: 13.5px; }
