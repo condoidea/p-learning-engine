@@ -42,12 +42,12 @@ window.LE_COURSES = [
     desc: '2つの文をタップで合体！ que・quien・前置詞＋冠詞＋que・donde・lo que・cuyo まで、西検4級の関係詞を1日30分×7日で。ボス戦・60秒ラッシュ・フレーズガチャつき。',
     color: '#ff4fa3', color2: '#38e8ff', lessons: 11
   },
-  /* ¡MANDA!（manda/）：命令表現の独立アプリ。進み具合は lessons[id].done を数える（10の神託。ボスは数えない） */
+  /* ¡MANDA!（manda/）：命令表現の独立アプリ。進み具合は lessons[id].done を数える（14の神託。ボスは数えない） */
   {
     id: 'manda', entry: 'manda.html', storageKey: 'manda.v1',
     title: 'スペイン語 命令表現', brand: '¡MANDA!', icon: '🦉',
-    desc: 'ちび神さまになって、島の人たちに命令！ tú・usted・vosotros・ustedes、不規則な形、つづりの書きかえ、代名詞2つ、「〜するな」まで西検4級の命令をぜんぶ。まちがえた所は🩹おさらい、仕上げは🎓西検チャレンジ。',
-    color: '#ffcf4a', color2: '#6a4cff', lessons: 13
+    desc: 'ちび神さまになって、島の人たちに命令！ tú・usted・vosotros・ustedes、不規則な形、つづりの書きかえ、代名詞2つ、「〜するな」、nosotros の「〜しよう」まで西検4級の命令をぜんぶ。まちがえた所は🩹おさらい、仕上げは🎓西検チャレンジ。',
+    color: '#ffcf4a', color2: '#6a4cff', lessons: 14
   },
   /* ¡PROTESTO!（protesto/）：比較の法廷推理もの。独立アプリ。進み具合は lessons[id].done を数える（6つの事件） */
   {

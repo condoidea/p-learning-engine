@@ -547,6 +547,22 @@
   F('periódico', 'periódicos');
   /* -ísimo の作り方の説明に出る部分・まちがった形（ひっかけ用） */
   W('ísimo', '（-ísimo：とても…。alt＋ísimo＝altísimo）', 'bad', 0, 'ísima, ísimos, ísimas, alt, car, riqu, mayora, carosísimo, caroísimo, ricoísimo, ricísimo');
+  /* ¡MANDA! 第14の神託（nosotros「〜しよう」・vosotros「〜するな」） */
+  W('junto', 'いっしょの（juntos＝いっしょに）', 'adj', 4, 'juntos, juntas');
+  W('algo', '何か', 'pron', 5);
+  W('os', '君たちを・君たちに・君たち自身を（vosotros）', 'pron', 4);
+  W('mos', '（語尾）「私たちは」の印（hablemos の -mos）', 'bad', 0);
+  F('hablar', 'hablemos, habléis');
+  F('comer', 'comamos, comáis, coméis');
+  F('salir', 'salgamos, salgáis, salid, salís');
+  F('bailar', 'baile, bailemos, bailáis');
+  F('trabajar', 'trabaje, trabajemos, trabajamos, trabajad');
+  F('ir', 'vamos, vayamos, id');
+  F('ver', 'vemos');
+  F('preocuparse', 'preocupéis, preocupáis');
+  F('volver', 'volvamos, volvemos, volved');
+  F('cantar', 'cantamos, cantemos');
+  F('abrir', 'abráis, abrís');
 
   window.ES_WORDS = {
     words: words,

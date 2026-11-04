@@ -51,7 +51,7 @@ MQ.days = [
   { d: 3, ti: '女神さまが来た', x: 'usted・ustedes へのていねいな命令' },
   { d: 4, ti: 'にぎわう港', x: 'yo の形がクセものの動詞・vosotros ＋ ボス' },
   { d: 5, ti: '朝の島', x: '「それを」をくっつける・「〜するな」' },
-  { d: 6, ti: '決戦の前夜', x: 'つづりの書きかえ・代名詞2つ・再帰の禁止' },
+  { d: 6, ti: '決戦の前夜', x: 'つづりの書きかえ・代名詞2つ・みんなで〜しよう' },
   { d: 7, ti: '創世の日', x: 'ラスボス ＋ 🎓 西検チャレンジ' }
 ];
 
@@ -215,7 +215,7 @@ MQ.lessons = [
         out: '{Coma}, por favor.', ja: 'どうぞ、召し上がってください。', fx: { e: '🍞', mood: '😋' },
         why: '`come` は tú への命令。usted には e を a にして `{coma}`。' },
       { t: 'tip', id: 't-usted', ti: 'usted への命令は、a と e を入れかえる', x: '-ar：`{habla}` → `{hable}`\n-er：`{come}` → `{coma}`\n-ir：`{abre}` → `{abra}`\n__a と e を入れかえる__',
-        why: 'usted への命令は、もともと「〜してくださいますように」という願いの形（3級で習う接続法）。願いの形は、ふだんの活用と反対の母音を使う決まりがあるので、a と e が入れかわる。' },
+        why: 'usted への命令は、もともと「〜してくださいますように」という願いの形（接続法現在。西検4級の範囲）。願いの形は、ふだんの活用と反対の母音を使う決まりがあるので、a と e が入れかわる。' },
       { t: 'say', who: 'marina', x: 'まあ、ていねいな神さまね。\n気に入りましたわ。' },
       { t: 'ask', q: 'マリーナさまに「聞いてください」。\n（tú への命令は `escucha`）', o: ['Escuche.', 'Escucha.', 'Escuchas.'], a: 0,
         why: '`escuchar` は -ar の動詞。a を e にして `{escuche}`。' },
@@ -412,7 +412,7 @@ MQ.lessons = [
         out: '¡No la {comas}, [Pepe]!', ja: 'それを食べちゃだめだ、ペペ！', fx: { e: '🍏', mood: '😱' },
         why: '禁止の命令では、la は動詞の前。`no la {comas}`。くっつけるのは「〜しろ」の命令のときだけ。' },
       { t: 'tip', id: 't-neg', ti: '「〜するな」は usted の命令から', x: 'tú へ：no ＋ usted の命令 ＋ s\n`{hable}` → no `{hables}`　`{tenga}` → no `{tengas}`\nusted へ：no ＋ usted の命令（`no {hable}`）\nlo・me などは動詞の前（`no lo {comas}`）',
-        why: '「〜するな」も、usted の命令と同じ願いの形を使う。願いの形の「君」の語尾が -s なので、tú への禁止は s がつく。vosotros への禁止（no habléis）は、3級で習うよ。' },
+        why: '「〜するな」も、usted の命令と同じ願いの形を使う。願いの形の「君」の語尾が -s なので、tú への禁止は s がつく。vosotros への禁止（no habléis）は、決戦の前の神託で。' },
       { t: 'say', x: 'これで「〜するな」も言えるようになった！\nカオスとの決戦の前に、\nあと少しだけ修行しよう。' },
       { t: 'drill', n: 6 }
     ]
@@ -474,7 +474,44 @@ MQ.lessons = [
         why: 'usted の「自分を」は se。usted への禁止は no ＋ usted の命令なので `no se {preocupe}`。`no te preocupes` は tú（仲よし）へ。' },
       { t: 'tip', id: 't-2pron', ti: '代名詞2つ：「だれに」→「何を」、le は se に', x: '`{da}` ＋ me ＋ lo → `{dámelo}`\n`{da}` ＋ le ＋ la → `{dásela}`（le → se）\n禁止は前に：no me lo `{digas}`\n再帰の禁止：no te `{preocupes}`／no se `{preocupe}`',
         why: '「だれに」が先なのは、ふつうの文（Me lo das.）と同じ順番。くっつけても順番は変わらない。le が se になるのは、l の音が2つ続くのをさけるため。' },
-      { t: 'say', x: 'これで、命令は本当にぜんぶそろった！\n神さま、カオスとの決戦だ…！' },
+      { t: 'say', x: '代名詞の命令も、これでばっちり！\n最後に、村のみんなが\n神さまに会いに来ているよ。' },
+      { t: 'drill', n: 6 }
+    ]
+  },
+  {
+    id: 'L14', no: 14, day: 6, icon: '🤝', ti: 'みんなで行こう', sub: 'nosotros「〜しよう」・vosotros「〜するな」',
+    ev: { who: 'pueblo', line: '神さま、わしらも いっしょに戦うぞ！' },
+    actors: ['pepe', 'lola', 'pueblo'],
+    steps: [
+      { t: 'say', x: '決戦の朝。\n村のみんなが、海岸に集まってきた。\n今日は神さまも、みんなの仲間の1人だ。' },
+      { t: 'say', x: '自分も入れて「（私たちで）〜しよう」と\nさそう命令がある。\n相手は、自分をふくむ `nosotros`（私たち）。' },
+      { t: 'show', cap: 'usted の命令 → nosotros「〜しよう」', tbl: [['{hable}', '{hable^mos^}'], ['{coma}', '{coma^mos^}'], ['{salga}', '{salga^mos^}']] },
+      { t: 'ask', pred: true, q: '左が usted の命令、右が「〜しよう」。\nどう変わった？', o: ['最後に mos がついた', '最後に s がついた', 'a と e が入れかわった'], a: 0,
+        r: 'そのとおり！\n**「〜しよう」は、usted の命令 ＋ mos**。\nmos は「私たちは」の印。\nふつうの文の `hablamos` と同じ印だね。' },
+      { t: 'say', x: '気をつけたいのは、ふつうの文とのちがい。\n`hablamos` は「私たちは話す」。\n`hablemos` は「（私たちで）話そう」。\n**a と e が入れかわっているのが、さそう印**。' },
+      { t: 'forge', w: 'baile', cut: '', add: 'mos', o: ['mos', 's', 'n'], out: '{Bailemos}', ja: '（みんなで）踊ろう！', hint: 'usted の命令 `baile` から、「踊ろう」を作ろう。つける文字は？' },
+      { t: 'cast', who: 'pueblo', need: 'カオスが来る前に、海岸にとりでを作りたい。\nみんなで力を合わせよう', o: ['Trabajemos juntos.', 'Trabajamos juntos.', 'Trabajad juntos.'], a: 0,
+        out: '{Trabajemos} juntos.', ja: 'いっしょに働こう。', fx: { e: '🧱', mood: '💪', world: 'shield' },
+        why: '自分も入れてさそうので、usted の命令 trabaje ＋ mos で `{trabajemos}`。`trabajamos` は「私たちは働く」の文。`trabajad` は「君たち、働け」で、自分は入らない。' },
+      { t: 'say', x: 'ただし ir（行く）だけは特別。\n「（みんなで）行こう」は `{vamos}`。\nふつうの文の「私たちは行く」と同じ形だ。',
+        more: 'ルールどおりの vayamos も正しい形だけど、「行こう」と言うときは、ふつうは vamos を使う。「〜しに行こう」は vamos a ＋ 原形（Vamos a comer. ＝食べに行こう）。' },
+      { t: 'cast', who: 'pepe', need: 'とりでができた！\nペペが「さあ、どこへ行く？」と聞いている', o: ['¡Vamos a la playa!', '¡Vemos a la playa!', '¡Van a la playa!'], a: 0,
+        out: '¡{Vamos} a la playa!', ja: '海岸へ行こう！', fx: { e: '🏖️', mood: '😆' },
+        why: '「行こう」は ir の特別な形 `{vamos}`。`vemos` は ver（見る）の「私たちは見る」。`van` は「彼らは行く」。' },
+      { t: 'say', x: '次は、村のみんな（vosotros）に\n「〜するな」と言う形。\n`hablad`（君たち、話せ）に no をつけて\n`no hablad` …とは言わない。' },
+      { t: 'show', cap: 'usted の命令 → vosotros に「〜するな」', tbl: [['{hable}', 'no {habl^éis^}'], ['{coma}', 'no {com^áis^}'], ['{salga}', 'no {salg^áis^}']] },
+      { t: 'ask', pred: true, q: 'tú への「〜するな」は、usted の命令 ＋ s だった。\nvosotros へは、どうなっている？', o: ['最後の母音が éis・áis になった', '最後に mos がついた', '原形の r が d になった'], a: 0,
+        r: 'そう！\n**vosotros に「〜するな」は、no ＋ usted の命令の最後の e・a を éis・áis に**。\nふつうの文の `habláis`（君たちは話す）と\na と e が入れかわった形だよ。' },
+      { t: 'cast', who: 'pueblo', need: '黒い霧が来た！\nみんなが、家から飛び出そうとしている', o: ['¡No salgáis, amigos!', '¡No salid, amigos!', '¡No salís, amigos!'], a: 0,
+        out: '¡No {salgáis}, [amigos]!', ja: 'みんな、外に出るな！', fx: { e: '🌫️', mood: '😳' },
+        why: 'usted の命令 salga の最後の a を áis にして `no {salgáis}`。`salid` は「出ろ」なので、no をつけても禁止にならない。`no salís` は「君たちは出ない」の文。' },
+      { t: 'say', x: '再帰動詞なら、vosotros の「君たち自身を」は `os`。\n禁止なので、動詞の前に置く。\n`No os {preocupéis}.`（君たち、心配するな）' },
+      { t: 'cast', who: 'lola', need: 'ロラと村のみんなが、\n「勝てるかな…」と不安そうにしている', o: ['No os preocupéis, amigos.', 'No te preocupes, amigos.', 'No os preocupáis, amigos.'], a: 0,
+        out: 'No os {preocupéis}, [amigos].', ja: 'みんな、心配しないで。', fx: { e: '🫂', mood: '🥹', world: 'shield' },
+        why: '何人もの仲間には vosotros。os は動詞の前で、usted の命令 preocupe の e を éis にして `no os {preocupéis}`。`te preocupes` は1人の tú へ。`preocupáis` は「君たちは心配する」の文。' },
+      { t: 'tip', id: 't-nos', ti: '「〜しよう」と、君たちへの「〜するな」', x: '〜しよう：usted の命令 ＋ mos\n`{hable}` → `{hablemos}`　`{salga}` → `{salgamos}`\n行こう：`{vamos}`\n君たちに〜するな：no ＋ e・a を éis・áis に\nno `{habléis}`・no `{salgáis}`・no os `{preocupéis}`',
+        why: 'usted の命令も、「〜しよう」も、「〜するな」も、ぜんぶ同じ「願いの形」（接続法現在。西検4級の範囲）の仲間。だれのことかで、語尾に「私たち」の mos や「君たち」の is がつくだけ。' },
+      { t: 'say', x: 'これで、命令は本当にぜんぶそろった！\nさあ、みんなで行こう。\nカオスとの決戦だ…！' },
       { t: 'drill', n: 6 }
     ]
   }
@@ -486,7 +523,7 @@ MQ.bosses = [
     line: 'ちびっこ神さま、島ごと吹きとばしてやる！', win: '嵐が晴れて、空に虹がかかった！' },
   { id: 'B2', after: 'L8', day: 4, name: '火山の竜ボルカン', en: 'DRAGÓN VOLCÁN', face: '🐉', col: '#ff6a3d', from: ['L5', 'L6', 'L7', 'L11', 'L8'], n: 8,
     line: 'ていねいに頼めるか？ それとも灰になるか！', win: '火山がしずまって、あたたかい温泉がわいた！' },
-  { id: 'B3', after: 'L13', day: 7, name: '闇の魔神カオス', en: 'DIOS DEL CAOS', face: '👁️', col: '#b04dff', from: ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L11', 'L8', 'L9', 'L10', 'L12', 'L13'], n: 12, final: true,
+  { id: 'B3', after: 'L14', day: 7, name: '闇の魔神カオス', en: 'DIOS DEL CAOS', face: '👁️', col: '#b04dff', from: ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L11', 'L8', 'L9', 'L10', 'L12', 'L13', 'L14'], n: 12, final: true,
     line: '言葉なき世界こそ、我がのぞみ……', win: '闇が晴れた。島に、はじめての朝が来た——創世の完成だ！' }
 ];
 
@@ -496,7 +533,7 @@ MQ.gloss = {
   '語幹': '動詞の前の部分。hablar なら habl-。活用でつづりが変わる動詞もある',
   'アクセント記号': '母音の上の ´。その音を強く読む印（sé・cómelo）',
   '再帰動詞': 'se がつく動詞。「自分を〜する」（levantarse＝自分を起こす→起きる）',
-  '接続法': '「〜しますように」と願う・頼む気持ちの動詞の形。3級で習う。命令の usted の形と同じつづり',
+  '接続法': '「〜しますように」と願う・頼む気持ちの動詞の形。西検4級の範囲。命令の usted の形・「〜しよう」・「〜するな」は、この形を使う',
   '母音': 'a・e・i・o・u の音',
   '目上': '年上・立場が上の人。スペイン語では usted で話す'
 };

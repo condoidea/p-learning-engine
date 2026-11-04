@@ -230,5 +230,18 @@ MQ.questions = [
   { id: 'l13-09', L: 13, k: 'pick', s: 'No se ___ por mí, [Marina].', o: ['preocupes', 'preocupe', 'preocupa'], a: 1, ja: 'わたしのことは心配しないでください、マリーナさま。', why: 'マリーナさまは目上なので usted。`no se` の後ろは usted の命令 `{preocupe}`。s がつく `preocupes` は tú への形。' },
   { id: 'l13-10', L: 13, k: 'ja', s: '{Dímelo}, [Lola].', o: ['ロラ、それを私に言って。', 'ロラは私にそれを言う。', 'ロラ、それを私に言うな。'], a: 0, why: '`di` ＋ me ＋ lo。「だれに」→「何を」の順で、強く読む「ディ」に ´ をつけた `{dímelo}` は、「〜しろ」の命令。言うなは `no me lo {digas}`。' },
   { id: 'l13-11', L: 13, k: 'bug', s: 'Pepe, damelo, por favor.', a: 'damelo', ok: 'Pepe, dámelo, por favor.', ja: 'ペペ、私にそれをちょうだい、お願い。', why: '`da` に me・lo をくっつけると語が長くなり、強く読む「ダ」の位置がずれる。´ をつけて `{dámelo}`。' },
-  { id: 'l13-12', L: 13, k: 'build', s: 'Dásela a Marina, Pepe.', d: ['Dálela'], ja: 'ペペ、それをマリーナさまにあげて。' }
+  { id: 'l13-12', L: 13, k: 'build', s: 'Dásela a Marina, Pepe.', d: ['Dálela'], ja: 'ペペ、それをマリーナさまにあげて。' },
+  /* ================= L14 nosotros「〜しよう」・vosotros「〜するな」 ================= */
+  { id: 'l14-01', L: 14, k: 'pick', s: 'Es tarde, amigos. ___ a casa.', o: ['Volvamos', 'Volvemos', 'Volved'], a: 0, ja: 'もう遅いよ、みんな。家に帰ろう。', why: '自分も入れて「帰ろう」とさそうので、usted の命令 vuelva ＋ mos で `{volvamos}`。`volvemos` は「私たちは帰る」の文、`volved` は「君たち、帰れ」。' },
+  { id: 'l14-02', L: 14, k: 'form', v: 'cantar', p: 'nosotros', o: ['cantamos', 'cantemos', 'cantad'], a: 1, why: 'usted の命令 `cante` ＋ mos で `{cantemos}`（歌おう）。`cantamos` は「私たちは歌う」。' },
+  { id: 'l14-03', L: 14, k: 'form', v: 'hablar', p: 'no-vosotros', o: ['habléis', 'hablad', 'habláis'], a: 0, why: 'usted の命令 `hable` の e を éis にして no `{habléis}`。`hablad` は「話せ」、`habláis` は「君たちは話す」。' },
+  { id: 'l14-04', L: 14, k: 'form', v: 'comer', p: 'no-vosotros', o: ['coméis', 'comáis', 'comed'], a: 1, why: 'usted の命令 `coma` の a を áis にして no `{comáis}`。`coméis` は「君たちは食べる」の文。' },
+  { id: 'l14-05', L: 14, k: 'scene', sit: '晴れた日曜日。家族みんなで公園に行きたい。「公園に行こう！」とさそう', o: ['¡Vamos al parque!', '¡Vayan al parque!', '¡Id al parque!'], a: 0, why: '自分も入る「行こう」は、ir の特別な形 `{vamos}`。`vayan` は「（皆さん）行ってください」、`id` は「君たち、行け」で、どちらも自分は入らない。' },
+  { id: 'l14-06', L: 14, k: 'scene', sit: '図書館で、友だちのペペとロラがおしゃべりしている。2人に「ここで話すな」と言う', o: ['No habláis aquí.', 'No hablad aquí.', 'No habléis aquí.'], a: 2, why: '仲よしの2人（vosotros）への禁止は、usted の命令 hable の e を éis にして `no {habléis}`。`no habláis` は「君たちはここで話さない」という文。' },
+  { id: 'l14-07', L: 14, k: 'pick', s: '[Pepe] y [Lola], no ___ la puerta, por favor.', o: ['abráis', 'abrid', 'abrís'], a: 0, ja: 'ペペとロラ、ドアを開けないでね。', why: '2人の仲よし（vosotros）への禁止。usted の命令 abra の a を áis にして `no {abráis}`。`abrid` は「開けろ」、`abrís` は「君たちは開ける」。' },
+  { id: 'l14-08', L: 14, k: 'pick', s: 'Tengo hambre. ___ algo juntos.', o: ['Comemos', 'Comamos', 'Comed'], a: 1, ja: 'おなかがすいた。いっしょに何か食べよう。', why: 'juntos（いっしょに）でさそっているので「食べよう」。usted の命令 coma ＋ mos で `{comamos}`。`comemos` は「私たちは食べる」。' },
+  { id: 'l14-09', L: 14, k: 'ja', s: '{Bailemos}, amigos.', o: ['みんな、踊ろう。', 'みんな、踊れ。', 'みんなは踊る。'], a: 0, why: '`baile`（usted の命令）＋ mos の `{bailemos}` は「（私たちで）踊ろう」。「みんな、踊れ」は `{bailad}`、「みんなは踊る」は bailáis。' },
+  { id: 'l14-10', L: 14, k: 'ja', s: 'No os {preocupéis}, [amigos].', o: ['みんな、心配しないで。', 'みんなは心配していない。', 'みんなで心配しよう。'], a: 0, why: 'os は vosotros の「君たち自身を」。no ＋ usted の命令 preocupe の e を éis にした `{preocupéis}` で、何人もの仲間への「〜するな」。' },
+  { id: 'l14-11', L: 14, k: 'bug', s: 'Amigos, no salid ahora.', a: 'salid', ok: 'Amigos, no salgáis ahora.', ja: 'みんな、今は外に出ないで。', why: '`salid` は「出ろ」の形なので、no をつけても禁止にならない。usted の命令 salga の a を áis にして `no {salgáis}`。' },
+  { id: 'l14-12', L: 14, k: 'build', s: 'Trabajemos juntos, amigos.', d: ['Trabajamos'], ja: 'みんな、いっしょに働こう。' }
 ];

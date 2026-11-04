@@ -324,7 +324,8 @@
     ja: ['💬', '意味は？'], bug: ['🐛', 'まちがい探し'], build: ['🧩', 'ならべて命令を作ろう'], listen: ['🎧', '聞こえた命令はどれ？'] };
   var WHO = ['tú（1人・仲よし）', 'usted（1人・ていねい）', 'vosotros（何人も・仲よし）', 'ustedes（何人も・ていねい）'];
   var PTAG = { 'tú': '→ tú へ（1人・仲よし）', 'usted': '→ usted へ（1人・ていねい）', 'vosotros': '→ vosotros へ（何人も・仲よし）', 'ustedes': '→ ustedes へ（何人も・ていねい）',
-    'no-tú': '→ tú に「〜するな」　no ＿＿', 'no-usted': '→ usted に「〜しないでください」　no ＿＿' };
+    'no-tú': '→ tú に「〜するな」　no ＿＿', 'no-usted': '→ usted に「〜しないでください」　no ＿＿',
+    'nosotros': '→ nosotros（自分も入れて「〜しよう」）', 'no-vosotros': '→ vosotros に「〜するな」　no ＿＿' };
   function fullOf(q) {
     if (q.k === 'pick') return q.s.replace('___', '{' + q.o[q.a] + '}');
     if (q.k === 'bug') return q.ok;
@@ -1303,9 +1304,9 @@
     { id: 'tu', ti: 'tú の命令（s を取る・つづりが変わる動詞）', L: [1, 2], n: 3 },
     { id: 'irr', ti: '不規則な8つ（ven・ten・pon・sal・haz・di・ve・sé）', L: [3, 4], n: 3 },
     { id: 'ud', ti: 'usted・ustedes（yo の形から・-oy の4つ）', L: [5, 6, 7, 11], n: 4 },
-    { id: 'who', ti: '相手の使い分け・vosotros', L: [8], n: 2 },
+    { id: 'who', ti: '相手の使い分け・vosotros・「〜しよう」', L: [8, 14], n: 3 },
     { id: 'pron', ti: '代名詞（cómelo・siéntese・dámelo・dásela）', L: [9, 13], n: 4 },
-    { id: 'neg', ti: '「〜するな」（no hables・no llegues・no te preocupes）', L: [10, 12], n: 4 }
+    { id: 'neg', ti: '「〜するな」（no hables・no llegues・no te preocupes）', L: [10, 12], n: 3 }
   ];
   var EXAMK = { pick: 1, form: 1, scene: 1, who: 1, bug: 1, ja: 1 };
   function topicOf(q) { for (var i = 0; i < TOPICS.length; i++) if (TOPICS[i].L.indexOf(q.L) >= 0) return TOPICS[i]; }

@@ -103,6 +103,12 @@ MQ.cards = [
   { id: 'c13-3', L: 13, r: 'R', icon: '🥂', name: 'かんぱい', es: 'No me lo {digas}, [Lola].', ja: 'ロラ、それを私に言わないで。', tag: 'no' },
   { id: 'c13-4', L: 13, r: 'SR', icon: '🕊️', name: 'はと', es: 'No te {preocupes}, [Lola].', ja: 'ロラ、心配しないで。', tag: 'no' },
   { id: 'c13-5', L: 13, r: 'SSR', icon: '👑', name: 'かんむり', es: 'No se {preocupe}, [Marina].', ja: 'マリーナさま、ご心配なく。', tag: 'no' },
+  /* ---- L14 nosotros「〜しよう」・vosotros「〜するな」 ---- */
+  { id: 'c14-1', L: 14, r: 'N', icon: '🥁', name: 'たいこ', es: '{Bailemos} con la música, [amigos].', ja: 'みんな、音楽に合わせて踊ろう。', tag: 'nosotros' },
+  { id: 'c14-2', L: 14, r: 'N', icon: '🧱', name: 'とりで', es: '{Trabajemos} juntos, [amigos].', ja: 'みんな、いっしょに働こう。', tag: 'nosotros' },
+  { id: 'c14-3', L: 14, r: 'R', icon: '🏖️', name: 'かいがん', es: '¡{Vamos} a la playa!', ja: '海岸へ行こう！', tag: 'nosotros' },
+  { id: 'c14-4', L: 14, r: 'SR', icon: '🌫️', name: 'くろいきり', es: '¡No {salgáis}, [amigos]!', ja: 'みんな、外に出るな！', tag: 'no' },
+  { id: 'c14-5', L: 14, r: 'SSR', icon: '🫶', name: 'なかま', es: 'No os {preocupéis}, [amigos].', ja: 'みんな、心配しないで。', tag: 'no' },
 
   /* ---- UR：ボスを倒した証 ---- */
   { id: 'u-B1', boss: 'B1', r: 'UR', icon: '🌈', name: '虹のかけら', es: '[Arcoíris], {ven} aquí, por favor.', ja: '虹よ、ここに来て、お願い。', tag: 'tú' },
