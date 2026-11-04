@@ -18,6 +18,26 @@
   var log, tray, run = null;
   var PRAISE = ['正解！', 'いいね！', 'そのとおり！', 'ナイス！', 'さすが助手！', 'カンペキ！'];
 
+  /* ---------- まちがえた問題の記録（原則23） ----------
+   *  復習の問題（quiz）は、どのレッスンの何番かを持っておく（_L・_i）。
+   *  まちがえたら S.miss に記録 → おさらいでリベンジ。1回で正解したら記録から消す */
+  M.LESSONS.concat(M.EXTRA || []).forEach(function (L) { L.quiz.forEach(function (q, i) { q._L = L.id; q._i = i; }); });
+  function lessonOf(id) { return M.LESSONS.concat(M.EXTRA || []).filter(function (L) { return L.id === id; })[0]; }
+  function noteMiss(src) {
+    if (!src || !src._L) return;
+    var a = S.miss[src._L] || (S.miss[src._L] = []);
+    if (a.indexOf(src._i) < 0) a.push(src._i);
+    M.save();
+  }
+  function clearMiss(src) {
+    if (!src || !src._L || !S.miss[src._L]) return;
+    var a = S.miss[src._L], k = a.indexOf(src._i);
+    if (k < 0) return;
+    a.splice(k, 1);
+    if (!a.length) delete S.miss[src._L];
+    M.save();
+  }
+
   /* ---------- 小物 ---------- */
   function alive(r) { if (run !== r || r.dead) throw ABORT; }
   function wait(ms) {
@@ -108,6 +128,7 @@
   function hit(el, opt) {
     opt = opt || {};
     run.ok++; run.total++; run.combo++;
+    clearMiss(opt.src);
     var g = (GAIN.base + GAIN.combo * Math.min(run.combo, 5) + (opt.speed ? GAIN.speed : 0)) * run.factor;
     addParts(g, el);
     if (window.Sfx) Sfx.correct(run.combo);
@@ -118,8 +139,9 @@
       run.pendingSlam = '<b class="cmb">' + run.combo + '</b><small>COMBO!</small>';
     }
   }
-  function miss(el) {
+  function miss(el, src) {
     run.total++; run.combo = 0; run.missed = true;
+    noteMiss(src);
     refreshCount(false);
     if (window.Sfx) Sfx.wrong();
     if (el) FX.shake(el);
@@ -159,6 +181,27 @@
     }).then(function (o) { alive(r); if (o && o.then) return play(o.then); });
   }
 
+  /* ---------- まちがえたその場で、そのレッスンの要点を開ける ----------
+   *  みがく・抜き打ち（ほかのレッスンの問題）でまちがえたとき。おさらい中は出さない */
+  function pointsLesson(s) {
+    var src = s && s.src;
+    if (!src || !src._L || !run || !M.openPoints) return null;
+    if (run.mode === 'polish' || (run.mode === 'lesson' && src._L !== run.lesson.id)) return lessonOf(src._L);
+    return null;
+  }
+  function gotIt(s) {
+    var r = run, L = pointsLesson(s);
+    return new Promise(function (res) {
+      setTray('<div class="replies"><button class="rp pts" data-pts>📖 Lesson ' + esc(L.no) + ' の要点を見る</button><button class="rp" data-ok>わかった</button></div>');
+      tray.onclick = function (e) {
+        if (e.target.closest('[data-pts]')) { M.openPoints(L); return; }
+        if (!e.target.closest('[data-ok]')) return;
+        tray.onclick = null; setTray(''); me('わかった'); res();
+      };
+      if (E2E) setTimeout(function () { $('[data-ok]', tray).click(); });
+    }).then(function () { alive(r); });
+  }
+
   /* ---------- 選ぶ問題 ---------- */
   function ask(s) {
     var r = run, text = s.ask;
@@ -173,7 +216,7 @@
           var i = +bt.getAttribute('data-i'), ok = i === s.a;
           $$('.op', tray).forEach(function (x, k) { x.disabled = true; if (k === s.a) x.classList.add('right'); });
           if (!ok) bt.classList.add('wrong');
-          if (!s.pre) { if (ok) hit(bt); else miss(bt); }
+          if (!s.pre) { if (ok) hit(bt, { src: s.src }); else miss(bt, s.src); }
           setTimeout(function () { setTray(''); me((s.pre ? '' : ok ? '⭕ ' : '✕ ') + fmt(s.opts[i]), s.pre ? '' : ok ? 'ok' : 'ng'); res(i); }, E2E ? 0 : (ok ? 450 : 750));
         };
         if (E2E) setTimeout(function () { $('[data-i="' + s.a + '"]', tray).click(); });
@@ -185,7 +228,8 @@
       if (s.pre) p = say(ok ? (s.ok || 'いい読みだね！') : (ng || 'じつは…'), ok ? 'happy' : 'think');
       else if (ok) p = say(M.pick(PRAISE) + (s.ok ? ' ' + s.ok : ''), r.combo >= 3 ? 'wow' : 'happy');
       else p = say((ng ? ng + '\n' : 'おしい！ ') + '「' + s.opts[i] + '」ではなく、正解は「' + s.opts[s.a] + '」。', 'oops');
-      return p.then(function () { if (s.why && (!ok || s.pre || r.mode !== 'lesson')) return say(s.why, s.pre ? 'normal' : 'normal'); });
+      return p.then(function () { if (s.why && (!ok || s.pre || r.mode !== 'lesson')) return say(s.why, s.pre ? 'normal' : 'normal'); })
+        .then(function () { if (!ok && !s.pre && pointsLesson(s)) return gotIt(s); });
     });
   }
 
@@ -238,8 +282,8 @@
           var ok = same(v, s.ans);
           me((ok ? '⭕ ' : '✕ ') + fmt(t), ok ? 'ok' : 'ng');
           you = fmt(t);
-          if (ok) { if (tries === 1) hit($('.k-ok', tray)); else { M.snd.pop(); refreshCount(false); } setTray(''); res({ ok: true, tries: tries }); return; }
-          if (tries === 1) miss($('.k-ok', tray));
+          if (ok) { if (tries === 1) hit($('.k-ok', tray), { src: s.src }); else { M.snd.pop(); refreshCount(false); } setTray(''); res({ ok: true, tries: tries }); return; }
+          if (tries === 1) miss($('.k-ok', tray), s.src);
           clear();
           /* 2段階の計算（parts あり）は、まちがえたら1段階ずつの問題に分ける */
           if (tries === 1 && s.parts) { setTray(''); res({ ok: false, split: true }); return; }
@@ -255,20 +299,21 @@
       if (o.split) {
         return say('ちょっとちがうみたい。\nこれは2段階の計算だね。\n2つに分けて、1つずつやってみよう！', 'think')
           .then(function () { return play(s.parts); })
-          .then(function () { return say('2つつなげると、答えは ' + M.numText(s.ans) + (s.unit ? ' ' + s.unit : '') + '。\nこれで、さっきの問題も解けたね！', 'proud'); });
+          .then(function () { return say('2つつなげると、答えは ' + M.numText(s.ans) + (s.unit ? ' ' + s.unit : '') + '。\nこれで、さっきの問題も解けたね！', 'proud'); })
+          .then(function () { if (pointsLesson(s)) return gotIt(s); });
       }
       return say('おしい！ いっしょに解いてみよう。', 'oops').then(function () {
-        return steps(s.steps || [], s.ans, s.unit, you);
+        return steps(s.steps || [], s.ans, s.unit, you, s);
       });
     });
   }
-  function steps(lines, ans, unit, you) {
+  function steps(lines, ans, unit, you, s) {
     var r = run, right = fmt(M.numText(ans) + (unit ? ' ' + unit : ''));
     var d = row('t wide', '<div class="card steps"><h4>解き方</h4><ol>' + lines.map(function (l) { return '<li>' + fmt(l) + '</li>'; }).join('') + '</ol>' +
       (you ? cmpRows('<b class="wrong">' + you + '</b>', '<b>' + right + '</b>') : '<p class="ans">答えは ' + right + '</p>') + '</div>', 't');
     gl(d);
     if (M.G && !E2E) M.G.from($$('li', d), { x: -14, opacity: 0, duration: 0.3, stagger: 0.25 });
-    return wait(900 + lines.length * 500).then(function () { alive(r); return reply(['わかった']); });
+    return wait(900 + lines.length * 500).then(function () { alive(r); return s && pointsLesson(s) ? gotIt(s) : reply(['わかった']); });
   }
 
   /* ---------- 先生のまちがい探し ---------- */
@@ -368,8 +413,8 @@
         function judge(ok, el) {
           cancelAnimationFrame(raf);
           var fast = (Date.now() - t0) < limit * 1000;
-          if (ok) { hit(el, { speed: fast }); if (fast) FX.floatText(el, 'SPEED!', 'speed'); }
-          else miss(el);
+          if (ok) { hit(el, { speed: fast, src: q.src }); if (fast) FX.floatText(el, 'SPEED!', 'speed'); }
+          else miss(el, q.src);
           res({ ok: ok, el: el });
         }
         if (q.num != null) {
@@ -478,6 +523,19 @@
       return play(list).then(function () {
         alive(r); setTray('');
         var res = { ok: r.ok, total: r.total, gained: r.gained };
+        run = null; opt.onEnd(res);
+      }, function (e) { if (e !== ABORT) { console.error(e); if (M.E2E) M.e2eFail(e); } });
+    },
+    /* おさらい（原則23）：要点だけを回り直して、最後にまちがえた問題へリベンジ */
+    review: function (L, opt) {
+      var r = begin({ mode: 'review', lesson: L, head: '🩹 おさらい', sub: 'Lesson ' + L.no + '　' + L.title.replace(/\^(\d+)/g, function (m, d) { return M.sup(d); }), factor: opt.factor });
+      var qs = (S.miss[L.id] || []).slice(0, 5).map(function (i) { return L.quiz[i]; }).filter(Boolean).map(norm);
+      var list = [{ t: 'Lesson ' + L.no + '「' + L.title + '」のおさらい。\n大事なところだけ、もう一度見よう！', face: 'happy' }, { reply: ['お願い！'] }]
+        .concat(M.reviewScript(L));
+      if (qs.length) list = list.concat([{ t: '最後に、まちがえた問題にリベンジ！\n今度はいけるはず。', face: 'proud' }]).concat(qs);
+      return play(list).then(function () {
+        alive(r); setTray('');
+        var res = { ok: r.ok, total: r.total, gained: r.gained, revenge: qs.length };
         run = null; opt.onEnd(res);
       }, function (e) { if (e !== ABORT) { console.error(e); if (M.E2E) M.e2eFail(e); } });
     },

@@ -31,8 +31,9 @@
    *  crystals：{ L1: { lv, due, last } } 結晶の育ち（lv 0〜5）と、くもる日
    *  L：あつめた粒の数（10 の何乗か。log10）
    *  miles：スケール図鑑で超えたもの
+   *  miss：{ L4: [0, 3] } 復習（みがく・抜き打ち・早押し）でまちがえた問題（レッスンの quiz の番号）。おさらいで正解すると消える
    * ========================================================= */
-  function blank() { return { v: 1, lessons: {}, crystals: {}, L: 0, miles: [], settings: { sound: true }, seen: {} }; }
+  function blank() { return { v: 1, lessons: {}, crystals: {}, L: 0, miles: [], miss: {}, settings: { sound: true }, seen: {} }; }
   M.load = function () {
     var s = null;
     try { s = JSON.parse(localStorage.getItem(M.KEY)); } catch (e) { s = null; }
@@ -337,5 +338,24 @@
       if (!window.Sfx) return; Sfx.raw.buzz([20, 30, 40]);
       Sfx.raw.play(function (t) { Sfx.raw.tone(200, t, 0.5, 'sawtooth', 0.08, 1600); Sfx.raw.noise(t, 0.6, 0.18, 300, 8000); [0, 7, 12, 19].forEach(function (s, k) { Sfx.raw.tone(Sfx.raw.hz(s + 7), t + 0.35 + k * 0.06, 0.4, 'square', 0.07); }); });
     }
+  };
+  /* =========================================================
+   * おさらいの台本（原則23）
+   *  レッスンのトークから「要点」だけを順に抜き出す：
+   *   ** か __ のある先生のことば・予想の問い・実験・板書
+   *  （🤔 の補足・計算練習・ふつうの問題・早押しは入れない。前の流れがないと読めない文は rv の文に差しかえる）
+   *  先生が続けて話さないよう、ことばのあとに返事をはさむ
+   * ========================================================= */
+  var GATE = ['うん', 'なるほど', 'おぼえた！'];
+  M.reviewScript = function (L) {
+    var out = [], g = 0, props = {};
+    L.talk.forEach(function (s) {
+      var t = typeof s === 'string' ? s : s && s.t;
+      if (t && /\*\*|__/.test(t)) { out.push(s.rv ? { t: s.rv, face: s.face } : s); out.push({ reply: [GATE[g++ % GATE.length]] }); }
+      else if (s.ask && s.pre) out.push(s);
+      else if (s.prop && !props[s.prop]) { props[s.prop] = 1; out.push(s); }   /* 同じ実験は1回だけ */
+      else if (s.board && s.note !== false) out.push(s);
+    });
+    return out;
   };
 })();

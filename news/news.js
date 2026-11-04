@@ -9,6 +9,7 @@
  *  1件のお知らせを出す条件（ぜんぶ満たすとき）
  *   ・そのアプリでは、まだ出していない（アプリごとに1回だけ。単語アプリはデッキごと）
  *   ・お知らせ先のアプリ（url）を、まだ一度も開いていない
+ *     （updated があるお知らせ＝「アップデートしたよ」は逆に、前に開いたことがあって、updated のあとにはまだ開いていない人だけ）
  *   ・exclude に入っていないアプリ（お知らせ先のアプリ自身でも出さない）
  *   ・until（あれば）の日付をすぎていない
  *  同時に出せるのは1件だけ（ITEMS の上にあるものから）。閉じるのは「閉じる」ボタンだけ。
@@ -25,6 +26,7 @@
    *  opened   url のほかに「開いたことがある」とみなす記録（昔の記録など）
    *  exclude  このお知らせを出さないアプリ（ファイル名）
    *  until    この日まで出す（'2026-12-31' の形。なければずっと）
+ *  updated  アップデートのお知らせにする（'2026-11-04T16:00' の形）。一度も開いていない人には出さない（新しいアプリのお知らせのほうを出す）
    *  face     先生の絵（'molmo' ＝ モルモ先生。なければ絵なし）
    *  tag / title / sub / body / go   表示する文（body は HTML）
    * ========================================================= */
@@ -40,6 +42,19 @@
       sub: '🧪 化学基礎・物質量（モル）',
       body: 'はじめまして、モルモ先生だよ！<br>わたしとおしゃべりしながら、<b>mol（モル）</b>の基本を覚えよう。1回 3〜4分、クリアするたびに結晶が育つよ。',
       go: '▶ モル教室をのぞいてみる'
+    },
+    {
+      id: 'mole-review',
+      url: 'mole.html',
+      opened: ['le.news.mole.opened', 'mole.v1'],
+      updated: '2026-11-04T16:00',
+      exclude: ['relativo.html', 'manda.html', 'protesto.html', 'quien.html'],
+      face: 'molmo',
+      tag: 'UPDATE!',
+      title: 'モル教室が<br>さらに詳しくなったよ！',
+      sub: '🧪 化学基礎・物質量（モル）',
+      body: '「みがく」でまちがえた問題は、その場で<b>📖 要点</b>を見られるようになったよ。<br>あとで<b>🩹 おさらい</b>すると、大事なところだけ回り直して、まちがえた問題にリベンジできるの！',
+      go: '▶ モル教室をひらく'
     }
   ];
 
@@ -64,6 +79,7 @@
     if (it.url === file || (it.exclude || []).indexOf(file) >= 0) return false;
     if (it.until && new Date() > new Date(it.until + 'T23:59:59')) return false;
     if (get('le.news.' + it.id + '.seen.' + appKey)) return false;
+    if (it.updated) return openedTarget(it) && (+get('le.news.visited.' + it.url) || 0) < new Date(it.updated).getTime();
     return !openedTarget(it);
   }
   var item = ITEMS.filter(due)[0];
