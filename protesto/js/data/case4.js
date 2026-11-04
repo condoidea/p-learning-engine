@@ -133,15 +133,15 @@ PQ.cases.push({
     { t: 'enter', who: 'tito' },
     { t: 'say', who: 'tito', es: 'Soy Tito. Esta mañana compré manzanas.', x: 'ティトです。今朝、りんごを買いました。' },
     { t: 'testimony', who: 'tito', title: 'リリのかご', hint: 'ふたりのかごのりんごの数をくらべてみて。', lines: [
-      { es: 'Esta mañana estuve en el mercado.', ja: '今朝、朝市にいたの。',
-        press: [{ t: 'say', who: 'tito', es: 'Sí, a las ocho.', x: 'ええ、8時に。' }] },
-      { es: 'Compré dos manzanas.', ja: 'わたしは、りんごを2個買ったわ。',
+      { es: 'Esta mañana estuve en el mercado.', ja: '今朝、朝市にいたよ。',
+        press: [{ t: 'say', who: 'tito', es: 'Sí, a las nueve.', x: 'うん、9時に。' }] },
+      { es: 'Compré dos manzanas.', ja: 'ぼくは、りんごを2個買ったよ。',
         press: [{ t: 'say', who: 'mimi', x: 'レシートにも、ティトくんは2個とあるよ。' }] },
-      { es: 'Lili compró tantas manzanas como yo.', ja: 'リリは、わたしと同じ数のりんごを買ったわ。',
+      { es: 'Lili compró tantas manzanas como yo.', ja: 'リリは、ぼくと同じ数のりんごを買ったよ。',
         press: [{ t: 'say', who: 'lili', es: 'Sí, compré dos.', x: 'うん、2個買ったよ。' }] },
-      { es: 'Pero Lili tiene más manzanas que yo.', ja: 'でも、リリのほうがわたしよりりんごを持っているわ。', ok: ['cestas'],
-        press: [{ t: 'say', who: 'tito', es: 'Sí, en su cesta.', x: 'ええ、かごの中によ。' }, { t: 'say', who: 'mimi', x: 'かごの中のりんごの数、確かめたよね…' }] },
-      { es: 'Lili tomó dos manzanas más.', ja: 'リリは、りんごを2個よぶんにとったのよ。',
+      { es: 'Pero Lili tiene más manzanas que yo.', ja: 'でも、リリのほうがぼくよりりんごを持っているよ。', ok: ['cestas'],
+        press: [{ t: 'say', who: 'tito', es: 'Sí, en su cesta.', x: 'うん、かごの中にね。' }, { t: 'say', who: 'mimi', x: 'かごの中のりんごの数、確かめたよね…' }] },
+      { es: 'Lili tomó dos manzanas más.', ja: 'リリは、りんごを2個よぶんにとったんだ。',
         press: [{ t: 'say', who: 'lili', es: '¡Yo no!', x: 'わたしじゃないよ！' }] }
     ], after: [
       { t: 'chart', title: 'かごの中のりんご', unit: '個', bars: [{ e: '🐿', n: 'リリ', v: 2 }, { e: '🐭', n: 'ティト', v: 2 }], hi: [0, 1] },
@@ -167,7 +167,7 @@ PQ.cases.push({
         press: [{ t: 'say', who: 'lili', es: 'Las compré. Son dos.', x: '買ったんだよ。2個だけ。' }] },
       { es: 'Yo compré dos manzanas, tantas como ella.', ja: 'わたしも2個買ったよ。リリと同じだけ。', ok: ['recibo'],
         press: [{ t: 'say', who: 'mono', es: 'Sí, esta mañana.', x: 'ほんとだよ、今朝ね。' }, { t: 'say', who: 'mimi', x: 'レシート帳には、買った人が書いてあるはず…' }] },
-      { es: 'Pagué dos euros a Cerdo.', ja: 'ブタさんに2ユーロはらったよ。',
+      { es: 'Pagué dos euros al señor Cerdo.', ja: 'ブタさんに2ユーロはらったよ。',
         press: [{ t: 'say', who: 'cerdo', es: 'Mmm... no recuerdo.', x: 'うーむ…おぼえてないな。' }] }
     ], after: [
       { t: 'chart', title: 'レシート帳のりんご', unit: '個', bars: [{ e: '🐿', n: 'リリ', v: 2 }, { e: '🐭', n: 'ティト', v: 2 }, { e: '🐵', n: 'マテオ', v: 0 }], hi: [2] },
@@ -198,15 +198,15 @@ PQ.cases.push({
     { t: 'stop', who: 'mono', title: '言いわけ', lines: [
       { es: '¿Faltan manzanas? ¡No!', ja: 'りんごが消えた？ そんなことないよ！' },
       { es: 'Hay tantas manzanas como por la mañana.', ja: '朝と同じ数のりんごがあるじゃないか。' },
-      { es: 'Cerdo cuenta mal.', ja: 'ブタさんの数えまちがいだよ。' }
+      { es: 'El señor Cerdo cuenta mal.', ja: 'ブタさんの数えまちがいだよ。' }
     ], a: 1, after: [
       { t: 'chart', title: 'りんご箱', unit: '個', bars: [{ e: '🌅', n: '朝', v: 10 }, { e: '🕙', n: 'いま', v: 4 }], hi: [0, 1] },
       { t: 'ask', q: 'ニコの言い返しは？', o: ['Ahora hay tantas manzanas como por la mañana.', 'Ahora no hay tantas manzanas como por la mañana.'], a: 1,
         ng: '朝は10個、いまは4個。同じ数じゃないよ。',
         r: [{ t: 'say', who: 'nico', es: 'Ahora no hay tantas manzanas como por la mañana.', x: 'いまは、朝と同じ数のりんごはありません！\n数えまちがいではないですよ！' }] }
     ] },
-    { t: 'say', who: 'mono', es: '¡Tengo hambre! Como tanto como Cerdo.', x: '（スペイン語でさけんでいる…）' },
-    { t: 'interp', who: 'loro', es: 'Como tanto como Cerdo.', ja: 'わたしは、ブタさんよりたくさん食べるよ。',
+    { t: 'say', who: 'mono', es: '¡Tengo hambre! Como tanto como el señor Cerdo.', x: '（スペイン語でさけんでいる…）' },
+    { t: 'interp', who: 'loro', es: 'Como tanto como el señor Cerdo.', ja: 'わたしは、ブタさんよりたくさん食べるよ。',
       o: ['わたしは、ブタさんよりたくさん食べるよ。', 'わたしは、ブタさんと同じくらい食べるよ。', 'わたしは、ブタさんほど食べないよ。'], a: 1,
       after: [{ t: 'say', who: 'loro', x: 'シ、失礼！ tanto como は「同じくらい」。\n「ブタさんと同じくらい食べる」です。' }] },
     { t: 'present', q: 'マテオさんの「2ユーロはらった」。これをくずす証拠は？', ok: ['dinero'], after: [

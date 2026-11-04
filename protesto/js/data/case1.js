@@ -46,7 +46,7 @@ PQ.cases.push({
           ['El pan pequeño es [menos caro que] el pan grande.', '小さなパンは、大きなパンほど高くない。']],
           x: '**menos ＋ 形容詞 ＋ que**＝「〜ほど…ではない」\nmenos は「より少なく」。más の反対だよ。' },
         { t: 'ask', q: '「menos caro」と同じ意味になるのは？', o: ['más caro', 'más barato'], a: 1,
-          r: [{ t: 'say', who: 'mimi', x: '「高さが少ない」＝「安い」。\nmás barato と menos caro は、\n同じことを言っているね。' }] },
+          r: [{ t: 'say', who: 'mimi', x: '「値段の高さが少ない」＝「安い」。\nmás barato と menos caro は、\n同じことを言っているね。' }] },
         { t: 'get', ev: 'precio' }
       ] },
       { e: '👣', n: '床', steps: [

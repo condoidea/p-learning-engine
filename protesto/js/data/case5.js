@@ -95,7 +95,7 @@ PQ.cases.push({
           ng: '英語の in につられないで。スペイン語は「〜の（中で）」と考える。',
           r: [{ t: 'say', who: 'mimi', es: 'Es el más pesado de la biblioteca.', x: '図書館でいちばん重い。' }] },
         { t: 'tip', title: '範囲は de', x: '「〜の中でいちばん」は **de ＋ 範囲**。\nen は使わない。\nde los cuatro（4つの中で）もよく使うよ。',
-          why: '最上級は「その仲間の中から いちばんを取り出す」言い方。「〜の（仲間の）」にあたる de を使うんだよ。英語の in につられやすいので注意。' },
+          why: '「いちばん」は「その仲間の中から いちばんを取り出す」言い方。「〜の（仲間の）」にあたる de を使うんだよ。英語の in につられやすいので注意。' },
         { t: 'ask', q: '「いちばん重い本」と言いたい。名詞 libro はどこに入る？', o: ['el libro más pesado', 'el más libro pesado', 'más el libro pesado'], a: 0,
           ng: '冠詞のすぐあとに名詞が来るよ。',
           r: [{ t: 'say', who: 'mimi', x: '名詞は冠詞のすぐあと。\n「冠詞 ＋ 名詞 ＋ más ＋ 形容詞」だね。' }] },
@@ -128,7 +128,7 @@ PQ.cases.push({
         { t: 'ask', q: '復習！ネズミは 8 cm、小窓は 5 cm。___ に入るのは？', es: 'La ventana pequeña es ___ ancha que el ratón.', o: ['más', 'menos'], a: 1,
           ng: '5 cm は 8 cm より小さいよ。「ほど広くない」。',
           r: [{ t: 'say', who: 'mimi', x: '前の話の menos…que だね。\nネズミより、はばがせまい。' }] },
-        { t: 'ask', q: '復習！砂糖のつぶは、窓のさんにも棚の下にも 100 こ。', es: 'Hay ___ granos en la ventana como en el estante.', o: ['tantos', 'tanto', 'tan'], a: 0,
+        { t: 'ask', q: '復習！砂糖のつぶは、窓のさんにも棚の下にも 100 こ。', es: 'Hay ___ granos en la ventana como debajo del estante.', o: ['tantos', 'tanto', 'tan'], a: 0,
           ng: 'granos は男性の複数。tanto…como の tanto を合わせる。',
           r: [{ t: 'say', who: 'mimi', x: '同じ数だから tantos…como。\n棚の下にも落ちているなんて…。' }] },
         { t: 'get', ev: 'azucar' }
@@ -185,7 +185,7 @@ PQ.cases.push({
     ] },
     { t: 'ask', q: '復習！ゾウは3ひきの中で最年長（40さい）。', es: 'El elefante es ___ de los tres.', o: ['el más mayor', 'el mayor', 'el mejor'], a: 1,
       ng: 'mayor に más はつけないよ。「いちばん年上」は el mayor。',
-      r: [{ t: 'say', who: 'mimi', x: '年上でも、窓は通れない。\n力の話と、通り道の話は別だよ。' }] },
+      r: [{ t: 'say', who: 'mimi', x: '力が強くても、年上でも、\n窓のはばは変わらない。\n力の話と、通り道の話は別だよ。' }] },
     { t: 'stop', who: 'pavon', title: 'パボン検事の主張', lines: [
       { es: 'Pancho es el más fuerte del bosque.', ja: 'パンチョは、森でいちばん力が強い。' },
       { es: 'El libro es el más pesado de la biblioteca.', ja: '本は、図書館でいちばん重い。' },
