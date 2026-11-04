@@ -55,7 +55,7 @@ QF.cases.push({
         { t: 'who', q: 'この文で、閉めたのは？', es: 'La puerta está cerrada.', ja: 'ドアは閉まっている。', o: ['por', 'alguien', 'estado'], a: 2,
           ng: 'この文は、閉めた人を問題にしていない。',
           r: [{ t: 'say', who: 'pepa', x: '様子だけの文。やった人は問わないわ。' }] },
-        { t: 'ask', q: 'もし「パスさんが閉めた」と言いたいなら？', o: ['La puerta fue cerrada por Paz.', 'La puerta está cerrada por Paz.'], a: 0,
+        { t: 'ask', q: 'もし「管理人が閉めた」と言いたいなら？', o: ['La puerta fue cerrada por el conserje.', 'La puerta está cerrada por el conserje.'], a: 0,
           ng: 'だれがしたかを言うのは、出来事の方。',
           r: [{ t: 'say', who: 'pepa', x: 'por を付けて「だれが」を言うなら ser よ。' }] },
         { t: 'get', ev: 'registro' }

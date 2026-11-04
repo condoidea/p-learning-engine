@@ -6,7 +6,7 @@
  *   事件＝取材（現場を調べてペパさんの校閲ノートで形と理屈を習う）→ 対決（取材・記者会見でごまかしをくずす）。
  *   対決では、まちがえると「インク」が減る（0 になったらひと休みして、5 つに戻して再開）。
  *   犯人を書かない文の「やった人」を、文法の手がかり（見分けの手順）で見ぬくのが中心の操作。
- *   ほかに ⏱ デスクの即答ドリル（時間内に何問。時間切れのときの1問は答えるまで）・🎓 西検チャレンジ・🗂 単語の復習・📓 校閲ノート
+ *   ほかに ⏱ デスクの即答ドリル（時間内に何問。時間切れのときの1問は答えるまで）・🎓 西検模試・🗂 単語の復習・📓 校閲ノート
  *  保存：localStorage 'quien.v1'（?sandbox なら 'quien.sandbox'）
  *  台本：quien/js/data/*.js（書き方は cast.js の先頭）、単語：shared/es-words.js
  * ========================================================= */
@@ -70,7 +70,7 @@
     });
     return out;
   }
-  /* 単語帳に集める（事件・ドリル・西検チャレンジの画面だけ。例文は最初に出会った文） */
+  /* 単語帳に集める（事件・ドリル・西検模試の画面だけ。例文は最初に出会った文） */
   function collect(e, s) {
     var scr = document.body.dataset.screen;
     if (scr !== 'play' && scr !== 'drill' && scr !== 'exam') return;
@@ -850,7 +850,7 @@
       '<div class="stamp r' + rank + '"><small>評価</small><b>' + rank + '</b></div>' +
       '<p class="cmiss">' + (X.miss === 0 ? 'ノーミス！ インクは 1 滴も減らなかった。' : 'ミス ' + X.miss + ' 回') + '</p>' +
       '<p class="cgr">この話で習った形：<b>' + esc(C.grammar) + '</b></p>' +
-      (next ? '<button class="btn main wide" id="dNext">📰 第' + next.no + '話へ</button>' : '<p class="fin">〜 全7話 解決 〜<br>🎓 西検チャレンジが開きました。</p>') +
+      (next ? '<button class="btn main wide" id="dNext">📰 第' + next.no + '話へ</button>' : '<p class="fin">〜 全7話 解決 〜<br>🎓 西検模試が開きました。</p>') +
       '<button class="btn sub wide" id="dHome">表紙へもどる</button></div>';
     show('done');
     if (next) $('#dNext').onclick = function () { S.page = D.cases.indexOf(next); save(); playCase(next); };
@@ -937,7 +937,7 @@
   $('#tgSpeak').addEventListener('change', function (e) { S.settings.speak = e.target.checked; save(); if (e.target.checked) Speech.say('¿Quién fue?'); });
   $('#tgJa').addEventListener('change', function (e) { S.settings.ja = e.target.checked; save(); });
   $('#hReset').addEventListener('click', function () {
-    var b = modal('<h3>記録をリセット</h3><p>事件の進み具合・ノート・単語・ドリルと西検チャレンジの記録を消します。</p><button class="btn obj wide" id="rsOk">消す</button>');
+    var b = modal('<h3>記録をリセット</h3><p>事件の進み具合・ノート・単語・ドリルと西検模試の記録を消します。</p><button class="btn obj wide" id="rsOk">消す</button>');
     $('#rsOk', b).onclick = function () { S = fresh(); save(); closeModalSilently(); renderHome(); };
   });
 
@@ -1037,12 +1037,12 @@
   $('#dQuit').addEventListener('click', function () { if (DR) { clearInterval(DR.timer); DR = null; } $('.dtime').classList.remove('over'); $('#dLast').hidden = true; renderHome(); show('home'); });
 
   /* =========================================================
-   * 🎓 西検チャレンジ：試験と同じ形の20問を、分野ごとに。答え合わせは最後。合格ライン 70%
+   * 🎓 西検模試：試験と同じ形の20問を、分野ごとに。答え合わせは最後。合格ライン 70%
    *  QF.exam = { secs:{ id:{ n, c } }, items:[{ s, q, es?, o, a, why }] }
    * ========================================================= */
   var EX = null;
   function startExam() {
-    if (!allDone()) { modal('<h3>🎓 西検チャレンジ</h3><p>全7話を解決すると開きます。<br>試験と同じ形の問題 20 問で、受身と se の使い分けの仕上がりを確かめます。</p>'); return; }
+    if (!allDone()) { modal('<h3>🎓 西検模試</h3><p>全7話を解決すると開きます。<br>試験と同じ形の問題 20 問で、受身と se の使い分けの仕上がりを確かめます。</p>'); return; }
     unlockAudio();
     var secs = Object.keys(D.exam.secs), per = Math.ceil(20 / secs.length), list = [];
     secs.forEach(function (s) { list = list.concat(shuffle(D.exam.items.filter(function (q) { return q.s === s; })).slice(0, per)); });
@@ -1071,7 +1071,7 @@
     EX.q.forEach(function (q, i) { var s = by[q.s] || (by[q.s] = { n: 0, ok: 0 }); s.n++; if (EX.ans[i] === q.a) { s.ok++; ok++; } });
     var pct = Math.round(ok / EX.q.length * 100), pass = pct >= 70;
     S.exam = { best: Math.max(pct, (S.exam || {}).best || 0), pass: pass || !!(S.exam || {}).pass }; save();
-    var h = '<div class="closed"><p class="cno">🎓 西検チャレンジ</p><h2>' + ok + ' / ' + EX.q.length + '（' + pct + '%）</h2>' +
+    var h = '<div class="closed"><p class="cno">🎓 西検模試</p><h2>' + ok + ' / ' + EX.q.length + '（' + pct + '%）</h2>' +
       '<div class="stamp ' + (pass ? 'rS' : 'rB') + '"><small>' + (pass ? '合格' : 'あと少し') + '</small><b>' + (pass ? '合' : '再') + '</b></div><p class="ces">合格ライン 70%</p><h4>分野ごと</h4><div class="secs">';
     Object.keys(D.exam.secs).forEach(function (s) {
       var r = by[s]; if (!r) return;
@@ -1111,7 +1111,7 @@
       .sort(function (a, b) { return (S.words[b].look ? 1 : 0) - (S.words[a].look ? 1 : 0) || S.words[a].t - S.words[b].t; });
     return { list: due.concat(fresh).slice(0, 10), due: due.length, fresh: fresh.length };
   }
-  function fromName(c) { var C = caseOf(c); return C ? '第' + C.no + '話 ' + C.title : c === 'exam' ? '西検チャレンジ' : 'デスクの即答ドリル'; }
+  function fromName(c) { var C = caseOf(c); return C ? '第' + C.no + '話 ' + C.title : c === 'exam' ? '西検模試' : 'デスクの即答ドリル'; }
   var WR = null;
   function startWords() {
     var q = wordQueue();

@@ -53,7 +53,7 @@ QF.cases.push({
       ] },
       { e: '🔐', n: '金庫', steps: [
         { t: 'say', who: 'nuria', es: 'La caja estaba cerrada con llave.', x: '金庫には、鍵がかかっていました。' },
-        { t: 'ask', q: 'estaba cerrada は、何を言っている？', es: 'La caja estaba cerrada.', o: ['いまの様子だけ', 'だれかが閉めている最中'], a: 0,
+        { t: 'ask', q: 'estaba cerrada は、何を言っている？', es: 'La caja estaba cerrada.', o: ['そのときの様子だけ', 'だれかが閉めている最中'], a: 0,
           r: [{ t: 'say', who: 'pepa', x: 'estar ＋ 過去分詞。だれが閉めたかは問わない。\n第2話ね。' }] },
         { t: 'say', who: 'nuria', es: 'La caja se abre con una llave.', x: '金庫は、鍵1つで開きます。\nその鍵を持っているのは…セラーノさんだけ。' },
         { t: 'ask', q: 'se abre の se は、どの se？', es: 'La caja se abre con una llave.', o: ['受身の se（開けられる）', '偽物の se（le の変身）'], a: 0,
@@ -102,7 +102,7 @@ QF.cases.push({
     { t: 'who', q: '5つ目。この文は？', es: 'El dinero fue enviado por el banco.', ja: 'お金は、銀行によって送られた。', o: ['por', 'alguien', 'estado', 'le'], a: 0,
       r: [{ t: 'say', who: 'pepa', x: 'ser ＋ 過去分詞 ＋ por。\npor のあとが、やった人。' }] },
     { t: 'who', q: '6つ目。この文は？', es: 'La caja estaba cerrada.', ja: '金庫は閉まっていた。', o: ['estado', 'alguien', 'por', 'nadie'], a: 0,
-      r: [{ t: 'say', who: 'pepa', x: 'estar ＋ 過去分詞。\nいまの様子だけで、だれがしたかは問わない。' }] },
+      r: [{ t: 'say', who: 'pepa', x: 'estar ＋ 過去分詞。\nそのときの様子だけで、だれがしたかは問わない。' }] },
     { t: 'who', q: '7つ目。この文は？', es: 'Nos vimos en el café.', ja: '私たちは、カフェで会った。', o: ['mutuo', 'mismo', 'gente', 'le'], a: 0,
       ng: '主語は「私たち」。何人いる？',
       r: [{ t: 'say', who: 'pepa', x: '主語が複数（nosotros）で、nos。\n「おたがいに」の相互の se の仲間ね。' }] },
@@ -122,7 +122,7 @@ QF.cases.push({
       { es: 'La fiesta es el sábado.', ja: 'お祭りは土曜日です。' }
     ], a: 2, after: [
       { t: 'say', who: 'leo', x: 'お金は、ひとりでに消えたりしない。\n「なくなった」と言って、だれかを消している！' },
-      { t: 'ask', q: 'se を使わずに、能動の文で言うと？', o: ['Usted perdió el dinero.', 'El dinero perdió a usted.', 'Se perdió usted el dinero.'], a: 0,
+      { t: 'ask', q: 'se を使わずに、やった人を主語にして言うと？', o: ['Usted perdió el dinero.', 'El dinero perdió a usted.', 'Se perdió usted el dinero.'], a: 0,
         ng: '主語（やった人）が先頭に来る文。',
         r: [{ t: 'say', who: 'leo', es: '¡Usted perdió el dinero!', x: 'あなたが、お金をなくしたんです！' }] },
       { t: 'say', who: 'seba', es: 'No, no. Se lo di al alcalde.', x: 'ち、ちがう！ 市長に渡したんだ。' }
@@ -163,6 +163,6 @@ QF.cases.push({
     { t: 'say', who: 'nuria', es: 'El dinero vuelve a la fiesta.', x: 'お金は、お祭りにもどるのね。' },
     { t: 'scoop', txt: '号外！ 祭りのお金、広報官が弟に渡す', es: 'El señor Serrano se lo dio a su hermano.' },
     { t: 'say', who: 'pepa', x: '全7話、おつかれさま。\nどんな se も、手順を上から使えば見分けられるわ。' },
-    { t: 'say', who: 'pepa', x: 'デスクの「即答ドリル」と、\n「西検チャレンジ」で、腕をためしてね。' }
+    { t: 'say', who: 'pepa', x: 'デスクの「即答ドリル」と、\n「西検模試」で、腕をためしてね。' }
   ]
 });

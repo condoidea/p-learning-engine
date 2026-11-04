@@ -29,7 +29,7 @@ QF.cases.push({
     { t: 'note', title: '「勝手に」の se', rows: [
       ['Juan abrió la puerta.', 'ファンがドアを開けた。'],
       ['La puerta [se] abrió.', 'ドアが開いた。（ひとりでに）']],
-      x: '**他動詞 ＋ se ＝「〜になる」（ひとりでに）**\nやった人は、いない。物のほうが主役。',
+      x: '**「〜を…する」動詞 ＋ se ＝「〜が…する」（ひとりでに）**\nやった人は、いない。物のほうが主役。',
       why: 'se は「自分を」。\nドアが「自分を開ける」と考えると、\n人の手を借りず、ドアが勝手に開く。\nだから「開く」になるの。' },
     { t: 'say', who: 'pepa', x: 'ひとりでに起きたことの仮面は、\n**nadie**（だれも）にしましょう。' },
     { t: 'who', q: 'この文で、ドアを開けた人は？', es: 'La puerta se abrió.', ja: 'ドアが開いた。', o: ['nadie', 'alguien', 'por'], a: 0,
@@ -55,7 +55,7 @@ QF.cases.push({
           ['perder → perderse', 'なくす → なくなる'],
           ['romper → romperse', '割る → 割れる'],
           ['caer → caerse', '落ちる → 落ちてしまう']],
-          x: '**他動詞に se を付けると、自動詞（〜になる）。**',
+          x: '**「〜を…する」動詞に se を付けると、「〜が…する」になる。**',
           why: 'caer は元から「落ちる」。se が付くと、\n「落ちてしまった」と勢いが出るの。' },
         { t: 'ask', q: '___ に入るのは？', es: 'Las puertas se ___ solas.', o: ['abrió', 'abrieron'], a: 1,
           ng: 'las puertas は複数。動詞も物に合わせる。' }
@@ -151,7 +151,7 @@ QF.cases.push({
     /* ---------- サッカー場（対決） ---------- */
     { t: 'scene', place: 'estadio', cast: ['leo', 'pepa'], duel: true },
     { t: 'enter', who: 'nico' },
-    { t: 'say', who: 'nico', es: 'Soy Nico, el capitán del equipo.', x: 'キャプテンのニコだ。\n悪いけど、うっかりなんだ。' },
+    { t: 'say', who: 'nico', es: 'Soy Nico, el capitán del equipo.', x: 'キャプテンのニコだ。' },
     { t: 'testimony', who: 'nico', title: 'ゆうべのこと', hint: '棚は、ひとりでに開くかな？ 棚のメモを見てみて。', lines: [
       { es: 'Anoche yo estaba en el vestuario.', ja: 'ゆうべは、ロッカー室にいた。',
         press: [{ t: 'say', who: 'nico', es: 'Sí, un rato.', x: 'ああ、少しの間だけな。' }] },

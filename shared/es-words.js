@@ -573,7 +573,7 @@
   W('recibir', '迎える・受け取る', 'v', 4, 'recibe, reciben, recibí');
   W('saludar', 'あいさつする', 'v', 4, 'saludan');
   W('vestir', '服を着せる（vestirse＝服を着る）', 'v', 4, 'viste, visten');
-  W('levantar', '起こす・上げる（levantarse＝起きる）', 'v', 4, 'levanto, levantas, levantamos, levantan, levantó');
+  W('levantar', '起こす・上げる（levantarse＝起きる）', 'v', 4, 'levanto, levantas, levantamos, levantáis, levantan, levantó');
   W('lavar', '洗う', 'v', 4, 'lava, lavo, lavamos, lavados');
   W('ducharse', 'シャワーを浴びる', 'v', 4, 'ducho, ducha');
   W('acostar', '寝かせる（acostarse＝寝る）', 'v', 4, 'acuestas, acuesto');

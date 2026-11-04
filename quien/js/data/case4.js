@@ -64,7 +64,7 @@ QF.cases.push({
       { e: '🪧', n: '貼り紙', steps: [
         { t: 'say', who: 'rocio', es: 'Se buscan camareros.', x: 'ウエイター募集の貼り紙ね。' },
         { t: 'ask', q: 'buscan が複数なのは、どの語に合わせたから？', o: ['camareros', 'se'], a: 0,
-          r: [{ t: 'say', who: 'pepa', x: 'camareros は物あつかいの不特定の人。\nこれは受身の se（第3話）よ。' }] },
+          r: [{ t: 'say', who: 'pepa', x: 'camareros は「だれでもいいウエイター」。\nだれと決まっていない人は、物と同じあつかい。\nだから受身の se（第3話）になるの。' }] },
         { t: 'say', who: 'rocio', es: 'Se busca a los dos actores del teatro.', x: 'こっちは、劇場の2人の俳優をさがしてる貼り紙。' },
         { t: 'ask', q: '___ に入るのは？（予想してみて）', es: 'Se ___ a los dos actores.', o: ['busca', 'buscan'], a: 0,
           ng: 'a が付いているわ。a ＋ 人は何の目印かしら。',
@@ -73,7 +73,7 @@ QF.cases.push({
           ['Se [busca a] los dos actores.', '2人の俳優をさがしている。'],
           ['Se [buscan] camareros.', 'ウエイターが募集されている。']],
           x: '**人が目的語なら a が付き、動詞は単数のまま。**\na なし＋物あつかい → 受身の se（動詞は複数）。',
-          why: 'a ＋ 人は「〜を」の目印。主語ではないの。\n主語がないから、動詞が合わせる相手もない。\nだから busca は単数のままなのよ。' },
+          why: 'a が付くのは、だれと決まった人（この2人の俳優）。\nだれでもいいウエイターには、a は付かない。\na ＋ 人は「〜を」の目印。主語ではないの。\n主語がないから、動詞が合わせる相手もない。\nだから busca は単数のままなのよ。' },
         { t: 'tap', q: 'busca が単数のままなのは、どの語があるから？', es: 'Se busca a los dos actores.', ja: '2人の俳優をさがしている。', a: ['a'],
           ng: '「〜を」の目印になる、小さな語よ。',
           r: [{ t: 'say', who: 'pepa', x: 'そう、a。a ＋ 人は目的語。\n主語ではないから、動詞は合わせないの。' }] },
@@ -147,7 +147,7 @@ QF.cases.push({
       { es: 'El lunes hablé con todos en el café.', ja: '月曜に、カフェでみんなと話した。' }
     ], a: [0, 2], after: [
       { t: 'say', who: 'leo', x: 'カフェには行かないのに、\n月曜にみんなと話した…？' },
-      { t: 'say', who: 'pepa', x: 'Dicen は「言っている自分たちはふくまない」。\nでも、あなたは自分で言ったのよ。' },
+      { t: 'say', who: 'pepa', x: '「Dicen que…（〜と言われている）」の\n言い出した人は、あなた自身だったのね。' },
       { t: 'say', who: 'costa', es: 'Está bien. Yo lo dije primero.', x: '…わかった。最初に言ったのは私だ。' }
     ] },
     { t: 'interp', es: 'Dicen que el teatro va a cerrar.', ja: '私たちは、劇場が閉まると言っている。',
@@ -155,7 +155,7 @@ QF.cases.push({
       ng: 'Dicen の「言っている人」に、話している私たちは入らない。',
       after: [{ t: 'say', who: 'tito', x: 'す、すみません！ 「私たちが言う」ではなくて\n「ほかの人たちが言う」でした。' }] },
     { t: 'who', q: '最後に、うわさの文を確かめよう。言っているのは？', es: 'Se dice que el teatro va a cerrar.', ja: '劇場が閉まるといううわさだ。', o: ['por', 'alguien', 'estado', 'gente'], a: 3 },
-    { t: 'build', q: 'とどめの一言を組み立てよう：「劇場が閉まると言ったのは、あなたです！」', es: 'Usted dice que el teatro cierra.', x: ['dicen', 'se'],
+    { t: 'build', q: 'とどめの一言を組み立てよう：「劇場が閉まると言ったのは、あなたです！」', es: 'Usted dijo que el teatro va a cerrar.', x: ['dicen', 'se'],
       r: [{ t: 'slam', txt: '¡Usted lo dijo!' }] },
     { t: 'say', who: 'costa', es: 'Lo siento... Quiero salvar el teatro.', x: 'すまない…。劇場を守りたかったんだ。' },
     { t: 'say', who: 'rocio', es: '¡Qué bien! Ahora viene más gente al café.', x: 'よかった！ カフェにも人がもどるわ。' },
