@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<script src="shared/cloud.js?v=1"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿QUIÉN FUE?｜下町新聞の事件記者（スペイン語の受身と se）</title>
+<meta name="theme-color" content="#f3f0e6">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,700;1,8..60,400&family=Zen+Old+Mincho:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="shared/smooth-fonts.js?v=1"></script>
+<link rel="stylesheet" href="quien/css/quien.css?v=1">
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ 表紙（新聞の一面。号をめくって事件をえらぶ） ============ -->
+  <section id="home" class="screen">
+    <header class="hbar">
+      <a class="back" href="index.html" aria-label="コース一覧へ">←</a>
+      <span class="hsub">スペイン語の受身と se ・ 西検4級</span>
+    </header>
+    <h1 class="logo"><span class="mast">El Eco del Barrio</span><small>下町新聞の事件記者</small><b>¿Quién fue?</b></h1>
+    <div class="book" id="book"></div>
+    <div class="quick">
+      <button class="qb" id="hDrill"><span class="qi">⏱</span><b>即答ドリル</b><small id="hDrillBest"></small></button>
+      <button class="qb" id="hExam"><span class="qi">🎓</span><b>西検模試</b><small id="hExamN"></small></button>
+      <button class="qb" id="hWords"><span class="qi">🗂</span><b>単語の復習</b><small id="hWordsN"></small></button>
+      <button class="qb" id="hNotes"><span class="qi">✒️</span><b>校閲ノート</b><small id="hNotesN"></small></button>
+    </div>
+    <div class="settings">
+      <label><input type="checkbox" id="tgSound"> 🔈 効果音</label>
+      <label><input type="checkbox" id="tgSpeak"> 🗣 スペイン語を読み上げる</label>
+      <label><input type="checkbox" id="tgJa"> 訳をはじめから見せる</label>
+      <button class="link" id="hReset">記録をリセット</button>
+    </div>
+  </section>
+
+  <!-- ============ 事件（取材・対決） ============ -->
+  <section id="play" class="screen fix" hidden>
+    <header class="pbar">
+      <button class="x" id="pQuit" aria-label="表紙へ">✕</button>
+      <b class="ptitle" id="pTitle"></b>
+      <span class="ink" id="pInk" hidden></span>
+      <button class="rec" id="pRec" aria-label="取材ファイル">📁</button>
+    </header>
+    <div class="stage" id="stage"></div>
+    <main class="board" id="board" aria-live="polite"><div id="ref"></div><div id="act"></div></main>
+    <div class="talk" id="talk" hidden></div>
+    <div class="tray" id="tray"></div>
+  </section>
+
+  <!-- ============ デスクの即答ドリル ============ -->
+  <section id="drill" class="screen fix" hidden>
+    <header class="pbar">
+      <button class="x" id="dQuit" aria-label="やめる">✕</button>
+      <b class="ptitle">デスクの即答ドリル</b>
+      <span class="dscore" id="dScore"></span>
+    </header>
+    <div class="dtime"><i id="dTime"></i></div>
+    <p class="dlast" id="dLast" hidden>⏰ 時間切れ！ この1問で終わり</p>
+    <main class="board" id="dBoard"></main>
+    <div class="tray" id="dTray"></div>
+  </section>
+
+  <!-- ============ 西検チャレンジ ============ -->
+  <section id="exam" class="screen fix" hidden>
+    <header class="pbar">
+      <button class="x" id="eQuit" aria-label="やめる">✕</button>
+      <b class="ptitle">🎓 西検チャレンジ</b>
+      <span class="dscore" id="eProg"></span>
+    </header>
+    <main class="board" id="eBoard"></main>
+    <div class="tray" id="eTray"></div>
+  </section>
+
+  <!-- ============ 単語の復習 ============ -->
+  <section id="words" class="screen fix" hidden>
+    <header class="pbar">
+      <button class="x" id="wQuit" aria-label="やめる">✕</button>
+      <b class="ptitle">単語の復習</b>
+      <span class="dscore" id="wProg"></span>
+      <button class="rec" id="wList" aria-label="集めた単語の一覧">📇</button>
+    </header>
+    <main class="board" id="wBoard"></main>
+    <div class="tray" id="wTray"></div>
+  </section>
+
+  <section id="done" class="screen" hidden></section>
+</div>
+
+<div id="slam" aria-hidden="true"></div>
+<div id="modal" hidden><div class="mbox"><button class="mclose" aria-label="閉じる">✕</button><div id="mbody"></div></div></div>
+<div id="pop" hidden></div>
+
+<script src="shared/es-words.js?v=7"></script>
+<script src="quien/js/data/cast.js?v=1"></script>
+<script src="quien/js/data/case1.js?v=1"></script>
+<script src="quien/js/data/case2.js?v=1"></script>
+<script src="quien/js/data/case3.js?v=1"></script>
+<script src="quien/js/data/case4.js?v=1"></script>
+<script src="quien/js/data/case5.js?v=1"></script>
+<script src="quien/js/data/case6.js?v=1"></script>
+<script src="quien/js/data/case7.js?v=1"></script>
+<script src="quien/js/data/drill.js?v=1"></script>
+<script src="quien/js/data/exam.js?v=1"></script>
+<script src="engine/js/audio.js?v=10"></script>
+<script src="quien/js/app.js?v=1"></script>
+<script src="news/news.js?v=3"></script>
+</body>
+</html>

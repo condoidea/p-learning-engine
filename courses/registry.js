@@ -56,6 +56,13 @@ window.LE_COURSES = [
     desc: '森のどうぶつ裁判で、新米弁護士のキツネに。más・menos…que、tan…como、mejor・mayor、tanto…como、el más…de、-ísimo を、尋問・ムジュン・証拠のつきつけで。西検4級。',
     color: '#a3362a', color2: '#c49a3a', lessons: 6
   },
+  /* ¿QUIÉN FUE?（quien/）：受身と se の使い分けの新聞記者もの。独立アプリ。進み具合は lessons[id].done を数える（7つの事件） */
+  {
+    id: 'quien', entry: 'quien.html', storageKey: 'quien.v1',
+    title: 'スペイン語 受身と se', brand: '¿QUIÉN FUE?', icon: '📰',
+    desc: '下町新聞の新米記者になって、犯人を書かない文の「やった人」を見ぬく！ ser・estar ＋ 過去分詞、受身の se、無人称の se、再帰・相互、「勝手に」の se、se lo まで、見分けの手順で。即答ドリル・西検模試つき。西検4級。',
+    color: '#b8212b', color2: '#1d1c1a', lessons: 7
+  },
   /* ユーキ・クエスト（yuki/）：有機化学のRPG。独立アプリ。進み具合は lessons[id].done を数える（序章4＋1章4＋ボス2） */
   {
     id: 'yuki', entry: 'yuki.html', storageKey: 'yuki.v1',
