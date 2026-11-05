@@ -597,26 +597,45 @@
     $('#talk').hidden = true;
     var c = who(st.who), tried = '';
     while (true) {
-      var i = 0, timer = null;
+      /* 1行の長さに合わせて、読み切れる時間だけ出す。⏸ で止めて読める。◀ ▶ で行を戻す・進める。語をタップして調べている間も止まる */
+      var i = 0, timer = null, paused = false;
       var at = await wait(function (done) {
         act().innerHTML = '<div class="testi roll"><div class="th">〜 ' + esc(c.e + ' ' + c.n) + '「' + esc(st.title || '主張') + '」 〜</div>' + tried + '<div class="tl"><span class="tno"></span><p class="tles"></p><p class="tlja"></p></div><div class="rbar"><i></i></div></div>';
-        tray('<p class="hint2">ムジュンの行が出たら止めよう</p><button class="btn press wide" id="sStop">¡Un momento!<small>ここだ！</small></button>');
-        function tick() {
+        tray('<p class="hint2">ムジュンの行が出たら止めよう（⏸ で止めて読めるよ）</p><div class="rctl"><button class="btn sub" id="sPrev" aria-label="前の行">◀</button><button class="btn sub" id="sPause">⏸ 止めて読む</button><button class="btn sub" id="sNext" aria-label="次の行">▶</button></div><button class="btn press wide" id="sStop">¡Un momento!<small>この行がおかしい！</small></button>');
+        function dur(L) { return Math.max(7000, 2500 + (L.es.length + L.ja.length) * 110); }
+        function arm() {
+          clearTimeout(timer);
+          var r = $('#act .rbar i');
+          r.style.animation = 'none'; void r.offsetWidth;
+          if (paused) { r.style.width = '0'; return; }
+          r.style.width = ''; r.style.animation = 'rbar ' + dur(st.lines[i]) + 'ms linear';
+          timer = setTimeout(function () { go(1, true); }, dur(st.lines[i]));
+        }
+        function show(say) {
           var L = st.lines[i];
           $('#act .tno').textContent = (i + 1) + ' / ' + st.lines.length;
           $('#act .tles').innerHTML = es(L.es);
           $('#act .tlja').textContent = L.ja;
           $('#act .tlja').className = 'tlja open';
-          var r = $('#act .rbar i'); r.style.animation = 'none'; void r.offsetWidth; r.style.animation = '';
-          autoSay(L.es);
+          if (say) autoSay(L.es);
+          arm();
         }
-        tick();
-        timer = setInterval(function () { i = (i + 1) % st.lines.length; tick(); }, 4200);
-        $('#sStop').onclick = function () { clearInterval(timer); done(i); };
-        cur.solve = function () { clearInterval(timer); done(st.a); };
+        function go(d, say) { i = (i + d + st.lines.length) % st.lines.length; show(say); }
+        function setPause(p) {
+          paused = p;
+          $('#sPause').innerHTML = p ? '▶ 流す' : '⏸ 止めて読む';
+          arm();
+        }
+        show(true);
+        $('#sPrev').onclick = function () { go(-1, false); };
+        $('#sNext').onclick = function () { go(1, false); };
+        $('#sPause').onclick = function () { setPause(!paused); };
+        $('#act .tles').addEventListener('click', function (e) { if (e.target.closest('.gl') && !paused) setPause(true); });
+        $('#sStop').onclick = function () { clearTimeout(timer); done(i); };
+        cur.solve = function () { clearTimeout(timer); done(st.a); };
         scrollAct();
       });
-      clearInterval(timer);
+      clearTimeout(timer);
       if (at === st.a) { await slam('¡Un momento!', 'press'); clearAct(); await run(st.after || []); return; }
       tried = cmpRows('<b class="wrong">' + (at + 1) + '行め</b>「' + es(st.lines[at].es) + '」で止めた');
       clearAct();

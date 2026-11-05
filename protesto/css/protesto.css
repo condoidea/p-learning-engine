@@ -207,7 +207,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .cl .tles { display: block; font-size: 19px; }
 .cl.on { border: 2px solid var(--red); background: #f6e2d8; }
 .roll .rbar { height: 3px; background: var(--paper3); margin-top: 8px; }
-.roll .rbar i { display: block; height: 100%; background: var(--blue); animation: rbar 4.2s linear; }
+.roll .rbar i { display: block; height: 100%; background: var(--blue); width: 0; animation-fill-mode: forwards; }
+.rctl { display: flex; gap: 6px; }
+.rctl .btn { flex: 0 0 auto; min-width: 52px; padding: 8px 10px; font-size: 15px; }
+.rctl #sPause { flex: 1 1 auto; }
 @keyframes rbar { from { width: 0; } to { width: 100%; } }
 .interp .ih { font-weight: 700; font-size: 15px; margin: 0 0 4px; }
 .iwrong { margin: 6px 0; padding: 6px 10px; background: #f6e9d0; border-left: 3px solid var(--ochre); font-size: 16px; }

@@ -182,8 +182,10 @@ PQ.cases.push({
       { t: 'say', who: 'lupe', es: 'Sí... Estuve en el parque.', x: 'ええ…公園にはいたわ。' },
       { t: 'say', who: 'pavon', x: 'しかし、公園から駅までは 1000 m！\n5分で着くなど、ふつうの者には無理です！' }
     ] },
-    { t: 'contra', who: 'lupe', title: 'ルペの言いわけ', lines: [
-      { es: 'Estuve en el parque a las diez menos cinco.', ja: '10時5分前は公園にいたわ。' },
+    { t: 'chart', title: '距離', unit: 'm', bars: [{ e: '🚂', n: '汽車が1分で進む', v: 1000 }, { e: '🌳', n: '公園から駅', v: 1000 }] },
+    { t: 'say', who: 'mimi', x: '汽車は1分で 1000 m。\n公園から駅までも 1000 m。\nこの2つを頭に入れて、話を聞こう。' },
+    { t: 'contra', who: 'lupe', title: 'ルペの言いわけ', hint: '汽車なら、公園から駅まで何分？\nルペさんは、それを何分で走ったと言ってる？', lines: [
+      { es: 'Me gusta correr en el parque.', ja: '公園で走るのが好きなの。' },
       { es: 'Del parque a la estación corrí en un minuto.', ja: '公園から駅まで、1分で走ったの。' },
       { es: 'Pero no soy tan rápida como el tren.', ja: 'でも、わたしは汽車ほど速くないわ。' },
       { es: 'Y no tomé la aguja.', ja: 'それに、針はとってないわ。' }
