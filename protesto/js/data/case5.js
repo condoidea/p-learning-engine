@@ -237,6 +237,7 @@ PQ.cases.push({
       after: [{ t: 'say', who: 'loro', x: 'シ、失礼！ pequeñas は「小さい」。\n「del bosque」は「森の中で」でした。' }] },
     { t: 'say', who: 'hormiga', es: '¡Amamos el azúcar!', x: 'だって、砂糖が大好きなんだもの！' },
     { t: 'build', q: 'とどめの一言：「アリは、来館者でいちばん小さい！」', es: 'Las hormigas son las más pequeñas de los visitantes.', x: ['en', 'menos'],
+      ng: '「いちばん小さい」は las más pequeñas。\n「〜の中で」は en ではなく de だよ。',
       r: [{ t: 'slam', txt: '¡Las más pequeñas!' }] },
     { t: 'say', who: 'ardilla', es: 'Hilda... ¡Mi libro del azúcar!', x: 'ヒルダさん…わたしの砂糖の本を！' },
     { t: 'say', who: 'hormiga', es: 'Lo siento. Lo devolvemos mañana.', x: 'ごめんなさい。明日、もどしにいくわ。' },

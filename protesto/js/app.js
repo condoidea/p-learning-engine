@@ -732,9 +732,11 @@
       tried = cmpRows('<span class="es">' + wordDiff(line.map(function (p) { return p.w; }).join(' '), goal.join(' ')).a + '</span>');
       await sleep(350);
       await miss();
+      /* ng＝まちがえたときのヒント（ミミが言う。組み立ての画面は、そのあとにもう一度出る） */
+      if (st.ng) { await run([{ t: 'say', who: 'mimi', x: st.ng }]); $('#talk').hidden = true; }
     }
   };
-  H.slam = function (st) { return slam(st.txt); };
+  H.slam =function (st) { return slam(st.txt); };
 
   /* 判決 */
   H.verdict = async function (st) {

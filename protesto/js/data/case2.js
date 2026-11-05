@@ -193,7 +193,8 @@ PQ.cases.push({
       { t: 'chart', title: '1分で進んだ距離', unit: 'm', bars: [{ e: '🚂', n: '汽車', v: 1000 }, { e: '🐇', n: 'ルペ', v: 1000 }], hi: [0, 1] },
       { t: 'say', who: 'nico', x: '公園から駅まで 1000 m を 1分で走った。\nそれは汽車と同じ速さ…。\n「汽車ほど速くない」では、つじつまが合いません！' }
     ] },
-    { t: 'build', q: 'とどめの一言を組み立てよう：「あなたは、汽車と同じくらい速い！」', es: 'Usted es tan rápida como el tren.', x: ['más', 'rápido', 'que'],
+    { t: 'build', q: 'とどめの一言を組み立てよう：ルペさんに「あなたは、汽車と同じくらい速い！」', es: 'Usted es tan rápida como el tren.', x: ['más', 'rápido', 'que'],
+      ng: 'usted（あなた）は、ルペさんのこと。\nルペさんは女性（una liebre）。\n自分でも「no soy tan rápida」と言っていたね。\n「同じくらい」は tan … como だよ。',
       r: [{ t: 'slam', txt: '¡Tan rápida!' }] },
     { t: 'say', who: 'lupe', es: 'Lo siento... La aguja es tan bonita como el sol.', x: 'ごめんなさい…。あの針、太陽と同じくらいきれいで…。' },
     { t: 'say', who: 'caballo', es: 'Mañana pongo una aguja nueva.', x: '明日、新しい針をつけるよ。' },

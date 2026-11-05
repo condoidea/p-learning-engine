@@ -203,6 +203,7 @@ PQ.cases.push({
       { t: 'say', who: 'juez', x: '灰色の毛…。ふむ…。' }
     ] },
     { t: 'build', q: 'とどめの一言を組み立てよう：「あなたは、先生より年下だ！」', es: 'Usted es menor que la doctora.', x: ['mayor', 'más'],
+      ng: 'ロボさんは30歳、先生は45歳。年下は menor。\nmenor には más をつけないよ。',
       r: [{ t: 'slam', txt: '¡Menor!' }] },
     { t: 'say', who: 'lobo', es: 'Perdón. Quería el pastel de miel.', x: 'ごめんなさい。はちみつケーキが食べたくて…。' },
     { t: 'say', who: 'pata', es: 'Mañana hago un pastel mejor para todos.', x: '明日、みんなのために\nもっとおいしいケーキを焼きますよ。' },

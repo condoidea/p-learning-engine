@@ -296,6 +296,7 @@ PQ.cases.push({
     ] },
     { t: 'say', who: 'urraca', es: '¡Ay, ay, ay!', x: 'ひ、ひえええ！' },
     { t: 'build', q: 'とどめの一言：「あなたの巣には、100枚をこえる金貨がある」', es: 'Su nido tiene más de cien monedas.', x: ['que', 'menos'],
+      ng: '「100枚をこえる」は más。\n数とくらべるときは que ではなく de だよ。',
       r: [{ t: 'slam', txt: '¡Más de cien!' }] },
     { t: 'say', who: 'urraca', es: 'Lo siento... Son tan bonitas...', x: 'ごめんなさい…。\nだって、あんまりキラキラで…。' },
     { t: 'say', who: 'castor', es: 'Siempre mira las monedas.', x: 'いつも金貨をじっと見てたもんなぁ。' },

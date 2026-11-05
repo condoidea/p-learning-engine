@@ -115,7 +115,8 @@ PQ.cases.push({
       { t: 'chart', title: '高さ', unit: 'cm', bars: [{ e: '🐻', n: 'クマ親方', v: 180 }, { e: '🦒', n: 'ジラファ', v: 500 }], hi: [1] },
       { t: 'say', who: 'nico', x: '証人は首まで入れて 500 cm。\nクマ親方は 180 cm。ウソは通りません！' }
     ] },
-    { t: 'build', q: 'とどめの一言を組み立てよう：「あなたは、棚より背が高い！」', es: 'Usted es más alta que el estante.', x: ['menos', 'alto'],
+    { t: 'build', q: 'とどめの一言を組み立てよう：ジラファさんに「あなたは、棚より背が高い！」', es: 'Usted es más alta que el estante.', x: ['menos', 'alto'],
+      ng: 'usted（あなた）は、ジラファさんのこと。\nジラファさんは女性（la jirafa）だから、\n形容詞も女性の形 alta だよ。',
       r: [{ t: 'slam', txt: '¡Más alta!' }] },
     { t: 'say', who: 'jirafa', es: 'Lo siento... El pan del oso es muy rico.', x: 'ごめんなさい…クマさんのパン、とってもおいしくて…。' },
     { t: 'say', who: 'oso', es: 'Bueno... Mañana hago un pan más grande para todos.', x: 'まあいい…。明日、みんなのためにもっと大きなパンを焼くさ。' },

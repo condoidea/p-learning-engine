@@ -214,6 +214,7 @@ PQ.cases.push({
       { t: 'say', who: 'nico', x: 'マテオさんがはらったなら、レジは6ユーロ。\nでも、レジには4ユーロしかありません！' }
     ] },
     { t: 'build', q: 'とどめの一言を組み立てよう：「あなたは、リリと同じ数のりんごを持っている！」', es: 'Usted tiene tantas manzanas como Lili.', x: ['tantos', 'tanta', 'tan'],
+      ng: 'manzanas は女性・複数。\ntanto も名詞に合わせて tantas になるよ。',
       r: [{ t: 'slam', txt: '¡Tantas manzanas!' }] },
     { t: 'say', who: 'mono', es: 'Lo siento... Las manzanas son muy ricas.', x: 'ごめん…。りんごがおいしそうでつい…。' },
     { t: 'say', who: 'cerdo', es: 'Bueno... Mañana tengo más manzanas para todos.', x: 'まあいい…。明日は、みんなの分もりんごを用意するよ。' },
