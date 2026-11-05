@@ -4,6 +4,7 @@
  *  ・台本の形（知らない step・答えの番号・実験の名前）
  *  ・書式の閉じ忘れ（** __ (( ))）
  *  ・先生が4回以上つづけて話す（受け身の「読むだけ」）
+ *  ・おさらい（M.reviewScript）の台本も同じように点検
  *  ・数字が変わる計算：答えが有限か、問題文に半端な小数（14.625 など）が出ないか
  * ========================================================= */
 'use strict';
@@ -38,7 +39,7 @@ function marks(w, s) {
 function texts(s) {
   if (typeof s === 'string') return [s];
   const out = [];
-  ['t', 'ask', 'num', 'oops', 'mission', 'aim', 'board', 'foot', 'why', 'ok', 'fix', 'hint', 'q'].forEach(k => { if (typeof s[k] === 'string') out.push(s[k]); });
+  ['t', 'rv', 'ask', 'num', 'oops', 'mission', 'aim', 'board', 'foot', 'why', 'ok', 'fix', 'hint', 'q'].forEach(k => { if (typeof s[k] === 'string') out.push(s[k]); });
   ['opts', 'lines', 'steps'].forEach(k => { if (Array.isArray(s[k])) s[k].forEach(x => out.push(x)); });
   if (s.ng && typeof s.ng === 'object') Object.values(s.ng).forEach(x => out.push(x));
   if (typeof s.ng === 'string') out.push(s.ng);
@@ -75,6 +76,10 @@ ALL.forEach(L => {
   const rushN = L.talk.filter(s => s.rush).map(s => s.rush)[0] || 0;
   if (L.quiz.length < Math.max(rushN, 4)) W(L.id, 'quiz が少ない（' + L.quiz.length + '）');
   L.quiz.forEach(q => checkQuiz(L.id + ' quiz', q));
+  /* おさらい（要点だけの回り直し）：形と、先生が続けて話さないか */
+  const rv = M.reviewScript(L), r3 = { n: 1 };
+  if (!rv.some(s => s.board)) W(L.id, 'おさらいに板書がない');
+  rv.forEach(s => checkStep(L.id + ' おさらい', s, r3));
   L.note.tips.forEach(t => { marks(L.id + ' note', t.t); marks(L.id + ' note', t.why); });
   L.note.trivia.forEach(t => { marks(L.id + ' note', t.t); marks(L.id + ' note', t.b); });
   /* 採点される数 */

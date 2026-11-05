@@ -5,6 +5,7 @@
  *   ・あつめた粒：正解するたびに ×1.4 倍…とふえる。1 mol（6.0×10^23 個）がゴール。
  *     途中で「世界の人口」「水1滴の分子」などを超えると、スケール図鑑に登録される
  *   ・結晶：レッスンをクリアすると1つできる。時間がたつとくもる → 「みがく」（復習）で輝きが増す
+ *  まちがえた問題は S.miss に記録 → 「🩹 おさらい」で要点を回り直してリベンジ（原則23）
  *  追加レッスン（溶液の濃度）は、基本の7レッスンをぜんぶクリアすると現れる
  * ========================================================= */
 (function () {
@@ -24,6 +25,9 @@
   function nextLesson() { return visible().filter(function (L) { return !done(L) && unlocked(L); })[0] || null; }
   function cry(L) { return S.crystals[L.id] || null; }
   function isDue(L) { var c = cry(L); return !!(c && Date.now() >= c.due); }
+  function missN(L) { return (S.miss[L.id] || []).length; }
+  function missList() { return visible().filter(function (L) { return done(L) && missN(L); }); }   /* まちがえた問題のあるレッスン（レッスン順） */
+  function revBtn(L, attr) { return '<button class="big review" ' + attr + '="' + L.id + '"><span>🩹 Lesson ' + L.no + ' をおさらい</span><small>まちがえた問題 ' + missN(L) + ' 問 ・ 要点を見てからリベンジ</small></button>'; }
   function dueList() { return visible().filter(function (L) { return done(L) && isDue(L); }).sort(function (a, b) { return cry(a).due - cry(b).due; }); }
 
   /* =========================================================
@@ -91,8 +95,9 @@
   function home() {
     show('home');
     $('#hAv').innerHTML = M.face(dueList().length ? 'think' : 'happy');
-    var nx = nextLesson(), due = dueList(), g;
+    var nx = nextLesson(), due = dueList(), mis = missList(), g;
     if (!Object.keys(S.lessons).length) g = 'はじめまして！ モルモ先生だよ。まずは Lesson 1 から。1回 3〜4分で終わるよ。';
+    else if (mis.length) g = '一度で全部覚えられなくて、ふつうだよ。まちがえた Lesson ' + mis[0].no + ' を、ちょっとだけおさらいしよう！';
     else if (due.length) g = '結晶が ' + due.length + ' 個くもってるよ。みがくと、また輝くよ！';
     else if (nx) g = 'つぎは Lesson ' + nx.no + '「' + nx.title.replace(/\^(\d+)/g, function (m, d) { return M.sup(d); }) + '」。いっしょにやろう！';
     else g = 'ぜんぶの結晶がピカピカ！ くもったころに、またのぞいてね。';
@@ -111,6 +116,8 @@
     $('#hNext').innerHTML = nm ? 'つぎの目標：<b>' + esc(nm.t) + '</b>（' + fmt(M.numText(nm.n)) + '）' : '1 mol 達成！ 免許皆伝の助手！';
 
     var cta = '';
+    /* 原則23：まちがえた問題があれば、次のレッスンより先におさらい（下のボタンで先に進むこともできる） */
+    if (mis.length) cta += revBtn(mis[0], 'data-review');
     if (due.length) cta += '<button class="big polish" data-polish="' + due[0].id + '"><span>✨ くもった結晶をみがく</span><small>' + esc(due[0].crystal.name) + ' ほか ' + due.length + ' 個 ・ 1回 5問</small></button>';
     if (nx) cta += '<button class="big go" data-go="' + nx.id + '"><span>▶ Lesson ' + nx.no + ' をはじめる</span><small>' + fmt(nx.title + '　' + nx.sub) + '</small></button>';
     $('#hCta').innerHTML = cta;
@@ -137,6 +144,7 @@
     var b;
     if ((b = e.target.closest('[data-go]'))) { startLesson(byId(b.getAttribute('data-go'))); return; }
     if ((b = e.target.closest('[data-polish]'))) { startPolish(byId(b.getAttribute('data-polish'))); return; }
+    if ((b = e.target.closest('[data-review]'))) { startReview(byId(b.getAttribute('data-review'))); return; }
     if ((b = e.target.closest('[data-slot]'))) {
       var L = byId(b.getAttribute('data-slot'));
       if (done(L)) noteSheet(L);
@@ -156,14 +164,14 @@
    * ========================================================= */
   function noteSheet(L) {
     var c = cry(L), due = isDue(L);
-    var boards = L.talk.filter(function (s) { return s && s.board && s.note !== false; });
     var days = Math.max(0, Math.ceil((c.due - Date.now()) / DAY));
     var html = '<div class="nt-head">' + M.crystalSvg(L, { lv: c.lv, cloudy: due }) +
       '<div><small>Lesson ' + L.no + ' の結晶</small><h3>' + esc(L.crystal.name) + '</h3><p class="nt-f">' + fmt(L.crystal.formula) + '</p>' +
       '<p class="nt-lv">輝き ' + '✦'.repeat(Math.min(5, c.lv) + 1) + '<span>' + '✧'.repeat(5 - Math.min(5, c.lv)) + '</span></p>' +
       '<p class="nt-due">' + (due ? '☁ くもってきた。みがきどき！' : 'あと ' + days + ' 日ほどピカピカ') + '</p></div></div>' +
       '<div class="nt-btns"><button class="big polish" data-np="' + L.id + '"><span>✨ ' + (due ? 'みがく' : '練習する') + '</span><small>5問</small></button><button class="ghost-s" data-nl="' + L.id + '">トークをもう一度</button></div>' +
-      '<h4 class="nt-sec">📋 板書</h4>' + boards.map(function (b) { return '<div class="card board"><h4>' + fmt(b.board) + '</h4><ul>' + b.lines.map(function (l) { return '<li>' + fmt(l) + '</li>'; }).join('') + '</ul>' + (b.foot ? '<p class="foot">' + fmt(b.foot) + '</p>' : '') + '</div>'; }).join('') +
+      (missN(L) ? '<div class="nt-btns">' + revBtn(L, 'data-nr') + '</div>' : '') +
+      '<h4 class="nt-sec">📋 板書</h4>' + boardsHTML(L) +
       '<h4 class="nt-sec">⚠ ひっかけ注意</h4>' + L.note.tips.map(function (t) { return '<div class="nt-tip"><b>' + fmt(t.t) + '</b>' + (t.why ? '<details><summary>🤔 なぜ？</summary><p>' + fmt(t.why) + '</p></details>' : '') + '</div>'; }).join('') +
       '<h4 class="nt-sec">🐹 モルモ先生のこぼれ話</h4>' + L.note.trivia.map(function (t) { return '<div class="nt-triv"><b>' + fmt(t.t) + '</b><p>' + fmt(t.b) + '</p></div>'; }).join('');
     sheet(html);
@@ -173,7 +181,19 @@
     var b;
     if ((b = e.target.closest('[data-np]'))) { $('#sheet').hidden = true; startPolish(byId(b.getAttribute('data-np'))); }
     else if ((b = e.target.closest('[data-nl]'))) { $('#sheet').hidden = true; startLesson(byId(b.getAttribute('data-nl'))); }
+    else if ((b = e.target.closest('[data-nr]'))) { $('#sheet').hidden = true; startReview(byId(b.getAttribute('data-nr'))); }
   });
+
+  /* まちがえたその場で開く「要点」（トークの上に重ねる。閉じるとトークにもどる） */
+  function boardsHTML(L) {
+    return L.talk.filter(function (s) { return s && s.board && s.note !== false; }).map(function (b) { return '<div class="card board"><h4>' + fmt(b.board) + '</h4><ul>' + b.lines.map(function (l) { return '<li>' + fmt(l) + '</li>'; }).join('') + '</ul>' + (b.foot ? '<p class="foot">' + fmt(b.foot) + '</p>' : '') + '</div>'; }).join('');
+  }
+  M.openPoints = function (L) {
+    sheet('<h3 class="ml-h">📖 Lesson ' + L.no + ' の要点</h3><p class="ml-sub">' + fmt(L.title) + '</p>' + boardsHTML(L) +
+      '<h4 class="nt-sec">⚠ ひっかけ注意</h4>' + L.note.tips.map(function (t) { return '<div class="nt-tip"><b>' + fmt(t.t) + '</b>' + (t.why ? '<details><summary>🤔 なぜ？</summary><p>' + fmt(t.why) + '</p></details>' : '') + '</div>'; }).join('') +
+      '<p class="pt-foot">読んだら ✕ で閉じて、トークにもどろう。<br>あとで「🩹 おさらい」でもう一度できるよ。</p>');
+    M.glossify($('#sheetBody'), {});
+  };
 
   /* スケール図鑑 */
   function milesSheet() {
@@ -277,9 +297,9 @@
     $('#done').innerHTML = '<div class="dn-stage"><div class="dn-rays"></div>' + M.crystalSvg(L, { lv: c.lv, cloudy: due && !up }) + '</div>' +
       '<h1 class="dn-t">' + (up ? '✨ ピカピカ！' : due ? 'もう少し！' : '練習おわり！') + '</h1>' +
       '<p class="dn-c">' + (up ? esc(L.crystal.name) + 'の輝きが ✦' + (c.lv + 1) + ' になった！ 次にくもるのは約 ' + INT[c.lv] + ' 日後。' :
-        due ? (down ? 'まちがいが多かったので、輝きが少し落ちちゃった。研究ノートを読んでから、もう一度みがこう。' : 'あと少しでピカピカ。明日もう一度みがこう。') : '結晶の輝きは、くもったときにみがくと上がるよ。') + '</p>' +
+        due ? (down ? 'まちがいが多かったので、輝きが少し落ちちゃった。' + (missList().length ? 'おさらいしてから、もう一度みがこう。' : '研究ノートを読んでから、もう一度みがこう。') : 'あと少しでピカピカ。明日もう一度みがこう。') : '結晶の輝きは、くもったときにみがくと上がるよ。') + '</p>' +
       '<ul class="dn-l"><li><span>正解</span><b>' + res.ok + ' / ' + res.total + '</b></li><li><span>あつめた粒</span><b>' + M.countHTML(S.L) + ' 個</b></li></ul>' +
-      '<div class="dn-btns">' + (dueList().length ? '<button class="big polish" data-dpol="' + dueList()[0].id + '"><span>✨ つぎの結晶をみがく</span><small>' + esc(dueList()[0].crystal.name) + '</small></button>' : '') +
+      '<div class="dn-btns">' + missList().slice(0, 2).map(function (x) { return revBtn(x, 'data-drev'); }).join('') + (dueList().length ? '<button class="big polish" data-dpol="' + dueList()[0].id + '"><span>✨ つぎの結晶をみがく</span><small>' + esc(dueList()[0].crystal.name) + '</small></button>' : '') +
       '<button class="ghost-s" data-dnote="' + L.id + '">📒 研究ノートを見る</button><button class="ghost-s" data-dhome>🏠 ラボにもどる</button></div>';
     if (up) {
       M.snd.grow();
@@ -289,7 +309,38 @@
     } else M.snd.pop();
     if (M.E2E && M.e2eNext) setTimeout(M.e2eNext);
   }
-  $('#done').addEventListener('click', function (e) { var b = e.target.closest('[data-dpol]'); if (b) startPolish(byId(b.getAttribute('data-dpol'))); });
+  $('#done').addEventListener('click', function (e) {
+    var b;
+    if ((b = e.target.closest('[data-dpol]'))) startPolish(byId(b.getAttribute('data-dpol')));
+    else if ((b = e.target.closest('[data-drev]'))) startReview(byId(b.getAttribute('data-drev')));
+  });
+
+  /* =========================================================
+   * おさらい（原則23）：まちがえた問題のあるレッスンの要点を回り直し、最後にリベンジ
+   *  結晶の輝きは変わらない（輝きは「みがく」で上がる）
+   * ========================================================= */
+  function startReview(L) {
+    if (!L || !done(L)) return;
+    if (window.Sfx) Sfx.unlock();
+    show('talk');
+    M.Talk.review(L, { factor: 0.4, onEnd: function (res) { reviewDone(L, res); } });
+  }
+  function reviewDone(L, res) {
+    var left = missN(L), c = cry(L), clear = res.revenge && !left;
+    show('done');
+    var more = missList(), due = dueList();
+    $('#done').innerHTML = '<div class="dn-stage"><div class="dn-rays"></div>' + M.crystalSvg(L, { lv: c.lv, cloudy: isDue(L) }) + '</div>' +
+      '<h1 class="dn-t">' + (clear ? '🩹 リベンジ成功！' : '🩹 おさらい おわり！') + '</h1>' +
+      '<p class="dn-c">' + (clear ? 'まちがえた問題、ぜんぶ解けたね！ Lesson ' + L.no + ' の要点、もう大丈夫。' :
+        left ? 'まだ ' + left + ' 問のこっているよ。研究ノートの板書を見て、また挑戦しよう。' : 'Lesson ' + L.no + ' の要点を回り直したよ。') + '</p>' +
+      '<ul class="dn-l"><li><span>リベンジ</span><b>' + res.ok + ' / ' + res.total + '</b></li><li><span>あつめた粒</span><b>' + M.countHTML(S.L) + ' 個</b></li></ul>' +
+      '<div class="dn-btns">' + more.filter(function (x) { return x !== L; }).slice(0, 1).map(function (x) { return revBtn(x, 'data-drev'); }).join('') +
+      (due.length ? '<button class="big polish" data-dpol="' + due[0].id + '"><span>✨ くもった結晶をみがく</span><small>' + esc(due[0].crystal.name) + '</small></button>' : '') +
+      '<button class="ghost-s" data-dnote="' + L.id + '">📒 研究ノートを見る</button><button class="ghost-s" data-dhome>🏠 ラボにもどる</button></div>';
+    if (clear) { M.snd.grow(); setTimeout(function () { var p = FX.at($('.dn-stage svg')); FX.burst(p[0], p[1], 50, 1.2); }, M.E2E ? 0 : 400); }
+    else M.snd.pop();
+    if (M.E2E && M.e2eNext) setTimeout(M.e2eNext);
+  }
 
   /* やめる */
   $('#tQuit').addEventListener('click', function () {
@@ -306,11 +357,15 @@
     window.addEventListener('error', function (e) { M.e2eFail(e.error || e.message); });
     localStorage.removeItem(M.KEY);
     var fresh = M.load(); Object.keys(S).forEach(function (k) { delete S[k]; }); for (var k in fresh) S[k] = fresh[k];
-    var queue = ALL.slice(), polished = false;
+    var queue = ALL.slice(), polished = false, reviewed = false, rvQ = [];
     M.e2eNext = function () {
       var L = queue.shift();
       if (L) { setTimeout(function () { startLesson(L); }, 0); return; }
       if (!polished) { polished = true; S.crystals.L1.due = 0; setTimeout(function () { startPolish(byId('L1')); }, 0); return; }
+      /* おさらい：全レッスンに「まちがえた問題」を3問ずつ入れて回る。正解すれば記録は消えるはず */
+      if (!reviewed) { reviewed = true; ALL.forEach(function (x) { S.miss[x.id] = x.quiz.map(function (q, i) { return i; }).slice(0, 3); }); rvQ = ALL.slice(); }
+      if (rvQ.length) { var R = rvQ.shift(); setTimeout(function () { startReview(R); }, 0); return; }
+      if (Object.keys(S.miss).length) errs.push('おさらいで正解したのに記録が残った：' + JSON.stringify(S.miss));
       M.e2eNext = null;
       home();
       document.title = errs.length ? 'E2E FAIL' : 'E2E OK';

@@ -49,6 +49,7 @@ mark.k { color: inherit; font-weight: 800; padding: 0 1px; background: linear-gr
 .big small { font-size: 12.5px; opacity: .92; }
 .big.go { background: linear-gradient(120deg, #2fae8a, #5fd3b0); box-shadow: 0 5px 0 #1f8c6d; }
 .big.polish { background: linear-gradient(120deg, #9b5cff, #ff5fa2); box-shadow: 0 5px 0 #7134d1; }
+.big.review { background: linear-gradient(120deg, #ff8a3d, #ffc23d); box-shadow: 0 5px 0 #d9661c; }
 .big:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0,0,0,.2); }
 .ghost-s { padding: 9px 16px; border-radius: 999px; border: 2px solid var(--line); background: #fff; font-weight: 700; font-size: 14px; }
 .main-s { padding: 10px 18px; border-radius: 999px; background: var(--mint-d); color: #fff; font-weight: 800; box-shadow: 0 3px 0 #1f8c6d; }
@@ -181,6 +182,7 @@ mark.k { color: inherit; font-weight: 800; padding: 0 1px; background: linear-gr
 .replies { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
 .rp { padding: 10px 18px; border-radius: 999px; background: linear-gradient(135deg, #5fd3b0, #2fae8a); color: #fff; font-weight: 800; box-shadow: 0 3px 0 #1f8c6d; }
 .rp.why { background: #fff; color: #7134d1; border: 2px solid #b9a6e8; box-shadow: 0 3px 0 #d8ccf5; }
+.rp.pts { background: #fff; color: #d9661c; border: 2px solid #ffc28f; box-shadow: 0 3px 0 #ffe0c4; }
 .rp:active { transform: translateY(2px); box-shadow: none; }
 .opts { display: grid; gap: 8px; }
 .op { width: 100%; padding: 11px 14px; border-radius: 14px; background: #fff; border: 2px solid var(--line); text-align: left; font-weight: 700; box-shadow: 0 3px 0 var(--line); }
@@ -262,6 +264,7 @@ mark.k { color: inherit; font-weight: 800; padding: 0 1px; background: linear-gr
 .sh .card.board { margin: 8px 0; }
 .ml-h { margin: 0; font-size: 20px; }
 .ml-sub { margin: 2px 0 10px; font-size: 13px; color: var(--muted); }
+.pt-foot { margin: 14px 0 4px; font-size: 13px; color: var(--muted); text-align: center; line-height: 1.7; }
 .ml { list-style: none; margin: 0; padding: 0; }
 .ml li { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; margin: 6px 0; border-radius: 14px; background: #fff; opacity: .6; }
 .ml li.got { opacity: 1; box-shadow: 0 4px 14px -10px #4b2f7a; }
