@@ -1611,6 +1611,7 @@
 
     /* 次の神託（島の人の頼みごと）／ボス（災いの気配） */
     var cta = $('#hCta'), evEl = $('#hEv');
+    cta.onclick = null; $('#hSkip').onclick = null;   // 前のホームのボタンの動きを残さない（このあと付け直す）
     evEl.innerHTML = ''; evEl.className = 'ev';
     if (ni < 0) {
       cta.innerHTML = '<small>創世 完了</small>⚡ ラッシュでハイスコア！';

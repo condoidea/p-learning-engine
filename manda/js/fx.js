@@ -7,8 +7,11 @@
   var RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var cv = document.getElementById('fx'), cx = cv.getContext('2d'), parts = [], raf = 0;
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
-  function size() { cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); }
-  size(); addEventListener('resize', size);
+  /* iPhone の Safari は、スクロールでアドレスバーが出入りするたびに resize が来る。そのたびに大きなキャンバスを作り直すと
+   *  画面が固まるので、大きさが本当に変わったときだけ、演出を始めるときに作り直す。演出がないときは、キャンバスごと隠す */
+  var cw = 0, ch = 0;
+  function size() { if (innerWidth === cw && innerHeight === ch) return; cw = innerWidth; ch = innerHeight; cv.width = cw * dpr; cv.height = ch * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+  cv.style.display = 'none';
 
   var PAL = {
     ok: ['#4dff9a', '#38e8ff', '#ffffff', '#ffd23f'],
@@ -21,6 +24,7 @@
   function loop() {
     try { draw(); } catch (e) { parts = []; cx.clearRect(0, 0, innerWidth, innerHeight); }   // 描画で何か起きても、紙吹雪が止まったまま残らないように
     raf = parts.length ? requestAnimationFrame(loop) : 0;
+    if (!raf) cv.style.display = 'none';
   }
   function draw() {
     cx.clearRect(0, 0, innerWidth, innerHeight);
@@ -42,7 +46,7 @@
     for (var k = 0; k < 10; k++) { var rr = k % 2 ? r * 0.45 : r, an = k * Math.PI / 5 - Math.PI / 2; cx.lineTo(Math.cos(an) * rr, Math.sin(an) * rr); }
     cx.closePath(); cx.fill();
   }
-  function kick() { if (!raf) raf = requestAnimationFrame(loop); }
+  function kick() { if (raf) return; size(); cv.style.display = ''; raf = requestAnimationFrame(loop); }
 
   function burst(x, y, o) {
     if (RM) return;

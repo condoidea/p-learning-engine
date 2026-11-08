@@ -11,7 +11,7 @@
   --safe-b: env(safe-area-inset-bottom, 0px);
 }
 * { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; touch-action: manipulation; }   /* すばやい2度タップで画面が拡大されないように（iPhone） */
 body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); font-family: var(--f-body); font-size: 16px; line-height: 1.7; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
 button { font: inherit; color: inherit; cursor: pointer; }
 [hidden] { display: none !important; }
@@ -20,10 +20,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: radial-gradient(ellipse at 50% -10%, #2c2178 0%, var(--bg) 62%); }
 .bg::before { content: ''; position: absolute; inset: 0; opacity: .5; background-image: radial-gradient(1px 1px at 12% 18%, #fff, transparent), radial-gradient(1px 1px at 72% 12%, #fff, transparent), radial-gradient(1.5px 1.5px at 40% 30%, #ffe9a8, transparent), radial-gradient(1px 1px at 86% 44%, #fff, transparent), radial-gradient(1px 1px at 24% 62%, #fff, transparent), radial-gradient(1.5px 1.5px at 60% 76%, #cfe8ff, transparent), radial-gradient(1px 1px at 92% 86%, #fff, transparent), radial-gradient(1px 1px at 6% 90%, #fff, transparent); background-size: 340px 340px; animation: twinkle 6s ease-in-out infinite alternate; }
 @keyframes twinkle { to { opacity: .25; } }
-.bg i { position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; filter: blur(80px); opacity: .16; animation: blob 20s ease-in-out infinite alternate; }
-.bg i:nth-child(1) { background: var(--cmd); left: -25vmax; top: -10vh; }
-.bg i:nth-child(2) { background: #6a4cff; right: -25vmax; top: 40vh; animation-delay: -7s; }
-.bg i:nth-child(3) { background: var(--who); left: 20vw; bottom: -35vmax; animation-delay: -13s; }
+/* ぼかしの光は filter: blur でなく、ふちの消えるグラデーションで描く（大きな blur は iPhone で重く、画面が固まる原因になる） */
+.bg i { position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; opacity: .22; animation: blob 20s ease-in-out infinite alternate; will-change: transform; }
+.bg i:nth-child(1) { background: radial-gradient(closest-side, var(--cmd), transparent); left: -25vmax; top: -10vh; }
+.bg i:nth-child(2) { background: radial-gradient(closest-side, #6a4cff, transparent); right: -25vmax; top: 40vh; animation-delay: -7s; }
+.bg i:nth-child(3) { background: radial-gradient(closest-side, var(--who), transparent); left: 20vw; bottom: -35vmax; animation-delay: -13s; }
 @keyframes blob { to { transform: translate(8vw, -6vh) scale(1.15); } }
 body.fever .bg { animation: fevbg 1.4s linear infinite; }
 body.fever .bg i { opacity: .34; }
