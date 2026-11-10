@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Dela+Gothic+One&family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet">
 <script src="shared/smooth-fonts.js?v=1"></script>
-<link rel="stylesheet" href="manda/css/manda.css?v=7">
+<link rel="stylesheet" href="manda/css/manda.css?v=9">
 </head>
 <body>
 <div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -40,6 +40,7 @@
       <button class="qb" id="hRush"><span class="qi">⚡</span><b>ラッシュ</b><small id="hRushBest"></small></button>
       <button class="qb" id="hMock"><span class="qi">🎓</span><b>西検</b><small id="hMockN"></small></button>
       <button class="qb" id="hGacha"><span class="qi">✨</span><b>奇跡</b><small id="hGachaN"></small></button>
+      <button class="qb" id="hMap"><span class="qi">🗺</span><b>地図</b><small id="hMapN"></small></button>
       <button class="qb" id="hBook"><span class="qi">📖</span><b>創世記</b><small id="hBookN"></small></button>
     </div>
     <button class="mis" id="hMis"></button>
@@ -56,6 +57,7 @@
     <header class="pbar">
       <button class="x" id="pQuit" aria-label="やめる">✕</button>
       <div class="pmid"><b id="pTitle"></b><span class="prog"><i id="pProg"></i></span></div>
+      <button class="x map" id="pMap" aria-label="命令の地図">🗺</button>
       <div class="pxp"><small>XP</small><b id="pXp">0</b></div>
     </header>
     <div class="stage" id="stage"></div>
@@ -69,6 +71,7 @@
     <header class="pbar">
       <button class="x" id="zQuit" aria-label="やめる">✕</button>
       <div class="pmid"><b id="zTitle"></b><span class="prog"><i id="zProg"></i></span></div>
+      <button class="x map" id="zMap" aria-label="命令の地図">🗺</button>
       <div class="pxp" id="zRight"></div>
     </header>
     <div id="zHud"></div>
@@ -88,13 +91,13 @@
 <div id="toast" aria-live="polite"></div>
 
 <script src="shared/es-words.js?v=8"></script>
-<script src="manda/js/data/lessons.js?v=5"></script>
-<script src="manda/js/data/questions.js?v=5"></script>
-<script src="manda/js/data/cards.js?v=4"></script>
-<script src="manda/js/data/world.js?v=4"></script>
+<script src="manda/js/data/lessons.js?v=6"></script>
+<script src="manda/js/data/questions.js?v=6"></script>
+<script src="manda/js/data/cards.js?v=5"></script>
+<script src="manda/js/data/world.js?v=5"></script>
 <script src="engine/js/audio.js?v=10"></script>
 <script src="manda/js/fx.js?v=3"></script>
-<script src="manda/js/app.js?v=9"></script>
+<script src="manda/js/app.js?v=10"></script>
 <script src="news/news.js?v=4"></script>
 </body>
 </html>

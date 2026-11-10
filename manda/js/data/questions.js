@@ -190,7 +190,7 @@ MQ.questions = [
   { id: 'l10-13', L: 10, k: 'pick', s: '[Marina], no ___ la puerta, por favor.', o: ['abras', 'abra', 'abre'], a: 1, ja: 'マリーナさま、ドアを開けないでください。', why: '相手は目上のマリーナさまなので usted。usted への禁止は no ＋ usted の命令だけで `no {abra}`。s がつく `abras` は tú への禁止。' },
   { id: 'l10-14', L: 10, k: 'pick', s: '[Lola], no ___ eso.', o: ['hagas', 'haga', 'haces'], a: 0, ja: 'ロラ、それをしないで。', why: '呼びかけが Lola（仲よし）なので tú への禁止。no ＋ usted の命令 `haga` ＋ s で `no {hagas}`。`no haces` は「君はしない」の文。' },
 
-  /* ================= L11 港の市場：yo の形がクセものの usted の命令 ================= */
+  /* ================= L11 浜の市場：yo の形がクセものの usted の命令 ================= */
   { id: 'l11-01', L: 11, k: 'pick', s: '[Paco], ___ el arroz aquí, por favor.', o: ['trae', 'traigo', 'traiga'], a: 2, ja: 'パコさん、ここにお米を持ってきてください。', why: 'パコさんは、はじめて会う商人なので usted。`traigo`（私は持ってくる）の o を取って a をつけ `{traiga}`。g が残る。`trae` は tú への命令。' },
   { id: 'l11-02', L: 11, k: 'form', v: 'oír', p: 'usted', o: ['oiga', 'oye', 'oia'], a: 0, why: '`oigo`（私は聞く）の o を取って a をつけ `{oiga}`。g が残る。`oye` は tú への命令。' },
   { id: 'l11-03', L: 11, k: 'scene', sit: 'パコさんが、パンを買いたそうにしている。「パンを注文してください」とすすめる', o: ['Pide pan, por favor.', 'Pida pan, por favor.', 'Pido pan, por favor.'], a: 1, why: 'パコさんは usted の相手。`pido`（私は頼む）の o を取って a をつけ `{pida}`。i は残る。`pide` は tú への命令、`pido` は「私は頼む」。' },

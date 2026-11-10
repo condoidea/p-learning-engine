@@ -27,6 +27,7 @@
  *    tapwho { es, ja, a, why }                  この命令はだれに言っている？ → 場面の人をタップ
  *    enter  { who }                             場面に人が来る
  *    tip    { id, ti, x, why }                  TIP カード（Tips ノートに入る）
+ *    map    { hi: ['usted'], x }                命令の地図をボードに出す。hi の枝を光らせる。x はブーホの一言
  *    q      { id }                              問題バンクの1問
  *    drill  { n }                               このレッスンの問題から n 問
  *
@@ -42,18 +43,42 @@ MQ.people = {
   marina: { e: '🧜‍♀️', n: '女神マリーナ', d: 'となりの海の女神さま。目上のお客さま' },
   pueblo: { e: '👨‍👩‍👧‍👦', n: '村のみんな', d: '島の村人たち（仲間）' },
   viaje:  { e: '🧳', n: '旅の一行', d: '大陸から来たお客さんたち' },
-  paco:   { e: '🧔', n: '商人パコ', d: '大陸から来た商人。はじめて会う人なので usted で話す' }
+  paco:   { e: '🧔', n: '商人パコ', d: 'マリーナさまの船で来た商人。はじめて会う人なので usted で話す' }
 };
 
 MQ.days = [
   { d: 1, ti: 'はじまりの島', x: 'tú への命令（s を取る）' },
   { d: 2, ti: '村ができる', x: '不規則な8つ ＋ ボス' },
-  { d: 3, ti: '女神さまが来た', x: 'usted・ustedes へのていねいな命令' },
-  { d: 4, ti: 'にぎわう港', x: 'yo の形がクセものの動詞・vosotros ＋ ボス' },
+  { d: 3, ti: '女神さまが来た', x: 'usted へのていねいな命令（yo の形から）' },
+  { d: 4, ti: 'にぎわう港', x: '-oy の4つ・ustedes・vosotros ＋ ボス' },
   { d: 5, ti: '朝の島', x: '「それを」をくっつける・「〜するな」' },
   { d: 6, ti: '決戦の前夜', x: 'つづりの書きかえ・代名詞2つ・みんなで〜しよう' },
   { d: 7, ti: '創世の日', x: 'ラスボス ＋ 🎓 西検チャレンジ' }
 ];
+
+/* 命令の地図（ボードに出す全体図）。starts＝出発点、nodes＝枝。from は出発点か別の枝の id、L はその枝を教えるレッスン番号（no）。
+   kind:'ex' は例外の枝。ex の {…} は命令の形（金色） */
+MQ.map = {
+  starts: [
+    { id: 's-tu',  ti: 'tú の形', ex: 'hablas', sub: '君は〜する' },
+    { id: 's-yo',  ti: 'yo の形', ex: 'hablo',  sub: '私は〜する' },
+    { id: 's-inf', ti: '原形',    ex: 'hablar', sub: '辞書の形' }
+  ],
+  nodes: [
+    { id: 'tu',       from: 's-tu',  L: 1,  who: 'tú（1人・仲よし）',        op: 's を取る', ex: '{habla}', ja: '話せ' },
+    { id: 'tu4a',     from: 'tu',    L: 3,  kind: 'ex', ti: '例外：原形の最後の2文字を取る4つ', ex: '{ven}・{ten}・{pon}・{sal}' },
+    { id: 'tu4b',     from: 'tu',    L: 4,  kind: 'ex', ti: '例外：覚える4つ', ex: '{haz}・{di}・{ve}・{sé}' },
+    { id: 'usted',    from: 's-yo',  L: 5,  who: 'usted（1人・ていねい）',   op: 'o を取って、-ar は e／-er・-ir は a', ex: '{hable}・{coma}', ja: '話してください' },
+    { id: 'oy4',      from: 'usted', L: 7,  kind: 'ex', ti: '例外：yo の形が -oy の4つ', ex: '{vaya}・{sea}・{esté}・{dé}' },
+    { id: 'spell',    from: 'usted', L: 12, kind: 'ex', ti: 'e の前のつづりの書きかえ', ex: '{busque}・{llegue}・{empiece}' },
+    { id: 'ustedes',  from: 'usted', L: 7,  who: 'ustedes（何人も・ていねい）', op: '＋ n', ex: '{hablen}' },
+    { id: 'no-tu',    from: 'usted', L: 10, who: 'tú に「〜するな」',         op: 'no ＋ usted の命令 ＋ s', ex: 'no {hables}' },
+    { id: 'no-usted', from: 'usted', L: 10, who: 'usted に「〜しないで」',     op: 'no ＋ usted の命令', ex: 'no {hable}' },
+    { id: 'nos',      from: 'usted', L: 14, who: 'nosotros「〜しよう」',       op: '＋ mos', ex: '{hablemos}' },
+    { id: 'no-vos',   from: 'usted', L: 14, who: 'vosotros に「〜するな」',    op: 'no ＋ 最後の e・a を éis・áis に', ex: 'no {habléis}' },
+    { id: 'vos',      from: 's-inf', L: 8,  who: 'vosotros（何人も・仲よし）', op: 'r を d に', ex: '{hablad}' }
+  ]
+};
 
 MQ.lessons = [
   /* ================= DAY 1 ================= */
@@ -64,7 +89,7 @@ MQ.lessons = [
     steps: [
       { t: 'say', x: 'やっと目を覚ましたね、神さま！\nボクはフクロウのブーホ。\n神さまのお世話係だよ🦉' },
       { t: 'say', who: 'pepe', x: '……神さま？ ぼく、ペペ。\nこの島、なんにもないんだ。\nなにをしたらいいの？' },
-      { t: 'say', x: '神さまの仕事は、命令すること。\n命令の形は「だれに言うか」で変わる。\nまずは、ペペみたいな仲よしの相手。\nスペイン語で「君」は `tú` だね。',
+      { t: 'say', x: '神さまの仕事は、命令すること。\n命令の形は「だれに言うか」で変わる。\nまずは、ペペみたいな仲よしの相手。\nスペイン語で「君」は `tú` だね。\n今日は、tú の形から作るよ。',
         more: 'スペイン語の「あなた」は2つある。仲よしの相手に使う tú と、ていねいに話す相手に使う usted。usted は、島にお客さまが来たら使うよ（DAY 3）。' },
       { t: 'show', cap: 'おさらい：hablar（話す）の今の形', tbl: [['yo（私は）', 'hablo'], ['tú（君は）', 'hablas'], ['él・ella（彼・彼女は）', 'habla']] },
       { t: 'ask', pred: true, q: '表は、知っている今の形。\n「君は話す」は `hablas` だね。\nでは「（君が）話せ！」の命令は、どの形に近いと思う？', o: ['hablo', 'hablas', 'habla'], a: 2,
@@ -81,6 +106,7 @@ MQ.lessons = [
       { t: 'cast', who: 'pepe', need: 'まぶしくて、目をつぶったまま。\n空にはじめての太陽がのぼったのに…', o: ['Abre los ojos.', 'Abres los ojos.', 'Abro los ojos.'], a: 0,
         out: '[Pepe], {abre} los ojos.', ja: 'ペペ、目を開けなさい。', fx: { e: '☀️', mood: '🤩', world: 'sun' },
         why: '`abres` から s を取って `{abre}`。los ojos は「両目」。' },
+      { t: 'map', hi: ['tu'], x: 'いま見つけたきまりを、地図に書きこもう。出発は tú の形。' },
       { t: 'tip', id: 't-tu-s', ti: 'tú への命令 ＝ tú の形から s を取る', x: '`hablas` → `{habla}`\n`comes` → `{come}`\n`abres` → `{abre}`',
         why: 'スペイン語の命令は、もともと語の芯だけの短い形。知っている tú の形（君は〜する）から s を取れば、いちばん早くたどりつける。' },
       { t: 'ask', q: '`escuchar`（聞く）。「君は聞く」は `escuchas`。\n「聞いて！」の命令は？', o: ['¡Escucha!', '¡Escuchas!', '¡Escucho!'], a: 0,
@@ -94,12 +120,13 @@ MQ.lessons = [
     actors: ['pepe', 'lola'],
     steps: [
       { t: 'say', who: 'lola', x: 'はじめまして、神さま！\nわたしはロラ。ペペのお姉ちゃんだよ。' },
-      { t: 'say', x: '島に、はじめての夜が来た。\n今日は、ちょっとクセのある動詞で\n命令してみよう。' },
+      { t: 'say', x: '島に、はじめての夜が来た。\n今日も、出発は tú の形。\nクセのある動詞で命令してみよう。' },
       { t: 'show', cap: 'dormir（寝る）の今の形', tbl: [['yo', 'd^ue^rmo'], ['tú', 'd^ue^rmes'], ['él・ella', 'd^ue^rme'], ['nosotros（私たち）', 'dormimos']] },
       { t: 'say', x: '`dormir`（寝る）は、\no が ue に変わる動詞だったね。\n「君は寝る」は `duermes`。',
         more: '活用すると、語の前の部分（語幹）のつづりが変わる動詞がある。pensar → pienso（e が ie に）、dormir → duermo（o が ue に）、jugar → juego（u が ue に）。nosotros（私たち）のときは変わらない。' },
       { t: 'ask', pred: true, q: '「寝ろ」の命令は？\nさっきのルールを思い出してみて。', o: ['dorme', 'duerme', 'duermes'], a: 1,
         r: '`{duerme}`！\n`duermes` から s を取るだけ。\n変わった ue は、そのまま残るよ。' },
+      { t: 'map', hi: ['tu'], x: '地図のここ（tú の命令）と同じ。出発は tú の形のまま。' },
       { t: 'cast', who: 'pepe', need: 'ねむい…\nでも、まっくらでこわくて眠れない…', o: ['Duerme, Pepe.', 'Dorme, Pepe.', 'Duermes, Pepe.'], a: 0,
         out: '{Duerme}, [Pepe].', ja: '寝なさい、ペペ。', fx: { e: '😴', mood: '💤', world: 'moon' },
         why: '`duermes` から s を取って `{duerme}`。ue は残る。名前は命令のあとに置いてもいい（コンマで区切る）。' },
@@ -116,7 +143,6 @@ MQ.lessons = [
         why: '`juegas` から s を取って `{juega}`。ue は残る。' },
       { t: 'tip', id: 't-stem', ti: 'つづりが変わる動詞も、s を取るだけ', x: '`duermes` → `{duerme}`\n`cierras` → `{cierra}`\n`juegas` → `{juega}`\n変わった ie・ue は残る。',
         why: '命令は tú の形から作る。tú の形のつづりがもう ie・ue に変わっているから、命令もそのまま。新しく覚えることはないんだ。' },
-      { t: 'say', x: '今日のルールは1つだけ。\n**tú の形から s を取る。**\nクセのある動詞でも、これで OK！' },
       { t: 'drill', n: 5 }
     ]
   },
@@ -126,7 +152,7 @@ MQ.lessons = [
     ev: { who: 'pepe', line: '神さま、寒いよ。あったかいものがほしい…' },
     actors: ['pepe', 'lola'],
     steps: [
-      { t: 'say', x: 's を取るルールには、例外がある。\nよく使う動詞ほど、\n命令が短い形になるんだ。' },
+      { t: 'say', x: 's を取るルールで作れない動詞が、\n4つある。\nよく使う動詞ほど、命令が短くなるんだ。' },
       { t: 'show', cap: 'venir（来る）', tbl: [['tú（君は来る）', 'vienes'], ['s を取ると…', 'viene ？']] },
       { t: 'ask', pred: true, q: '`venir`（来る）。「君は来る」は `vienes`。\n「来い！」はどうなると思う？', o: ['viene', 'ven', 'vienes'], a: 1,
         r: '正解は `{ven}`！\n`viene` にはならない。\nもっと短い、特別な形なんだ。' },
@@ -134,7 +160,7 @@ MQ.lessons = [
       { t: 'forge', w: 'venir', cut: 'ir', out: '{ven}', ja: '来い！', hint: '原形 `venir` から、命令で消える文字をタップ！' },
       { t: 'say', x: '原形の最後の `-ir` を取ると `{ven}`。\nこのつくりの仲間が、あと3つあるよ。' },
       { t: 'show', cap: '原形の最後の2文字を取る4つ', tbl: [['venir（来る）', '{ven}'], ['tener（持つ）', '{ten}'], ['poner（置く）', '{pon}'], ['salir（出る）', '{sal}']] },
-      { t: 'say', x: '`tener`（持つ）→ `{ten}`\n`poner`（置く）→ `{pon}`\n`salir`（出る）→ `{sal}`\nどれも、原形の最後の2文字を取っただけ。' },
+      { t: 'map', hi: ['tu4a'], x: 'いま見つけたきまりを、地図に書きこもう。tú の枝の、例外の1つめ。' },
       { t: 'cast', who: 'pepe', need: '神さまのそばに行きたい。\nでも、行っていいのかな…', o: ['Ven aquí, Pepe.', 'Viene aquí, Pepe.', 'Vienes aquí, Pepe.'], a: 0,
         out: '{Ven} aquí, [Pepe].', ja: 'ここに来なさい、ペペ。', fx: { e: '🏃', mood: '😊' },
         why: '`venir` の命令は `{ven}`。`viene` は「彼は来る」、`vienes` は「君は来る」。' },
@@ -160,7 +186,7 @@ MQ.lessons = [
     actors: ['pepe', 'lola', 'tomas'],
     steps: [
       { t: 'say', who: 'tomas', x: 'わしはトマスじい。\n物知りじゃが、家がなくての…' },
-      { t: 'say', x: '不規則な命令は、あと4つ。\nこっちは原形から作れないから、\n覚えるしかない。\nでも、どれもすごく短いよ！' },
+      { t: 'say', x: '例外は、あと4つ。\nこの4つは、作り方がない。\nそのまま覚えるしかないんだ。\nでも、どれもすごく短いよ！' },
       { t: 'show', cap: '覚える4つ', tbl: [['hacer（する・作る）', '{haz}'], ['decir（言う）', '{di}'], ['ir（行く）', '{ve}'], ['ser（〜である）', '{sé}']] },
       { t: 'say', x: '`hacer`（する・作る）→ `{haz}`\n頭の ha は残って、最後が z になる。' },
       { t: 'cast', who: 'pepe', need: 'トマスじいの家を作りたい！\n神さま、命令して！', o: ['Haz una casa.', 'Hace una casa.', 'Haces una casa.'], a: 0,
@@ -182,6 +208,7 @@ MQ.lessons = [
       { t: 'cast', who: 'pepe', need: 'ペペが、ロラの貝がらを取ろうとしてる…', o: ['Sé bueno, Pepe.', 'Es bueno, Pepe.', 'Eres bueno, Pepe.'], a: 0,
         out: '{Sé} bueno, [Pepe].', ja: 'いい子でいなさい、ペペ。', fx: { e: '😇', mood: '🙏' },
         why: '`ser` の命令は `{sé}`。`eres` は「君は〜だ」、`es` は「彼は〜だ」。' },
+      { t: 'map', hi: ['tu4b'], x: 'いま覚えた4つを、地図に書きこもう。tú の枝の、例外の2つめ。' },
       { t: 'tip', id: 't-8', ti: '不規則な命令8つ', x: '`{ven}`・`{ten}`・`{pon}`・`{sal}`（原形の2文字を取る）\n`{haz}`（hacer）・`{di}`（decir）・`{ve}`（ir）・`{sé}`（ser）\n__ベン・テン・ポン・サル・アス・ディ・ベ・セ__',
         why: 'スペイン語を習う人が、昔から呪文のように唱えてきた覚え方。8つまとめて唱えておくと、試験で思い出しやすい。この8つ以外は、最初に習った「s を取る」でできる。' },
       { t: 'ask', q: '「（君が）言え！」は？', o: ['¡Di!', '¡Dice!', '¡Decir!'], a: 0,
@@ -199,10 +226,9 @@ MQ.lessons = [
       { t: 'say', who: 'marina', x: 'はじめまして、若い神さま。\nこの島を見に来ましたの。' },
       { t: 'say', x: '目上の神さまや、はじめて会うお客さまには、\nていねいな「あなた」＝ `usted` を使う。\ntú で命令したら、失礼になっちゃう！',
         more: '神さまが島の人に tú を使うのは、家族みたいな仲間だから。スペイン語では、相手との近さで tú と usted を使い分ける。お店のお客さん・年上の知らない人・先生などには usted。' },
-      { t: 'say', x: 'usted への命令は、\n「〜してください」くらいの、ていねいな形。\n作り方が、tú とちがうんだ。' },
-      { t: 'show', cap: 'yo の形（私は〜する）と usted の命令', tbl: [['hablar：yo habl^o^', '{habl^e^}'], ['comer：yo com^o^', '{com^a^}'], ['abrir：yo abr^o^', '{abr^a^}']] },
+      { t: 'show', cap: '今日の出発は yo の形。右が usted の命令（〜してください）', tbl: [['hablar：yo habl^o^', '{habl^e^}'], ['comer：yo com^o^', '{com^a^}'], ['abrir：yo abr^o^', '{abr^a^}']] },
       { t: 'ask', pred: true, q: '左が yo の形、右が usted への命令。\n`hablo` → `hable`、`como` → `coma`。\n最後の文字は、どう変わった？', o: ['o が e・a に変わった', '最後に s がついた', '変わっていない'], a: 0,
-        r: 'そのとおり！\n**yo の形の o を取って、\n-ar なら e、-er・-ir なら a**。\n__-ar は e、-er・-ir は a。いつもと反対の母音__と覚えよう。' },
+        r: 'そのとおり！\n**yo の形の o を取って、\n-ar なら e、-er・-ir なら a**。' },
       { t: 'forge', w: 'hablo', cut: 'o', add: 'e', o: ['e', 'a', 'o'], out: '{hable}', ja: '話してください', hint: 'yo の形 `hablo`（私は話す）から。まず、取る文字をタップ！' },
       { t: 'say', x: 'スペイン語では、usted への命令は\n**おもてなし**の言葉にもなる。\n「どうぞ入って」「どうぞ食べて」\nみたいにね。' },
       { t: 'say', x: '`pasar`（入る・通る）。\nyo の形は `paso`。\no を取って、-ar の動詞だから…？' },
@@ -213,6 +239,7 @@ MQ.lessons = [
       { t: 'cast', who: 'marina', need: 'ロラが焼いたパンを出したよ。\nマリーナさまに、すすめよう', o: ['Coma, por favor.', 'Come, por favor.', 'Comes, por favor.'], a: 0,
         out: '{Coma}, por favor.', ja: 'どうぞ、召し上がってください。', fx: { e: '🍞', mood: '😋' },
         why: '`come` は tú への命令。usted には、yo の形 como の o を取って、-er なので a。`{coma}`。' },
+      { t: 'map', hi: ['usted'], x: 'いま見つけたきまりを、地図に書きこもう。出発は yo の形。' },
       { t: 'tip', id: 't-usted', ti: 'usted への命令は、yo の形から', x: '① yo の形の o を取る\n② -ar なら e、-er・-ir なら a\n`hablo` → `{hable}`　`como` → `{coma}`　`abro` → `{abra}`\n__いつもと反対の母音__',
         why: 'usted への命令は、もともと「〜してくださいますように」という願いの形（接続法現在。西検4級の範囲）。願いの形は、yo の形を土台に、ふだんの活用と反対の母音（-ar なら e、-er・-ir なら a）で作る決まりがある。' },
       { t: 'say', who: 'marina', x: 'まあ、ていねいな神さまね。\n気に入りましたわ。' },
@@ -226,18 +253,19 @@ MQ.lessons = [
     ev: { who: 'marina', line: 'この島の奥も、見てみたいわ' },
     actors: ['tomas', 'marina'],
     steps: [
-      { t: 'say', x: 'マリーナさまを、島の奥へ案内しよう。\nusted の命令は、yo の形から作るんだったね。\nyo の形が特別な動詞だと、どうなるかな？' },
+      { t: 'say', x: 'マリーナさまを、島の奥へ案内しよう。\n今日も、出発は yo の形。\nyo の形が特別な動詞だと、どうなるかな？' },
+      { t: 'map', hi: ['usted'], x: '今日は、地図のここ（usted の命令）から続けるよ。' },
       { t: 'ask', pred: true, q: '`venir`（来る）の yo の形は `vengo`（私は来る）。\nusted への命令は？', o: ['venga', 'vienga', 'ven'], a: 0,
         r: '`{venga}`！\nyo の形の o を取ると `veng`。\n-ir の動詞だから a をつけて `{venga}`。\n**yo の形の g が、そのまま残る**んだ。' },
       { t: 'show', cap: 'yo の形から作る', tbl: [['hablar：yo habl^o^', '{habl^e^}'], ['comer：yo com^o^', '{com^a^}'], ['venir：yo veng^o^', '{veng^a^}']] },
-      { t: 'say', x: '作り方は、前回と同じ2手。\n① yo の形の、最後の o を取る\n② -ar なら e、-er・-ir なら a をつける\nyo の形さえ知っていれば、特別な動詞も作れる。' },
+      { t: 'say', x: '作り方は、地図のとおり。\nyo の形さえ知っていれば、\n特別な動詞も作れる。' },
       { t: 'forge', w: 'vengo', cut: 'o', add: 'a', o: ['a', 'e'], out: '{venga}', ja: '来てください', hint: 'yo の形 `vengo`（私は来る）から。① 取る文字をタップ！' },
       { t: 'say', x: 'yo の形の g が、そのまま残ったね。\n`venga` は「来てください」。' },
       { t: 'cast', who: 'marina', need: '島の奥を見たいわ。\n案内してくださる？', o: ['Venga conmigo.', 'Ven conmigo.', 'Viene conmigo.'], a: 0,
         out: '{Venga} conmigo.', ja: 'わたしといっしょに来てください。', fx: { e: '🌴', mood: '😊', world: 'palm' },
         why: '`ven` は tú への命令、`viene` は「彼女は来る」。usted には yo の形 vengo から `{venga}`。conmigo は「わたしといっしょに」。' },
       { t: 'show', cap: 'yo の形が -go で終わる動詞', tbl: [['tener：ten^go^', '{teng^a^}'], ['poner：pon^go^', '{pong^a^}'], ['salir：sal^go^', '{salg^a^}'], ['hacer：ha^go^', '{hag^a^}'], ['decir：di^go^', '{dig^a^}']] },
-      { t: 'say', x: 'tú で不規則だった仲間（ten・pon・sal・haz・di）も、\nusted では yo の形から作れる！\nyo の形が -go なら、命令は -ga。' },
+      { t: 'say', x: 'tú で不規則だった仲間も、\nusted では yo の形から作れる！\nyo の形が -go なら、命令は -ga。' },
       { t: 'cast', who: 'marina', need: 'おみやげに、島の花をわたそう🌺', o: ['Tenga, es para usted.', 'Ten, es para usted.', 'Tiene, es para usted.'], a: 0,
         out: '{Tenga}, es para usted.', ja: 'どうぞ、あなたへのおくりものです。', fx: { e: '🌺', mood: '🥰', world: 'flower' },
         why: '`tengo` の o を取って a をつけ `{tenga}`。物をわたすときの「どうぞ」は、決まった言い方。' },
@@ -252,57 +280,21 @@ MQ.lessons = [
       { t: 'drill', n: 5 }
     ]
   },
-  /* ================= DAY 4 ================= */
+  /* L11 は、あとから足した神託（id は L11 のまま、順番は L6 のつぎ・L7 の前。画面の「第○の神託」は並び順で数える） */
   {
-    id: 'L7', no: 7, day: 3, icon: '⚓', ti: '旅の一行', sub: 'yo の形から作れない4つ・ustedes',
-    ev: { who: 'viaje', line: 'こんにちは！ 大陸から船で来ました！' },
-    actors: ['tomas', 'viaje'],
-    steps: [
-      { t: 'say', x: '島に港ができて、\n大陸から旅の一行がやって来た！\nみんな、はじめて会うお客さまだよ。' },
-      { t: 'say', x: 'その前に、usted の命令の残り。\nyo の形から作れない動詞が、4つだけある。' },
-      { t: 'show', cap: 'yo の形が -oy で終わる4つ', tbl: [['ir：yo v^oy^', '{vaya}'], ['ser：yo s^oy^', '{sea}'], ['estar：yo est^oy^', '{esté}'], ['dar：yo d^oy^', '{dé}']] },
-      { t: 'say', x: '表の yo の形を見て。\n`voy`・`soy`・`estoy`・`doy`。\nどれも -oy で終わっていて、\n「最後の o を取る」ができない。' },
-      { t: 'say', x: 'だから、この4つは特別な形。\n`ir`（行く）→ `{vaya}`\n`ser`（〜である）→ `{sea}`\n`estar`（〜の状態でいる）→ `{esté}`\n`dar`（あげる）→ `{dé}`' },
-      { t: 'cast', who: 'viaje', need: '旅の一行のひとりに\n「浜はどっちですか？」と聞かれた', o: ['Vaya por esta calle.', 'Ve por esta calle.', 'Va por esta calle.'], a: 0,
-        out: '{Vaya} por esta calle.', ja: 'この道を行ってください。', fx: { e: '🛣️', mood: '👉' },
-        why: '`ve` は tú への命令。お客さまには `{vaya}`。por esta calle は「この道を通って」。' },
-      { t: 'say', x: 'つぎは、相手が**何人も**いるとき。\nusted が何人もいたら、`ustedes`（あなたたち）。' },
-      { t: 'show', cap: 'usted → ustedes', tbl: [['hablar', '{hable} → {hable^n^}'], ['comer', '{coma} → {coma^n^}'], ['venir', '{venga} → {venga^n^}'], ['ir', '{vaya} → {vaya^n^}']] },
-      { t: 'ask', pred: true, q: '左が usted、右が ustedes への命令。\nどう変わった？', o: ['最後に n がついた', '最後に s がついた', '最後に d がついた'], a: 0,
-        r: 'そう！ **usted の命令に n をつける**だけ。\n「彼らは話す」の hablan の n と同じで、\n「何人も」の印なんだ。' },
-      { t: 'cast', who: 'viaje', need: '（旅の一行が、港で荷物を持って立っている）', o: ['Pasen, por favor.', 'Pase, por favor.', 'Pasan, por favor.'], a: 0,
-        out: '{Pasen}, por favor.', ja: 'みなさん、どうぞお入りください。', fx: { e: '🏘️', mood: '😊', world: 'port' },
-        why: '1人なら `pase`。何人もいるので n をつけて `{pasen}`。`pasan` は「彼らは通る」で、命令ではない。' },
-      { t: 'cast', who: 'viaje', need: '長い船旅で、みんなおなかがぺこぺこ', o: ['Coman, por favor.', 'Comen, por favor.', 'Coma, por favor.'], a: 0,
-        out: '{Coman}, por favor.', ja: 'みなさん、どうぞ召し上がってください。', fx: { e: '🍲', mood: '😋' },
-        why: '`comer` は usted で `coma`、ustedes で `{coman}`。`comen` は「彼らは食べる」。' },
-      { t: 'cast', who: 'viaje', need: '「島の神さまの家を見たい」と言っている', o: ['Vengan conmigo.', 'Vienen conmigo.', 'Venga conmigo.'], a: 0,
-        out: '{Vengan} conmigo.', ja: 'みなさん、いっしょに来てください。', fx: { e: '⛩️', mood: '🤩' },
-        why: 'usted の `venga` に n をつけて `{vengan}`。`vienen` は「彼らは来る」。' },
-      { t: 'tip', id: 't-ustedes', ti: 'yo の形が -oy の4つ ／ ustedes は n をつける', x: '`{vaya}`（ir）・`{sea}`（ser）・`{esté}`（estar）・`{dé}`（dar）\nustedes：usted の命令 ＋ n\n`{hable}` → `{hablen}`　`{vaya}` → `{vayan}`',
-        why: 'voy・soy・estoy・doy は、o のあとに y がついているので、o を取る作り方が使えない。ustedes の n は、動詞の「彼ら・あなたたち」の形（hablan・comen）にいつもつく n と同じ印。' },
-      { t: 'ask', q: '旅の一行に「行ってください」。', o: ['Vayan', 'Vaya', 'Van'], a: 0,
-        why: 'usted の `vaya` に n をつけて `{vayan}`。`van` は「彼らは行く」。' },
-      { t: 'drill', n: 5 }
-    ]
-  },
-  /* ================= DAY 4 ================= */
-  /* L11 は、あとから足した神託（id は L11 のまま、順番は L7 のつぎ。画面の「第○の神託」は並び順で数える） */
-  {
-    id: 'L11', no: 11, day: 4, icon: '🛒', ti: '港の市場', sub: 'yo の形がクセものの動詞（oiga・traiga・pida…）',
-    ev: { who: 'paco', line: '大陸から来た商人だよ。この島で市場を開いてもいいかい？' },
+    id: 'L11', no: 11, day: 3, icon: '🛒', ti: '浜の市場', sub: 'yo の形がクセものの動詞（oiga・traiga・pida…）',
+    ev: { who: 'paco', line: 'マリーナさまの船で来た商人だよ。この浜で市場を開いてもいいかい？' },
     actors: ['tomas', 'paco'],
     steps: [
-      { t: 'say', x: '港に市場ができた！\n大陸から、商人のパコさんが来たよ。\nはじめて会う人だから、`usted` で話そう。' },
+      { t: 'say', x: '浜に市場ができた！\nマリーナさまの船で、\n商人のパコさんが来たよ。\nはじめて会う人だから、`usted` で話そう。' },
       { t: 'say', who: 'paco', x: 'いらっしゃい！\n島に足りないものは、何でもそろえるよ。' },
-      { t: 'say', x: 'usted の命令は、yo の形から作る。\n① yo の形の最後の o を取る\n② -ar なら e、-er・-ir なら a\nyo の形にクセがあっても、このルールは同じ。',
-        more: 'このルールで作れないのは、yo の形が -oy で終わる4つ（vaya・sea・esté・dé）だけ。それ以外は、yo の形さえ知っていれば自分で作れる。' },
+      { t: 'map', hi: ['usted'], x: '今日も出発は yo の形。クセのある形でも、地図のここ（usted の命令）と同じ。' },
       { t: 'show', cap: 'yo の形にクセがある動詞', tbl: [['oír（聞く）：yo oi^go^', '{oig^a^}'], ['traer（持ってくる）：yo trai^go^', '{traig^a^}'], ['conocer（知る）：yo cono^zc^o', '{conozc^a^}'], ['ver（見る）：yo ve^o^', '{ve^a^}']] },
       { t: 'ask', pred: true, q: '`oír`（聞く）の yo の形は `oigo`。\nusted に「聞いてください」は？', o: ['oiga', 'oye', 'oia'], a: 0,
         r: '`{oiga}`！\n`oigo` の o を取って a。g が残るね。\n`¡Oiga!` は、知らない人に\n「すみません！」と呼びかける言い方にもなるよ。' },
-      { t: 'cast', who: 'paco', need: '市場がにぎやかで、\nパコさんがこっちに気づいてくれない。\n呼びかけよう', o: ['¡Oiga, por favor!', '¡Oye, por favor!', '¡Oíd, por favor!'], a: 0,
+      { t: 'cast', who: 'paco', need: '市場がにぎやかで、\nパコさんがこっちに気づいてくれない。\n呼びかけよう', o: ['¡Oiga, por favor!', '¡Oye, por favor!', '¡Oigo, por favor!'], a: 0,
         out: '¡{Oiga}, por favor!', ja: 'すみません！（聞いてください）', fx: { e: '👂', mood: '😮' },
-        why: '`oye` は tú（仲よし）への呼びかけ、`oíd` は vosotros（何人もの仲よし）へ。はじめて会う商人には、yo の形 oigo から `{oiga}`。' },
+        why: '`oye` は tú（仲よし）への呼びかけ、`oigo` は「私は聞く」。はじめて会う商人には、yo の形 oigo から `{oiga}`。' },
       { t: 'forge', w: 'traigo', cut: 'o', add: 'a', o: ['a', 'e'], out: '{traiga}', ja: '持ってきてください', hint: 'yo の形 `traigo`（私は持ってくる）から。① 取る文字をタップ！' },
       { t: 'cast', who: 'paco', need: '島では、お米がとれない。\nパコさんに持ってきてもらおう', o: ['Traiga arroz, por favor.', 'Trae arroz, por favor.', 'Traya arroz, por favor.'], a: 0,
         out: '{Traiga} arroz, por favor.', ja: 'お米を持ってきてください。', fx: { e: '🍚', mood: '👍', world: 'market' },
@@ -313,9 +305,45 @@ MQ.lessons = [
       { t: 'cast', who: 'paco', need: 'パコさんは、島のことをまだよく知らない。\n「島を知ってください（見て回ってください）」と言おう', o: ['Conozca la isla.', 'Conoce la isla.', 'Conoza la isla.'], a: 0,
         out: '{Conozca} la isla, por favor.', ja: 'どうぞ島を見て回ってください。', fx: { e: '🏝️', mood: '🤩' },
         why: 'conocer の yo の形は conozco。o を取って a で `{conozca}`。z と c が両方残る。`conoce` は tú への命令。' },
-      { t: 'tip', id: 't-yo2', ti: 'yo の形がクセものでも、ルールは同じ', x: '`oigo` → `{oiga}`　`traigo` → `{traiga}`\n`conozco` → `{conozca}`　`veo` → `{vea}`\n`pido` → `{pida}`　`repito` → `{repita}`\n作れないのは -oy の4つ（vaya・sea・esté・dé）だけ',
+      { t: 'tip', id: 't-yo2', ti: 'yo の形がクセものでも、ルールは同じ', x: '`oigo` → `{oiga}`　`traigo` → `{traiga}`\n`conozco` → `{conozca}`　`veo` → `{vea}`\n`pido` → `{pida}`　`repito` → `{repita}`',
         why: 'usted の命令（願いの形）は、yo の形を土台にして作る。だから yo の形のクセ（g・zc・i）が、そのまま引きつがれる。試験で見たことのない動詞が出ても、yo の形を思い出せば作れる。' },
       { t: 'drill', n: 6 }
+    ]
+  },
+  /* ================= DAY 4 ================= */
+  {
+    id: 'L7', no: 7, day: 4, icon: '⚓', ti: '旅の一行', sub: 'yo の形から作れない4つ・ustedes',
+    ev: { who: 'viaje', line: 'こんにちは！ 大陸から船で来ました！' },
+    actors: ['tomas', 'viaje'],
+    steps: [
+      { t: 'say', x: '島に港ができて、\n大陸から旅の一行がやって来た！\nみんな、はじめて会うお客さまだよ。' },
+      { t: 'say', x: 'usted の命令は、yo の形から作ってきたね。\nでも、yo の形から作れない動詞が4つだけある。\nそのあとは、何人もへの命令だよ。' },
+      { t: 'show', cap: 'yo の形が -oy で終わる4つ', tbl: [['ir（行く）：yo v^oy^', '{vaya}'], ['ser（〜である）：yo s^oy^', '{sea}'], ['estar（いる）：yo est^oy^', '{esté}'], ['dar（あげる）：yo d^oy^', '{dé}']] },
+      { t: 'say', x: '表の yo の形を見て。\n`voy`・`soy`・`estoy`・`doy`。\nどれも -oy で終わっていて、\n「最後の o を取る」ができない。',
+        more: '作れないのは、この4つだけ。それ以外は、yo の形から作れる。' },
+      { t: 'cast', who: 'viaje', need: '旅の一行のひとりに\n「浜はどっちですか？」と聞かれた', o: ['Vaya por esta calle.', 'Ve por esta calle.', 'Va por esta calle.'], a: 0,
+        out: '{Vaya} por esta calle.', ja: 'この道を行ってください。', fx: { e: '🛣️', mood: '👉' },
+        why: '`ve` は tú への命令。お客さまには `{vaya}`。por esta calle は「この道を通って」。' },
+      { t: 'map', hi: ['oy4'], x: 'いま見つけた4つを、地図に書きこもう。usted の枝の、例外。' },
+      { t: 'say', x: 'つぎは、相手が**何人も**いるとき。\nusted が何人もいたら、`ustedes`（あなたたち）。' },
+      { t: 'show', cap: 'usted → ustedes', tbl: [['hablar', '{hable} → {hable^n^}'], ['comer', '{coma} → {coma^n^}'], ['venir', '{venga} → {venga^n^}'], ['ir', '{vaya} → {vaya^n^}']] },
+      { t: 'ask', pred: true, q: '左が usted、右が ustedes への命令。\nどう変わった？', o: ['最後に n がついた', '最後に s がついた', '最後に d がついた'], a: 0,
+        r: 'そう！ **usted の命令に n をつける**だけ。\n「彼らは話す」の hablan の n と同じで、\n「何人も」の印なんだ。' },
+      { t: 'map', hi: ['ustedes'], x: 'いま見つけたきまりを、地図に書きこもう。出発は usted の命令。' },
+      { t: 'cast', who: 'viaje', need: '（旅の一行が、港で荷物を持って立っている）', o: ['Pasen, por favor.', 'Pase, por favor.', 'Pasan, por favor.'], a: 0,
+        out: '{Pasen}, por favor.', ja: 'みなさん、どうぞお入りください。', fx: { e: '🏘️', mood: '😊', world: 'port' },
+        why: '1人なら `pase`。何人もいるので n をつけて `{pasen}`。`pasan` は「彼らは通る」で、命令ではない。' },
+      { t: 'cast', who: 'viaje', need: '長い船旅で、みんなおなかがぺこぺこ', o: ['Coman, por favor.', 'Comen, por favor.', 'Coma, por favor.'], a: 0,
+        out: '{Coman}, por favor.', ja: 'みなさん、どうぞ召し上がってください。', fx: { e: '🍲', mood: '😋' },
+        why: '`comer` は usted で `coma`、ustedes で `{coman}`。`comen` は「彼らは食べる」。' },
+      { t: 'cast', who: 'viaje', need: '「島の神さまの家を見たい」と言っている', o: ['Vengan conmigo.', 'Vienen conmigo.', 'Venga conmigo.'], a: 0,
+        out: '{Vengan} conmigo.', ja: 'みなさん、いっしょに来てください。', fx: { e: '⛩️', mood: '🤩' },
+        why: 'usted の `venga` に n をつけて `{vengan}`。`vienen` は「彼らは来る」。' },
+      { t: 'tip', id: 't-ustedes', ti: 'yo の形が -oy の4つ ／ ustedes は n をつける', x: '`{vaya}`（ir）・`{sea}`（ser）・`{esté}`（estar）・`{dé}`（dar）\n作れないのは、この4つだけ。それ以外は yo の形から作れる\nustedes：usted の命令 ＋ n\n`{hable}` → `{hablen}`　`{vaya}` → `{vayan}`',
+        why: 'voy・soy・estoy・doy は、o のあとに y がついているので、o を取る作り方が使えない。ustedes の n は、動詞の「彼ら・あなたたち」の形（hablan・comen）にいつもつく n と同じ印。' },
+      { t: 'ask', q: '旅の一行に「行ってください」。', o: ['Vayan', 'Vaya', 'Van'], a: 0,
+        why: 'usted の `vaya` に n をつけて `{vayan}`。`van` は「彼らは行く」。' },
+      { t: 'drill', n: 5 }
     ]
   },
   {
@@ -324,12 +352,13 @@ MQ.lessons = [
     actors: ['pepe', 'marina', 'pueblo', 'viaje'],
     steps: [
       { t: 'say', x: '今夜は、島ではじめてのお祭り！\n村のみんなも、マリーナさまも、\n旅の一行も来ているよ。' },
-      { t: 'say', x: '村のみんなは、何人もいる仲間。\nスペインでは、仲よしの何人もの相手を\n`vosotros`（君たち）と呼ぶ。',
+      { t: 'say', x: '村のみんなは、何人もいる仲間。\n仲よしの何人もの相手は\n`vosotros`（君たち）と言う。\n今日の出発は、原形。',
         more: 'vosotros を使うのはスペインだけ。中南米では、仲よしの何人もの相手にも ustedes を使う（命令も ustedes の形）。西検は両方出るので、どちらも分かるようにしておこう。' },
       { t: 'show', cap: 'vosotros への命令', tbl: [['hablar', '{habla^d^}'], ['comer', '{come^d^}'], ['abrir', '{abri^d^}'], ['venir', '{veni^d^}']] },
       { t: 'ask', pred: true, q: '左が原形、右が vosotros への命令。\nどう変わった？', o: ['最後の r が d になった', '最後に d がついた', '最後に n がついた'], a: 0,
         r: 'そのとおり！\n**原形の最後の r を d にする**だけ。\nvosotros には、不規則な形がほとんどない。' },
       { t: 'forge', w: 'bailar', cut: 'r', add: 'd', o: ['d', 'n', 's'], out: '{bailad}', ja: '（君たち）踊れ！', hint: '原形 `bailar` を vosotros に。まず消す文字をタップ！' },
+      { t: 'map', hi: ['vos'], x: 'いま見つけたきまりを、地図に書きこもう。出発は原形。' },
       { t: 'cast', who: 'pueblo', need: '音楽が始まった！\nみんなもじもじして、踊りださない', o: ['¡Bailad!', '¡Bailan!', '¡Baila!'], a: 0,
         out: '¡{Bailad}, amigos!', ja: 'みんな、踊れ！', fx: { e: '💃', mood: '🎶', world: 'party' },
         why: '何人もの仲間（vosotros）には、原形 bailar の r を d にして `{bailad}`。`baila` は1人の tú へ。' },
@@ -354,7 +383,7 @@ MQ.lessons = [
     ev: { who: 'lola', line: 'ふわぁ…ペペがまだ起きないよ' },
     actors: ['pepe', 'lola', 'marina'],
     steps: [
-      { t: 'say', x: 'お祭りの次の朝。\n今日は、命令に「それを」「私に」を\nくっつける言い方を覚えよう。' },
+      { t: 'say', x: 'お祭りの次の朝。\n今日は、できあがった命令の後ろに、\n「それを」「私に」をくっつけてみよう。' },
       { t: 'show', cap: '「それを・私に」の言葉', tbl: [['lo（それを・男性の物）', 'la（それを・女性の物）'], ['me（私に・私を）', 'te（君に・君を）']] },
       { t: 'say', x: 'ふつうの文では、こういう言葉は\n動詞の**前**に置くね。\n`Lo como.`（私はそれを食べる）' },
       { t: 'ask', pred: true, q: 'では命令では？\n「それを食べろ」はどっちだと思う？', o: ['Lo come.', 'Cómelo.'], a: 1,
@@ -391,7 +420,8 @@ MQ.lessons = [
     actors: ['pepe', 'lola', 'tomas'],
     steps: [
       { t: 'say', who: 'tomas', x: '神さま！ 海のむこうから、\nまっ黒な雲がせまっておる！\n闇の魔神カオスじゃ…！' },
-      { t: 'say', x: 'みんなを守るために、\n「〜するな」の命令を覚えよう。\n作り方には、usted の命令を使うよ。' },
+      { t: 'say', x: 'みんなを守るために、\n「〜するな」の命令を覚えよう。\n今日の出発は、usted の命令。' },
+      { t: 'map', hi: ['usted'], x: '今日は、地図のここ（usted の命令）から枝をのばす。' },
       { t: 'show', cap: 'usted の命令 → tú への「〜するな」', tbl: [['{hable}', 'no {hable^s^}'], ['{coma}', 'no {coma^s^}'], ['{salga}', 'no {salga^s^}']] },
       { t: 'ask', pred: true, q: '「（君は）話すな」は `no hables`。\nusted の命令 `hable` と、どうちがう？', o: ['no ＋ 最後に s', 'no ＋ 最後に n', '原形の r が d になった'], a: 0,
         r: 'そのとおり！\ntú に「〜するな」は、\n**no ＋ usted の命令 ＋ s**。\ntú の印の s が、ここでつくんだ。' },
@@ -409,8 +439,9 @@ MQ.lessons = [
       { t: 'cast', who: 'pepe', need: '黒い雲から、あやしい黒いリンゴが降ってきた！\nペペが拾ってる…', o: ['¡No la comas!', '¡No cómela!', '¡No comas la!'], a: 0,
         out: '¡No la {comas}, [Pepe]!', ja: 'それを食べちゃだめだ、ペペ！', fx: { e: '🍏', mood: '😱' },
         why: '禁止の命令では、la は動詞の前。`no la {comas}`。くっつけるのは「〜しろ」の命令のときだけ。' },
+      { t: 'map', hi: ['no-tu', 'no-usted'], x: 'いま見つけたきまりを、地図に書きこもう。出発は usted の命令。' },
       { t: 'tip', id: 't-neg', ti: '「〜するな」は usted の命令から', x: 'tú へ：no ＋ usted の命令 ＋ s\n`{hable}` → no `{hables}`　`{tenga}` → no `{tengas}`\nusted へ：no ＋ usted の命令（`no {hable}`）\nlo・me などは動詞の前（`no lo {comas}`）',
-        why: '「〜するな」も、usted の命令と同じ願いの形を使う。願いの形の「君」の語尾が -s なので、tú への禁止は s がつく。vosotros への禁止（no habléis）は、決戦の前の神託で。' },
+        why: '「〜するな」も、usted の命令と同じ願いの形を使う。願いの形の「君」の語尾が -s なので、tú への禁止は s がつく。vosotros への禁止は、もう少しあとで。' },
       { t: 'say', x: 'これで「〜するな」も言えるようになった！\nカオスとの決戦の前に、\nあと少しだけ修行しよう。' },
       { t: 'drill', n: 6 }
     ]
@@ -421,7 +452,8 @@ MQ.lessons = [
     ev: { who: 'lola', line: 'カオスが来る前に、みんなに約束しておきたいね' },
     actors: ['pepe', 'lola', 'marina'],
     steps: [
-      { t: 'say', x: '「〜するな」は、no ＋ usted の命令 ＋ s。\nでも、ルールどおりに作ると\nつづりがおかしくなる動詞があるんだ。' },
+      { t: 'say', x: '今日は、usted の命令の「つづり」の話。\nルールどおりに作ると、\nつづりがおかしくなる動詞があるんだ。' },
+      { t: 'map', hi: ['usted'], x: '今日は、地図のここ（usted の命令）から枝をのばす。' },
       { t: 'show', cap: 'スペイン語の読み方のきまり', tbl: [['ca・co・cu', 'カ・コ・ク'], ['ce・ci', 'セ・シ（「ケ・キ」は que・qui）'], ['ga・go・gu', 'ガ・ゴ・グ'], ['ge・gi', 'ヘ・ヒ（「ゲ・ギ」は gue・gui）']] },
       { t: 'say', x: 'c と g は、後ろの母音で読み方が変わる。\n`ce` は「セ」、`ge` は「ヘ」。\n「ケ」「ゲ」と読ませたいときは、\n`que`・`gue` と書くんだ。' },
       { t: 'ask', pred: true, q: '`llegar`（着く）の yo の形は `llego`。\no を取って e をつけると `llege`？\nでも、これだと「リェヘ」と読める。\n「リェゲ」の音のまま書くには？', o: ['llegue', 'llege', 'llega'], a: 0,
@@ -434,11 +466,12 @@ MQ.lessons = [
       { t: 'cast', who: 'lola', need: '闇の雲から落ちてきた、黒い石。\nロラがさわろうとしている！', o: ['¡No lo toques, Lola!', '¡No lo tocas, Lola!', '¡No lo toces, Lola!'], a: 0,
         out: '¡No lo {toques}, [Lola]!', ja: 'それにさわらないで、ロラ！', fx: { e: '🪨', mood: '😳' },
         why: 'tocar の usted の命令は toque（c を qu に）。「〜するな」は s をつけて `no {toques}`。lo は禁止なので動詞の前。' },
-      { t: 'say', x: 'z の動詞は、e の前で c に書きかえる。\n`empezar`（始める）→ `empiezo` → `{empiece}`\nスペイン語では ze とは書かないきまりなんだ。',
+      { t: 'say', x: 'z の動詞は、e の前で c に書きかえる。\n`empezar`（始める）\n→ `empiezo` → `{empiece}`\nスペイン語では ze とは書かないきまりなんだ。',
         more: 'z と、e・i の前の c は、同じ音（スペインでは舌を歯の間にはさむ音、中南米では s の音）。だから音は変わらず、「ze・zi とは書かない」というつづりのきまりに合わせるだけ。' },
       { t: 'cast', who: 'marina', need: 'マリーナさまに、作戦会議を\n始めてもらいたい', o: ['Empiece, por favor.', 'Empieza, por favor.', 'Empieze, por favor.'], a: 0,
         out: '{Empiece}, por favor.', ja: 'どうぞ、始めてください。', fx: { e: '🗺️', mood: '😊' },
         why: '目上の女神さまには usted。yo の形 empiezo の o を取って e をつけると ze になるので、c に書きかえて `{empiece}`。`empieza` は tú への命令。' },
+      { t: 'map', hi: ['spell'], x: 'いま見つけたきまりを、地図に書きこもう。usted の枝の、つづりの書きかえ。' },
       { t: 'tip', id: 't-spell', ti: 'e の前で、つづりを書きかえる3つ', x: '-car：c → qu（`{busque}`・no `{toques}`）\n-gar：g → gu（`{llegue}`・no `{llegues}`・`{pague}`）\n-zar：z → c（`{empiece}`）\n音は変えずに、書き方だけ合わせる',
         why: 'スペイン語の c・g は、後ろが a・o・u か e・i かで読み方が変わる（ca カ／ce セ、ga ガ／ge ヘ）。usted の命令や「〜するな」は語尾が e になるので、もとの音のままにするために qu・gu と書く。z は e の前に書かないきまりなので c にする。' },
       { t: 'drill', n: 6 }
@@ -449,10 +482,10 @@ MQ.lessons = [
     ev: { who: 'marina', line: 'わたしたちも、いっしょに戦いますわ' },
     actors: ['pepe', 'lola', 'marina'],
     steps: [
-      { t: 'say', x: '決戦の前夜。\nマリーナさまたちが、島に集まってくれた。\n最後の修行は、代名詞を2つ使う命令だ。' },
+      { t: 'say', x: '決戦の前夜。\nマリーナさまたちが、島に集まってくれた。\n今日は、できあがった命令に、\n代名詞を2つくっつけるよ。' },
       { t: 'show', cap: '「だれに」と「何を」', tbl: [['「だれに」', 'me（私に）・te（君に）・le（彼・彼女・あなたに）'], ['「何を」', 'lo（それを・男性の物）・la（それを・女性の物）']] },
       { t: 'say', x: '2つ使うときは、\n**「だれに」→「何を」の順**。\nふつうの文なら `Me lo das.`\n（君は私にそれをくれる）' },
-      { t: 'ask', pred: true, q: 'では「（君が）私にそれをくれ」の命令は？\n`da`（dar の tú の命令）に、\nme と lo をくっつけると…？', o: ['Dámelo.', 'Dalome.', 'Me lo da.'], a: 0,
+      { t: 'ask', pred: true, q: 'では「（君が）私にそれをくれ」の命令は？\n`dar` の tú の命令は、`das` から s を取った `da`。\nこれに me と lo をくっつけると…？', o: ['Dámelo.', 'Dalome.', 'Me lo da.'], a: 0,
         r: '`{Dámelo}`！\n命令の後ろに、「だれに」→「何を」の順で\nくっつける。強く読む「ダ」に ´ をつけるよ。' },
       { t: 'cast', who: 'pepe', need: 'ペペが、宴のくだもの（la fruta）を持っている。\n神さまにわたしてもらおう', o: ['Dámela, Pepe.', 'Dálame, Pepe.', 'Dámelo, Pepe.'], a: 0,
         out: '{Dámela}, [Pepe].', ja: 'それをわたしてくれ、ペペ。', fx: { e: '🍇', mood: '😋' },
@@ -482,12 +515,13 @@ MQ.lessons = [
     actors: ['pepe', 'lola', 'pueblo'],
     steps: [
       { t: 'say', x: '決戦の朝。\n村のみんなが、海岸に集まってきた。\n今日は神さまも、みんなの仲間の1人だ。' },
-      { t: 'say', x: '自分も入れて「（私たちで）〜しよう」と\nさそう命令がある。\n相手は、自分をふくむ `nosotros`（私たち）。' },
+      { t: 'say', x: '自分も入れて「（私たちで）〜しよう」と\nさそう命令がある。\n相手は `nosotros`（私たち）。\n出発は、usted の命令。' },
       { t: 'show', cap: 'usted の命令 → nosotros「〜しよう」', tbl: [['{hable}', '{hable^mos^}'], ['{coma}', '{coma^mos^}'], ['{salga}', '{salga^mos^}']] },
       { t: 'ask', pred: true, q: '左が usted の命令、右が「〜しよう」。\nどう変わった？', o: ['最後に mos がついた', '最後に s がついた', '最後に n がついた'], a: 0,
         r: 'そのとおり！\n**「〜しよう」は、usted の命令 ＋ mos**。\nmos は「私たちは」の印。\nふつうの文の `hablamos` と同じ印だね。' },
       { t: 'say', x: '気をつけたいのは、ふつうの文とのちがい。\n`hablamos` は「私たちは話す」。\n`hablemos` は「（私たちで）話そう」。\n**usted の命令（hable）が入っているのが、さそう形**。' },
       { t: 'forge', w: 'baile', cut: '', add: 'mos', o: ['mos', 's', 'n'], out: '{Bailemos}', ja: '（みんなで）踊ろう！', hint: 'usted の命令 `baile` から、「踊ろう」を作ろう。つける文字は？' },
+      { t: 'map', hi: ['nos'], x: 'いま見つけたきまりを、地図に書きこもう。出発は usted の命令。' },
       { t: 'cast', who: 'pueblo', need: 'カオスが来る前に、海岸にとりでを作りたい。\nみんなで力を合わせよう', o: ['Trabajemos juntos.', 'Trabajamos juntos.', 'Trabajad juntos.'], a: 0,
         out: '{Trabajemos} juntos.', ja: 'いっしょに働こう。', fx: { e: '🧱', mood: '💪', world: 'shield' },
         why: '自分も入れてさそうので、usted の命令 trabaje ＋ mos で `{trabajemos}`。`trabajamos` は「私たちは働く」の文。`trabajad` は「君たち、働け」で、自分は入らない。' },
@@ -500,6 +534,7 @@ MQ.lessons = [
       { t: 'show', cap: 'usted の命令 → vosotros に「〜するな」', tbl: [['{hable}', 'no {habl^éis^}'], ['{coma}', 'no {com^áis^}'], ['{salga}', 'no {salg^áis^}']] },
       { t: 'ask', pred: true, q: 'tú への「〜するな」は、usted の命令 ＋ s だった。\nvosotros へは、どうなっている？', o: ['最後の母音が éis・áis になった', '最後に mos がついた', '原形の r が d になった'], a: 0,
         r: 'そう！\n**vosotros に「〜するな」は、no ＋ usted の命令の最後の e・a を éis・áis に**。\nふつうの文の `habláis`（君たちは話す）と、\nまちがえないでね。' },
+      { t: 'map', hi: ['no-vos'], x: 'いま見つけたきまりを、地図に書きこもう。これも出発は usted の命令。' },
       { t: 'cast', who: 'pueblo', need: '黒い霧が来た！\nみんなが、家から飛び出そうとしている', o: ['¡No salgáis, amigos!', '¡No salid, amigos!', '¡No salís, amigos!'], a: 0,
         out: '¡No {salgáis}, [amigos]!', ja: 'みんな、外に出るな！', fx: { e: '🌫️', mood: '😳' },
         why: 'usted の命令 salga の最後の a を áis にして `no {salgáis}`。`salid` は「出ろ」なので、no をつけても禁止にならない。`no salís` は「君たちは出ない」の文。' },
@@ -519,9 +554,9 @@ MQ.lessons = [
 MQ.bosses = [
   { id: 'B1', after: 'L4', day: 2, name: '嵐の巨人テンペスタ', en: 'GIGANTE TEMPESTAD', face: '🌪️', col: '#5fb8ff', from: ['L1', 'L2', 'L3', 'L4'], n: 7,
     line: 'ちびっこ神さま、島ごと吹きとばしてやる！', win: '嵐が晴れて、空に虹がかかった！' },
-  { id: 'B2', after: 'L8', day: 4, name: '火山の竜ボルカン', en: 'DRAGÓN VOLCÁN', face: '🐉', col: '#ff6a3d', from: ['L5', 'L6', 'L7', 'L11', 'L8'], n: 8,
+  { id: 'B2', after: 'L8', day: 4, name: '火山の竜ボルカン', en: 'DRAGÓN VOLCÁN', face: '🐉', col: '#ff6a3d', from: ['L5', 'L6', 'L11', 'L7', 'L8'], n: 8,
     line: 'ていねいに頼めるか？ それとも灰になるか！', win: '火山がしずまって、あたたかい温泉がわいた！' },
-  { id: 'B3', after: 'L14', day: 7, name: '闇の魔神カオス', en: 'DIOS DEL CAOS', face: '👁️', col: '#b04dff', from: ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L11', 'L8', 'L9', 'L10', 'L12', 'L13', 'L14'], n: 12, final: true,
+  { id: 'B3', after: 'L14', day: 7, name: '闇の魔神カオス', en: 'DIOS DEL CAOS', face: '👁️', col: '#b04dff', from: ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L11', 'L7', 'L8', 'L9', 'L10', 'L12', 'L13', 'L14'], n: 12, final: true,
     line: '言葉なき世界こそ、我がのぞみ……', win: '闇が晴れた。島に、はじめての朝が来た——創世の完成だ！' }
 ];
 

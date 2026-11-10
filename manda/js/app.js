@@ -174,7 +174,7 @@
   function glossJa(root) {
     var used = {};
     walk(root, function (node) {
-      if (node.parentNode.closest('.es, .es-line, .es-cell, .gj, button')) return;
+      if (node.parentNode.closest('.es, .es-line, .es-cell, .gj, .cmap, button')) return;
       var parts = node.nodeValue.split(GRE);
       if (parts.length < 2) return;
       var frag = document.createDocumentFragment(), hit = false;
@@ -702,7 +702,7 @@
     setProg();
     if (cur.i >= cur.L.steps.length) return finishLesson();
     var st = cur.L.steps[cur.i++], run = cur.run;
-    ({ say: doSay, show: doShow, enter: doEnter, ask: doAsk, forge: doForge, cast: doCast, tapwho: doTapWho, tip: doTip, q: doQ, drill: doDrill })[st.t](st, run);
+    ({ say: doSay, show: doShow, enter: doEnter, ask: doAsk, forge: doForge, cast: doCast, tapwho: doTapWho, tip: doTip, map: doMap, q: doQ, drill: doDrill })[st.t](st, run);
   }
   function nextBtn(label) { if (!cur) return; setProg(); T1.next(step, label || replyLabel()); }
 
@@ -926,6 +926,8 @@
     S.lessons[L.id] = { done: true, stars: Math.max(stars, rec.stars || 0), at: Date.now() };
     var sets = setRewards();
     rewards = rewards.concat(missionDone('stage'), sets);
+    var mapNew = first ? MAP.nodes.filter(function (n) { return n.L === L.no; }).slice(0, 2) : [];
+    if (mapNew.length) rewards.push({ icon: '🗺', t: '地図に書きこまれた', h: mapChips(mapNew) });
     setFx(sets);
     touchDay();
     var up = addXp(run.xp);
@@ -956,7 +958,7 @@
       (o.big ? '<div class="bignum"><b>' + o.big[0] + '</b><small>' + esc(o.big[1]) + '</small></div>' : '') +
       '<div class="res-stats"><span>⭕ <b>' + run.ok + '</b></span><span>❌ <b>' + run.ng + '</b></span><span>🔥 最大 <b>' + run.best + '</b> コンボ</span></div>' +
       '<div class="res-xp"><div class="rx-top"><b>+<span id="rXp">0</span> XP</b><span>神格 Lv.<b id="rLv">' + lvBefore.lv + '</b></span></div><span class="lv-bar big"><i id="rBar" style="width:' + Math.round(lvBefore.cur / lvBefore.need * 100) + '%"></i></span></div>' +
-      (o.rewards && o.rewards.length ? '<ul class="rewards">' + o.rewards.map(function (r) { return '<li><span>' + r.icon + '</span>' + esc(r.t) + '</li>'; }).join('') + '</ul>' : '') +
+      (o.rewards && o.rewards.length ? '<ul class="rewards">' + o.rewards.map(function (r) { return '<li><span>' + r.icon + '</span>' + (r.h || esc(r.t)) + '</li>'; }).join('') + '</ul>' : '') +
       (o.card ? '<div class="newcard"><p>🃏 新しい住人！ タップでめくる</p>' + cardHtml(o.card, true) + '</div>' : '') +
       (o.note ? '<p class="res-note">' + o.note + '</p>' : '') +
       (run.misses && run.misses.length ? '<details class="misses"' + (o.openMisses ? ' open' : '') + '><summary>📝 まちがえた問題を見直す（' + run.misses.length + '問）</summary>' +
@@ -1024,7 +1026,7 @@
    * ボス戦・ラッシュ・復習（1問ずつの画面）
    * ========================================================= */
   var zMain = $('#zMain'), zHud = $('#zHud'), zRun = null, zTimer = 0, zActive = false;
-  function zStop() { zActive = false; clearInterval(zTimer); Speech.stop(); $('#quiz').classList.remove('exam'); }
+  function zStop() { zActive = false; clearInterval(zTimer); Speech.stop(); $('#quiz').classList.remove('exam'); $('#zMap').hidden = false; }
   $('#zQuit').addEventListener('click', function () {
     if (zActive && !confirm('やめる？（ここまでの XP はもらえません）')) return;
     zStop(); home();
@@ -1094,7 +1096,9 @@
           later(function () {
             FX.shake(null, true); FX.flash('#ff0040'); paint();
             if (hearts <= 0) return later(function () { bossEnd(B, false, 0); }, 900);
-            T2.next(one, '▶ 立て直す（🏠 ' + hearts + '）');
+            var hi = mapHiFor(q), lab = '▶ 立て直す（🏠 ' + hearts + '）';
+            if (hi.length) T2.btns([{ t: lab, cls: 'go', fn: one }, { t: '🗺 地図で見る', cls: 'sub', fn: function () { mapModal(hi); } }]);
+            else T2.next(one, lab);
           }, 300);
         }
       });
@@ -1137,7 +1141,7 @@
     T2.next(function () { rushGo(pool); }, '⚡ スタート！', 'boss');
   }
   function rushGo(pool) {
-    T2.clear(); zMain.innerHTML = '';
+    T2.clear(); zMain.innerHTML = ''; $('#zMap').hidden = true;   // 60秒の時間が減らないように、ラッシュ中は地図を出さない
     var k = 3;
     (function count() {
       if (k > 0) { FX.slam(String(k), 'cyan'); Sfx.tap(); k--; later(count, 700); }
@@ -1216,7 +1220,12 @@
         if (ok) hit(zRun, $('.chosen', T2.el) || c); else miss(zRun, c);
         paint();
         var nx = k < list.length ? '▶ つぎへ' : '▶ おわり！';
-        later(function () { if (ok) T2.next(one, nx); else T2.btns([{ t: nx, cls: 'go', fn: one }, { t: '📜 ヒントを見る', cls: 'sub', fn: function () { hintModal(q.L); } }]); }, 250);
+        later(function () {
+          if (ok) return T2.next(one, nx);
+          var hi = mapHiFor(q);
+          T2.btns([{ t: nx, cls: 'go', fn: one }, { t: hi.length ? '📜 ヒント' : '📜 ヒントを見る', cls: 'sub', fn: function () { hintModal(q.L); } }]
+            .concat(hi.length ? [{ t: '🗺 地図', cls: 'sub', fn: function () { mapModal(hi); } }] : []));
+        }, 250);
       });
     }
     function end() {
@@ -1232,6 +1241,98 @@
     }
     one();
   }
+
+  /* =========================================================
+   * 🗺 命令の地図
+   *  命令の形の出発点は3つ（tú の形・yo の形・原形）。きまりを習うたびに枝が1本ずつ書きこまれる。
+   *  データは MQ.map（lessons.js）。まだ無いときは下の既定を使う。
+   *  動かすのは「いまここ」の札（hi）だけ。ほかは動かさない（opacity だけのパルス）。
+   * ========================================================= */
+  var MAP = D.map || {
+    starts: [
+      { id: 's-tu', ti: 'tú の形', ex: 'hablas', sub: '君は〜する' },
+      { id: 's-yo', ti: 'yo の形', ex: 'hablo', sub: '私は〜する' },
+      { id: 's-inf', ti: '原形', ex: 'hablar', sub: '辞書の形' }
+    ],
+    nodes: [
+      { id: 'tu', from: 's-tu', L: 1, who: 'tú（1人・仲よし）', op: 's を取る', ex: '{habla}', ja: '話せ' },
+      { id: 'tu4a', from: 'tu', L: 3, kind: 'ex', ti: '例外：原形の最後の2文字を取る4つ', ex: '{ven}・{ten}・{pon}・{sal}' },
+      { id: 'tu4b', from: 'tu', L: 4, kind: 'ex', ti: '例外：覚える4つ', ex: '{haz}・{di}・{ve}・{sé}' },
+      { id: 'usted', from: 's-yo', L: 5, who: 'usted（1人・ていねい）', op: 'o を取って、-ar は e／-er・-ir は a', ex: '{hable}・{coma}', ja: '話してください' },
+      { id: 'oy4', from: 'usted', L: 7, kind: 'ex', ti: '例外：yo の形が -oy の4つ', ex: '{vaya}・{sea}・{esté}・{dé}' },
+      { id: 'spell', from: 'usted', L: 12, kind: 'ex', ti: 'e の前のつづりの書きかえ', ex: '{busque}・{llegue}・{empiece}' },
+      { id: 'ustedes', from: 'usted', L: 7, who: 'ustedes（何人も・ていねい）', op: '＋ n', ex: '{hablen}' },
+      { id: 'no-tu', from: 'usted', L: 10, who: 'tú に「〜するな」', op: 'no ＋ usted の命令 ＋ s', ex: 'no {hables}' },
+      { id: 'no-usted', from: 'usted', L: 10, who: 'usted に「〜しないで」', op: 'no ＋ usted の命令', ex: 'no {hable}' },
+      { id: 'nos', from: 'usted', L: 14, who: 'nosotros「〜しよう」', op: '＋ mos', ex: '{hablemos}' },
+      { id: 'no-vos', from: 'usted', L: 14, who: 'vosotros に「〜するな」', op: 'no ＋ 最後の e・a を éis・áis に', ex: 'no {habléis}' },
+      { id: 'vos', from: 's-inf', L: 8, who: 'vosotros（何人も・仲よし）', op: 'r を d に', ex: '{hablad}' }
+    ]
+  };
+  /* 形の問題（k:'form'）の相手 → その相手の枝 */
+  var PMAP = { 'tú': 'tu', 'usted': 'usted', 'vosotros': 'vos', 'ustedes': 'ustedes', 'no-tú': 'no-tu', 'no-usted': 'no-usted', 'nosotros': 'nos', 'no-vosotros': 'no-vos' };
+  function mapOpenN() { return MAP.nodes.filter(function (n) { return lessonDone(n.L); }).length; }
+  function mapNodeHtml(n, open, hi) {
+    if (!open) { var NL = LESSON['L' + n.L]; return '<div class="cmap-n lock">？？？<small>' + (NL ? esc(oracleNo(NL)) + 'で' : '') + '</small></div>'; }
+    var here = hi ? '<b class="cmap-here">いまここ</b>' : '';
+    if (n.kind === 'ex') return '<div class="cmap-n ex' + (hi ? ' hi' : '') + '"><div class="cmap-who">' + esc(n.ti) + here + '</div><div class="cmap-ex">' + esHtml(n.ex) + '</div></div>';
+    return '<div class="cmap-n' + (hi ? ' hi' : '') + '"><div class="cmap-who">' + esc(n.who) + here + '</div>' +
+      '<div class="cmap-flow">→ ' + esc(n.op) + ' → <b class="cmap-ex">' + esHtml(n.ex) + '</b>' + (n.ja ? '<small class="cmap-ja">' + esc(n.ja) + '</small>' : '') + '</div></div>';
+  }
+  /* hi：いま光らせる枝の id の配列。opts.nowL：その番号の神託で習う枝は、まだクリア前でも開いて見せる */
+  function mapHtml(hi, opts) {
+    hi = hi || []; opts = opts || {};
+    var kids = {};
+    MAP.nodes.forEach(function (n) { (kids[n.from] || (kids[n.from] = [])).push(n); });
+    function isOpen(n) { return lessonDone(n.L) || hi.indexOf(n.id) >= 0 || (opts.nowL && n.L === opts.nowL); }
+    function any(id) { return (kids[id] || []).some(function (n) { return isOpen(n) || any(n.id); }); }
+    function tree(id) {
+      return (kids[id] || []).map(function (n) {
+        return '<div class="cmap-b">' + mapNodeHtml(n, isOpen(n), hi.indexOf(n.id) >= 0) + (kids[n.id] ? '<div class="cmap-kids">' + tree(n.id) + '</div>' : '') + '</div>';
+      }).join('');
+    }
+    return '<div class="cmap">' + MAP.starts.map(function (s) {
+      var on = any(s.id);
+      return '<section class="cmap-g' + (on ? '' : ' off') + '"><div class="cmap-h"><small>出発：</small>' +
+        (on ? '<b>' + esc(s.ti) + '</b><span class="cmap-sx">' + esc(s.ex) + '</span><em>（' + esc(s.sub) + '）</em>' : '<b>？？？</b>') + '</div>' + tree(s.id) + '</section>';
+    }).join('') + '</div>';
+  }
+  /* 光っている札が見える所まで、入れ物（ボード・モーダル）の中でスクロール */
+  function mapReveal(root, scroller, ms) {
+    later(function () {
+      var h = $('.cmap-n.hi', root); if (!h || !scroller) return;
+      var r = h.getBoundingClientRect(), B = scroller.getBoundingClientRect();
+      if (r.top < B.top + 8 || r.bottom > B.bottom - 8) scroller.scrollTop += r.top - B.top - 10;
+    }, ms);
+  }
+  /* 地図を開く（いつでも）。レッスン中は、いま習っている枝を開いて見せる */
+  function mapModal(hi) {
+    var nowL = cur ? (cur.L.base ? cur.L.base.no : cur.L.no) : 0;
+    modal('<h3 class="m-h">🗺 命令の地図</h3>' + mapHtml(hi, { nowL: nowL }) +
+      '<p class="m-note">' + mapOpenN() + ' / ' + MAP.nodes.length + ' 本が書きこまれている。習うたびに増えるよ。</p>', 'map-m');
+    mapReveal($('#mbody'), $('.mbox'), 380);
+  }
+  /* まちがえた問題に当たる枝：形の問題は相手の枝、それ以外はその神託で習う枝 */
+  function mapHiFor(q) {
+    if (q.k === 'form' && PMAP[q.p]) return [PMAP[q.p]];
+    return MAP.nodes.filter(function (n) { return n.L === q.L; }).map(function (n) { return n.id; });
+  }
+  /* 結果画面：そのレッスンで新しく開いた枝の札（1〜2枚） */
+  function mapChips(nodes) {
+    return '<div class="cmap-rw"><b>地図に書きこまれた</b>' + nodes.map(function (n) {
+      return '<div class="cmap-chip"><i>' + esc(n.kind === 'ex' ? n.ti : n.who) + '</i><br>' + (n.kind === 'ex' ? '' : '→ ' + esc(n.op) + ' → ') + '<b>' + esHtml(n.ex) + '</b></div>';
+    }).join('') + '</div>';
+  }
+  function doMap(st) {
+    var c = el('div', 'card board-tbl cmap-card', '<div class="qtag">🗺 命令の地図</div>' + mapHtml(st.hi || []));
+    boardSet(c);
+    mapReveal(c, boardEl, 120);
+    var me = cur;
+    talk(st.x, null, 'happy', function () { if (cur === me) nextBtn(); });
+  }
+  $('#pMap').addEventListener('click', function () { Sfx.tap(); mapModal([]); });
+  $('#zMap').addEventListener('click', function () { Sfx.tap(); mapModal([]); });
+  $('#hMap').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); mapModal([]); });
 
   /* =========================================================
    * 🩹 あやしい所 → おさらい神託
@@ -1256,7 +1357,7 @@
     list.sort(function (a, b) { return S.weak[b].ids.length - S.weak[a].ids.length || LESSON['L' + a].ord - LESSON['L' + b].ord; });
     return list[0] || 0;
   }
-  var REMEDY_KEEP = { show: 1, forge: 1, cast: 1, tapwho: 1, ask: 1, tip: 1 };
+  var REMEDY_KEEP = { show: 1, forge: 1, cast: 1, tapwho: 1, ask: 1, tip: 1, map: 1 };
   function remedyLesson(no) {
     var L = LESSON['L' + no], ids = (S.weak[no] ? S.weak[no].ids : []).slice(0, 4), steps = [];
     steps.push({ t: 'say', x: oracleNo(L) + '「' + L.ti + '」で、\nまちがえた問題があったね。\n1回で覚えきれないのは、あたりまえ。\n要点だけ、さっともう一度いこう！' });
@@ -1322,7 +1423,7 @@
     });
     list = shuffle(list);
     var k = 0, ok = 0, got = {};
-    zStop(); show('quiz'); $('#quiz').classList.add('exam'); zActive = true; zRun = newRun();
+    zStop(); show('quiz'); $('#quiz').classList.add('exam'); $('#zMap').hidden = true; zActive = true; zRun = newRun();
     $('#zTitle').textContent = '🎓 西検チャレンジ'; zHud.innerHTML = '';
     FX.slam('EXAMEN', 'gold', '試験と同じ形で ' + list.length + '問');
     function paint() { $('#zProg').style.width = Math.round(k / list.length * 100) + '%'; $('#zRight').innerHTML = '<small>問</small><b>' + Math.min(k + 1, list.length) + '/' + list.length + '</b>'; }
@@ -1514,7 +1615,8 @@
     $$('.tabs button', d).forEach(function (b) { b.addEventListener('click', function () { Sfx.tap(); dexScreen(b.getAttribute('data-tab')); }); });
     var body = $('.dex-body', d);
     if (tab === 'tips') {
-      body.innerHTML = '<p class="dex-note">神託で手に入れたコツ。🤔 なぜ？ を開くと理由が読めるよ。</p>' + TIPS.map(function (t) {
+      body.innerHTML = '<div class="card cmap-card"><div class="qtag">🗺 命令の地図　' + mapOpenN() + ' / ' + MAP.nodes.length + '</div>' + mapHtml([]) + '</div>' +
+        '<p class="dex-note">神託で手に入れたコツ。🤔 なぜ？ を開くと理由が読めるよ。</p>' + TIPS.map(function (t) {
         var st = t.tip, have = S.tips[st.id];
         return have ? '<div class="card tip"><div class="tip-h"><span>' + esc(oracleNo(t.L)) + '</span></div><b class="tip-ti">' + esc(st.ti) + '</b><div class="tip-x">' + ja(st.x) + '</div>' + (st.why ? '<details><summary>🤔 なぜ？</summary><p>' + ja(st.why) + '</p></details>' : '') + '</div>'
           : '<div class="card tip locked"><b class="tip-ti">？？？</b><small>' + esc(oracleNo(t.L)) + ' でゲット</small></div>';
@@ -1653,6 +1755,7 @@
     $('#hRushBest').textContent = unlocked ? 'BEST ' + S.rushBest : '🔒';
     $('#hGachaN').textContent = '🎟 ' + S.tickets;
     $('#hBookN').textContent = Object.keys(S.cards).length + '人';
+    $('#hMapN').textContent = mapOpenN() + '/' + MAP.nodes.length;
     $('#hMockN').textContent = allLessonsDone() ? (S.mockBest ? 'BEST ' + S.mockBest + '%' : '20問') : '🔒';
     $('#hMock').classList.toggle('alert', allLessonsDone() && (S.mockBest || 0) < 70);
     $('#hReview').classList.toggle('alert', due >= 3);

@@ -71,7 +71,12 @@
       if (t && !t.hidden) t.click();
       await SL(80);
       var st = cur.L.steps[cur.i - 1], go = T.querySelector('.tb.go');
-      if (go) { ov(id + ' #' + cur.i + ' ' + st.t); go.click(); continue; }
+      if (go) {
+        ov(id + ' #' + cur.i + ' ' + st.t);
+        /* 地図：光っている札（いまここ）がボードの中で見えているか */
+        if (st.t === 'map') { var hi = document.querySelector('.cmap-n.hi'), bd = document.querySelector('#board'); if (hi && bd) { var hr = hi.getBoundingClientRect(), br = bd.getBoundingClientRect(); if (hr.top < br.top - 2 || hr.bottom > br.bottom + 2) OV.push(id + ' #' + cur.i + ' map: 光る札がボードの外'); } }
+        go.click(); continue;
+      }
       if (document.querySelector('.qcard[data-q]:not(.is-ok):not(.is-ng)')) { await solveQ(T); await SL(500); continue; }
       if (st.t === 'ask' || st.t === 'cast') { var b = opt(T, st.o[st.a]); if (b) { ov(id + ' #' + cur.i + ' ' + st.t); b.click(); await SL(1300); } continue; }
       if (st.t === 'forge') {

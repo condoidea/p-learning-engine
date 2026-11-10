@@ -90,7 +90,7 @@ MQ.questions.forEach(q => {
 });
 
 /* ---------- レッスン ---------- */
-const PASSIVE = { say: 1, tip: 1 };   // show はすぐ次へ進むので数えない（続けて読むのは、その次の say）
+const PASSIVE = { say: 1, tip: 1, map: 1 };   // show はすぐ次へ進むので数えない（続けて読むのは、その次の say）
 MQ.lessons.forEach(L => {
   let run = 0, owl = 0;
   const here = new Set(L.actors || []);
@@ -107,6 +107,17 @@ MQ.lessons.forEach(L => {
     }
     if (st.who || st.t === 'enter') here.add(st.who);
     if ((st.t === 'cast') && !MQ.people[st.who]) err(at + '：知らない人 ' + st.who);
+    if (st.t === 'map' && MQ.map) {   // MQ.map がまだ無いときは検査を飛ばす
+      const li = MQ.lessons.indexOf(L);
+      if (!Array.isArray(st.hi) || !st.hi.length) err(at + '：map の hi が空');
+      (st.hi || []).forEach(id => {
+        const n = MQ.map.nodes.find(x => x.id === id);
+        if (!n) return err(at + '：map の hi「' + id + '」が MQ.map.nodes にない');
+        const ni = MQ.lessons.findIndex(x => x.no === n.L);
+        if (ni < 0 || ni > li) err(at + '：map の hi「' + id + '」はまだ習っていない神託（L' + n.L + '）の枝');
+      });
+      if (!st.x) err(at + '：map に x（ブーホの一言）がない');
+    }
     if (st.t === 'tapwho' && !here.has(st.a)) err(at + '：tapwho の正解 ' + st.a + ' が場面にいない');
     if (st.t !== 'show' && st.t !== 'enter') run = PASSIVE[st.t] ? run + 1 : 0;
     if (run === 4) warn(at + '：読むだけのステップが4つ続いている');
@@ -123,6 +134,17 @@ MQ.lessons.forEach(L => {
   if (!MQ.world.grow[L.id]) warn(L.id + '：島の育ち（world.grow）がない');
 });
 MQ.bosses.forEach(B => { if (!MQ.world.grow[B.id]) warn(B.id + '：島の育ち（world.grow）がない'); });
+
+/* ---------- 命令の地図（MQ.map） ---------- */
+if (MQ.map) {
+  const sids = new Set(MQ.map.starts.map(x => x.id)), nids = new Set(MQ.map.nodes.map(x => x.id));
+  MQ.map.nodes.forEach(n => {
+    if (!sids.has(n.from) && !nids.has(n.from)) err('地図の枝 ' + n.id + '：from「' + n.from + '」がない');
+    if (!MQ.lessons.some(x => x.no === n.L)) err('地図の枝 ' + n.id + '：L' + n.L + ' の神託がない');
+    if (n.kind === 'ex' ? !n.ti : !(n.who && n.op)) err('地図の枝 ' + n.id + '：who・op（例外の札は ti）がない');
+    if (!n.ex) err('地図の枝 ' + n.id + '：ex がない');
+  });
+}
 
 /* ---------- カード ---------- */
 const cids = new Set(), icons = new Set();

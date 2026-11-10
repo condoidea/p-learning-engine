@@ -83,7 +83,7 @@ MQ.cards = [
   { id: 'c10-4', L: 10, r: 'SR', icon: '🦉', name: 'ふくろう', es: '[Búho], no {abras} la puerta.', ja: 'ふくろうよ、ドアを開けるな。', tag: 'no' },
   { id: 'c10-5', L: 10, r: 'SSR', icon: '🛡️', name: 'まもりのたて', es: '[Pepe], no {tengas} miedo, por favor.', ja: 'ペペ、こわがらないで、お願い。', tag: 'no' },
 
-  /* ---- L11 港の市場 ---- */
+  /* ---- L11 浜の市場 ---- */
   { id: 'c11-1', L: 11, r: 'N', icon: '🍚', name: 'おこめ', es: '{Traiga} el arroz, por favor.', ja: 'お米を持ってきてください。', tag: 'usted' },
   { id: 'c11-2', L: 11, r: 'N', icon: '🎶', name: 'おんがく', es: '[Paco], {oiga} la música, por favor.', ja: 'パコさん、音楽を聞いてください。', tag: 'usted' },
   { id: 'c11-3', L: 11, r: 'R', icon: '🛒', name: 'いちばのカート', es: '[Paco], {pida} el pan, por favor.', ja: 'パコさん、パンを注文してください。', tag: 'usted' },
