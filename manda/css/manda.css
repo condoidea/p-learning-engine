@@ -666,3 +666,34 @@ details p { margin: 6px 0 0; padding: 8px 10px; border-radius: 12px; background:
 .forge2-map { margin-top: 2px; }
 .forge2-go { display: block; margin-top: 6px; padding: 7px 14px; border: 1px solid var(--cmd); border-radius: 14px; background: rgba(255, 207, 74, .12); color: var(--cmd); font-size: 14px; font-weight: 800; }
 
+
+/* 🗺 しぼった表示：hi の枝とそこへの道だけ（375px で 170px 前後、枝が2つで 230px 以内） */
+.cmap-card.cmap-focus, .cmap-card.forge2-map { padding: 6px 8px 4px; }
+.cmap-card.cmap-focus .qtag, .cmap-card.forge2-map .qtag { margin-bottom: 3px; }
+.cmap.focus { gap: 4px; margin-bottom: 2px; }
+.cmap.focus .cmap-g { padding: 4px 6px 2px; border-radius: 12px; }
+.cmap.focus .cmap-h { margin: 0 0 3px; line-height: 1.35; }
+.cmap.focus .cmap-b { margin: 0 0 3px; }
+.cmap.focus .cmap-kids { margin: 3px 0 0 4px; padding-left: 6px; }
+.cmap.focus .cmap-n { padding: 3px 8px; line-height: 1.4; border-radius: 10px; }
+.cmap.focus .cmap-n.par { background: rgba(255, 255, 255, .05); }
+.cmap.focus .cmap-n.par .cmap-who { font-weight: 700; color: #ddd6ff; }
+.cmap.focus .cmap-n.par .cmap-ex { font-size: 18px; }
+.cmap-more { display: block; margin: 0 auto 2px; padding: 2px 12px; min-height: 28px; border: 0; border-radius: 99px; background: transparent; color: var(--muted); font-size: 15px; font-weight: 700; font-family: inherit; text-decoration: underline; cursor: pointer; }
+
+/* しぼった地図（さらに短く）：1行の道 ＋ hi の札。右上の 🗺 で全体 */
+.cmap.focus { position: relative; display: block; margin: 0; }
+.cmap-path { margin: 0 34px 4px 2px; font-size: 14px; line-height: 1.45; color: #ddd6ff; }
+.cmap-path small { font-size: 13px; color: var(--muted); font-weight: 800; }
+.cmap-path b.cmap-pst { color: var(--who); font-size: 15px; }
+.cmap-path b.cmap-pst.hi { background: rgba(255, 207, 74, .22); border-radius: 6px; padding: 0 4px; }
+.cmap-path .cmap-sx { margin-left: 2px; font-size: 16px; }
+.cmap-path i { font-style: normal; color: var(--muted); }
+.cmap-path .cmap-pn { white-space: nowrap; }
+.cmap-path .cmap-ex { font-size: 16px; }
+.cmap.focus .cmap-n { margin-top: 4px; padding: 3px 8px; line-height: 1.4; }
+.cmap.focus .cmap-n.hi::after { inset: -3px; border-radius: 12px; }
+.cmap.focus .cmap-here { display: none; }
+.cmap.focus .cmap-ja { display: none; }
+.cmap.focus .cmap-more { position: absolute; top: -4px; right: -4px; margin: 0; padding: 0; width: 34px; height: 30px; min-height: 0; border-radius: 10px; background: rgba(255, 255, 255, .1); font-size: 16px; text-decoration: none; }
+.cmap-card.cmap-focus, .cmap-card.forge2-map { padding: 8px 10px 8px; }

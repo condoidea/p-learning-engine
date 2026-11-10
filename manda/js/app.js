@@ -631,7 +631,13 @@
     boardEl.appendChild(card);
     if (!FX.RM && card.animate) card.animate([{ transform: 'translateX(26px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 260, easing: 'cubic-bezier(.2,1.2,.4,1)' });
     boardEl.scrollTop = 0;
-    if (!isTbl) later(function () { var r = card.getBoundingClientRect(), B = boardEl.getBoundingClientRect(); if (r.bottom > B.bottom) boardEl.scrollTop += Math.min(r.top - B.top - 6, r.bottom - B.bottom + 8); }, 30);
+    if (!isTbl) later(function () {
+      var r = card.getBoundingClientRect(), B = boardEl.getBoundingClientRect();
+      if (r.bottom > B.bottom) boardEl.scrollTop += Math.min(r.top - B.top - 6, r.bottom - B.bottom + 8);
+      /* しぼった地図が上に残っているときは、その先頭が見える位置を超えて下げない（地図が上・問題がその下） */
+      var m = $('.cmap-focus', boardEl);
+      if (m) { var mt = m.getBoundingClientRect().top - B.top; if (mt < 4) boardEl.scrollTop += mt - 4; }
+    }, 30);
     return card;
   }
   function boardScroll() { later(function () { boardEl.scrollTo({ top: boardEl.scrollHeight, behavior: FX.RM ? 'auto' : 'smooth' }); }, 40); }
@@ -1276,11 +1282,11 @@
   /* 形の問題（k:'form'）の相手 → その相手の枝 */
   var PMAP = { 'tú': 'tu', 'usted': 'usted', 'vosotros': 'vos', 'ustedes': 'ustedes', 'no-tú': 'no-tu', 'no-usted': 'no-usted', 'nosotros': 'nos', 'no-vosotros': 'no-vos' };
   function mapOpenN() { return MAP.nodes.filter(function (n) { return lessonDone(n.L); }).length; }
-  function mapNodeHtml(n, open, hi) {
+  function mapNodeHtml(n, open, hi, now) {
     if (!open) { var NL = LESSON['L' + n.L]; return '<div class="cmap-n lock">？？？<small>' + (NL ? esc(oracleNo(NL)) + 'で' : '') + '</small></div>'; }
     var here = hi ? '<b class="cmap-here">いまここ</b>' : '';
-    if (n.kind === 'ex') return '<div class="cmap-n ex' + (hi ? ' hi' : '') + '"><div class="cmap-who">' + esc(n.ti) + here + '</div><div class="cmap-ex">' + esHtml(n.ex) + '</div></div>';
-    return '<div class="cmap-n' + (hi ? ' hi' : '') + '"><div class="cmap-who">' + esc(n.who) + here + '</div>' +
+    if (n.kind === 'ex') return '<div class="cmap-n ex' + (hi ? ' hi' : now ? ' now' : '') + '"><div class="cmap-who">' + esc(n.ti) + here + '</div><div class="cmap-ex">' + esHtml(n.ex) + '</div></div>';
+    return '<div class="cmap-n' + (hi ? ' hi' : now ? ' now' : '') + '"><div class="cmap-who">' + esc(n.who) + here + '</div>' +
       '<div class="cmap-flow">→ ' + esc(n.op) + ' → <b class="cmap-ex">' + esHtml(n.ex) + '</b>' + (n.ja ? '<small class="cmap-ja">' + esc(n.ja) + '</small>' : '') + '</div></div>';
   }
   /* hi：いま光らせる枝の id の配列。opts.nowL：その番号の神託で習う枝は、まだクリア前でも開いて見せる。opts.hiStart：光らせる出発点の id（鍛冶場） */
@@ -1292,8 +1298,29 @@
     function any(id) { return (kids[id] || []).some(function (n) { return isOpen(n) || any(n.id); }); }
     function tree(id) {
       return (kids[id] || []).map(function (n) {
-        return '<div class="cmap-b">' + mapNodeHtml(n, isOpen(n), hi.indexOf(n.id) >= 0) + (kids[n.id] ? '<div class="cmap-kids">' + tree(n.id) + '</div>' : '') + '</div>';
+        return '<div class="cmap-b">' + mapNodeHtml(n, isOpen(n), hi.indexOf(n.id) >= 0, !!opts.nowL && n.L === opts.nowL) + (kids[n.id] ? '<div class="cmap-kids">' + tree(n.id) + '</div>' : '') + '</div>';
       }).join('');
+    }
+    if (opts.focus) {
+      /* しぼった表示：hi の枝とそこへの道（親の枝）だけ。出発点は hi の枝があるものだけ */
+      var byId = {}, inc = {}, roots = {}, shownRoots = [];
+      MAP.nodes.forEach(function (n) { byId[n.id] = n; });
+      hi.forEach(function (id) {
+        var n = byId[id]; if (!n) return;
+        inc[id] = 1;
+        var r = n; while (byId[r.from]) { r = byId[r.from]; inc[r.id] = 1; }
+        if (!roots[r.from]) { roots[r.from] = 1; shownRoots.push(r.from); }
+      });
+      if (shownRoots.length) {
+        /* 1行の道（出発 → 親の枝）＋ hi の札だけ。問題と同時に画面に入る高さにする。全体は右上の 🗺 で */
+        var first = byId[hi.filter(function (id) { return byId[id]; })[0]], chain = [], r0 = first;
+        while (byId[r0.from]) { r0 = byId[r0.from]; chain.unshift(r0); }
+        var st0 = MAP.starts.filter(function (x) { return x.id === r0.from; })[0] || MAP.starts[0];
+        var path = '<small>出発</small> <b class="cmap-pst' + (opts.hiStart === st0.id ? ' hi' : '') + '">' + esc(st0.ti) + '</b> <span class="cmap-sx">' + esc(st0.ex) + '</span>' +
+          chain.map(function (n) { return ' <i>→</i> <span class="cmap-pn">' + esc((n.who || n.ti).replace(/（.*?）/, '')) + ' <b class="cmap-ex">' + esHtml(n.ex.split('・')[0]) + '</b></span>'; }).join('');
+        return '<div class="cmap focus"><button type="button" class="cmap-more" aria-label="地図の全体を見る">🗺</button><div class="cmap-path">' + path + '</div>' +
+          hi.filter(function (id) { return byId[id]; }).map(function (id) { return mapNodeHtml(byId[id], true, true); }).join('') + '</div>';
+      }
     }
     return '<div class="cmap">' + MAP.starts.map(function (s) {
       var on = any(s.id);
@@ -1304,7 +1331,7 @@
   /* 光っている札が見える所まで、入れ物（ボード・モーダル）の中でスクロール */
   function mapReveal(root, scroller, ms) {
     later(function () {
-      var h = $('.cmap-n.hi', root); if (!h || !scroller) return;
+      var h = $('.cmap-n.hi', root) || $('.cmap-n.now', root); if (!h || !scroller) return;
       var r = h.getBoundingClientRect(), B = scroller.getBoundingClientRect();
       if (r.top < B.top + 8 || r.bottom > B.bottom - 8) scroller.scrollTop += r.top - B.top - 10;
     }, ms);
@@ -1329,8 +1356,13 @@
       return '<div class="cmap-chip"><i>' + esc(n.kind === 'ex' ? n.ti : n.who) + '</i><br>' + (n.kind === 'ex' ? '' : '→ ' + esc(n.op) + ' → ') + '<b>' + esHtml(n.ex) + '</b></div>';
     }).join('') + '<button class="forge2-go" type="button">🔨 きたえる</button></div>';
   }
+  /* しぼった表示の「ほかの枝は 🗺 で」→ 全体の地図 */
+  function mapMoreBind(root, hi) {
+    var b = $('.cmap-more', root); if (b) b.addEventListener('click', function () { Sfx.tap(); mapModal(hi); });
+  }
   function doMap(st) {
-    var c = el('div', 'card board-tbl cmap-card', '<div class="qtag">🗺 命令の地図</div>' + mapHtml(st.hi || []));
+    var c = el('div', 'card board-tbl cmap-card' + ((st.hi || []).length ? ' cmap-focus' : ''), ((st.hi || []).length ? '' : '<div class="qtag">🗺 命令の地図</div>') + mapHtml(st.hi || [], { focus: true }));
+    mapMoreBind(c, st.hi || []);
     boardSet(c);
     mapReveal(c, boardEl, 120);
     var me = cur;
@@ -1452,7 +1484,8 @@
         if (i === ans) { Sfx.whoosh(); return ok(); }
         miss(zRun, c); c.classList.add('is-ng');
         $('.qres', c).innerHTML = '<b class="rk ng">❌ 正解は「' + esc(items[ans].label) + '」</b><p class="forge2-why">' + why + '</p>';
-        var m = el('div', 'card board-tbl cmap-card forge2-map', '<div class="qtag">🗺 光っている所が、この手の答え</div>' + mapHtml(hi.nodes, { hiStart: hi.start }));
+        var m = el('div', 'card board-tbl cmap-card forge2-map', '<div class="qtag">🗺 光っている所が、この手の答え</div>' + mapHtml(hi.nodes, { hiStart: hi.start, focus: true }));
+        mapMoreBind(m, hi.nodes);
         zMain.appendChild(m); mapReveal(m, zMain, 150);
         later(function () { if (alive()) finish(false); }, 350);
       }, 'forge2-opts' + (two || items.length >= 4 ? ' two' : ''));   // 4つ以上は2列（375×550 で画面からはみ出さない）
