@@ -1740,6 +1740,22 @@
     if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('[role=button]')) { e.preventDefault(); e.target.click(); }
   });
   if (SANDBOX) document.body.classList.add('sandbox');
+  /* 不具合しらべ用：?debug で、画面の左上に「1秒のコマ数・いちばん長いコマ・エラー」を出す（実機でスクリーンショットをもらうため） */
+  if (/[?&]debug\b/.test(location.search)) (function () {
+    var box = el('div', '', ''), errs = [], n = 0, worst = 0, last = performance.now(), t0 = last;
+    box.style.cssText = 'position:fixed;left:4px;top:4px;z-index:999;pointer-events:none;padding:2px 6px;border-radius:6px;background:rgba(0,0,0,.75);color:#7dffb0;font:11px/1.4 monospace;white-space:pre;max-width:90vw;overflow:hidden';
+    document.body.appendChild(box);
+    addEventListener('error', function (e) { errs.push(String(e.message).slice(0, 80)); });
+    addEventListener('unhandledrejection', function (e) { errs.push('promise: ' + String(e.reason).slice(0, 70)); });
+    (function f(t) {
+      n++; worst = Math.max(worst, t - last); last = t;
+      if (t - t0 >= 1000) {
+        box.textContent = 'fps ' + Math.round(n * 1000 / (t - t0)) + '  最長 ' + Math.round(worst) + 'ms  ' + document.body.dataset.screen + '  島の絵 ' + $$('#isle .sp').length + (errs.length ? '\n⚠ ' + errs.slice(-3).join('\n⚠ ') : '');
+        n = 0; worst = 0; t0 = t;
+      }
+      requestAnimationFrame(f);
+    })(last);
+  })();
   try { localStorage.setItem('le.news.manda.opened', '1'); } catch (e) { /* 保存できない環境 */ }
   /* 動作確認用：?sandbox で window.__manda（状態の参照・クリア記録の書きかえ） */
   if (SANDBOX) window.__manda = { S: function () { return S; }, save: save, home: home, start: function (id) { startLesson(LESSON[id]); }, boss: function (id) { bossIntro(BOSS[id]); }, finish: function () { if (cur) { cur.i = cur.L.steps.length; step(); } }, cur: function () { return cur; }, Q: QBY, WHO: WHO,
