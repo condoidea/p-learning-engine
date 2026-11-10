@@ -187,7 +187,7 @@
   /* ---------- 動詞（活用形も書く） ---------- */
   W('ser', '〜である', 'v', 5, 'es, son, fue, era, eres');
   W('estar', '（〜に）いる・ある・〜の状態だ', 'v', 5, 'está, están, estás, estaba');
-  W('tener', '持っている（tener ... años＝…歳だ）', 'v', 5, 'tengo, tiene, tienen, tenemos, tienes');
+  W('tener', '持っている（tener ... años＝…歳だ）', 'v', 5, 'tengo, tiene, tienen, tenemos, tienes, tenía');
   W('haber', '（hay で）〜がある・いる', 'v', 5, 'hay');
   W('ir', '行く（ir a ＋ 原形＝〜するつもり）', 'v', 5, 'va, voy, fuimos');
   W('venir', '来る', 'v', 5, 'vienen');

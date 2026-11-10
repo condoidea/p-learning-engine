@@ -86,6 +86,7 @@ PQ.cases.push({
         { t: 'say', who: 'caballo', es: 'Es tan bonita como el sol.', x: '太陽と同じくらい、きれいな針だったのに…。' },
         { t: 'get', ev: 'reloj' },
         { t: 'ask', q: '「太陽と」にあたるのは？', es: 'Es tan bonita como el sol.', o: ['tan bonita', 'como el sol', 'Es'], a: 1,
+          ng: '「〜と」にあたるのは、como のうしろだよ。',
           r: [{ t: 'say', who: 'mimi', x: 'そう！ como のうしろが、くらべる相手。\n金の針は、太陽と同じくらいきれい、なんだね。' }] }
       ] },
       { e: '🗞', n: '新聞スタンド', steps: [
@@ -169,7 +170,7 @@ PQ.cases.push({
     { t: 'say', who: 'lupe', es: 'Soy Lupe. Voy a la ciudad.', x: 'ルペよ。町へ行くところなの。' },
     { t: 'get', ev: 'lupe' },
     { t: 'testimony', who: 'lupe', title: '10時ごろのこと', hint: '写真のうしろの耳を思い出して。公園にいたはずの時間は？', lines: [
-      { es: 'Voy a la ciudad con el tren.', ja: '汽車で町へ行くの。',
+      { es: 'Voy a la ciudad en tren.', ja: '汽車で町へ行くの。',
         press: [{ t: 'say', who: 'lupe', es: 'El tren sale a las diez y cinco.', x: '汽車は10時5分に出るの。' }] },
       { es: 'A las diez menos cinco, estuve en la ventanilla.', ja: '10時5分前、切符売り場にいたわ。', ok: ['foto'],
         press: [{ t: 'say', who: 'lupe', es: 'Compré un billete, claro.', x: '切符を買ったのよ、もちろん。' }, { t: 'say', who: 'mimi', x: '10時5分前…その時間って…。' }] },
@@ -197,6 +198,7 @@ PQ.cases.push({
       ng: 'usted（あなた）は、ルペさんのこと。\nルペさんは女性（una liebre）。\n自分でも「no soy tan rápida」と言っていたね。\n「同じくらい」は tan … como だよ。',
       r: [{ t: 'slam', txt: '¡Tan rápida!' }] },
     { t: 'say', who: 'lupe', es: 'Lo siento... La aguja es tan bonita como el sol.', x: 'ごめんなさい…。あの針、太陽と同じくらいきれいで…。' },
+    { t: 'say', who: 'caballo', x: 'すまない、ナチョくん。わたしが見たのは、\n新聞スタンドの看板の絵だったようだ。' },
     { t: 'say', who: 'caballo', es: 'Mañana pongo una aguja nueva.', x: '明日、新しい針をつけるよ。' },
     { t: 'say', who: 'nacho', es: '¡Gracias, Nico! Mañana vendo periódicos aquí.', x: 'ありがとう、ニコ！ 明日もここで新聞を売るよ。' },
     { t: 'note', title: 'くらべる言い方 まとめ', rows: [

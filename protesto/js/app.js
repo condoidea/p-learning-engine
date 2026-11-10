@@ -28,7 +28,7 @@
   /* ---------- 保存 ---------- */
   var SANDBOX = /[?&]sandbox\b/.test(location.search);
   var KEY = SANDBOX ? 'protesto.sandbox' : 'protesto.v1';
-  function fresh() { return { v: 1, lessons: {}, notes: {}, words: {}, drillBest: 0, page: 0, settings: { sound: true, speak: true, ja: false } }; }
+  function fresh() { return { v: 1, lessons: {}, notes: {}, words: {}, drillBest: 0, weak: {}, page: 0, settings: { sound: true, speak: true, ja: false } }; }
   function load() {
     try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) { var f = fresh(); for (var k in s) f[k] = s[k]; return f; } } catch (e) { /* 保存できない環境 */ }
     return fresh();
@@ -36,6 +36,13 @@
   var S = load();
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* 保存できない環境 */ } }
   window.SfxOn = function () { return S.settings.sound; };
+  /* まちがいの記録：S.weak[事件id] = まちがえた回数。🩹 おさらいを終えると消える */
+  function weakAdd(id) { if (!id) return; if (!S.weak) S.weak = {}; S.weak[id] = (S.weak[id] || 0) + 1; save(); }
+  function weakTop() {
+    var best = null;
+    D.cases.forEach(function (C) { var n = (S.weak || {})[C.id] || 0; if (n > 0 && (!best || n > best.n)) best = { C: C, n: n }; });
+    return best;
+  }
   function rec(id) { return S.lessons[id] || (S.lessons[id] = { i: 0, done: false, rank: '', acorn: 5, miss: 0 }); }
 
   /* ---------- 単語（4級以上はバルーン） ---------- */
@@ -418,6 +425,7 @@
             await sleep(450); done();
           } else {
             mark(b, 'wrong'); b.disabled = true;
+            if (st.es || st.o.some(isEs)) weakAdd(CASE.id);
             if (st.ng) { var n = $('#act .ng'); n.hidden = false; n.innerHTML = '💡 ' + ja(st.ng); }
             await miss();
           }
@@ -659,7 +667,7 @@
         b.onclick = async function () {
           var i = +b.dataset.i;
           if (i === st.a) { b.classList.add('right'); $$('#tray .opt').forEach(function (x) { x.disabled = true; }); await slam('¡Un momento!', 'press'); done(); }
-          else { b.classList.add('wrong'); b.disabled = true; if (st.ng) { var n = $('#act .ng'); n.hidden = false; n.innerHTML = '💡 ' + ja(st.ng); } await miss(); }
+          else { b.classList.add('wrong'); b.disabled = true; weakAdd(CASE.id); if (st.ng) { var n = $('#act .ng'); n.hidden = false; n.innerHTML = '💡 ' + ja(st.ng); } await miss(); }
         };
       });
       cur.solve = function () { $$('#tray .opt')[st.a].click(); };
@@ -730,6 +738,7 @@
       }
       $('#act .line').classList.add('bad');
       tried = cmpRows('<span class="es">' + wordDiff(line.map(function (p) { return p.w; }).join(' '), goal.join(' ')).a + '</span>');
+      weakAdd(CASE.id);
       await sleep(350);
       await miss();
       /* ng＝まちがえたときのヒント（ミミが言う。組み立ての画面は、そのあとにもう一度出る） */
@@ -798,15 +807,17 @@
   }
 
   function doneScreen(C, rank) {
-    var next = D.cases[D.cases.indexOf(C) + 1];
+    var next = D.cases[D.cases.indexOf(C) + 1], wk = (S.weak || {})[C.id] > 0;
     var d = $('#done');
     d.innerHTML = '<div class="closed"><p class="cno">第' + C.no + '話</p><h2>' + esc(C.title) + '</h2><p class="ces">' + esc(C.es) + '</p>' +
       '<div class="stamp r' + rank + '"><small>評価</small><b>' + rank + '</b></div>' +
       '<p class="cmiss">' + (X.miss === 0 ? 'ノーミス！ どんぐりは 1 つも減らなかった。' : 'ミス ' + X.miss + ' 回') + '</p>' +
       '<p class="cgr">この話で習った形：<b>' + esc(C.grammar) + '</b></p>' +
-      (next ? '<button class="btn main wide" id="dNext">📖 第' + next.no + '話へ</button>' : '<p class="fin">〜 おしまい 〜<br>全6話クリア！ 証言台ドリルで腕をみがこう。</p>') +
+      (wk ? '<button class="btn main wide" id="dFix">🩹 この話のおさらい</button>' : '') +
+      (next ? '<button class="btn ' + (wk ? 'sub' : 'main') + ' wide" id="dNext">📖 第' + next.no + '話へ</button>' : '<p class="fin">〜 おしまい 〜<br>全6話クリア！ 証言台ドリルで腕をみがこう。</p>') +
       '<button class="btn sub wide" id="dHome">表紙へもどる</button></div>';
     show('done');
+    if (wk) $('#dFix').onclick = function () { startFix(C.id); };
     if (next) $('#dNext').onclick = function () { S.page = D.cases.indexOf(next); save(); playCase(next); };
     $('#dHome').onclick = function () { renderHome(); show('home'); };
   }
@@ -870,6 +881,12 @@
     $('#bNext').onclick = function () { S.page = i + 1; save(); Snd.page(); turn(1); };
     if ($('#bGo')) $('#bGo').onclick = function () { unlockAudio(); playCase(C); };
     if ($('#bRe')) $('#bRe').onclick = function () { unlockAudio(); playCase(C, true); };
+    var wt = weakTop(), hf = $('#hFix');
+    hf.hidden = !wt;
+    if (wt) {
+      hf.innerHTML = '<span class="fix-i">🩹</span><span class="fix-t"><b>おさらい　第' + wt.C.no + '話の形</b><span class="fix-g">' + esc(wt.C.grammar) + '</span><small>まちがい ' + wt.n + ' 回</small></span>';
+      hf.onclick = function () { startFix(wt.C.id); };
+    }
     $('#hDrillBest').textContent = S.drillBest ? '最高 ' + S.drillBest : '60秒';
     $('#hNotesN').textContent = Object.keys(S.notes).length + ' ページ';
     var wq = wordQueue();
@@ -920,17 +937,64 @@
     $('#dBoard').scrollTop = 0;
   }
   function nextDrill() {
-    var q = DR.q = D.drill.make(DR.forms);
-    addJa(q.es, q.ja); addJa(q.fix, q.fixJa);
+    var fill = Math.random() < 0.4, q = DR.q = fill ? D.drill.fill(DR.forms[Math.floor(Math.random() * DR.forms.length)]) : D.drill.make(DR.forms);
     $('#dScore').innerHTML = '⚖️ ' + DR.score + (DR.combo >= 3 ? ' <i class="cb">' + DR.combo + '連続</i>' : '');
+    if (fill) {
+      addJa(q.full, q.ja);
+      $('#dBoard').innerHTML = fillBoardHtml(q);
+      $('#dTray').innerHTML = fillOptsHtml(q);
+      $$('#dTray .opt').forEach(function (b) { b.onclick = function () { fillAnswer(+b.dataset.i); }; });
+      cur.solve = function () { var b = $$('#dTray .opt')[q.a]; if (b && !b.disabled) b.click(); };
+      return;
+    }
+    cur.solve = null;
+    addJa(q.es, q.ja); addJa(q.fix, q.fixJa);
     $('#dBoard').innerHTML = chartHtml(q.chart) + '<div class="testi"><div class="th">〜 証言 〜</div><div class="tl"><p class="tles">' + es(q.es) + sayBtn(q.es) + '</p></div></div>';
     $('#dTray').innerHTML = '<div class="xrow"><button class="btn true" id="dT">¡Es verdad!<small>本当</small></button><button class="btn obj" id="dF">¡Protesto!<small>ウソだ</small></button></div>';
     autoSay(q.es);
     $('#dT').onclick = function () { answer(true); };
     $('#dF').onclick = function () { answer(false); };
   }
+  /* ----- 穴埋め（証言台ドリルと🩹 おさらいで共通） ----- */
+  function fillBoardHtml(q) {
+    return chartHtml(q.chart) + '<div class="testi dfill-q"><div class="th">〜 穴うめ ・ 入る語は？ 〜</div><div class="tl"><p class="tles">' + es(q.es) + '</p></div></div>';
+  }
+  function fillOptsHtml(q) {
+    return '<div class="dfill-opts">' + q.o.map(function (x, i) { return '<button class="btn opt" data-i="' + i + '">' + esc(x) + '</button>'; }).join('') + '</div>';
+  }
+  /* まちがえたとき：✕ あなたの文／○ 正解の文（ちがう語に色）＋訳＋なぜ */
+  function fillCmp(q, you) {
+    var d = wordDiff(plain(q.es.replace('___', q.o[you])), plain(q.full));
+    return cmpRows('<span class="es">' + d.a + '</span>', '<span class="es">' + d.b + '</span>') + '<p class="nja">' + esc(q.ja) + '</p><p class="dfill-why">💡 ' + esc(q.why) + '</p>';
+  }
+  /* 正解の文を、空所に入れて見せる */
+  function fillShowFull(q) { var t = $$('.dfill-q .tles')[0]; if (t) t.innerHTML = es(q.full); }
+  function caseOfForm(f) { var r = null; Object.keys(D.drill.forms).forEach(function (id) { if (D.drill.forms[id] === f) r = id; }); return r; }
+  async function fillAnswer(i) {
+    var q = DR.q;
+    $$('#dTray .opt').forEach(function (b) { b.disabled = true; });
+    var b = $$('#dTray .opt')[i];
+    if (i === q.a) {
+      b.classList.add('right');
+      DR.score += 10 + Math.min(DR.combo, 10) * 2; DR.combo++;
+      Snd.ok(); fillShowFull(q);
+      await sleep(700);
+      if (DR) { if (DR.over) endDrill(); else nextDrill(); }
+      return;
+    }
+    b.classList.add('wrong');
+    DR.combo = 0; DR.paused = true; q.you = i; DR.miss.push(q);
+    weakAdd(caseOfForm(q.form));
+    Snd.ng();
+    $('#dBoard').insertAdjacentHTML('beforeend', '<div class="dfix">' + fillCmp(q, i) + '</div>');
+    $('#dBoard').scrollTop = 1e4;
+    $('#dTray').innerHTML = '<button class="btn main wide" id="dN">' + (DR.over ? '結果を見る ▶' : 'つぎの証言 ▶') + '</button>';
+    cur.solve = function () { $('#dN').click(); };
+    $('#dN').onclick = function () { if (DR.over) { endDrill(); return; } DR.paused = false; nextDrill(); };
+  }
   /* ドリルでまちがえたとき：自分の判断と正解をならべる（ウソの証言は、グラフどおりの文とちがう語に色） */
   function drillCmp(q) {
+    if (q.kind === 'fill') return fillCmp(q, q.you);
     if (q.ok) return cmpRows('「<b class="wrong">ウソ</b>」と判断', '「<b class="fix">本当</b>」。グラフどおりの証言');
     var d = wordDiff(plain(q.es), plain(q.fix));
     return cmpRows('「<b class="wrong">本当</b>」と判断：<span class="es">' + d.a + '</span>', '「<b class="fix">ウソ</b>」。グラフどおりなら：<span class="es">' + d.b + '</span>');
@@ -947,6 +1011,7 @@
       return;
     }
     DR.combo = 0; DR.paused = true; DR.miss.push(q);
+    weakAdd(caseOfForm(q.form));
     Snd.ng();
     $('#dBoard').insertAdjacentHTML('beforeend', '<div class="dfix">' + drillCmp(q) + (q.ok ? '<p class="nja">' + esc(q.ja) + '</p>' : '<p class="nja">' + esc(q.fixJa) + '</p>') + '</div>');
     $('#dBoard').scrollTop = 1e4;
@@ -961,7 +1026,7 @@
     d.innerHTML = '<div class="closed"><p class="cno">証言台ドリル</p><h2>' + DR.score + ' 点</h2>' + (best ? '<p class="fin">✨ 最高記録！</p>' : '<p class="ces">最高 ' + S.drillBest + ' 点</p>') +
       (DR.miss.length ? '<h4>見のがした証言</h4>' + DR.miss.map(function (q) { return '<div class="nr">' + drillCmp(q) + '</div>'; }).join('') : '') +
       '<button class="btn main wide" id="drAgain">もう一度</button><button class="btn sub wide" id="drHome">表紙へもどる</button></div>';
-    DR = null;
+    DR = null; cur.solve = null;
     show('done');
     $('#drAgain').onclick = startDrill;
     $('#drHome').onclick = function () { renderHome(); show('home'); };
@@ -1070,11 +1135,88 @@
   $('#hWords').addEventListener('click', startWords);
   $('#wList').addEventListener('click', wordList);
   $('#wQuit').addEventListener('click', function () { WR = null; renderHome(); show('home'); });
-  $('#dQuit').addEventListener('click', function () { if (DR) { clearInterval(DR.timer); DR = null; } renderHome(); show('home'); });
+  $('#dQuit').addEventListener('click', function () { if (DR) { clearInterval(DR.timer); DR = null; } cur.solve = null; renderHome(); show('home'); });
+
+  /* =========================================================
+   * 🩹 おさらい：まちがえた話のノートを見直して、穴埋め3問でリベンジ
+   *  S.weak[事件id] = まちがえた回数（事件の中の問い・ドリルで +1）。おさらいを終えると消える
+   * ========================================================= */
+  var FX = null;
+  /* 台本の steps をたどって、ノートとコツ（note・tip）をぜんぶ集める */
+  function caseNotes(C) {
+    var out = [];
+    (function walk(o) {
+      if (Array.isArray(o)) { o.forEach(walk); return; }
+      if (!o || typeof o !== 'object') return;
+      if (o.t === 'note' || o.t === 'tip') out.push({ title: o.title, rows: o.rows || [], x: o.x || '', why: o.why || '' });
+      Object.keys(o).forEach(function (k) { if (o[k] && typeof o[k] === 'object') walk(o[k]); });
+    })(C.steps);
+    return out;
+  }
+  function startFix(id) {
+    var C = D.cases.filter(function (c) { return c.id === id; })[0];
+    if (!C) return;
+    unlockAudio();
+    FX = { C: C, form: D.drill.forms[id], ok: 0, q: null };
+    $('#fTitle').textContent = '🩹 おさらい 第' + C.no + '話';
+    $('#fProg').textContent = '';
+    show('fix');
+    var h = '<p class="guide fix-lead">第' + C.no + '話の形：<b>' + esc(C.grammar) + '</b><br>まず、ノートを見直そう</p>';
+    caseNotes(C).forEach(function (n) { h += noteHtml(n); });
+    $('#fBoard').innerHTML = h; $('#fBoard').scrollTop = 0;
+    $('#fTray').innerHTML = '<button class="btn main wide" id="fGo">⚔ 3問でリベンジ</button>';
+    $('#fGo').onclick = nextFix;
+    cur.solve = nextFix;
+  }
+  function nextFix() {
+    if (!FX) return;
+    var q = FX.q = D.drill.fill(FX.form);
+    addJa(q.full, q.ja);
+    $('#fProg').innerHTML = '<span class="fix-dots">' + [0, 1, 2].map(function (i) { return i < FX.ok ? '●' : '○'; }).join('') + '</span>';
+    $('#fBoard').innerHTML = fillBoardHtml(q); $('#fBoard').scrollTop = 0;
+    $('#fTray').innerHTML = fillOptsHtml(q);
+    $$('#fTray .opt').forEach(function (b) { b.onclick = function () { fixAnswer(+b.dataset.i); }; });
+    cur.solve = function () { var b = $$('#fTray .opt')[q.a]; if (b && !b.disabled) b.click(); };
+  }
+  async function fixAnswer(i) {
+    var q = FX.q, F = FX;
+    $$('#fTray .opt').forEach(function (b) { b.disabled = true; });
+    var b = $$('#fTray .opt')[i];
+    cur.solve = null;
+    if (i === q.a) {
+      b.classList.add('right'); Snd.ok(); fillShowFull(q);
+      F.ok++;
+      $('#fProg').innerHTML = '<span class="fix-dots">' + [0, 1, 2].map(function (k) { return k < F.ok ? '●' : '○'; }).join('') + '</span>';
+      await sleep(700);
+      if (FX !== F) return;
+      if (F.ok >= 3) finishFix(); else nextFix();
+      return;
+    }
+    b.classList.add('wrong'); Snd.ng();
+    $('#fBoard').insertAdjacentHTML('beforeend', '<div class="dfix">' + fillCmp(q, i) + '</div>');
+    $('#fBoard').scrollTop = 1e4;
+    $('#fTray').innerHTML = '<button class="btn main wide" id="fN">もう1問 ▶</button>';
+    $('#fN').onclick = nextFix;
+    cur.solve = nextFix;
+  }
+  function finishFix() {
+    var C = FX.C;
+    FX = null; cur.solve = null;
+    delete S.weak[C.id]; save();
+    var nx = weakTop();
+    $('#done').innerHTML = '<div class="closed"><p class="cno">🩹 おさらい完了</p><h2>第' + C.no + '話の形</h2><p class="cgr"><b>' + esc(C.grammar) + '</b></p>' +
+      (nx ? '<button class="btn main wide" id="fxNext">🩹 つぎのおさらい　第' + nx.C.no + '話</button><button class="btn sub wide" id="fxHome">表紙へもどる</button>'
+        : '<button class="btn main wide" id="fxHome">表紙へもどる</button>') + '</div>';
+    show('done');
+    if (nx) $('#fxNext').onclick = function () { startFix(nx.C.id); };
+    $('#fxHome').onclick = function () { renderHome(); show('home'); };
+  }
+  $('#fQuit').addEventListener('click', function () { FX = null; cur.solve = null; renderHome(); show('home'); });
 
   /* ---------- 起動 ---------- */
   renderHome(); show('home');
   /* 通しテスト用 */
   window.PRO.play = function (id, restart) { var C = D.cases.filter(function (c) { return c.id === id; })[0]; return playCase(C, restart); };
   window.PRO.drill = startDrill;
+  window.PRO.fix = function (id) { startFix(id); };
 })();

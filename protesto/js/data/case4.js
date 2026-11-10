@@ -149,6 +149,7 @@ PQ.cases.push({
       { t: 'ask', q: 'ニコの主張をスペイン語で言うと？', o: ['Lili tiene más manzanas que Tito.', 'Lili tiene tantas manzanas como Tito.', 'Lili tiene menos manzanas que Tito.'], a: 1,
         ng: 'グラフの棒は同じ高さ。「同じ数」だね。',
         r: [{ t: 'say', who: 'nico', es: 'Lili tiene tantas manzanas como Tito.', x: 'リリさんは、ティトさんと同じ数のりんごを持っている！\nよぶんには、とっていません！' }] },
+      { t: 'say', who: 'tito', x: 'ご、ごめん…。リリのかごは小さいから、\nりんごが多く見えたんだ。' },
       { t: 'say', who: 'pavon', es: '¡Pero faltan dos manzanas!', x: 'しかし、りんごが2個足りないのですよ！' },
       { t: 'say', who: 'juez', x: 'ふむ…。ほかの証人も…聞こう…。' }
     ] },

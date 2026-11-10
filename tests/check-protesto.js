@@ -105,6 +105,20 @@ PQ.cases.forEach(C => {
 PQ.drill.words().forEach(w => addEs('drill', w));
 for (let k = 0; k < 300; k++) { const q = PQ.drill.make(['mas', 'tan', 'irr', 'tanto', 'sup', 'masde']); addEs('drill', q.es); addEs('drill', q.fix); }
 
+/* 穴埋め：選択肢・正解・文の形（各 form を数百問） */
+['mas', 'tan', 'irr', 'tanto', 'sup', 'masde'].forEach(f => {
+  for (let k = 0; k < 300; k++) {
+    const q = PQ.drill.fill(f);
+    if (q.form !== f || q.kind !== 'fill') err('穴埋め ' + f + '：form・kind がちがう');
+    if (!(q.a >= 0 && q.a < q.o.length)) err('穴埋め ' + f + '：正解の番号が選択肢の外 ' + q.es);
+    if (new Set(q.o).size !== q.o.length) err('穴埋め ' + f + '：同じ選択肢がある ' + q.es);
+    if ((q.es.match(/___/g) || []).length !== 1) err('穴埋め ' + f + '：空所が1つではない ' + q.es);
+    if (q.full !== q.es.replace('___', q.o[q.a])) err('穴埋め ' + f + '：full がちがう ' + q.es);
+    if (!q.ja || !q.why) err('穴埋め ' + f + '：訳か why がない');
+    addEs('drill', q.es.replace('___', '')); addEs('drill', q.full); q.o.forEach(o => addEs('drill', o));
+  }
+});
+
 const unknown = new Map();
 texts.forEach(t => tokens(t.es).forEach(tok => {
   if (names.has(tok) || index.has(tok)) return;

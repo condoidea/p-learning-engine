@@ -109,14 +109,17 @@ PQ.cases.push({
         { t: 'ask', q: 'グラフを見て。金貨は、100枚より多い？　少ない？', o: ['多い', '少ない'], a: 0 },
         { t: 'say', who: 'mimi', x: 'これまでは「〜より」を que で言ってきたね。\n「100枚より多い」は、どう言うと思う？' },
         { t: 'ask', q: '予想してみよう。', o: ['más que cien', 'más de cien'], a: 1,
+          ng: 'cien は数だね。数とくらべるときの語は？',
           r: [{ t: 'say', who: 'mimi', x: '正解！ 相手が「数」のときは、que ではなく **de**。' }] },
         { t: 'note', title: '数のときは de', rows: [
           ['Había [más de] cien monedas.', '100枚をこえる金貨があった。'],
           ['Hay [menos de] diez monedas.', '10枚に満たない金貨しかない。']],
           x: '**más de ＋ 数**＝「〜をこえる」\n**menos de ＋ 数**＝「〜に満たない」\n人やものとくらべるときは que、数とくらべるときは de。' },
         { t: 'ask', q: '___ に入るのは？', es: 'Tengo menos ___ diez monedas.', o: ['que', 'de'], a: 1,
+          ng: 'diez は数だよ。',
           r: [{ t: 'say', who: 'mimi', x: 'そう、diez は数だから de。' }] },
         { t: 'ask', q: 'こっちは？ ___ に入るのは？', es: 'El oso es más grande ___ el pan.', o: ['que', 'de'], a: 0,
+          ng: 'el pan は数ではなく、ものだよ。',
           r: [{ t: 'say', who: 'mimi', x: 'パンは「もの」だから que。\n「数」なら de、「もの・人」なら que だよ。' }] }
       ] },
       { e: '🪟', n: '窓', steps: [
@@ -129,6 +132,7 @@ PQ.cases.push({
           ['La ventana es alt[ísima].', '窓は、ものすごく高い。']],
           x: '**形容詞の最後の母音をとって、-ísimo をつける。**\n「とても…」「ものすごく…」の気持ちが強い言い方。' },
         { t: 'ask', q: '同じ作り方で、caro（値段が高い）を「ものすごく高い」にすると？', o: ['carísimo', 'caroísimo', 'carosísimo'], a: 0,
+          ng: '最後の母音 o をとってから、ísimo をつけるよ。',
           r: [{ t: 'say', who: 'mimi', x: '最後の母音 o をとって、ísimo！\ncaro → carísimo。' }] },
         { t: 'ask', q: '___ に入るのは？', es: 'La ventana es alt___.', o: ['ísimo', 'ísima', 'ísimos'], a: 1,
           ng: 'la ventana は女性・単数の名詞だよ。',
@@ -148,9 +152,11 @@ PQ.cases.push({
         { t: 'say', who: 'castor', es: '¿Un pastel? Es riquísimo.', x: 'ケーキはいかが？\nとってもおいしいですよ。' },
         { t: 'say', who: 'mimi', x: 'riquísimo…。\nrico の c が qu に変わってるね。\nなぜだと思う？' },
         { t: 'ask', q: 'ci と書くと「シ」の音になっちゃう。\n「キ」の音を残して「とてもおいしい」にするには？', o: ['ricísimo', 'riquísimo', 'ricoísimo'], a: 1,
+          ng: 'c のあとに i が来ると、音が変わるよ。',
           r: [{ t: 'say', who: 'mimi', x: 'そう！ 「キ」の音を残すために、c を qu にするんだ。' }] },
         { t: 'chart', title: '値段', unit: '€', bars: [{ e: '🍰', n: 'ケーキ', v: 12 }, { e: '🥖', n: 'パン', v: 2 }], hi: [0] },
-        { t: 'ask', q: '___ に入るのは？', es: 'El pastel es car___.', o: ['ísimo', 'ísima', 'ísimos'], a: 0 },
+        { t: 'ask', q: '___ に入るのは？', es: 'El pastel es car___.', o: ['ísimo', 'ísima', 'ísimos'], a: 0,
+          ng: 'el pastel は男性・単数だよ。' },
         { t: 'ask', q: '___ に入るのは？', es: 'Los pasteles son riqu___.', o: ['ísimas', 'ísimos', 'ísimo'], a: 1,
           ng: 'los pasteles は男性・複数だよ。',
           r: [{ t: 'say', who: 'mimi', x: '男性・複数だから riquísimos。' }] },
@@ -287,11 +293,11 @@ PQ.cases.push({
     { t: 'stop', who: 'urraca', title: 'ウラカのいいわけ', lines: [
       { es: 'Son las monedas de mi abuela.', ja: 'おばあちゃんの金貨なの。' },
       { es: 'Mi abuela era riquísima.', ja: 'おばあちゃんは大金持ちだったの。' },
-      { es: 'Yo nunca salgo de noche.', ja: 'わたしは夜には出かけないわ。' },
+      { es: 'Tenía menos de cien monedas.', ja: '金貨は、100枚に満たなかったけど。' },
       { es: 'Mi nido es mi tesoro.', ja: '巣はわたしの宝物よ。' }
     ], a: 2, after: [
-      { t: 'say', who: 'nico', x: 'さっきの証言で、あなたは言いました。\n「ゆうべ、パボンを見た」と。' },
-      { t: 'say', who: 'nico', x: '夜に出かけないなら、見られるはずがない！' },
+      { t: 'say', who: 'nico', x: 'おばあさんの金貨は、100枚に満たない。\nでも巣には、100枚をこえる金貨がある！' },
+      { t: 'say', who: 'nico', x: '残りの金貨は、どこから来たんですか！' },
       { t: 'slam', txt: '¡Protesto!' }
     ] },
     { t: 'say', who: 'urraca', es: '¡Ay, ay, ay!', x: 'ひ、ひえええ！' },

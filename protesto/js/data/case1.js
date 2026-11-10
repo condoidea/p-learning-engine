@@ -9,7 +9,7 @@ PQ.cases.push({
     jirafa: { n: 'ジラファさん', es: 'Señora Jirafa', e: '🦒', role: '証人・郵便配達' }
   },
   evidence: {
-    estante: { e: '🗄', n: 'パン屋の棚', d: 'いちばん上の段は高さ 200 cm。大きなパンはそこにあった。' },
+    estante: { e: '🗄', n: 'パン屋の棚', d: 'いちばん上の段は高さ 200 cm。大きなパンはそこにあった。はしごは、鍵のかかった物置の中。' },
     coco:    { e: '🐰', n: 'ココの身長', d: '耳まで入れて 60 cm。' },
     precio:  { e: '🏷', n: 'パンの値札', d: '大きなパン 5 ユーロ、小さなパン 2 ユーロ。' },
     huellas: { e: '👣', n: '床の足あと', d: '丸くて大きい足あと。1つが 20 cm。ココの足は 8 cm。' },
@@ -28,6 +28,7 @@ PQ.cases.push({
     { t: 'inspect', spots: [
       { e: '🗄', n: '棚', steps: [
         { t: 'say', who: 'oso', es: 'El pan grande estaba arriba.', x: '大きなパンは、いちばん上にあったんだ。' },
+        { t: 'say', who: 'oso', x: 'わしは、はしごで上げ下ろしする。\nはしごは、鍵をかけた物置の中だ。' },
         { t: 'get', ev: 'estante' },
         { t: 'chart', title: '高さ', unit: 'cm', bars: [{ e: '🗄', n: '棚', v: 200 }, { e: '🐰', n: 'ココ', v: 60 }] },
         { t: 'ask', q: 'グラフを見て。高いのはどっち？', o: ['🗄 棚', '🐰 ココ'], a: 0,
@@ -35,6 +36,7 @@ PQ.cases.push({
         { t: 'note', title: '〜より高い', rows: [['El estante es [más alto que] Coco.', '棚は ココ より 高い。']],
           x: '**más ＋ 形容詞 ＋ que ＋ くらべる相手**\nmás alto＝もっと高い、que Coco＝ココより' },
         { t: 'ask', q: '「ココより」にあたるのは？', es: 'El estante es más alto que Coco.', o: ['más alto', 'que Coco', 'El estante'], a: 1,
+          ng: '「〜より」は、que のうしろに来るよ。',
           r: [{ t: 'say', who: 'mimi', x: '正解！ que のうしろが、くらべる相手。\n日本語の「〜より」と同じ役目だよ。' }] },
         { t: 'get', ev: 'coco' }
       ] },
@@ -46,6 +48,7 @@ PQ.cases.push({
           ['El pan pequeño es [menos caro que] el pan grande.', '小さなパンは、大きなパンほど高くない。']],
           x: '**menos ＋ 形容詞 ＋ que**＝「〜ほど…ではない」\nmenos は「より少なく」。más の反対だよ。' },
         { t: 'ask', q: '「menos caro」と同じ意味になるのは？', o: ['más caro', 'más barato'], a: 1,
+          ng: 'menos は「少ない」。caro の反対は？',
           r: [{ t: 'say', who: 'mimi', x: '「値段の高さが少ない」＝「安い」。\nmás barato と menos caro は、\n同じことを言っているね。' }] },
         { t: 'get', ev: 'precio' }
       ] },
@@ -101,8 +104,9 @@ PQ.cases.push({
     ], after: [
       { t: 'chart', title: '足の大きさ', unit: 'cm', bars: [{ e: '👣', n: '足あと', v: 20 }, { e: '🐰', n: 'ココの足', v: 8 }], hi: [0] },
       { t: 'ask', q: '床の足あとから言えることは？', o: ['Las huellas son más pequeñas que los pies de Coco.', 'Las huellas son más grandes que los pies de Coco.'], a: 1,
+        ng: 'グラフで、足あとと足の棒をくらべてみて。',
         r: [{ t: 'say', who: 'nico', es: '¡Las huellas son más grandes que los pies de Coco!', x: '足あとは、ココの足より大きい！\nどろぼうは、大きな足の持ち主です！' }] },
-      { t: 'say', who: 'juez', x: '背が棚より高くて…足が大きい。\nそんな者が…いるのかね…？' }
+      { t: 'say', who: 'juez', x: 'ウサギが跳んだのなら…足あとは小さいはず。\nはしごも使わず…いちばん上の段にとどく。\n棚より背の高い者が…いるのかね…？' }
     ] },
     { t: 'chart', title: '高さ', unit: 'cm', bars: [{ e: '🐰', n: 'ココ', v: 60 }, { e: '🐻', n: 'クマ親方', v: 180 }, { e: '🗄', n: '棚', v: 200 }, { e: '🦒', n: 'ジラファ', v: 500 }] },
     { t: 'ask', q: 'El ladrón es más alto que el estante.\nあてはまるのは？', o: ['🐰 ココ', '🐻 クマ親方', '🦒 ジラファさん'], a: 2,

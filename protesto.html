@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Zen+Old+Mincho:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="shared/smooth-fonts.js?v=1"></script>
-<link rel="stylesheet" href="protesto/css/protesto.css?v=6">
+<link rel="stylesheet" href="protesto/css/protesto.css?v=7">
 </head>
 <body>
 <div id="app">
@@ -24,6 +24,7 @@
     </header>
     <h1 class="logo"><small>森のどうぶつ裁判</small><span>¡Protesto!</span></h1>
     <div class="book" id="book"></div>
+    <button class="fix-btn" id="hFix" hidden></button>
     <div class="quick">
       <button class="qb" id="hDrill"><span class="qi">📋</span><b>証言台ドリル</b><small id="hDrillBest"></small></button>
       <button class="qb" id="hWords"><span class="qi">🗂</span><b>単語の復習</b><small id="hWordsN"></small></button>
@@ -75,6 +76,17 @@
     <div class="tray" id="wTray"></div>
   </section>
 
+  <!-- ============ 🩹 おさらい ============ -->
+  <section id="fix" class="screen fix" hidden>
+    <header class="pbar">
+      <button class="x" id="fQuit" aria-label="やめる">✕</button>
+      <b class="ptitle" id="fTitle">🩹 おさらい</b>
+      <span class="dscore" id="fProg"></span>
+    </header>
+    <main class="board" id="fBoard"></main>
+    <div class="tray" id="fTray"></div>
+  </section>
+
   <section id="done" class="screen" hidden></section>
 </div>
 
@@ -82,17 +94,17 @@
 <div id="modal" hidden><div class="mbox"><button class="mclose" aria-label="閉じる">✕</button><div id="mbody"></div></div></div>
 <div id="pop" hidden></div>
 
-<script src="shared/es-words.js?v=8"></script>
+<script src="shared/es-words.js?v=9"></script>
 <script src="protesto/js/data/cast.js?v=1"></script>
-<script src="protesto/js/data/case1.js?v=3"></script>
-<script src="protesto/js/data/case2.js?v=3"></script>
-<script src="protesto/js/data/case3.js?v=3"></script>
-<script src="protesto/js/data/case4.js?v=3"></script>
-<script src="protesto/js/data/case5.js?v=3"></script>
-<script src="protesto/js/data/case6.js?v=3"></script>
-<script src="protesto/js/data/drill.js?v=1"></script>
+<script src="protesto/js/data/case1.js?v=4"></script>
+<script src="protesto/js/data/case2.js?v=4"></script>
+<script src="protesto/js/data/case3.js?v=4"></script>
+<script src="protesto/js/data/case4.js?v=4"></script>
+<script src="protesto/js/data/case5.js?v=4"></script>
+<script src="protesto/js/data/case6.js?v=4"></script>
+<script src="protesto/js/data/drill.js?v=2"></script>
 <script src="engine/js/audio.js?v=10"></script>
-<script src="protesto/js/app.js?v=8"></script>
+<script src="protesto/js/app.js?v=9"></script>
 <script src="news/news.js?v=4"></script>
 </body>
 </html>

@@ -84,7 +84,8 @@ PQ.cases.push({
           ['Pata es [mayor que] Lana.', 'パタはラナより年上。'],
           ['Lana es [menor que] Pata.', 'ラナはパタより年下。']],
           x: '年れいをくらべるときは **mayor que**（年上）・**menor que**（年下）。\nmás alto のように más はつけない。\nmayor・menor は、男でも女でも形は同じ。' },
-        { t: 'ask', q: '「パタはラナより年上」は？', o: ['Pata es mayor que Lana.', 'Pata es menor que Lana.'], a: 0 },
+        { t: 'ask', q: '「パタはラナより年上」は？', o: ['Pata es mayor que Lana.', 'Pata es menor que Lana.'], a: 0,
+          ng: 'グラフで、パタは70歳、ラナは45歳だよ。' },
         { t: 'say', who: 'mimi', x: 'こんどは体の大きさ。\nグラフを見てね。' },
         { t: 'chart', title: '背の高さ', unit: 'cm', bars: [{ e: '🐑', n: 'ラナ先生', v: 100 }, { e: '🦆', n: 'パタ', v: 40 }] },
         { t: 'ask', q: '大きいのはどっち？', o: ['🐑 ラナ先生', '🦆 パタ'], a: 0 },
@@ -93,9 +94,12 @@ PQ.cases.push({
           ['Pata es [mayor que] Lana.', 'パタは、ラナより年上。']],
           x: '**大きさ**＝más grande / más pequeño\n**年れい**＝mayor / menor\n同じ「くらべる」でも、ものさしで言葉がちがう。' },
         { t: 'ask', q: '年れいの話。___ に入るのは？', es: 'La doctora es ___ que Pata.', o: ['mayor', 'menor', 'más grande'], a: 1,
+          ng: '年れいの話だよ。45歳は70歳より上？ 下？',
           r: [{ t: 'say', who: 'mimi', x: 'そう、45歳と70歳。ラナ先生は年下だね。' }] },
-        { t: 'ask', q: '大きさの話。___ に入るのは？', es: 'La doctora es ___ que Pata.', o: ['mayor', 'menor', 'más grande'], a: 2 },
+        { t: 'ask', q: '大きさの話。___ に入るのは？', es: 'La doctora es ___ que Pata.', o: ['mayor', 'menor', 'más grande'], a: 2,
+          ng: '今度は体の大きさの話。年れいではないよ。' },
         { t: 'ask', q: 'Pata は女性。\nでは ___ に入るのは？', es: 'Pata es ___ que Lana.', o: ['mayor', 'mayora', 'mayores'], a: 0,
+          ng: 'mayor は男でも女でも形が同じだよ。',
           r: [{ t: 'say', who: 'mimi', x: 'mayor は男女で同じ形。\nmayora とは言わないよ。' }] },
         { t: 'say', who: 'mimi', es: 'Mi hermano mayor tiene veinte años.', x: 'わたしの兄は20歳です。',
           more: '名詞のあとの mayor は「年上のほう」。hermano mayor＝兄、hermana mayor＝姉。弟・妹は hermano menor / hermana menor。' }
@@ -110,24 +114,27 @@ PQ.cases.push({
         { t: 'ask', q: '点がいちばん高いのは？', o: ['🍰 ケーキ', '🍲 スープ', '💊 薬'], a: 0 },
         { t: 'say', who: 'mimi', x: '「ケーキはスープより よい」って言いたい。\nよい＝bueno。\ngrande → más grande の調子なら\nどうなる？' },
         { t: 'ask', q: '予想してみよう。「ケーキはスープより よい」は？', o: ['El pastel es más bueno que la sopa.', 'El pastel es mejor que la sopa.'], a: 1,
+          ng: 'bueno の「もっと」は、特別な形になるよ。',
           r: [{ t: 'say', who: 'mimi', x: 'そう、más bueno とは言わない。\nbueno の「もっと」は、mejor という別の形！' }] },
         { t: 'note', title: '良い・悪い', rows: [
           ['El pastel es [mejor que] la sopa.', 'ケーキはスープより よい。'],
           ['La medicina es [peor que] la sopa.', '薬はスープより わるい。']],
           x: '**bueno → mejor**（más bueno とは言わない）\n**malo → peor**（más malo とは言わない）\nmejor・peor も男女で同じ形。\n複数は mejores・peores。' },
         { t: 'ask', q: '___ に入るのは？', es: 'La medicina es ___ que la sopa.', o: ['más malo', 'peor', 'mejor'], a: 1,
+          ng: '薬の点数はスープより低いよ。malo の仲間は？',
           r: [{ t: 'say', who: 'mimi', x: '薬は 2 点、スープは 5 点。\nだから薬のほうが peor だね。' }] },
         { t: 'build', q: '組み立てよう：「ケーキはスープより よい」', es: 'El pastel es mejor que la sopa.', x: ['más', 'bueno'] }
       ] },
       { e: '🗂', n: '受付', steps: [
         { t: 'say', who: 'pata', es: 'Cada paciente trae su certificado.', x: '患者さんは、みんな出生証明書を持ってきます。' },
         { t: 'say', who: 'pata', es: 'Hoy entró un lobo.', x: 'きょうは、オオカミさんが来ましたよ。' },
-        { t: 'get', ev: 'certificado' },
-        { t: 'say', who: 'mimi', x: '患者のロボさんの証明書だね。\nとりあえず、メモしておこう。' },
+        { t: 'say', who: 'mimi', x: '証明書は、受付の金庫の中だって。\nあとで法廷にとどけてもらおう。' },
         { t: 'say', who: 'mimi', x: 'ついでに、前の話の復習。\nロボさんとラナ先生は、背が同じ 100 cm。' },
         { t: 'ask', q: '背が同じときは、スペイン語で？', o: ['Lobo es más alto que la doctora.', 'Lobo es tan alto como la doctora.'], a: 1,
+          ng: '背が同じ 100 cm なら、「同じくらい」の形だよ。',
           r: [{ t: 'say', who: 'mimi', x: 'そう、tan ＋ 形容詞 ＋ como＝「同じくらい」。' }] },
         { t: 'ask', q: 'パタは 40 cm、先生は 100 cm。___ は？', es: 'Pata es ___ alta que la doctora.', o: ['más', 'menos'], a: 1,
+          ng: '40 cm は 100 cm より低いよ。',
           r: [{ t: 'say', who: 'mimi', x: 'そう、menos alta que＝「ほど高くない」。' }] }
       ] }
     ] },
@@ -183,7 +190,9 @@ PQ.cases.push({
       { t: 'say', who: 'lobo', es: 'Eh... ¡Fue un error!', x: 'あ、あれ…言いまちがいだ！' },
       { t: 'say', who: 'pavon', es: '¡Es un error pequeño!', x: 'ちょっとした言いまちがいでしょう！' }
     ] },
-    { t: 'testimony', who: 'lobo', title: 'ロボの年れい', hint: '受付で手に入れた書類を思い出して。', lines: [
+    { t: 'say', who: 'mimi', x: 'ニコ先生！ 受付から、\nロボさんの出生証明書がとどいたよ。' },
+    { t: 'get', ev: 'certificado' },
+    { t: 'testimony', who: 'lobo', title: 'ロボの年れい', hint: 'いま、とどいた書類を見てみて。', lines: [
       { es: 'Hoy estoy un poco cansado.', ja: '今日は、少しつかれていてね。',
         press: [{ t: 'say', who: 'mimi', x: 'つかれていても、年れいはかわらないよ。' }] },
       { es: 'Tengo ochenta años, de verdad.', ja: '本当に、80歳なんだ。', ok: ['certificado'],

@@ -56,9 +56,9 @@ PQ.cases.push({
     hormiga:  { n: 'ヒルダ', es: 'Hilda', e: '🐜', role: 'アリたちのリーダー' }
   },
   evidence: {
-    libro:   { e: '📘', n: 'いちばん重い本', d: 'El libro del azúcar（砂糖の本）。重さ 30 kg。いちばん上の棚にあった。' },
+    libro:   { e: '📘', n: 'いちばん重い本', d: 'El libro del azúcar（砂糖の本）。表紙に砂糖がまぶしてある。重さ 30 kg。いちばん上の棚にあった。' },
     ventana: { e: '🪟', n: 'ひとつだけ開いた窓', d: '夜はドアに鍵。開いていたのは、図書館でいちばん小さな窓だけ。はば 5 cm。' },
-    azucar:  { e: '🍬', n: '窓のさんの砂糖', d: '窓のさんに、1 mm の小さな足あとと砂糖のつぶ。つぶは 100 こ。棚の下にも 100 こ。' },
+    azucar:  { e: '🍬', n: '窓のさんの砂糖', d: '窓のさんに、1 mm の小さな足あとと砂糖のつぶ。つぶの列は、棚の下までつづいている。窓のさんに 100 こ、棚の下にも 100 こ。' },
     medidas: { e: '📏', n: '入口の体の幅の表', d: 'きのうの来館者の体の幅。ゾウ 200 cm、サル 40 cm、ネズミ 8 cm、アリ 1 cm。' },
     mono:    { e: '🐒', n: '証人モノ', d: '本好きのサル。きのうは夜の8時まで図書館で本を読んでいた。' }
   },
@@ -239,8 +239,10 @@ PQ.cases.push({
     { t: 'build', q: 'とどめの一言：「アリは、来館者でいちばん小さい！」', es: 'Las hormigas son las más pequeñas de los visitantes.', x: ['en', 'menos'],
       ng: '「いちばん小さい」は las más pequeñas。\n「〜の中で」は en ではなく de だよ。',
       r: [{ t: 'slam', txt: '¡Las más pequeñas!' }] },
+    { t: 'say', who: 'nico', x: 'でも、30 kg の本は、5 cm の窓を通れない。\n本は、まだ図書館の中にあるはずです！' },
+    { t: 'say', who: 'hormiga', es: 'El libro está debajo del estante.', x: '本は、棚の下よ。\n表紙の砂糖を、みんなでなめていたの。' },
     { t: 'say', who: 'ardilla', es: 'Hilda... ¡Mi libro del azúcar!', x: 'ヒルダさん…わたしの砂糖の本を！' },
-    { t: 'say', who: 'hormiga', es: 'Lo siento. Lo devolvemos mañana.', x: 'ごめんなさい。明日、もどしにいくわ。' },
+    { t: 'say', who: 'hormiga', es: 'Lo siento.', x: 'ごめんなさい。' },
     { t: 'say', who: 'elefante', es: 'Yo llevo el libro a su estante. Soy el más fuerte.', x: 'ぼくが棚にもどすよ。いちばん力もちだし！' },
     { t: 'say', who: 'hormiga', es: 'Y nosotras ayudamos. Somos mil.', x: 'わたしたちも手伝うわ。1000びきだもの。' },
     { t: 'say', who: 'juez', x: '判決を…言いわたします…。' },

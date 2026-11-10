@@ -49,10 +49,11 @@ RQ.lessons = [
         more: '「先に行く詞（ことば）」。関係詞より先に出てくる名詞だから先行詞。que が「どの名詞の話か」を指す相手だよ。' },
       { t: 'ex', es: 'La [película] {que} vi ayer fue muy buena.', ja: '昨日見た映画は、とてもよかった。' },
       { t: 'q', id: 'l1-ante1' },
-      { t: 'say', x: 'que のあとは「だれが・どうした」の形とは限らない。\nque そのものが**主語**になることもあるよ。' },
+      { t: 'say', x: 'もう1つ合体してみよう。\nこんどは、かぶっている名詞が\n下の文の**先頭**にあるよ。' },
       { t: 'fuse', a: 'Hay un [tren].', b: '|El tren| sale a las tres.', bt: '{que} sale a las tres',
         out: 'Hay un [tren] {que} sale a las tres.', ja: '3時に出る電車がある。',
         hint: 'かぶっている名詞をタップ！' },
+      { t: 'say', x: 'さっきは「本**を**買った」の本。\nこんどは「電車**が**出る」の電車。\n「を」でも「が」でも、変身先は同じ `{que}`。' },
       { t: 'tip', id: 't-tail', ti: '名詞 ＋ que ＋ 説明', x: '説明は名詞の**後ろ**に、`{que}` から始めてつける。\n__名詞に que のしっぽが生える__イメージ。',
         why: 'スペイン語は「大事な名詞を先に言って、あとから説明を足す」語順のことば。形容詞も el coche rojo（赤い車）のように名詞の後ろにつくのと同じ発想だよ。' },
       { t: 'ask', q: '「私が読んでいる本」の正しい語順は？', o: ['el libro que leo', 'que leo el libro', 'el que libro leo'], a: 0,
@@ -161,8 +162,11 @@ RQ.lessons = [
         r: '**OK**！ ものの話で、前置詞が en・de・con なら\n冠詞なしの que も使える。\n`^en^ {la que}` でも `^en^ {que}` でも正解。' },
       { t: 'ask', q: '冠詞はどれ？', es: 'Las chicas con ___ que trabajo son muy simpáticas.', o: ['el', 'la', 'los', 'las'], a: 3,
         why: '先行詞 las chicas（女性・複数）→ las。' },
-      { t: 'say', x: 'もう1つ。a ＋ el は `al` にくっつくよね。\n関係詞でも同じで、**a ＋ el que → al que**。' },
+      { t: 'say', x: '人の目的語の `^a^`。L2 では、\nque に変わるとき消したね（`el chico {que} llamé`）。\n`^a^` を**残す**言い方もできる。\nそのときは冠詞つきで `^a^ {el que}`。' },
+      { t: 'say', x: 'a ＋ el は `al` にくっつくよね。\n関係詞でも同じで、**a ＋ el que → al que**。\nde ＋ el も同じ（**de ＋ el que → del que**）。' },
       { t: 'ex', es: 'El [chico] ^al^ {que} llamé ayer es mi primo.', ja: '昨日電話した男の子は、私のいとこだ。' },
+      { t: 'ask', pred: true, q: 'じゃあ、前置詞が**ない**のに冠詞をつけたら？', es: 'el libro el que compré', o: ['使える', '使えない'], a: 1,
+        r: '**使えない**！\n前置詞のない名詞のすぐ後ろは `{que}` だけ。\n冠詞をはさむのは、**前置詞のあと**。' },
       { t: 'tip', id: 't-table', ti: '先行詞のあとの形 OK・NG 表', x: 'ここまでを表にまとめたよ。\nTips ノートでいつでも見られるよ。\n使い分けは「L6+ 使い分けマスター」でくわしく練習する。',
         tbl: { head: ['', 'que', '冠詞＋que', 'quien'], rows: [
           ['前置詞なし<br>コンマなし<small>el libro ＿ compré</small>', 'o|ふつう', 'x', 'x'],
@@ -189,11 +193,11 @@ RQ.lessons = [
         why: 'donde には「〜で」が入っているので、前に en はふつう要らない。疑問詞の ¿Dónde?（どこで？）と同じ語なので、意味もつかみやすい。' },
       { t: 'ask', pred: true, q: '場所の名詞なら、いつでも donde？', es: 'Visité la ciudad ___ me recomendaste.', o: ['donde', 'que'], a: 1,
         r: 'ここは `{que}`！\nla ciudad は「勧めた」の**目的語**（町**を**）。\n「その町**で**」じゃないから donde は使えない。' },
-      { t: 'tip', id: 't-donde-check', ti: '戻してチェック', x: '先行詞を元の文に戻してみる。\n・Nací ^en^ [la ciudad]（町**で**）→ `{donde}`\n・Me recomendaste [la ciudad]（町**を**）→ `{que}`\n__戻して「〜で」なら donde__' },
+      { t: 'tip', id: 't-donde-check', ti: '戻してチェック', x: '先行詞を元の文に戻してみる。\n・Nací ^en^ [la ciudad]（町**で**）→ `{donde}`\n・Me recomendaste [la ciudad]（町**を**）→ `{que}`\n__戻して en（〜で・〜に）がつくなら donde__' },
       { t: 'ask', q: 'どっち？', es: 'El hotel ___ nos quedamos era muy bonito.', o: ['donde', 'que', 'quien'], a: 0,
-        why: 'nos quedamos en el hotel（ホテル**に**泊まった）→ donde。' },
+        why: 'nos quedamos **en** el hotel（ホテルに泊まった）。戻すと en がつく → donde。' },
       { t: 'ask', q: 'どっち？', es: 'El museo ___ visitamos ayer es famoso.', o: ['donde', 'que'], a: 1,
-        why: 'visitamos el museo（博物館**を**訪れた）→ 目的語なので que。' },
+        why: 'visitamos el museo（博物館**を**訪れた）。戻しても en はつかない → que。' },
       { t: 'drill', n: 5 }
     ]
   },
@@ -232,8 +236,10 @@ RQ.lessons = [
   {
     id: 'L7', no: 7, day: 4, icon: '📦', ti: 'lo que ＝「〜こと」', sub: '先行詞がないとき',
     steps: [
-      { t: 'say', x: '先行詞がない！？\nそんなときは `{lo que}`。\n意味は「〜すること」「〜するもの」。' },
+      { t: 'say', x: '今までは、que の前にいつも名詞があったね。\n`el [libro] {que} compré`' },
       { t: 'ex', es: '{Lo que} quiero es dormir.', ja: '私がしたいのは、寝ることだ。' },
+      { t: 'ask', pred: true, q: 'この文で、que の前に名詞はある？', o: ['ない', 'ある'], a: 0,
+        r: 'ない。「私がしたい**こと**」の「こと」に\n当たる名詞がないんだ。\nそこで `lo` が名詞の代わりに入る。\n`{lo que}` ＝「〜すること・〜するもの」。' },
       { t: 'ask', pred: true, q: '「君の言うことがわからない」は？', es: 'No entiendo ___ dices.', o: ['que', 'lo que'], a: 1,
         r: '`{lo que}`！\n「言うこと」の「こと」には名詞がないから、lo が入れ物になる。' },
       { t: 'say', x: '`{lo que}` は英語の what（〜すること）に近い。\n前に名詞がないときに使うよ。' },
@@ -311,7 +317,7 @@ RQ.lessons = [
       { t: 'ask', q: 'どれ？', es: 'Es un chico ___ madre es médica.', o: ['cuyo', 'cuya', 'que su'], a: 1,
         why: '持ち物 madre（女性・単数）→ cuya。' },
       { t: 'say', x: '会話ではあまり使わないけど、文章ではよく見る。\n**見て意味が取れれば合格**だよ。' },
-      { t: 'tip', id: 't-cual', ti: '書き言葉の仲間：el cual', x: '`{el cual}` `{la cual}` `{lo cual}` …\nel que・lo que の書き言葉版。見かけたら同じ意味で読めば OK。\n使えるのは**前置詞のあと**か**コンマのあと**。\n前置詞もコンマもない名詞のすぐ後ろでは使えない。\n（el libro el cual compré は ✕）' },
+      { t: 'tip', id: 't-cual', ti: '書き言葉の仲間：el cual', x: '`{el cual}` `{la cual}` `{lo cual}` …\nel que・lo que の書き言葉版。見かけたら同じ意味で読めば OK。\n使えるのは**前置詞のあと**（`la casa ^en^ {la cual} vivo`）か\n**コンマのあと**。\n前置詞もコンマもない名詞のすぐ後ろでは使えない。\n（el libro el cual compré は ✕）' },
       { t: 'ex', es: 'Llegó tarde, {lo cual} me molestó.', ja: '彼は遅れて来た。そのことに、私はイライラした。' },
       { t: 'drill', n: 5 }
     ]
