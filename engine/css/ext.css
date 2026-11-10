@@ -371,3 +371,13 @@ html { overflow-x: hidden; }
 .cmp-row > span { min-width: 0; }
 .cmp b.wrong, .cmp-row.ng > span > b.wrong { font: inherit; font-weight: 800; color: var(--ng); text-decoration: underline wavy var(--ng); text-underline-offset: 3px; }
 .feedback .cmp { margin: 10px 0 0; }
+
+/* ---- 🩹 おさらい・明日の予告・クエストのコンプリート（2026-11-10） ---- */
+.btn-mega.fix-call { background: linear-gradient(120deg, #ffb347, #ff7a59); color: #1a1020; padding: 12px 24px; box-shadow: 0 8px 30px -8px rgba(255, 150, 80, .8), inset 0 0 0 1px rgba(255, 255, 255, .3); }
+.btn-mega.fix-call .mega-label { font-size: clamp(20px, 2.6vw, 26px); }
+.btn-mega.fix-call .mega-sub { color: #3a1c10; font-weight: 700; }
+.btn-mega.fix-call::before { display: none; }
+.res-tomorrow { margin: -6px auto 18px; max-width: 560px; text-align: left; color: var(--accent); font-size: 14px; line-height: 1.7; }
+.res-tomorrow:empty { display: none; }
+#questList li.q-bonus { display: block; padding: 8px 12px; font-size: 13px; color: var(--gold); border: 1px dashed color-mix(in srgb, var(--gold) 50%, transparent); border-radius: 12px; background: none; }
+#questList li.q-bonus.done { border-style: solid; font-weight: 700; }

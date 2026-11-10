@@ -50,6 +50,10 @@ window.LE_TEMPLATE = `
               </div>
             </div>
             <div class="hero-cta">
+              <button class="btn-mega fix-call" id="btnFix" hidden>
+                <span class="mega-label">🩹 おさらい</span>
+                <span class="mega-sub" id="fixSub"></span>
+              </button>
               <button class="btn-mega" id="btnLearn">
                 <span class="mega-label">{{t:learn}}</span>
                 <span class="mega-sub" id="learnSub">次のレッスン</span>
@@ -162,7 +166,9 @@ window.LE_TEMPLATE = `
           <div class="loot" id="loot"></div>
         </div>
         <p class="res-msg" id="resMsg"></p>
+        <p class="res-tomorrow" id="resTomorrow"></p>
         <div class="res-actions">
+          <button class="btn-primary" id="btnFix2" hidden></button>
           <button class="btn-primary" id="btnAgain">もう1セット</button>
           <button class="btn-ghost" data-go="home">ホームへ</button>
         </div>
@@ -259,6 +265,7 @@ window.LE_TEMPLATE = `
           <li><b>間隔反復（忘却曲線）</b>：忘れかけたタイミングで出題。正解するほど次の間隔が伸びます。</li>
           <li><b>想起練習（テスト効果）</b>：読むより「思い出す」ほうが記憶に残ります。</li>
           <li><b>インターリービング</b>：分野を混ぜて出題し（{{t:boss}}戦など）、問題の見分け方まで鍛えます。</li>
+          <li><b>まちがえた所はレッスンへ戻る</b>：まちがえた問題はレッスンごとに記録し、「🩹 おさらい」で要点を見直してから、同じ問題にもう一度挑みます。</li>
           <li><b>小さな習慣</b>：1日3問でもストリーク継続。ノルマ達成後は「休むのも戦略」。</li>
         </ul>
       </div>

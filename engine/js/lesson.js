@@ -224,7 +224,7 @@
       bn.style.setProperty('--off', '0%');
       bn.innerHTML = '<span class="node-disc">' + (cleared ? bi.ico : '🔒') + '</span>' +
         '<span class="node-stars">' + (beaten ? '<i class="on">👑</i>' : '') + '</span>' +
-        '<span class="node-label">' + (cleared ? LE_T('bossEn') + '：' + esc(bi.name) : LE_T('bossEn') + '：？？？') + '</span>' + (cleared && !beaten ? '<span class="node-start boss">' + LE_T('bossEn') + '</span>' : '');
+        '<span class="node-label">' + (cleared ? LE_T('bossEn') + '：' + esc(bi.name) : LE_T('bossEn') + '：？？？') + '</span>' + (cleared && !beaten ? '<span class="node-start boss">' + LE_T('bossEn') + '</span>' : Core.bossRevived(u.id) ? '<span class="node-start boss">復活</span>' : '');
       bn.addEventListener('click', function () { bossPreview(u, ui); });
       path.appendChild(bn);
       if (ud === ls.length) sec.querySelector('.unit-head').insertAdjacentHTML('beforeend', '<span class="unit-stamp">' + (beaten ? '👑 MASTER' : 'CLEAR') + '</span>');
@@ -281,7 +281,7 @@
     pv.innerHTML = '<div class="pv-card glass boss-pv"><small>' + LE_T('unit') + ' ' + LE_UNO(ui + 1) + ' ／ ' + esc(u.name) + '</small>' +
       '<div class="pv-boss-ico">' + (cleared ? bi.ico : '🔒') + '</div><h3>' + (cleared ? esc(bi.name) : '？？？') + '</h3>' +
       '<p class="pv-goal">' + (cleared ? 'ユニット全体から <b>' + qn + '問</b> をシャッフル出題。<b>' + hp + '回</b> 正解すれば撃破！ 範囲を混ぜて解くことで、本番の「どの知識を使う問題か見抜く力」が鍛えられる。' : 'このユニットのレッスンを全部クリアすると出現する。') + '</p>' +
-      (beaten ? '<p class="pv-goal">👑 撃破済み。再戦すると復習になるよ。</p>' : '') +
+      (Core.bossRevived(u.id) ? '<p class="pv-goal">💀 <b>復活！</b> 前に倒してから ' + Core.bossRevived(u.id) + '日。間をあけて、範囲を混ぜて解き直すと、記憶がいちばん強く残る。倒すとエピック以上の宝箱。</p>' : beaten ? '<p class="pv-goal">👑 撃破済み。再戦すると復習になるよ（しばらくすると復活する）。</p>' : '') +
       '<div class="pv-meta"><span>🎁 初撃破でレア宝箱確定</span><span>⚔ 間違えてもペナルティなし</span></div>' +
       (cleared ? '<button class="btn-mega pv-go boss-go"><span class="mega-label">' + LE_T('fight') + '</span><span class="mega-sub">' + (beaten ? '再戦する' : LE_T('boss') + 'に挑む') + '</span></button>' : '') +
       '<button class="btn-ghost pv-close">とじる</button></div>';

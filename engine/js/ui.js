@@ -84,6 +84,7 @@
     var doneLessons = Object.keys(S.lessons).length;
     if (!doneLessons) return 'ようこそ！まずは最初のレッスンから。';
     if (todayAmount() >= S.settings.dailyGoal) return 'ノルマ達成済み。休むのも戦略。';
+    if (S.streak.count >= 2 && S.streak.lastDay !== Core.dayKey()) return '🔥 ' + S.streak.count + '日連続中。あと ' + Math.max(1, Core.STREAK_MIN - todayAmount()) + ' 問で今日の分を確保。';
     if (due >= 15) return '忘れかけの記憶が ' + due + ' 個。救出に行こう。';
     if (h < 10) return 'おはよう。朝の脳は覚えやすい。';
     if (h >= 22) return '寝る前の復習は記憶に残りやすい。';
@@ -105,6 +106,14 @@
     FX.countUp($('#goalNum'), todayAmount(), 1);
     $('#goalDen').textContent = '/ ' + goal;
     $('.ring-wrap').classList.toggle('done', ratio >= 1);
+    /* ノルマに届いた日は、ホームに戻ったときに1回だけ祝う（問題・レッスンの途中には割り込まない） */
+    if (ratio >= 1 && !t.goalFx) {
+      t.goalFx = 1; Core.save();
+      setTimeout(function () {
+        if (current !== 'home' || $('#overlay-login').classList.contains('show')) return;
+        FX.slam('DAILY GOAL!', '今日のノルマ達成。続きは明日でも大丈夫', '#5cff9d'); FX.confetti(160); Sfx.levelUp();
+      }, 1300);
+    }
 
     var due = Core.dueList().length;
     var newLeft = Math.max(0, S.settings.newPerDay - t.newCount);
@@ -120,20 +129,33 @@
     Lesson.stage(nx);
     $('#learnSub').textContent = nx ? LE_T('lesson') + ' ' + Lesson.label(nx) + '：' + nx.title : '全レッスン制覇！' + LE_T('boss') + '戦と復習へ';
 
+    renderFixCall();
     renderBossCall();
     renderQuests();
     renderPredict();
     renderCurve();
   }
   /* ボスが出現していて（ユニットの全レッスンをクリア）まだ倒していないときは、ホームで挑戦をうながす */
+  /* 🩹 おさらい：まちがいの残っているレッスンがあれば、次のレッスンより先に出す（下の「次のレッスン」を押せば、あとにもできる） */
+  function fixLabel(x) { return LE_T('lesson') + ' ' + Lesson.label(x.card.L) + '：' + x.card.t; }
+  function renderFixCall() {
+    var b = $('#btnFix'); if (!b) return;
+    var ml = Core.missLessons();
+    b.hidden = !ml.length;
+    if (!ml.length) return;
+    $('#fixSub').innerHTML = esc(fixLabel(ml[0])) + '<br>まちがい ' + ml[0].qs.length + '問' + (ml.length > 1 ? '・ほか ' + (ml.length - 1) + 'レッスン' : '');
+    b.onclick = function () { Sfx.unlock(); openCard(ml[0].card.id, { ctx: 'fix' }); };
+  }
   function renderBossCall() {
     var b = $('#btnBoss'); if (!b) return;
     var wait = LE.units.filter(function (u) { return Core.unitCleared(u.id) && !S.bosses[u.id]; });
+    var back = !wait.length;                                   // まだ倒していないボスがいなければ、復活したボスを出す
+    if (back) wait = LE.units.filter(function (u) { return Core.bossRevived(u.id); });
     b.hidden = !wait.length;
     if (!wait.length) return;
     var u = wait[0], ui = LE.units.indexOf(u), bi = LE.bosses[u.id] || { name: LE_T('bossEn'), ico: '👾' };
     $('#bossIco').textContent = bi.ico;
-    $('#bossSub').textContent = LE_T('unit') + ' ' + LE_UNO(ui + 1) + ' の' + bi.name + 'が出現！' + (wait.length > 1 ? '（ほか ' + (wait.length - 1) + ' 体）' : '');
+    $('#bossSub').textContent = LE_T('unit') + ' ' + LE_UNO(ui + 1) + ' の' + bi.name + (back ? 'が復活！ ' + Core.bossRevived(u.id) + '日ぶりの総復習' : 'が出現！') + (wait.length > 1 ? '（ほか ' + (wait.length - 1) + ' 体）' : '');
     b.onclick = function () { Sfx.unlock(); Lesson.bossPreview(u, ui); };
     gsap.fromTo(b, { scale: 0.92 }, { scale: 1, duration: 0.6, ease: 'elastic.out(1,0.4)', clearProps: 'transform' });   // あとは CSS のブルブル演出にまかせる
   }
@@ -147,6 +169,12 @@
         '<div class="q-bar"><i style="width:' + (q.prog / q.target * 100) + '%"></i></div></div><span class="q-rew">+' + q.xp + '<small>XP</small></span>';
       ul.appendChild(li);
     });
+    if (S.quests.list.length >= 2) {
+      var bl = document.createElement('li');
+      bl.className = 'q-bonus' + (S.quests.bonus ? ' done' : '');
+      bl.textContent = S.quests.bonus ? '🎁 コンプリート！' + (S.chestUp ? ' 次の宝箱がレア以上に確定' : '') : '🎁 ぜんぶ達成すると、次の宝箱がレア以上に確定';
+      ul.appendChild(bl);
+    }
   }
   var C = Core.COURSE;
   var MILE_RATES = [0.4, 0.5, 0.6, 0.7, 0.8];          // 満点に対する割合で節目を作る（1000点満点なら 400〜800）
@@ -333,7 +361,7 @@
     Object.keys(S.days).forEach(function (k) { max = Math.max(max, S.days[k].answered); });
     for (var d = new Date(start); d <= now; d.setDate(d.getDate() + 1)) {
       var k = Core.dayKey(d.getTime());
-      var n = S.days[k] ? S.days[k].answered : 0;
+      var n = S.days[k] ? S.days[k].answered + (S.days[k].steps || 0) : 0;
       var c = document.createElement('i');
       var lvl = n === 0 ? 0 : n < S.settings.dailyGoal * 0.5 ? 1 : n < S.settings.dailyGoal ? 2 : n < S.settings.dailyGoal * 2 ? 3 : 4;
       c.className = 'h' + lvl;
@@ -417,8 +445,8 @@
       return;
     }
     var boosted = false;
-    if (S.items.boost > 0 && !S.boostArmed && mode !== 'quick') { S.items.boost--; S.boostArmed = true; boosted = true; }
-    session = { mode: mode, arg: arg, queue: q, idx: 0, combo: 0, maxCombo: 0, xp: 0, ok: 0, ng: 0, first: {}, res: {}, re: {}, shown: {}, tier0: {}, answered: false, done: false };
+    if (S.items.boost > 0 && !S.boostArmed && mode !== 'quick' && mode !== 'revenge') { S.items.boost--; S.boostArmed = true; boosted = true; }
+    session = { started: Date.now(), fixed: 0, mode: mode, arg: arg, queue: q, idx: 0, combo: 0, maxCombo: 0, xp: 0, ok: 0, ng: 0, first: {}, res: {}, re: {}, shown: {}, tier0: {}, answered: false, done: false };
     if (mode === 'boss') {
       var hp = Math.max(3, Math.ceil(q.length * 0.7));
       session.boss = { unit: arg, hp: hp, max: hp, info: LE.bosses[arg] || { name: LE_T('bossEn'), ico: '👾' } };
@@ -432,6 +460,7 @@
       if (session.boss) { FX.slam(LE_T('bossEn') + ' BATTLE', session.boss.info.name + '　' + session.boss.max + '回正解で撃破！', '#ff4d6d'); Sfx.combo(10); FX3D.pulse(3); }
       else if (boosted) FX.slam('BOOST ×2', 'このセットの獲得XPが2倍', '#ffd84d');
       else if (mode === 'mock') FX.slam('MOCK EXAM', (C.mock && C.mock.slam) || '');
+      else if (mode === 'revenge') FX.slam('REVENGE', 'まちがえた問題に、もう一度', '#ffd84d');
     }, 450);
   }
   /* ---- ユニットボス ---- */
@@ -566,6 +595,11 @@
     var px = ev && ev.clientX ? ev.clientX : rect.left + rect.width / 2;
     var py = ev && ev.clientY ? ev.clientY : rect.top + rect.height / 2;
 
+    /* 🩹 おさらい：まちがえたら記録。前の回までのまちがいに正解できたら、記録から消す */
+    var fixed = false, isRe = session.re[q.id] === session.idx;
+    if (ok) { fixed = Core.missClear(q, session.started); if (fixed) session.fixed++; }
+    else Core.missAdd(q);
+
     var quests = [];
     quests = quests.concat(Core.questEvent('answer', 1));
     if (info.wasNew) quests = quests.concat(Core.questEvent('newq', 1));
@@ -603,8 +637,7 @@
       var lu = Core.addXp(xr.xp);
       if (lu) setTimeout(function () { levelUp(lu); }, 900);
     } else {
-      if (session.combo >= 5) FX.toast('💔', session.combo + 'コンボで途切れた…', '次で取り返そう');
-      session.combo = 0; session.ng++;
+      session.combo = 0; session.ng++;   /* まちがえた瞬間は解説を読む時間。コンボが切れた知らせ（トースト）で目線をそらさない */
       FX3D.setEnergy(0); endFever();
       picked.classList.add('wrong');
       right.classList.add('right', 'reveal');
@@ -629,7 +662,7 @@
     /* フィードバック */
     var fb = $('#feedback');
     fb.classList.add('show', ok ? 'ok' : 'ng');
-    $('#fbVerdict').textContent = ok ? (session.combo >= 10 ? 'FEVER!! 正解' : '正解！') : '不正解…';
+    $('#fbVerdict').textContent = ok ? (fixed || isRe ? 'リベンジ成功！' : session.combo >= 10 ? 'FEVER!! 正解' : '正解！') : '不正解…';
     var nextTxt = '次の復習：' + Core.fmtIvl(info.ivl);
     if (!info.wasNew) nextTxt = '記憶 ' + Math.round(info.rBefore * 100) + '% → ' + (ok ? '100% ／ ' : '再学習 ／ ') + nextTxt;
     if (!ok && session.mode !== 'mock') nextTxt += '（このセット内でもう一度出ます）';
@@ -701,6 +734,7 @@
         if (session) session.xp += q.xp;
         renderTop(true);
         if (lu) levelUp(lu);
+        if (Core.questBonus()) setTimeout(function () { FX.toast('🎁', 'デイリークエスト コンプリート！', '次の宝箱がレア以上に確定', 'quest'); }, 900);
         Core.save();
       }, 700 + i * 500);
     });
@@ -749,23 +783,23 @@
       return { id: id, from: session.tier0[id], to: Core.cardTier(Core.LMAP[id]) };
     }).filter(function (e) { return e.from !== 'locked' && Core.TIERS.indexOf(e.to) > Core.TIERS.indexOf(e.from); });
     var boss = session.boss, bossWin = !!session.bossWin;
+    var firstWin = !!boss && !S.bosses[boss.unit], revived = boss ? Core.bossRevived(boss.unit) : 0;
     if (boss && bossWin) {
-      var firstWin = !S.bosses[boss.unit];
-      S.bosses[boss.unit] = S.bosses[boss.unit] || Date.now();
+      Core.bossWon(boss.unit);
       S.stats.bossWins++;
-      var bxp = firstWin ? 200 : 60;
+      var bxp = firstWin ? 200 : revived ? 120 : 60;
       session.xp += bxp;
       var blu = Core.addXp(bxp);
       if (blu) setTimeout(function () { levelUp(blu); }, 3200);
     }
-    session.minChest = boss && bossWin ? (S.stats.bossWins === 1 ? 'legendary' : 'epic') : null;
+    session.minChest = boss && bossWin ? (S.stats.bossWins === 1 ? 'legendary' : firstWin || revived ? 'epic' : null) : null;   // 初撃破と、復活したボスの撃破だけ（すぐの再戦では確定しない）
     Core.save();
     endFever(); FX3D.setEnergy(0);
 
     go('result');
     var acc = firstOk / Math.max(1, firstTotal);
     var title = boss ? (bossWin ? LE_T('bossEn') + ' DEFEATED!!' : 'もう一息！') : perfect ? 'PERFECT!!' : acc >= 0.8 ? 'GREAT!' : acc >= 0.6 ? 'NICE!' : 'GOOD TRY';
-    $('#resMode').textContent = { daily: 'DAILY SET', quick: 'QUICK 3', weak: 'WEAK POINT', focus: (C.focus && C.focus.label) || 'FOCUS', mock: 'MINI MOCK', field: Core.FMAP[session.arg] ? Core.FMAP[session.arg].name : 'FIELD', lesson: 'LESSON CHECK', boss: 'UNIT BOSS' }[session.mode] + (wasBoost ? ' ／ BOOST×2' : '');
+    $('#resMode').textContent = { daily: 'DAILY SET', quick: 'QUICK 3', weak: 'WEAK POINT', focus: (C.focus && C.focus.label) || 'FOCUS', mock: 'MINI MOCK', field: Core.FMAP[session.arg] ? Core.FMAP[session.arg].name : 'FIELD', lesson: 'LESSON CHECK', boss: 'UNIT BOSS', revenge: 'REVENGE' }[session.mode] + (wasBoost ? ' ／ BOOST×2' : '');
     var rt = $('#resTitle'); rt.textContent = title;
     rt.className = 'res-title' + (perfect ? ' perfect' : '');
     $('#resCorrect').textContent = 0;
@@ -782,10 +816,23 @@
 
     var goal = S.settings.dailyGoal;
     var msg;
-    if (t.answered >= goal) msg = '🎉 今日のノルマ達成！ 間隔をあけて復習するほど記憶は強くなります。今日はここで切り上げても大丈夫。続けるなら新しい分野にどうぞ。';
-    else msg = 'あと ' + (goal - t.answered) + ' 問で今日のノルマ達成。' + (Core.dueList().length ? '忘れかけの復習が ' + Core.dueList().length + ' 問待っています。' : '');
+    if (todayAmount() >= goal) msg = '🎉 今日のノルマ達成！ 間隔をあけて復習するほど記憶は強くなります。今日はここで切り上げても大丈夫。続けるなら新しい分野にどうぞ。';
+    else msg = 'あと ' + (goal - todayAmount()) + ' で今日のノルマ達成。' + (Core.dueList().length ? '忘れかけの復習が ' + Core.dueList().length + ' 問待っています。' : '');
+    if (session.mode === 'revenge') msg = session.fixed ? '🩹 ' + session.fixed + '問をリベンジ成功！ 一度まちがえて、思い出し直した所は、ふつうより強く残ります。' : 'おしい。要点をもう一度見てから、また挑もう。';
     if (boss) msg = bossWin ? '👑 ' + boss.info.name + ' を撃破！ 範囲を混ぜて解けた＝本番に近い力がついている証拠。' + LE_T('roadmap') + 'に王冠が付いたよ。' : 'あと ' + boss.hp + ' 回の正解で撃破だった！ 間違えた問題は' + LE_T('card') + 'で確認して、もう一度挑もう。';
     $('#resMsg').textContent = msg;
+    /* 明日の予告：間をあけて戻ってくる理由を見せる */
+    var tEnd = new Date(); tEnd.setDate(tEnd.getDate() + 1); tEnd.setHours(23, 59, 59, 999);
+    var tmr = Core.dueList(null, tEnd.getTime()).length - Core.dueList().length;
+    $('#resTomorrow').textContent = tmr > 0 ? '📬 明日までに、復習 ' + tmr + '問がとどく。忘れかけた頃に思い出すと、いちばん強く残る。' : '';
+    /* 🩹 まちがいが残っていれば、次の一手は「おさらい」（もう1セットは控えめに） */
+    var ml = Core.missLessons(), fb2 = $('#btnFix2');
+    fb2.hidden = !ml.length;
+    if (ml.length) {
+      fb2.textContent = '🩹 まちがえた所をおさらい（' + LE_T('lesson') + ' ' + Lesson.label(ml[0].card.L) + '）';
+      fb2.onclick = function () { openCard(ml[0].card.id, { ctx: 'fix' }); };
+    }
+    $('#btnAgain').className = ml.length ? 'btn-ghost' : 'btn-primary';
     $('#evoArea').innerHTML = '';
 
     /* 宝箱リセット */
@@ -819,7 +866,9 @@
     if (chest.disabled) return;
     chest.disabled = true;
     gsap.killTweensOf(chest);
-    var loot = Core.rollChest(session && session.perfect, session && session.minChest);
+    var minTier = session && session.minChest;
+    if (S.chestUp) { S.chestUp = false; if (!minTier) minTier = 'rare'; }   // デイリークエストをぜんぶ達成したごほうび
+    var loot = Core.rollChest(session && session.perfect, minTier);
     var area = $('#chestArea');
     $('#chestHint').textContent = '';
     var tl = gsap.timeline();
@@ -1002,7 +1051,7 @@
     opts = opts || {};
     Sfx.unlock();
     var list = Core.ALL_CARDS.filter(Core.owned).map(function (c) { return c.id; });
-    if (list.indexOf(id) < 0) list = [id];
+    if (list.indexOf(id) < 0 || opts.ctx === 'fix') list = [id];   // おさらいは、そのレッスンの1枚だけ
     cv = { list: list, i: list.indexOf(id), ctx: opts.ctx || '', back: false };
     var ov = $('#overlay-deck');
     ov.classList.add('show');
@@ -1066,7 +1115,11 @@
       var acts = $('#deckActions'); acts.innerHTML = '';
       var add = function (html, cls, fn) { var b = document.createElement('button'); b.className = cls; b.innerHTML = html; b.addEventListener('click', fn); acts.appendChild(b); };
       add('↻ 裏返す', 'btn-ghost', flipCard);
-      if (cv.ctx !== 'quiz') {
+      if (cv.ctx === 'fix') {
+        /* 🩹 おさらい：要点を見直す → まちがえた問題そのものにリベンジ */
+        add('⚔ まちがえた ' + Core.missList(c.id).length + '問にリベンジ', 'btn-primary', function () { var id = c.id; closeCard(); setTimeout(function () { startSet('revenge', id); }, 250); });
+        add('📖 レッスンをもう一度', 'btn-ghost', function () { var id = c.id; closeCard(); setTimeout(function () { Lesson.start(id); }, 250); });
+      } else if (cv.ctx !== 'quiz') {
         add('📖 レッスンをもう一度', 'btn-ghost', function () { var id = c.id; closeCard(); setTimeout(function () { Lesson.start(id); }, 250); });
         if ((c.L.q || []).length) add('⚔ この範囲の問題（' + c.L.q.length + '問）', 'btn-primary', function () { var id = c.id; closeCard(); setTimeout(function () { startSet('lesson', id); }, 250); });
       } else add('問題にもどる', 'btn-primary', closeCard);
@@ -1217,7 +1270,7 @@
     $('#chest').addEventListener('click', openChest);
     $('#btnAgain').addEventListener('click', function () {
       var m = session ? session.mode : 'daily';
-      startSet(m === 'quick' ? 'daily' : m, session && session.arg);
+      startSet(m === 'quick' || m === 'revenge' ? 'daily' : m, session && session.arg);
     });
     $('#luClose').addEventListener('click', closeLevelUp);
     $('#loginClose').addEventListener('click', closeLogin);

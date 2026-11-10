@@ -17,7 +17,10 @@
   var $ = function (s) { return document.querySelector(s); };
   var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
   /* 画面が非表示だと requestAnimationFrame が止まるので、アニメーションを手動で進める */
-  setInterval(function () { if (document.hidden && window.gsap) gsap.ticker.tick(); }, 16);
+  /* 埋め込みの表示欄などでは、hidden でなくても描画（requestAnimationFrame）だけ止まることがある → 描画が 100ms 来なければ進める */
+  var lastRaf = Date.now();
+  (function beat() { lastRaf = Date.now(); requestAnimationFrame(beat); })();
+  setInterval(function () { if (window.gsap && (document.hidden || Date.now() - lastRaf > 100)) gsap.ticker.tick(); }, 16);
 
   var panel, results = [];
   function log(ok, msg) {
@@ -152,6 +155,23 @@
         var chest = $('#chest'); if (chest && !chest.disabled) { chest.click(); await sl(1500); closeOverlays(); }
       }
       log(!me, 'モード ' + modes[k][0] + (me ? '：' + me : ''));
+      UI.go('home'); await sl(400);
+    }
+
+    /* 3.5) 🩹 おさらい：上でわざとまちがえた問題が記録され、リベンジで正解すると消える */
+    var ml = Core.missLessons();
+    log(ml.length > 0, 'おさらい：まちがいの記録 ' + ml.length + ' レッスン');
+    if (ml.length) {
+      var fixId = ml[0].card.id, fixN = ml[0].qs.length;
+      var fb = $('#btnFix'); UI.go('home'); await sl(500);
+      log(fb && !fb.hidden, 'おさらい：ホームにボタン');
+      fb.click(); await sl(900);
+      var fixBtn = $('#deckActions .btn-primary');
+      log(!!fixBtn && /リベンジ/.test(fixBtn.textContent), 'おさらい：要点カードにリベンジのボタン');
+      $('#deckClose').click(); await sl(400);
+      var fe = await playSet('revenge', fixId, false);
+      log(!fe && Core.missList(fixId).length === 0, 'おさらい：リベンジ ' + fixN + '問 → 記録が消える' + (fe ? '：' + fe : ''));
+      var ch2 = $('#chest'); if (!fe && ch2 && !ch2.disabled) { ch2.click(); await sl(1500); closeOverlays(); }
       UI.go('home'); await sl(400);
     }
 

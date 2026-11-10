@@ -56,6 +56,9 @@
       revealed: {},
       lessons: {},
       decks: {},
+      miss: {},                     // 🩹 おさらい：まちがえた問題（レッスンごと）{ レッスンid: { 問題id: 時刻 } }
+      bossLast: {}, bossN: {},      // ユニットボスを最後に倒した時刻・倒した回数（復活の間隔に使う）
+      chestUp: false,               // デイリークエストをぜんぶ達成 → 次の宝箱がレア以上
       stats: { answered: 0, correct: 0, bestCombo: 0, crits: 0, chests: 0, legendary: 0, perfectSets: 0, sets: 0, mockBest: 0, focusCorrect: 0, rescues: 0, cardsRead: 0, zones: 0, bossWins: 0 }
     };
   }
@@ -255,6 +258,7 @@
       var lq = (L && L.q || []).map(function (id) { return QMAP[id]; }).filter(Boolean);
       return shuffle(lq).slice(0, Math.max(size, lq.length));
     }
+    if (mode === 'revenge') return shuffle(missList(arg));   /* 🩹 おさらい：そのレッスンでまちがえた問題そのもの */
     if (mode === 'quick') size = 3;
 
     if (mode === 'mock') {
@@ -373,6 +377,44 @@
   }
 
   /* =========================================================
+   * 🩹 おさらい（原則23：復習でまちがえた所は、そのレッスンへ戻す）
+   *  まちがえた問題をレッスンごとに記録 → ホーム・結果画面から「要点（復習カード）→ まちがえた問題にリベンジ」。
+   *  あとの回（リベンジ・ふつうの復習）で正解できたら記録から消す。同じセットの中の再出題では消さない（答えを見た直後なので）
+   * ========================================================= */
+  function missAdd(q) { var c = Q2CARD[q.id]; if (!c) return; (S.miss[c.id] = S.miss[c.id] || {})[q.id] = Date.now(); }
+  function missClear(q, before) {
+    var c = Q2CARD[q.id], m = c && S.miss[c.id];
+    if (!m || !m[q.id] || m[q.id] >= before) return false;
+    delete m[q.id];
+    if (!Object.keys(m).length) delete S.miss[c.id];
+    return true;
+  }
+  function missList(lid) { return Object.keys(S.miss[lid] || {}).map(function (id) { return QMAP[id]; }).filter(Boolean); }
+  /* まちがいの残っているレッスン（多い順） */
+  function missLessons() {
+    return Object.keys(S.miss).map(function (lid) { return { card: LMAP[lid], qs: missList(lid) }; })
+      .filter(function (x) { return x.card && x.qs.length; })
+      .sort(function (a, b) { return b.qs.length - a.qs.length; });
+  }
+
+  /* =========================================================
+   * ユニットボスの復活：倒してから 7日 → 14日 → 30日 たつと、また挑める（間をあけた、範囲を混ぜた総復習）
+   *  何日ぶりか（復活していなければ 0）
+   * ========================================================= */
+  var BOSS_BACK = [7, 14, 30];
+  function bossRevived(uid, now) {
+    if (!S.bosses[uid]) return 0;
+    var last = S.bossLast[uid] || S.bosses[uid], n = S.bossN[uid] || 1;
+    var days = ((now || Date.now()) - last) / DAY;
+    return days >= BOSS_BACK[Math.min(n, BOSS_BACK.length) - 1] ? Math.floor(days) : 0;
+  }
+  function bossWon(uid) {
+    S.bossN[uid] = (S.bossN[uid] || (S.bosses[uid] ? 1 : 0)) + 1;
+    S.bossLast[uid] = Date.now();
+    S.bosses[uid] = S.bosses[uid] || Date.now();
+  }
+
+  /* =========================================================
    * ゲーム要素
    * ========================================================= */
   function xpNeed(level) { return 60 + level * 30; }
@@ -456,18 +498,36 @@
     { type: 'newq',    label: function (n) { return '新しい問題に' + n + '問挑戦する'; }, n: [5, 8] }
   ];
   if (C.focus) QUEST_POOL.push({ type: 'focus', label: function (n) { return (C.focus.questLabel || C.focus.label + 'で{n}問正解する').replace('{n}', n); }, n: [2, 3] });
+  /* 今日、達成できるクエストだけを出す（レッスンをぜんぶ終えたのに「レッスンを1本」、復習がないのに「復習を5問」を出さない） */
+  function questOk(p, n) {
+    var gate = function (q) { return S.settings.allQ || isLearned(q.id); };
+    var left = ALL_CARDS.filter(function (c) { return !owned(c); }).length;
+    if (p.type === 'lesson') return left >= n;
+    if (p.type === 'read') return ALL_CARDS.length - left >= n;
+    if (p.type === 'newq') return newList(gate).length >= n;
+    if (p.type === 'rescue') { var end = new Date(); end.setHours(23, 59, 59, 999); return dueList(gate, end.getTime()).length >= n; }
+    if (p.type === 'focus') return pool(function (q) { return C.focus && FMAP[q.f].cat === C.focus.cat && gate(q); }).length >= n;
+    return learnedCount() > 0 || left > 0;
+  }
   function ensureQuests() {
     var k = dayKey();
     if (S.quests.day === k && S.quests.list.length) return;
-    var picks = shuffle(QUEST_POOL.slice()).slice(0, 3);
-    S.quests = {
-      day: k,
-      list: picks.map(function (p, i) {
-        var n = p.n[Math.min(p.n.length - 1, i)];
-        return { type: p.type, target: n, label: p.label(n), prog: 0, done: false, xp: 40 + i * 20 };
-      })
-    };
+    var picks = [];
+    shuffle(QUEST_POOL.slice()).forEach(function (p) {
+      if (picks.length >= 3) return;
+      var i = picks.length, n = p.n[Math.min(p.n.length - 1, i)];
+      if (!questOk(p, n)) { n = p.n[0]; if (!questOk(p, n)) return; }
+      picks.push({ type: p.type, target: n, label: p.label(n), prog: 0, done: false, xp: 40 + i * 20 });
+    });
+    S.quests = { day: k, list: picks, bonus: false };
     save();
+  }
+  /* ぜんぶ達成したら、次の宝箱がレア以上に確定（1日1回） */
+  function questBonus() {
+    var l = S.quests.list;
+    if (S.quests.bonus || l.length < 2 || !l.every(function (q) { return q.done; })) return false;
+    S.quests.bonus = true; S.chestUp = true;
+    return true;
   }
   function questEvent(type, amount, absolute) {
     var done = [];
@@ -509,7 +569,7 @@
     if (!ok) return { xp: 2, tags: [] };
     var xp = 10, tags = [];
     xp += Math.min(combo, 20);
-    if (info.wasDue) { xp += 6; tags.push('RESCUE'); }
+    if (info.wasDue) { xp += 6 + Math.round((1 - info.rBefore) * 14); tags.push('RESCUE'); }   // 記憶が薄れていたほど大きい（忘れかけで思い出すのが、いちばん効く）
     if (info.wasNew) { xp += 3; }
     if (info.grade === 5) { xp += 4; tags.push('SPEED'); }
     xp += rule(q).xpBonus || 0;
@@ -566,7 +626,9 @@
     today: today, buildQueue: buildQueue, dueList: dueList, newList: newList,
     fieldStats: fieldStats, predict: predict, curve: curve,
     levelInfo: levelInfo, titleFor: titleFor, xpNeed: xpNeed,
-    checkAch: checkAch, ensureQuests: ensureQuests, questEvent: questEvent,
+    checkAch: checkAch, ensureQuests: ensureQuests, questEvent: questEvent, questBonus: questBonus,
+    missAdd: missAdd, missClear: missClear, missList: missList, missLessons: missLessons,
+    bossRevived: bossRevived, bossWon: bossWon,
     checkStreak: checkStreak, touchStreak: touchStreak, STREAK_MIN: STREAK_MIN,
     LMAP: LMAP, ALL_CARDS: ALL_CARDS, Q2CARD: Q2CARD, CARD2Q: CARD2Q, TIERS: TIERS,
     cardTier: cardTier, cardProgress: cardProgress, markRead: markRead, owned: owned, unitStats: unitStats, unitCleared: unitCleared,
