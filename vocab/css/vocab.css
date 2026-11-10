@@ -513,3 +513,17 @@ mark { background: var(--mark); color: inherit; padding: 0 3px; border-radius: 4
 .cmp-row .es { font-family: var(--f-es); font-size: 22px; font-weight: 700; letter-spacing: .02em; }
 .cmp b.wrong { color: var(--ng); text-decoration: underline wavy var(--ng); text-underline-offset: 4px; }
 .cmp b.fix { color: var(--ok); text-decoration: underline var(--ok); text-underline-offset: 4px; }
+
+/* ---- v9：にげた子をもう一度・まぎらわしい語・きらきら・あしあと ---- */
+.cmp.mixc { margin: 0 0 8px; text-align: left; }
+.cmp.mixc .es { font-size: 19px; }
+.cmp.mixc b { font-size: 16px; }
+.ap-bud.shiny { filter: drop-shadow(0 0 10px var(--accent)) drop-shadow(0 0 22px var(--accent)); }
+.appear p.ap-shiny { font-size: 14px; font-weight: 700; color: var(--accent2); padding: 6px 14px; border-radius: 999px; background: var(--sel-bg); }
+.mem-line.shiny { font-weight: 700; }
+#dLines li.mark-new { margin: 0 -6px 6px; padding: 8px 10px; border-radius: 12px; background: var(--sel-bg); color: var(--accent2); font-size: 15px; }
+.marks { margin: 0 0 14px; padding: 12px 14px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); }
+.marks .u-cap { margin: 0 0 8px; }
+.marks .u-cap small { margin-left: 8px; color: var(--muted); font-weight: 500; font-size: 12px; }
+.mk-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.mk { padding: 4px 10px; border-radius: 999px; background: var(--sel-bg); font-size: 13px; font-weight: 700; line-height: 1.5; }

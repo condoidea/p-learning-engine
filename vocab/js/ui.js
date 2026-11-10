@@ -123,10 +123,10 @@
   /* デッキの言語ごとのことば（ほめ言葉・捕獲・進化・あいさつ） */
   var T = D.lang === 'en' ? {
     praise: ['Nice!', 'Great!', 'Awesome!', 'Perfect!', 'Brilliant!', 'Outstanding!'], cap: 'Got it!', evo: ['LEVEL UP!', 'BRAVO!', 'SWEET!'],
-    hi: 'Hi!', yes: 'Yes!', newForm: 'NEW FORM!', titleA: 'Great job!', titleB: 'Nice work!', inLang: '英語では？'
+    hi: 'Hi!', yes: 'Yes!', newForm: 'NEW FORM!', mark: 'MILESTONE!', titleA: 'Great job!', titleB: 'Nice work!', inLang: '英語では？'
   } : {
     praise: ['¡Bien!', '¡Muy bien!', '¡Eso es!', '¡Perfecto!', '¡Olé!', '¡Genial!'], cap: '¡Capturado!', evo: ['¡EVOLUCIÓN!', '¡OLÉ!', '¡ARRIBA!'],
-    hi: '¡Hola!', yes: '¡Sí!', newForm: '¡NUEVA FORMA!', titleA: '¡Muy bien!', titleB: '¡Buen trabajo!', inLang: 'スペイン語では？'
+    hi: '¡Hola!', yes: '¡Sí!', newForm: '¡NUEVA FORMA!', mark: '¡LOGRO!', titleA: '¡Muy bien!', titleB: '¡Buen trabajo!', inLang: 'スペイン語では？'
   };
   var PRAISE = T.praise;
   if (window.SndPacks && SndPacks[D.sound]) window.Snd = SndPacks[D.sound];
@@ -259,7 +259,7 @@
     var tiles = [
       { id: 'face', ico: '👀', name: '顔見知りチェック', sub: face ? '5級の語 残り ' + face + '語' : '', off: !face, hide: !face },
       { id: 'meet', ico: '🌱', name: '出会い', sub: meet ? '新しい単語を3つ' : 'ぜんぶ出会った！', off: !meet },
-      { id: 'wild', ico: '⚔', name: '野生戦', sub: wild ? 'ひと区切り ' + Math.min(wild, chunkSize()) + '体（約' + chunkMin(Math.min(wild, chunkSize())) + '分）' : untilWild(), off: !wild },
+      { id: 'wild', ico: '⚔', name: '野生戦', sub: (S.day.chunks > 0 ? '✔ 今日は済み。' : '') + (wild ? (S.day.chunks > 0 ? 'もう' : '') + 'ひと区切り ' + Math.min(wild, chunkSize()) + '体（約' + chunkMin(Math.min(wild, chunkSize())) + '分）' : untilWild()), off: !wild },
       { id: 'care', ico: '🤝', name: 'なつかせる', sub: soon ? 'もうすぐしおれる子 ' + soon + '体（しおれる前に会う）' : 'いまは大丈夫', off: !soon },
       { id: 'conj', ico: '🔁', name: '活用', sub: conjSub(), hide: !CU || !D.words.some(function (w) { return w.pos === 'v'; }) },
       { id: 'dex', ico: '📖', name: '図鑑', sub: got + '枚' }
@@ -354,7 +354,7 @@
     if (!plan.length) { toast('いまは、やることがありません', '図鑑を眺めたり、別のメニューを選んだりしてみよう'); return; }
     if (window.Sfx) Sfx.unlock();
     var w0 = CU ? wantsList().map(function (x) { return x.w.id + ':' + x.t; }) : [];
-    ses = { grads: [], wants0: w0, plan: plan, bi: -1, label: label || '', caught: [], ups: [], exp: 0, ok: 0, ng: 0, combo: 0, backs: 0, backIds: [], met: [] };
+    ses = { grads: [], wants0: w0, plan: plan, bi: -1, label: label || '', caught: [], ups: [], exp: 0, ok: 0, ng: 0, combo: 0, backs: 0, backIds: [], met: [], fixed: 0, shiny: 0 };
     go('play');
     renderSteps();
     nextBlock();
@@ -380,8 +380,10 @@
     var mine = val(w), seen = {}; seen[mine] = 1;
     var same = shuffle(D.words.filter(function (x) { return fit(x) && x.pos === w.pos; }));
     var rest = shuffle(D.words.filter(function (x) { return fit(x) && x.pos !== w.pos; }));
+    /* 前にこの語ととりちがえた語（まぎらわしい語）を、2つまで先に入れる＝見分ける練習 */
+    var pri = shuffle(V.mixOf(w.id).filter(fit)).slice(0, 2);
     var out = [];
-    same.concat(rest).forEach(function (x) { var v = val(x); if (out.length < n && !seen[v]) { seen[v] = 1; out.push(v); } });
+    pri.concat(same, rest).forEach(function (x) { var v = val(x); if (out.length < n && !seen[v]) { seen[v] = 1; out.push(v); } });
     return out;
   }
   function formOf(w) { var m = /\{([^}]+)\}/.exec(w.ex[0]); return m ? m[1] : w.w; }
@@ -419,12 +421,13 @@
     var s = stage('<div class="q">' + (opt.track || '') + prompt + choiceHtml(list, type === 'w2def' ? 'one defs' : type === 'ja2es' || type === 'cloze' || type === 'def2w' ? 'es' : '') + '<div class="after"></div></div>');
     if (type === 'es2ja' || type === 'listen' || type === 'w2def') setTimeout(function () { Speech.say(V.head(w)); }, 250);
     var answered = false, ri = list.indexOf(esc(right));
+    s._mix = '';
     $$('.ch', s).forEach(function (b) {
       b.addEventListener('click', function () {
         if (answered) return; answered = true;
         var ok = +b.dataset.i === ri;
         $$('.ch', s).forEach(function (x) { x.disabled = true; if (+x.dataset.i === ri) x.classList.add('right'); });
-        if (!ok) b.classList.add('wrong');
+        if (!ok) { b.classList.add('wrong'); s._mix = mixHtml(w, type, list[+b.dataset.i]); }
         var card = $('.q-card', s);
         if (type === 'listen') card.insertAdjacentHTML('beforeend', '<div class="q-word reveal' + gcls(w) + '">' + headHtml(w) + '</div>');
         if (type === 'cloze') { var bl = $('.blank', s); if (bl) { bl.textContent = right; bl.classList.add('filled'); } }
@@ -438,6 +441,18 @@
         done(ok, s);
       });
     });
+  }
+  /* まちがえて選んだ選択肢が「どの語のものか」を、正解とならべて見せる（とりちがえた相手が分かる）。
+   *  とりちがえた相手は記録して、次からその語の選択肢に入れる（V.mixed → others） */
+  function mixHtml(w, type, chosen) {
+    var key = type === 'es2ja' || type === 'listen' ? 'ja' : type === 'cloze' ? 'form' : type === 'w2def' ? 'def' : 'head';
+    var val = function (x) { return key === 'head' ? V.head(x) : key === 'form' ? formOf(x) : key === 'def' ? x.def || '' : x.ja; };
+    var c = String(chosen).toLowerCase();
+    var x = D.words.filter(function (o) { return o !== w && !sameSpell(o, w) && esc(val(o)).toLowerCase() === c; })[0];
+    if (!x) return '';
+    V.mixed(w.id, x.id);
+    var row = function (cls, lab, o) { return '<div class="cmp-row ' + cls + '"><i>' + lab + '</i><span><span class="es">' + esc(V.head(o)) + '</span> ＝ <b>' + esc(o.ja) + '</b></span></div>'; };
+    return '<div class="cmp mixc">' + row('ng', '✕ えらんだ', x) + row('ok', '○ 正解', w) + '</div>';
   }
   /* つづりを部品で組み立てる */
   function chunks(word) {
@@ -662,7 +677,7 @@
               setTimeout(function () { bondMoment({ w: w, kind: 'meet', next: (V.memory(w.id) || {}).next }, one); }, 650);
             }
             else { moveTrack(s, w, close[w.id], 'happy'); if (hold) after(s, '', one); else setTimeout(one, 900); }
-          } else { close[w.id] = Math.max(0.04, close[w.id] - 0.04); moveTrack(s, w, close[w.id], 'meh'); q.push(it); total++; after(s, '<div class="meaning' + gcls(w) + '">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b></div>', one); }
+          } else { close[w.id] = Math.max(0.04, close[w.id] - 0.04); moveTrack(s, w, close[w.id], 'meh'); q.push(it); total++; after(s, s._mix || '<div class="meaning' + gcls(w) + '">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b></div>', one); }
         });
       }
       stage('<div class="interlude"><p class="big-t">🌱 ' + words.length + '語と出会った！</p><p>見分けられたら「出会った」の距離まで近づいて、図鑑に入るよ。<br>もっと近づく（顔なじみ・仲間）のは、日を空けて思い出せたとき</p><button class="next go">見分ける ▶</button></div>');
@@ -686,35 +701,64 @@
     if (w.pos === 'v' && CU && learned(w).length && Math.random() < 0.45) return 'form';
     return Math.random() < 0.5 ? t[t.length - 1] : pick(t);   // 半分は、いまのレベルのいちばん難しい問い方
   }
+  /* mode：'care'（なつかせる）／'retry'（さっき にげた子に、もう一度）／なし（野生戦・救出）
+   *  cb(false)＝思い出せなかった（runFights が、ブロックの最後にもう一度出す）
+   *  ✨ きらきらの子：野生戦でときどき現れる。思い出せたら長持ち＋15%（ボスに勝ったときと同じおまけ）。まちがえても何も失わない */
+  var SHINY = 0.08;
   function fight(w, tagText, cb, mode) {
-    var care = mode === 'care', st0 = V.state(w.id), wasWild = st0 === 'wild';
-    var badge = care ? '⏳ もうすぐしおれる' : wasWild ? '🍂 野生に戻りかけ' : '🥀 しおれかけ';
+    var care = mode === 'care', retry = mode === 'retry', st0 = V.state(w.id), wasWild = st0 === 'wild';
+    var shiny = !care && !retry && !V.grad(w.id) && Math.random() < SHINY;
+    var badge = retry ? '🔁 もう一度' : shiny ? '✨ きらきら' : care ? '⏳ もうすぐしおれる' : wasWild ? '🍂 野生に戻りかけ' : '🥀 しおれかけ';
     var tag = '<span class="qtag">' + tagText + '</span><span class="wild-badge">' + badge + '</span>';
     var c0 = nowClose(w.id), m0 = Chara.moodOf(st0), mem0 = V.memory(w.id);
-    stage('<div class="appear"><p>' + (care ? 'もうすぐしおれそうな' : wasWild ? '野生に戻りかけの' : 'しおれかけの') + '</p><div class="ap-bud">' + cs(w, { mood: m0 }) + '</div><p>' + (care ? 'に 会いに行こう' : 'が 遠くに いる！') + '</p></div>');
+    stage('<div class="appear"><p>' + (retry ? 'さっき にげた' : care ? 'もうすぐしおれそうな' : wasWild ? '野生に戻りかけの' : 'しおれかけの') + '</p><div class="ap-bud' + (shiny ? ' shiny' : '') + '">' + cs(w, { mood: m0 }) + '</div><p>' + (retry ? 'を 追いかけよう' : care ? 'に 会いに行こう' : 'が 遠くに いる！') + '</p>' +
+      (shiny ? '<p class="ap-shiny">✨ きらきらの子だ！ 思い出せたら 長持ち＋15%</p>' : '') + '</div>');
     if (window.Snd) Snd.appear();
     setTimeout(function () {
       ask(w, typesFor(w), { tag: tag, track: trackHtml(w, c0, m0) }, function (ok, s) {
         var r = V.answer(w.id, ok);
-        if (ok) moveTrack(s, w, Chara.closeness(V.card(w.id).lv, 1), 'happy', r.back ? 'おかえり！' : r.up ? V.RANKS[r.up].rel + 'に！' : T.hi);
+        if (ok) moveTrack(s, w, Chara.closeness(V.card(w.id).lv, 1), 'happy', r.relearn ? '取り返した！' : r.back ? 'おかえり！' : r.up ? V.RANKS[r.up].rel + 'に！' : T.hi);
         else moveTrack(s, w, Math.max(0.03, c0 - 0.12), 'sleep', '…');
         if (ok) {
           ses.exp += r.exp;
           FX.float($('.q-card', s), '+' + r.exp + ' EXP', 'exp');
+          if (shiny) { V.bonus(w.id, 1.15); ses.shiny++; }
+          if (r.relearn) ses.fixed++;
           var mem1 = V.memory(w.id);
           if (r.back) { ses.backs++; ses.backIds.push(w.id); }
           if (r.grad) ses.grads.push(w.id);
           if (r.up) levelFx(w, r.up);
           var moment = r.grad ? 'grad' : r.back ? 'back' : null;
-          var go = function () { after(s, gaugeHtml(w) + memLine(mem0, mem1), cb, r.up || holdOf(s) ? 0 : 1600); };
+          var line = r.relearn ? '<p class="mem-line">🔁 取り返した。次に会うのは <b>' + daysText(Math.max(0, mem1.next)) + '後</b>（早めにもう一度会って、固める）</p>' : memLine(mem0, mem1);
+          var go = function () { after(s, gaugeHtml(w) + (shiny ? '<p class="mem-line shiny">✨ きらきらボーナス：長持ち ＋15%</p>' : '') + line, cb, r.up || holdOf(s) ? 0 : shiny || r.relearn ? 2400 : 1600); };
           /* 野生から取り戻したとき・卒業したときは「身に付いた瞬間」を見せてから */
           if (moment) setTimeout(function () { bondMoment({ w: w, kind: moment, prev: mem0 && mem0.s * 0.415, next: mem1 && mem1.next }, go); }, 700);
           else go();
         } else {
-          after(s, '<div class="meaning' + gcls(w) + '">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b></div><p class="note">にげられた… また出てくるので、そのとき取り返そう</p>', cb);
+          /* まちがえたその場で、とりちがえた相手と、覚え方（例文・💡）をもう一度見せる（読むだけにしない：このあと、もう一度出す） */
+          after(s, (s._mix || '<div class="meaning' + gcls(w) + '">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b></div>') + memoHtml(w) +
+            '<p class="note">' + (retry ? 'また今度。次の野生戦で、もう一度会える' : 'にげられた… このあと、もう一度追いかけよう') + '</p>', function () { cb(false); });
         }
       });
     }, 900);
+  }
+  /* しおれた子と順に会い、思い出せなかった子には、ブロックの最後にもう一度会う（1回だけ）。
+   *  答えを見て終わりにしない：少し間をおいて自分で思い出す。ここでの正解は「覚え直し」（強さは伸ばさない。core.js） */
+  function fightAny(id, tg, cb, mode) { if (V.isCj(id)) fightCj(id, tg, cb, mode); else fight(V.word(id), tg, cb, mode); }
+  function runFights(ids, label, mode, done) {
+    var i = 0, missed = [];
+    (function one() {
+      var id = ids[i++];
+      if (!id) return missed.length ? again() : done();
+      fightAny(id, label(i, ids.length), function (ok) { if (ok === false) missed.push(id); one(); }, mode);
+    })();
+    function again() {
+      var s = stage('<div class="interlude"><p class="big-t">🔁 にげた子に、もう一度</p><p>さっき思い出せなかった ' + missed.length + '体。<br>答えを見たばかりの今、自分で思い出すと残りやすい</p><button class="next go">追いかける ▶</button></div>');
+      $('.go', s).addEventListener('click', function () {
+        var j = 0;
+        (function one2() { var id = missed[j++]; if (!id) return done(); fightAny(id, '🔁 ' + j + ' / ' + missed.length, function () { one2(); }, 'retry'); })();
+      });
+    }
   }
   /* 記憶がどれだけ長持ちになったか（しおれるまでの日数：前 → いま） */
   function memLine(m0, m1) {
@@ -729,12 +773,8 @@
       (nx ? '<div class="gbar"><i style="width:' + Math.min(100, Math.round(nx.now / nx.need * 100)) + '%"></i></div><small>進化まで ' + Math.max(0, nx.need - nx.now) + ' EXP</small>' : '<small>最高ランク！</small>') + '</div>';
   }
   function blockWild(b, next) {
-    var list = wildQueue().slice(0, b.n || chunkSize()), i = 0;
-    (function one() {
-      var id = list[i++]; if (!id) { S.day.chunks = (S.day.chunks || 0) + 1; ses.chunk = true; V.save(); return next(); }
-      var tg = '⚔ ' + i + ' / ' + list.length;
-      if (V.isCj(id)) fightCj(id, tg, one); else fight(V.word(id), tg, one);
-    })();
+    var list = wildQueue().slice(0, b.n || chunkSize());
+    runFights(list, function (i, n) { return '⚔ ' + i + ' / ' + n; }, null, function () { S.day.chunks = (S.day.chunks || 0) + 1; ses.chunk = true; V.save(); next(); });
   }
   /* =========================================================
    * ひと区切り（2026-10-11）
@@ -761,7 +801,7 @@
     return V.wildList().map(function (w) { return w.id; }).concat(V.cjWildList())
       .sort(function (a, b) { return V.condition(a) - V.condition(b); });
   }
-  function blockRescue(b, next) { if (V.isCj(b.id)) fightCj(b.id, '🚑 救出', next); else fight(V.word(b.id), '🚑 救出', next); }
+  function blockRescue(b, next) { runFights([b.id], function () { return '🚑 救出'; }, null, next); }
 
   /* =========================================================
    * 🔁 活用（動詞の形）
@@ -1003,24 +1043,25 @@
     FX.float(el, T.cap, 'cap');
   }
   /* 野生戦：しおれた活用カード */
-  function fightCj(id, tagText, cb) {
-    var c = V.cj(id), w = c.verb, t = c.tense, p = pick(personsOf(w, t));
+  function fightCj(id, tagText, cb, mode) {
+    var c = V.cj(id), w = c.verb, t = c.tense, p = pick(personsOf(w, t)), retry = mode === 'retry';
     var c0 = nowClose(id), m0 = Chara.moodOf(V.state(id));
-    stage('<div class="appear"><p>' + tBadge(t) + '</p><div class="ap-bud">' + cs(w, { mood: m0 }) + '</div><p>' + esc(w.w) + ' の' + TN[t].short + 'が 遠くに いる！</p></div>');
+    stage('<div class="appear"><p>' + tBadge(t) + '</p><div class="ap-bud">' + cs(w, { mood: m0 }) + '</div><p>' + (retry ? 'さっき にげた ' + esc(w.w) + ' の' + TN[t].short + 'を 追いかけよう' : esc(w.w) + ' の' + TN[t].short + 'が 遠くに いる！') + '</p></div>');
     if (window.Snd) Snd.appear();
     setTimeout(function () {
       askConj({ w: w, t: t, p: p }, pick(['pick', 'cue', 'build', 'which']), { tag: '<span class="qtag">' + tagText + '</span>', track: trackHtml(w, c0, m0) }, function (ok, s) {
         var r = V.answer(id, ok);
         if (ok) {
-          moveTrack(s, w, Chara.closeness(V.card(id).lv, 1), 'happy', r.back ? 'おかえり！' : T.hi);
+          moveTrack(s, w, Chara.closeness(V.card(id).lv, 1), 'happy', r.relearn ? '取り返した！' : r.back ? 'おかえり！' : T.hi);
           ses.exp += r.exp;
+          if (r.relearn) ses.fixed++;
           FX.float($('.q-card', s), '+' + r.exp + ' EXP', 'exp');
           if (r.back) { ses.backs++; ses.backIds.push(id); }
           if (r.up) levelFx({ id: id, w: w.w + '（' + TN[t].short + '）' }, r.up);
           after(s, conjTable(w.w, t, p) + gaugeHtml({ id: id }), cb, r.up ? 0 : 1800);
         } else {
           moveTrack(s, w, Math.max(0.03, c0 - 0.12), 'sleep', '…');
-          after(s, '<p class="note">' + esc(Conj.kind(w.w)) + '</p>' + conjTable(w.w, t, p), cb);
+          after(s, '<p class="note">' + esc(Conj.kind(w.w)) + '</p>' + conjTable(w.w, t, p) + '<p class="note">' + (retry ? 'また今度。次の野生戦で、もう一度会える' : 'このあと、もう一度追いかけよう') + '</p>', function () { cb(false); });
         }
       });
     }, 900);
@@ -1385,12 +1426,7 @@
    *  早めに会うと記憶の伸びは小さめ（研究どおり）。でも、まとめて覚えた日のあとの「山」を自分で崩せる */
   function careAll() { return V.soonList(24); }
   function blockCare(b, next) {
-    var list = careAll().slice(0, b.n), i = 0;
-    (function one() {
-      var id = list[i++]; if (!id) return next();
-      var tg = '🤝 ' + i + ' / ' + list.length;
-      if (V.isCj(id)) fightCj(id, tg, one); else fight(V.word(id), tg, one, 'care');
-    })();
+    runFights(careAll().slice(0, b.n), function (i, n) { return '🤝 ' + i + ' / ' + n; }, 'care', next);
   }
 
   /* =========================================================
@@ -1536,6 +1572,7 @@
         S.bossWins = (S.bossWins || []).concat([{ name: b.title + ' ' + b.name, day: b.day, words: okIds.length }]);
       }
       V.save();
+      var nm = newMarks();
       var el = document.createElement('div');
       el.id = 'bond'; el.className = 'bond ' + (won ? 'k-grad' : 'k-back');
       el.innerHTML = '<div class="bond-glow"></div><div class="bs-end-boss">' + bossSvg() + '</div>' +
@@ -1543,7 +1580,8 @@
         '<div class="bond-ja">' + esc(b.title) + '「' + esc(b.name) + '」' + (won ? 'を倒した' : '「また来るぞ…」') + '</div>' +
         '<p class="bond-line">' + (okIds.length ? '助け出した単語 <b>' + okIds.length + '語</b>' + (won ? '。長持ちに＋15%のおまけ' : '。助けた子は、ちゃんと長持ちになった') : '記憶はそのまま。何も失っていない') + '</p>' +
         '<div class="bs-end-saved">' + okIds.map(function (id) { return '<span>' + cs(V.word(id), { mood: 'happy' }) + '<small>' + esc(V.word(id).w) + '</small></span>'; }).join('') + '</div>' +
-        (won ? '<p class="bond-mem">ボス図鑑 ' + S.bossWins.length + '体目</p>' : '<p class="bond-mem">今日のうちなら、何度でも挑める</p>') + '<p class="bond-go">タップでホームへ</p>';
+        (won ? '<p class="bond-mem">ボス図鑑 ' + S.bossWins.length + '体目</p>' : '<p class="bond-mem">今日のうちなら、何度でも挑める</p>') +
+        nm.map(function (m) { return '<p class="bond-mem">🏅 あしあと　' + m.ico + ' ' + esc(m.text) + '</p>'; }).join('') + '<p class="bond-go">タップでホームへ</p>';
       document.body.appendChild(el);
       if (window.Snd) (won ? Snd.levelUp(3) : Snd.finish());
       if (won) { FX.rain(); if (G) G.to($('.bs-end-boss', el), { scale: 0, rotate: 200, opacity: 0, duration: 1.2, delay: 0.4, ease: 'back.in(1.5)' }); }
@@ -1570,12 +1608,18 @@
     if (ses.ups.length) lines.push('✨ <b>' + ses.ups.length + '枚</b> が進化');
     if (ses.grads.length) lines.push('🎓 <b>' + ses.grads.length + '体</b> が卒業（もう野生に出ない）');
     if (ses.backs) lines.push('🤝 野生から <b>' + ses.backs + '枚</b> 取り返した');
+    if (ses.fixed) lines.push('🔁 にげた子を <b>' + ses.fixed + '体</b> 追いかけて取り返した');
+    if (ses.shiny) lines.push('✨ きらきらの子を <b>' + ses.shiny + '体</b> 思い出した（長持ち＋15%）');
     if (CU) wantsList().forEach(function (x) { if (ses.wants0.indexOf(x.w.id + ':' + x.t) < 0) lines.push('💬 <b>' + esc(x.w.w) + '</b> が ' + TN[x.t].name + ' を覚えたがっている（ホームから）'); });
     if (ses.met.length) lines.push('🌱 <b>' + ses.met.length + '語</b> と出会った');
     lines.push('⭐ <b>+' + ses.exp + ' EXP</b>（今日 +' + S.day.exp + '）');
     var rc = V.rankCounts();
     if (cWords || rc[0] + rc[1] + rc[2] + rc[3]) lines.push('🤝 単語は いま　出会い <b>' + (rc[0] + rc[1]) + '</b>・定着 <b>' + (rc[2] + rc[3]) + '</b>（仲間・相棒）');
-    $('#dLines').innerHTML = lines.map(function (l) { return '<li>' + l + '</li>'; }).join('');
+    if (V.cameDays()) lines.push('📅 会いに来た日　通算 <b>' + V.cameDays() + '日</b>');
+    /* 🏅 あしあと（節目）：学習の途中には出さず、結果の画面でまとめて */
+    var nm = newMarks();
+    $('#dLines').innerHTML = nm.map(function (m) { return '<li class="mark-new">🏅 あしあと　<b>' + m.ico + ' ' + esc(m.text) + '</b></li>'; }).join('') + lines.map(function (l) { return '<li>' + l + '</li>'; }).join('');
+    if (nm.length) setTimeout(function () { if (window.Snd) Snd.levelUp(2); FX.slam(T.mark, nm[nm.length - 1].text); }, 500);
     $('#dCards').innerHTML = grown.map(function (id) { return V.isCj(id) ? cjMini(id) : miniCard(V.word(id)); }).join('');
     /* 次回予告 */
     var soon = Object.keys(S.cards).filter(function (id) { return V.state(id) === 'fresh' && V.condition(id, Date.now() + 24 * 3600e3) < 0.75; }).length;
@@ -1587,7 +1631,40 @@
     $('#dNext').innerHTML = ntxt;
     $('#dMore').textContent = wilt ? 'もうひと区切り ▶' : 'もう5分 ▶';
     if (G) G.fromTo('#done .anim, #dCards .mini', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.06, ease: 'back.out(1.6)' });
-    if (ses.caught.length + ses.ups.length >= 3) FX.rain();
+    if (ses.caught.length + ses.ups.length >= 3 || nm.length) FX.rain();
+  }
+
+  /* =========================================================
+   * 🏅 あしあと（節目のお祝い）
+   *  「残り○語」のように先の数で急かさない。届いたときにだけ祝い、図鑑に残す（減らない・失わない）。
+   *  会いに来た日は通算（連続記録ではないので、休んでも途切れない）
+   * ========================================================= */
+  function markDefs() {
+    var rc = V.rankCounts(), out = [];
+    function steps(key, ico, val, arr, label) { arr.forEach(function (n) { out.push({ id: key + n, ico: ico, text: label(n), ok: val >= n }); }); }
+    steps('dex', '📖', V.caughtCount(), [10, 30, 50, 100, 200, 300, 500, 1000], function (n) { return '図鑑 ' + n + '語'; });
+    steps('set', '🤝', rc[2] + rc[3], [5, 10, 30, 50, 100, 200, 500], function (n) { return '定着 ' + n + '語（仲間・相棒）'; });
+    steps('grad', '🎓', V.gradCount(), [1, 10, 30, 50, 100, 300], function (n) { return n === 1 ? 'はじめての卒業' : '卒業 ' + n + '語'; });
+    steps('day', '📅', V.cameDays(), [3, 7, 14, 30, 50, 100, 200, 365], function (n) { return '通算 ' + n + '日 会いに来た'; });
+    steps('boss', '🏆', (S.bossWins || []).length, [1, 5, 10, 30], function (n) { return n === 1 ? 'はじめてのボス撃破' : 'ボス撃破 ' + n + '体'; });
+    D.sections.forEach(function (sec) {
+      var ws = D.words.filter(function (w) { return w.s === sec.id; });
+      if (ws.length >= 5) out.push({ id: 'sec:' + sec.id, ico: '🗺', text: '「' + sec.name + '」をぜんぶ図鑑に', ok: ws.every(function (w) { return V.card(w.id); }) });
+    });
+    return out;
+  }
+  /* 新しく届いた節目。はじめて数えるとき（この仕組みが入る前からの記録）は、祝わずに記録だけする */
+  function newMarks(silent) {
+    var first = !S.marks; S.marks = S.marks || {};
+    var got = markDefs().filter(function (m) { return m.ok && !S.marks[m.id]; });
+    got.forEach(function (m) { S.marks[m.id] = Date.now(); });
+    if (got.length || first) V.save();
+    return first || silent ? [] : got;
+  }
+  function marksHtml() {
+    var got = markDefs().filter(function (m) { return S.marks && S.marks[m.id]; }).sort(function (a, b) { return S.marks[a.id] - S.marks[b.id]; });
+    if (!got.length) return '';
+    return '<div class="marks"><p class="u-cap">🏅 あしあと<small>届いた節目。減らない・なくならない</small></p><div class="mk-list">' + got.map(function (m) { return '<span class="mk">' + m.ico + ' ' + esc(m.text) + '</span>'; }).join('') + '</div></div>';
   }
 
   /* =========================================================
@@ -1612,7 +1689,7 @@
     /* 大きなデッキ（参考書連動版など）は課ごとにたたみ、開いた課だけカードを描く */
     var big = D.words.length > 120, r = S.settings.range || [], firstOpen = null;
     if (big && !r.length) D.sections.some(function (sec) { var ws = D.words.filter(function (w) { return w.s === sec.id; }); if (ws.some(function (w) { return !V.card(w.id); })) { firstOpen = sec.id; return true; } return false; });
-    $('#xBody').innerHTML = D.sections.map(function (sec) {
+    $('#xBody').innerHTML = marksHtml() + D.sections.map(function (sec) {
       var ws = D.words.filter(function (w) { return w.s === sec.id; });
       var g = ws.filter(function (w) { return V.card(w.id); }).length;
       var open = !big || r.indexOf(sec.id) >= 0 || sec.id === firstOpen;
@@ -1705,6 +1782,7 @@
     $('#tgSound').addEventListener('change', function (e) { S.settings.sound = e.target.checked; V.save(); });
     $('#tgSpeak').addEventListener('change', function (e) { S.settings.speak = e.target.checked; V.save(); });
     $('#xReset').addEventListener('click', function () { if (confirm('このデッキの記録（図鑑・経験値）をすべて消します。よろしいですか？')) V.reset(); });
+    if (!S.marks) newMarks(true);
     go('home');
   }
   window.VUI = { go: go, start: start, makePlan: makePlan, chunks: chunks };

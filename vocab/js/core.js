@@ -30,6 +30,7 @@
   var GROW = 2.5;                   // 思い出せたときの基本の倍率
   var GRAD = 240;                   // これを超えたら卒業（もう野生に出ない）
   var DUE = Math.log(1 / FRESH) / Math.LN2;   // s のうち、しおれ始めるまでの割合（約0.415）
+  var RELEARN = 6;                  // まちがえてからこの時間（h）以内の正解は「覚え直し」（強さは伸ばさない）
 
   function fresh() {
     return { cards: {}, meet: [], day: { date: '', exp: 0, grown: [], caught: [] }, total: { exp: 0, answered: 0, correct: 0 },
@@ -47,6 +48,8 @@
   function today() { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
   function rollDay() { var t = today(); if (S.day.date !== t) S.day = { date: t, exp: 0, grown: [], caught: [] }; }
   rollDay();
+  /* 会いに来た日（通算）。連続記録ではないので、休んでも減らない・途切れない。その日に1問でも答えたら数える */
+  function came() { var t = today(); if (S.cameDay !== t) { S.cameDay = t; S.cameN = (S.cameN || 0) + 1; } }
 
   var W = {}; D.words.forEach(function (w, i) { w.i = i; W[w.id] = w; });
   /* 動詞のくせ（cj）がデッキに書かれていれば、活用エンジンに足す */
@@ -127,7 +130,7 @@
       var i = S.meet.indexOf(id); if (i >= 0) S.meet.splice(i, 1);
       if (S.day.caught.indexOf(id) < 0) S.day.caught.push(id);
       var r = gain(id, known ? 10 : 5);
-      S.lastSeen = now;
+      S.lastSeen = now; came();
       save();
       return r;
     },
@@ -144,18 +147,27 @@
         r.back = state(id) === 'wild';
         r = Object.assign(r, gain(id, expFor(gapH)));
         if (gapH >= 6) c.streak = (c.streak || 0) + 1;
-        /* 記憶の強さ：しおれてから思い出せたら ×2.5（遅いほど少し多め、最大×2.9）。早めに会ったら、その早さに応じて少なめ */
-        var mult = ratio >= 1 ? GROW * (0.85 + 0.15 * Math.min(2, ratio)) : 1 + (GROW - 1) * Math.max(0, ratio);
-        c.s = Math.max(S0, c.s * mult);
-        c.ok = now;
-        if (c.s >= GRAD && !c.grad) { c.grad = now; r.grad = true; }
-        else balance(id, c);
+        if (c.lapse && now - c.lapse < RELEARN * HOUR) {
+          /* 覚え直し：まちがえた直後（答えを見たあと）の正解。元気には戻るが、強さは下がったまま（すぐ次の再会が来る）。
+             ここで ×2.5 すると、まちがえた分が帳消しになってしまう（Anki の relearning と同じ考え方） */
+          r.relearn = true; r.back = false;
+          c.ok = now; c.j = 1;
+        } else {
+          /* 記憶の強さ：しおれてから思い出せたら ×2.5（遅いほど少し多め、最大×2.9）。早めに会ったら、その早さに応じて少なめ */
+          var mult = ratio >= 1 ? GROW * (0.85 + 0.15 * Math.min(2, ratio)) : 1 + (GROW - 1) * Math.max(0, ratio);
+          c.s = Math.max(S0, c.s * mult);
+          c.ok = now;
+          if (c.s >= GRAD && !c.grad) { c.grad = now; r.grad = true; }
+          else balance(id, c);
+        }
+        delete c.lapse;
       } else {
         c.streak = 0; c.miss = (c.miss || 0) + 1;
         c.s = Math.max(S0, c.s * 0.4); c.j = 1;                          // 忘れていたら、強さを4割に
         c.ok = Math.min(c.ok, now - c.s * DAY);                          // コンディションを半分に（まだ敵として残る）
+        c.lapse = now;
       }
-      c.last = now; S.lastSeen = now;
+      c.last = now; S.lastSeen = now; came();
       save();
       return r;
     },
@@ -212,6 +224,14 @@
       }).sort(function (a, b) { return wiltAt(S.cards[a]) - wiltAt(S.cards[b]); });
     },
     awayDays: AWAY,
+    cameDays: function () { return S.cameN || 0; },
+    /* まぎらわしい語：id の問題で other を選んでまちがえた（新しい順に3つまで）。次からは選択肢に入れて、見分ける練習にする */
+    mixed: function (id, other) {
+      S.mix = S.mix || {};
+      var a = (S.mix[id] || []).filter(function (x) { return x !== other; });
+      a.unshift(other); S.mix[id] = a.slice(0, 3); save();
+    },
+    mixOf: function (id) { return ((S.mix || {})[id] || []).map(function (x) { return W[x]; }).filter(Boolean); },
     /* ボス戦で勝ったおまけ：記憶の強さを少しだけ足す（卒業の手前まで） */
     bonus: function (id, f) { var c = card(id); if (!c || c.grad) return; c.s = Math.min(c.s * f, 239); save(); },
     grad: function (id) { var c = card(id); return !!(c && c.grad); },
