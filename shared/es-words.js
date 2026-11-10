@@ -756,6 +756,28 @@
   F('le', 'les');
   F('vivir', 'vivimos');
   F('volver', 'vuelto');
+  /* ¡MANDA! の鍛冶場（manda/js/data/forge.js）で作る命令の形 */
+  F('abrir', 'abran, abramos');
+  F('dormir', 'duerma, duerman, duermas, dormid');
+  F('cerrar', 'cierres');
+  F('volver', 'vuelvan, vuelvas, vuelves');
+  F('jugar', 'jueguen, jugad');
+  F('tocar', 'toca, toquen, toquemos, toquéis, tocad');
+  F('venir', 'vengas, vengamos, vengáis');
+  F('tener', 'tengan, tengamos, tengáis, tened');
+  F('poner', 'pongan, pongas, pongamos, pongáis, poned');
+  F('hacer', 'hagan, hagamos, hagáis, haced');
+  F('decir', 'digan, digamos, digáis, decid');
+  F('ir', 'vayas, vayáis');
+  F('ser', 'seas, seamos, seáis, sed');
+  F('traer', 'traes, traigan, traigas, traigamos, traigáis, traed');
+  F('oír', 'oyes, oigan, oigas, oigamos, oigáis');
+  F('conocer', 'conoces, conozcan, conozcas, conozcamos, conozcáis, conoced');
+  F('ver', 'vean, veas, veamos, veáis, ved');
+  F('pedir', 'pides, pidan, pidas, pedid');
+  F('repetir', 'repites, repitan, repitas, repetid');
+  F('llegar', 'lleguen, lleguemos, lleguéis, llegad');
+  F('empezar', 'empiecen, empieces, empezad');
   W('inventar', 'でっちあげる・発明する', 'v', 4, 'inventado, inventé');
   /* わざとまちがえた形（ひっかけの選択肢。バルーン・復習には出ない） */
   W('（受身アプリのひっかけ）', '（実在しない形）', 'bad', 0, 'rompida, rompido, escribida, escribido, escribado, escribar, abrido, hacidos, vido, cayeras, comprido, compraso, conocado, conoceso, ado, ar');

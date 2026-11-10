@@ -6,6 +6,7 @@
  *   のあと  await mandaE2E(['L1', 'L2'])   … レッスンを正解で最後まで進め、重なり・横スクロール・エラーを返す
  *          await mandaBoss('B1')          … ボスを正解で倒す
  *          await mandaRemedy()            … ホームの「🩹 おさらい」を正解で最後まで
+ *          await mandaForge()             … 🔨 鍛冶場を正解で6問（__manda.forge()＝入口、__manda.forgeAns()＝いまの手の正解の番号）
  *  画面の高さはスマホの実際の高さ（375×550 など）にしておく。
  *  重なりは、スクロールで隠れている部分を除いて数える（演出の飛び文字・コンボ表示は数えない）
  * ========================================================= */
@@ -116,6 +117,26 @@
     var r = await runLesson('remedy', function () { document.querySelector('#hCta').click(); });
     ov('remedy 結果');
     return { res: r, screen: document.body.dataset.screen, overlaps: OV, errors: ERR };
+  };
+  /* 🔨 鍛冶場：クリアしたぶんの枝で、正解の手を選びつづけて6問。mistakes を渡すと、その回数ぶんわざとまちがえる */
+  window.mandaForge = async function (mistakes) {
+    OV = []; var bad = mistakes || 0;
+    __manda.forge(); await SL(800);
+    for (var guard = 0; guard < 120; guard++) {
+      if (document.body.dataset.screen !== 'quiz') break;
+      var T = document.querySelector('#zTray'), go = T.querySelector('.tb.go');
+      if (go) { ov('forge next'); go.click(); await SL(600); continue; }
+      var i = __manda.forgeAns();
+      if (i >= 0) {
+        ov('forge #' + guard);
+        var all = Array.prototype.slice.call(T.querySelectorAll('.opt:not(:disabled)')), b;
+        if (bad > 0) { b = all.filter(function (x) { return +x.dataset.i !== i; })[0]; bad--; } else b = all.filter(function (x) { return +x.dataset.i === i; })[0];
+        if (b) b.click();
+      }
+      await SL(1000);
+    }
+    await SL(800); ov('forge 結果');
+    return { screen: document.body.dataset.screen, overlaps: OV, errors: ERR };
   };
   window.mandaOverlaps = overlaps;
 })();

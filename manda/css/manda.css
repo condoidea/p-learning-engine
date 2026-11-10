@@ -648,3 +648,21 @@ details p { margin: 6px 0 0; padding: 8px 10px; border-radius: 12px; background:
 .tbs .tb:first-child:nth-last-child(3), .tbs .tb:first-child:nth-last-child(3) ~ .tb { padding-left: 4px; padding-right: 4px; font-size: 15px; }
 /* 「no hables」のように、できる形は途中で折り返さない */
 .cmap-ex { display: inline-block; white-space: nowrap; }
+
+/* ===== 🔨 鍛冶場（forge2-）：上の語だけが動く。動きは transform・opacity だけ ===== */
+.forge2-ask { margin: 2px 0 0; font-size: 16px; font-weight: 700; line-height: 1.55; text-align: center; }
+.forge2-ask b { color: var(--cmd); font-size: 19px; }
+.forge2-word { min-height: 46px; margin: 8px 0 4px; text-align: center; font-size: 32px; font-weight: 800; line-height: 1.5; letter-spacing: .02em; overflow-wrap: anywhere; }
+.forge2-word .r-cmd { font-size: 32px; }
+.forge2-step { margin: 2px 0 0; padding: 7px 8px; border-radius: 12px; background: rgba(255, 255, 255, .07); text-align: center; font-size: 15px; font-weight: 800; line-height: 1.55; }
+.forge2-step:empty { display: none; }
+.forge2-step b { color: var(--who); }
+.forge2-why { margin: 4px 0 0; font-size: 14.5px; line-height: 1.6; color: #ddd6ff; }
+.opts.forge2-opts { grid-template-columns: 1fr; }
+.opts.forge2-opts.two { grid-template-columns: 1fr 1fr; }
+.opts.forge2-opts .opt { font-size: 16px; }
+.cmap-g.hi { border-color: var(--cmd); background: rgba(255, 207, 74, .1); }
+.cmap-g.hi > .cmap-h b { color: var(--cmd); }
+.forge2-map { margin-top: 2px; }
+.forge2-go { display: block; margin-top: 6px; padding: 7px 14px; border: 1px solid var(--cmd); border-radius: 14px; background: rgba(255, 207, 74, .12); color: var(--cmd); font-size: 14px; font-weight: 800; }
+

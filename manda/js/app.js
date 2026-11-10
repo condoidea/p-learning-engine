@@ -933,7 +933,11 @@
     var up = addXp(run.xp);
     save(); cur = null;
     showResult({ title: 'ORÁCULO CLEAR!!', sub: oracleNo(L) + '　' + L.ti, stars: stars, run: run, rewards: rewards, card: card, up: up,
-      next: { label: first ? '🏝 島へもどる（島が育つ！）' : '🏝 島へもどる', fn: function () { home(first ? { grow: L.id } : null); } }, noHome: true });
+      next: { label: first ? '🏝 島へもどる（島が育つ！）' : '🏝 島へもどる', fn: function () { home(first ? { grow: L.id } : null); } }, noHome: true,
+      after: function (scr) {   // 「🗺 地図に書きこまれた」の下の小さな 🔨 きたえる（島が育つ演出は、鍛冶場のあとの「島へ」まで持ちこす）
+        var fb = $('.forge2-go', scr);
+        if (fb) fb.addEventListener('click', function () { if ($('#done').hidden) return; Sfx.unlock(); Sfx.tap(); fgGrow = first ? L.id : null; forgeGo(); });
+      } });
   }
   $('#pQuit').addEventListener('click', function () {
     if (cur && !confirm('神託をやめる？\n（この神託の進み具合は保存されません。答えた問題は復習に入ります）')) return;
@@ -1279,7 +1283,7 @@
     return '<div class="cmap-n' + (hi ? ' hi' : '') + '"><div class="cmap-who">' + esc(n.who) + here + '</div>' +
       '<div class="cmap-flow">→ ' + esc(n.op) + ' → <b class="cmap-ex">' + esHtml(n.ex) + '</b>' + (n.ja ? '<small class="cmap-ja">' + esc(n.ja) + '</small>' : '') + '</div></div>';
   }
-  /* hi：いま光らせる枝の id の配列。opts.nowL：その番号の神託で習う枝は、まだクリア前でも開いて見せる */
+  /* hi：いま光らせる枝の id の配列。opts.nowL：その番号の神託で習う枝は、まだクリア前でも開いて見せる。opts.hiStart：光らせる出発点の id（鍛冶場） */
   function mapHtml(hi, opts) {
     hi = hi || []; opts = opts || {};
     var kids = {};
@@ -1293,7 +1297,7 @@
     }
     return '<div class="cmap">' + MAP.starts.map(function (s) {
       var on = any(s.id);
-      return '<section class="cmap-g' + (on ? '' : ' off') + '"><div class="cmap-h"><small>出発：</small>' +
+      return '<section class="cmap-g' + (on ? '' : ' off') + (on && opts.hiStart === s.id ? ' hi' : '') + '"><div class="cmap-h"><small>出発：</small>' +
         (on ? '<b>' + esc(s.ti) + '</b><span class="cmap-sx">' + esc(s.ex) + '</span><em>（' + esc(s.sub) + '）</em>' : '<b>？？？</b>') + '</div>' + tree(s.id) + '</section>';
     }).join('') + '</div>';
   }
@@ -1309,8 +1313,10 @@
   function mapModal(hi) {
     var nowL = cur ? (cur.L.base ? cur.L.base.no : cur.L.no) : 0;
     modal('<h3 class="m-h">🗺 命令の地図</h3>' + mapHtml(hi, { nowL: nowL }) +
-      '<p class="m-note">' + mapOpenN() + ' / ' + MAP.nodes.length + ' 本が書きこまれている。習うたびに増えるよ。</p>', 'map-m');
+      '<p class="m-note">' + mapOpenN() + ' / ' + MAP.nodes.length + ' 本が書きこまれている。習うたびに増えるよ。</p>' +
+      (mapOpenN() > 0 && !cur && !zActive ? '<div class="tbs m-btns"><button class="tb go" id="mForge">🔨 この地図で形をきたえる</button></div>' : ''), 'map-m');
     mapReveal($('#mbody'), $('.mbox'), 380);
+    var fb = $('#mForge'); if (fb) fb.addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); $('#modal').hidden = true; forgeGo(); });
   }
   /* まちがえた問題に当たる枝：形の問題は相手の枝、それ以外はその神託で習う枝 */
   function mapHiFor(q) {
@@ -1321,7 +1327,7 @@
   function mapChips(nodes) {
     return '<div class="cmap-rw"><b>地図に書きこまれた</b>' + nodes.map(function (n) {
       return '<div class="cmap-chip"><i>' + esc(n.kind === 'ex' ? n.ti : n.who) + '</i><br>' + (n.kind === 'ex' ? '' : '→ ' + esc(n.op) + ' → ') + '<b>' + esHtml(n.ex) + '</b></div>';
-    }).join('') + '</div>';
+    }).join('') + '<button class="forge2-go" type="button">🔨 きたえる</button></div>';
   }
   function doMap(st) {
     var c = el('div', 'card board-tbl cmap-card', '<div class="qtag">🗺 命令の地図</div>' + mapHtml(st.hi || []));
@@ -1333,6 +1339,191 @@
   $('#pMap').addEventListener('click', function () { Sfx.tap(); mapModal([]); });
   $('#zMap').addEventListener('click', function () { Sfx.tap(); mapModal([]); });
   $('#hMap').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); mapModal([]); });
+
+  /* =========================================================
+   * 🔨 鍛冶場：地図を自分でたどって、命令の形を作る（6問）
+   *  毎回「どの形から出発して、何をするか」を自分で選ぶ。ルールは1つの形に1つだけ。
+   *   手1 出発点（tú の形・yo の形・原形・例外）→ 手2 何をする（例外は形を選ぶ。書きかえは手2のあとにもう1手）→ 手3 usted の命令から足し算（ustedes・〜するな・〜しよう）
+   *  手を正解するたびに、上の語がその場で変わる（動かすのはそこだけ）。まちがえたら、その手の正解と地図の枝を見せ、同じ枝の別の動詞を最後に1問足す。
+   *  形の計算と「どの枝にどの動詞を出してよいか」は MQ.forge（forge.js）。ここでは、地図の枝が開いているかだけを見る。
+   * ========================================================= */
+  var FG = D.forge || { verbs: [], WHO: [], DERIVED: [], usted: function () { return ''; }, form: function () { return ''; }, can: function () { return false; }, needs: function () { return []; }, isExc: function () { return false; } };
+  var FG_ASK = { 'tu': 'tú（1人・仲よし）への命令に', 'usted': 'usted（1人・ていねい）への命令に', 'ustedes': 'ustedes（何人も・ていねい）への命令に', 'vos': 'vosotros（何人も・仲よし）への命令に',
+    'no-tu': 'tú への「〜するな」に', 'no-usted': 'usted への「〜しないで」に', 'nos': 'nosotros の「〜しよう」に', 'no-vos': 'vosotros への「〜するな」に' };
+  var FG_WHOIS = { 'ustedes': 'ustedes（何人も・ていねい）', 'no-tu': 'tú に「〜するな」', 'no-usted': 'usted に「〜しないで」', 'nos': 'nosotros「〜しよう」', 'no-vos': 'vosotros に「〜するな」' };
+  var FG_OP3 = { 'ustedes': '＋ n', 'no-tu': 'no ＋ s', 'no-usted': 'no だけ', 'nos': '＋ mos', 'no-vos': 'no ＋ éis・áis' };
+  var FG_FILL = ['＋ r', '＋ d', '＋ le'];
+  var fgTok = 0, fgAnsI = -1, fgGrow = null;
+  function fgOpen(id) { var n = MAP.nodes.filter(function (x) { return x.id === id; })[0]; return !!n && lessonDone(n.L); }
+  /* 出せる「枝 → 動詞」：開いている枝、クリア済みの神託の動詞、その枝で形が作れて、必要な例外の枝が開いているもの */
+  function fgPool() {
+    var by = {};
+    FG.WHO.forEach(function (who) {
+      if (!fgOpen(who)) return;
+      var vs = FG.verbs.filter(function (v) { return lessonDone(v.L) && FG.can(v, who) && FG.needs(v, who).every(fgOpen); });
+      if (vs.length) by[who] = vs;
+    });
+    return by;
+  }
+  /* 枝がかたよらないように、出た数がいちばん少ない枝から選ぶ */
+  function fgPick(by, n) {
+    var whos = Object.keys(by), cnt = {}, usedV = {}, out = [];
+    whos.forEach(function (w) { cnt[w] = 0; });
+    for (var i = 0; i < n; i++) {
+      var min = Math.min.apply(null, whos.map(function (w) { return cnt[w]; }));
+      var w = pick(whos.filter(function (x) { return cnt[x] === min; }));
+      var fresh = by[w].filter(function (v) { return !usedV[v.inf]; });
+      var v = pick(fresh.length ? fresh : by[w]);
+      cnt[w]++; usedV[v.inf] = 1;
+      out.push({ v: v, who: w });
+    }
+    return out;
+  }
+  /* まちがえた問題と同じ枝の、別の動詞を最後に1問足す */
+  function fgExtra(q, list) {
+    var vs = (fgPool()[q.who] || []).filter(function (v) { return !list.some(function (x) { return x.who === q.who && x.v.inf === v.inf; }); });
+    if (vs.length) list.push({ v: pick(vs), who: q.who, extra: true });
+  }
+  /* e の前のつづりの書きかえ（-car・-gar・-zar）：手2のあとの1手 */
+  function fgSpell(v) {
+    var stem = v.yo.slice(0, -1), t = /car$/.test(v.inf) ? 'car' : /gar$/.test(v.inf) ? 'gar' : 'zar';
+    return {
+      right: v.usted, wrong: stem + 'e',
+      disp: t === 'gar' ? stem + '^u^e' : t === 'car' ? stem.slice(0, -1) + '^qu^e' : stem.slice(0, -1) + '^c^e',
+      q: t === 'gar' ? 'このままだと <b>' + esc(stem) + '＋e</b> の「ge」は「ヘ」と読める。「グ」の音を残すには、どう書く？'
+        : t === 'car' ? 'このままだと <b>' + esc(stem) + '＋e</b> の「ce」は「セ」と読める。「ク」の音を残すには、どう書く？'
+        : 'このままだと <b>' + esc(stem) + '＋e</b> の z は、e の前では書きかえるきまり。どう書く？',
+      why: t === 'gar' ? '「グ」の音を残すため、g のあとに u を入れる。' : t === 'car' ? '「ク」の音を残すため、c を qu に書きかえる。' : 'z は e の前では c と書く。'
+    };
+  }
+
+  function forgeGo() {
+    var by = fgPool();
+    if (!Object.keys(by).length) return toast('🔒 第1の神託をクリアすると、鍛冶場が開くよ');
+    var list = fgPick(by, 6), k = 0, tok = ++fgTok;
+    zStop(); show('quiz'); zActive = true; zRun = newRun();
+    $('#zTitle').textContent = '🔨 鍛冶場'; zHud.innerHTML = '';
+    function paint() { $('#zProg').style.width = Math.round(k / list.length * 100) + '%'; $('#zRight').innerHTML = '<small>XP</small><b>' + zRun.xp + '</b>'; }
+    function one() {
+      paint();
+      if (k >= list.length) return end();
+      var q = list[k++];
+      fgAsk(q, k + ' / ' + list.length, tok, function (ok) {
+        if (!ok && !q.extra) fgExtra(q, list);
+        paint();
+        T2.next(one, k < list.length ? '▶ つぎへ' : '▶ おわり！');
+      });
+    }
+    function end() {
+      zStop(); touchDay();
+      var up = addXp(zRun.xp + 20); zRun.xp += 20; save();
+      var acc = zRun.ok / list.length, g = fgGrow; fgGrow = null;
+      showResult({ title: acc === 1 ? 'PERFECT!!' : 'FORJA CLEAR!', sub: '🔨 鍛冶場 ' + list.length + '問', stars: acc >= 0.9 ? 3 : acc >= 0.7 ? 2 : 1, run: zRun, up: up,
+        note: 'まちがえた枝は、別の動詞でもう1問ふえている。地図の「出発点 → 操作」を、毎回自分でたどれたかな。', retry: { label: '🔨 もう6問', fn: forgeGo },
+        next: g ? { label: '🏝 島へもどる（島が育つ！）', fn: function () { home({ grow: g }); } } : null, noHome: !!g });
+    }
+    one();
+  }
+
+  /* 1問：手1 → 手2（→ つづり）→ 手3。finish(ok) は、おわったら（正解で完成・まちがえて正解を見せた）1回だけ */
+  function fgAsk(q, tag, tok, finish) {
+    var v = q.v, who = q.who, exc = FG.isExc(v, who), derived = FG.DERIVED.indexOf(who) >= 0;
+    var startK = who === 'tu' ? 'tu' : who === 'vos' ? 'inf' : 'yo';
+    var u = FG.usted(v), form = FG.form(v, who), ar = /ar$/.test(v.inf), exNode = FG.needs(v, who)[0];
+    var c = zCard(); c.classList.add('forge2');
+    c.innerHTML = '<div class="qtag">🔨 鍛冶場 <em>' + esc(tag) + '</em></div>' +
+      '<p class="forge2-ask"><b>' + esc(v.inf) + '</b>（' + esc(v.ja) + '）を、' + esc(FG_ASK[who]) + '</p>' +
+      '<div class="forge2-word">' + esHtml(v.inf) + '</div><p class="forge2-step"></p><div class="qres"></div>';
+    var Wd = $('.forge2-word', c);
+    function alive() { return tok === fgTok && zActive; }
+    function setW(s) { Wd.innerHTML = esHtml(s); FX.pop(Wd, 1.15); }
+    /* 上の語を順に変える（450ms ごと）→ then */
+    function seq(steps, then) {
+      steps.forEach(function (s, i) { later(function () { if (alive()) setW(s); }, i * 450); });
+      later(function () { if (alive()) then(); }, steps.length * 450 + 250);
+    }
+    /* 1手：items＝[{label, ok}]、hi＝まちがえたときに光らせる地図 {nodes, start} */
+    function hand(prompt, items, hi, why, ok, two) {
+      var ans = -1; items.forEach(function (x, i) { if (x.ok) ans = i; });
+      $('.forge2-step', c).innerHTML = prompt;
+      fgAnsI = ans;
+      T2.options(shuffle(items.map(function (x, i) { return { label: x.label, i: i }; })), function (i, b, wrap) {
+        markOpts(wrap, ans, i); fgAnsI = -1;
+        if (i === ans) { Sfx.whoosh(); return ok(); }
+        miss(zRun, c); c.classList.add('is-ng');
+        $('.qres', c).innerHTML = '<b class="rk ng">❌ 正解は「' + esc(items[ans].label) + '」</b><p class="forge2-why">' + why + '</p>';
+        var m = el('div', 'card board-tbl cmap-card forge2-map', '<div class="qtag">🗺 光っている所が、この手の答え</div>' + mapHtml(hi.nodes, { hiStart: hi.start }));
+        zMain.appendChild(m); mapReveal(m, zMain, 150);
+        later(function () { if (alive()) finish(false); }, 350);
+      }, 'forge2-opts' + (two || items.length >= 4 ? ' two' : ''));   // 4つ以上は2列（375×550 で画面からはみ出さない）
+    }
+    function complete() {
+      fgAnsI = -1; T2.clear();
+      Wd.innerHTML = '<span class="r-cmd">' + esc(form) + '</span>'; FX.pop(Wd, 1.35);
+      $('.qres', c).innerHTML = '<div class="ja-line">' + esc(FG_ASK[who].replace(/に$/, '')) + '：' + esc(v.inf) + '＝' + esc(v.ja) + '</div>';
+      c.classList.add('is-ok');
+      hit(zRun, Wd);
+      later(function () {
+        if (!alive()) return;
+        FX.slam('¡' + form.toUpperCase() + '!', 'gold'); sfxDivine();
+        var p = FX.at(Wd); FX.rays(p.x, p.y); FX.burst(p.x, p.y, { pal: 'divine', n: 40, sp: 9, ring: true });
+        autoSay(form);
+      }, 250);
+      later(function () { if (alive()) finish(true); }, 1000);
+    }
+    /* 手3：usted の命令からの足し算 */
+    function h3() {
+      var ops = FG.DERIVED.filter(function (w) { return fgOpen(w) || w === who; });
+      var items = ops.map(function (w) { return { label: FG_OP3[w], ok: w === who }; });
+      FG_FILL.forEach(function (f) { if (items.length < 3) items.push({ label: f }); });
+      var base = u.slice(0, -1), steps = {
+        'ustedes': [u + '^n^'], 'no-usted': ['^no^ ' + u], 'no-tu': ['^no^ ' + u, '^no^ ' + u + '^s^'], 'nos': [u + '^mos^'],
+        'no-vos': ['^no^ ' + base + '^_^', '^no^ ' + base + '^' + (/e$/.test(u) ? 'éis' : 'áis') + '^']
+      }[who];
+      hand('usted の命令 <b>' + esc(u) + '</b> から、' + esc(FG_WHOIS[who]) + 'は？', items, { nodes: [who] },
+        'usted の命令 ' + esc(u) + ' に「' + esc(FG_OP3[who]) + '」をして、' + esc(form) + '。', function () { seq(steps, complete); }, true);
+    }
+    function after2() { derived ? h3() : complete(); }
+    /* つづりの書きかえ（llegue・busque・empiece） */
+    function h2s() {
+      var sp = fgSpell(v);
+      hand(sp.q, [{ label: sp.right, ok: true }, { label: sp.wrong }], { nodes: ['spell'] }, esc(sp.why), function () { seq([sp.disp], after2); });
+    }
+    /* 手2 */
+    function h2() {
+      if (exc) {
+        var cor = who === 'tu' ? v.tuCmd : u, bad1 = who === 'tu' ? v.tu.slice(0, -1) : v.yo + 'e', bad2 = who === 'tu' ? v.tu : v.el;
+        return hand('例外：この動詞の命令は？', [{ label: cor, ok: true }, { label: bad1 }, { label: bad2 }], { nodes: [exNode] },
+          '覚えた形は「' + esc(cor) + '」。ふつうの作り方だと「' + esc(bad1) + '」になってしまう。', function () { seq(['^' + cor + '^'], after2); });
+      }
+      if (startK === 'tu') {
+        var st = v.tu.slice(0, -1);
+        return hand('何をする？', [{ label: 's を取る', ok: true }, { label: 'o を取る' }, { label: 'r を d に' }], { nodes: ['tu'] },
+          'tú の形（' + esc(v.tu) + '）の最後の s を取る → ' + esc(st), function () { seq([st + '^_^', st], complete); });
+      }
+      if (startK === 'inf') {
+        var si = v.inf.slice(0, -1);
+        return hand('何をする？', [{ label: 'r を d に', ok: true }, { label: 'r を取る' }, { label: 's をつける' }], { nodes: ['vos'] },
+          '原形（' + esc(v.inf) + '）の最後の r を d に → ' + esc(form), function () { seq([si + '^_^', si + '^d^'], complete); });
+      }
+      var sy = v.yo.slice(0, -1), vow = ar ? 'e' : 'a';
+      hand('何をする？', [{ label: 'o を取って ' + vow, ok: true }, { label: 'o を取って ' + (ar ? 'a' : 'e') }, { label: 's を取る' }], { nodes: ['usted'] },
+        'yo の形（' + esc(v.yo) + '）の o を取って、' + (ar ? '-ar だから e' : '-er・-ir だから a') + ' → ' + esc(sy + vow),
+        function () { seq([sy + '^_^', sy + '^' + vow + '^'], v.ex === 'spell' ? h2s : after2); });
+    }
+    /* 手1 */
+    var why1 = exc ? (who === 'tu' ? '「' + esc(v.tuCmd) + '」は覚えた形。tú の形から s を取ると「' + esc(v.tu.slice(0, -1)) + '」になってしまう。' : '「' + esc(u) + '」は覚えた形。yo の形（' + esc(v.yo) + '）からは作れない。')
+      : startK === 'tu' ? 'tú への命令は、tú の形（' + esc(v.tu) + '）から作る。'
+      : startK === 'inf' ? 'vosotros への命令は、原形（' + esc(v.inf) + '）から作る。'
+      : (derived ? 'ここは usted の命令から足し算。その usted の命令は、yo の形（' + esc(v.yo) + '）から作る。' : 'usted への命令は、yo の形（' + esc(v.yo) + '）から作る。');
+    var hi1 = exc ? { nodes: [exNode] } : startK === 'tu' ? { nodes: ['tu'], start: 's-tu' } : startK === 'inf' ? { nodes: ['vos'], start: 's-inf' } : { nodes: derived ? ['usted', who] : ['usted'], start: 's-yo' };
+    var items1 = [{ label: 'tú の形　' + v.tu, ok: !exc && startK === 'tu' }, { label: 'yo の形　' + v.yo, ok: !exc && startK === 'yo' }, { label: '原形　' + v.inf, ok: !exc && startK === 'inf' }];
+    if (exc || fgOpen('tu4a') || fgOpen('tu4b') || fgOpen('oy4')) items1.push({ label: '例外（覚えた形）', ok: exc });
+    hand('出発点は？', items1, hi1, why1, function () {
+      if (exc) return later(function () { if (alive()) h2(); }, 300);
+      seq([startK === 'tu' ? v.tu : startK === 'inf' ? v.inf : v.yo], h2);
+    });
+  }
 
   /* =========================================================
    * 🩹 あやしい所 → おさらい神託
@@ -1862,6 +2053,7 @@
   try { localStorage.setItem('le.news.manda.opened', '1'); } catch (e) { /* 保存できない環境 */ }
   /* 動作確認用：?sandbox で window.__manda（状態の参照・クリア記録の書きかえ） */
   if (SANDBOX) window.__manda = { S: function () { return S; }, save: save, home: home, start: function (id) { startLesson(LESSON[id]); }, boss: function (id) { bossIntro(BOSS[id]); }, finish: function () { if (cur) { cur.i = cur.L.steps.length; step(); } }, cur: function () { return cur; }, Q: QBY, WHO: WHO,
+    forge: function () { forgeGo(); }, forgeAns: function () { return fgAnsI; },
     testQ: function (id) { zStop(); show('quiz'); zRun = newRun(); renderQ(QBY[id], zCard(), T2, {}, function () {}); } };
   home();
 })();

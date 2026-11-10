@@ -10,6 +10,7 @@
  *   ・レッスン：q の id、forge（w の最後が cut・add が o の中）、cast・tapwho の人が場面にいるか、
  *     読むだけ（say・show・tip）が4つ以上続かないか、ブーホが3回つづけて話さないか、吹き出しの1行が長すぎないか
  *   ・カード：id の重複・絵文字の重複・レッスンごとの枚数
+ *   ・🔨 鍛冶場（forge.js）：動詞の形（tú・yo・命令）と、全部の「枝 × 動詞」の正解の形が単語帳にあるか（--forge で一覧を出す）
  *  単語メモ（docs/スペイン語単語メモ.md）は node tests/check-relativo.js --memo で書き出す（manda の列もそこで作る）
  * ========================================================= */
 'use strict';
@@ -25,7 +26,7 @@ function load(files) {
   files.forEach(f => vm.runInContext(fs.readFileSync(path.join(ROOT, f), 'utf8'), ctx.window, { filename: f }));
   return ctx.window;
 }
-const FILES = ['shared/es-words.js', 'manda/js/data/lessons.js', 'manda/js/data/questions.js', 'manda/js/data/cards.js', 'manda/js/data/world.js'];
+const FILES = ['shared/es-words.js', 'manda/js/data/lessons.js', 'manda/js/data/questions.js', 'manda/js/data/cards.js', 'manda/js/data/world.js', 'manda/js/data/forge.js'];
 const W = load(FILES);
 const MQ = W.MQ, DICT = W.ES_WORDS;
 let errors = 0, warns = 0;
@@ -144,6 +145,32 @@ if (MQ.map) {
     if (n.kind === 'ex' ? !n.ti : !(n.who && n.op)) err('地図の枝 ' + n.id + '：who・op（例外の札は ti）がない');
     if (!n.ex) err('地図の枝 ' + n.id + '：ex がない');
   });
+}
+
+/* ---------- 🔨 鍛冶場（MQ.forge） ---------- */
+if (MQ.forge) {
+  const F = MQ.forge, EIGHT = ['ven', 'ten', 'pon', 'sal', 'haz', 'di', 've', 'sé'];
+  const inDict = (what, w) => { String(w).split(' ').forEach(t => { if (t !== 'no' && !index.has(t.toLowerCase())) err('鍛冶場：単語帳にない語 ' + t + '（' + what + '）'); }); };
+  const vids = new Set();
+  F.verbs.forEach(v => {
+    if (vids.has(v.inf)) err('鍛冶場：動詞の重複 ' + v.inf);
+    vids.add(v.inf);
+    ['inf', 'tu', 'yo'].forEach(k => { if (!v[k]) err('鍛冶場 ' + v.inf + '：' + k + ' がない'); else inDict(v.inf + ' ' + k, v[k]); });
+    if (v.tuCmd && EIGHT.indexOf(v.tuCmd) < 0) err('鍛冶場 ' + v.inf + '：tuCmd ' + v.tuCmd + ' は例外の8つにない');
+    if (!v.tuCmd && v.tu.slice(-1) !== 's') err('鍛冶場 ' + v.inf + '：tu が s で終わっていない');
+    if (!v.usted && v.yo.slice(-1) !== 'o') err('鍛冶場 ' + v.inf + '：yo が o で終わっていない（usted を書く）');
+    if (!MQ.lessons.some(L => L.no === v.L)) err('鍛冶場 ' + v.inf + '：L' + v.L + ' の神託がない');
+    if (v.ex === 'oy' && !v.el) err('鍛冶場 ' + v.inf + '：ex が oy なのに el（彼は〜する）がない');
+    if (v.ex === 'spell' && !/(car|gar|zar)$/.test(v.inf)) err('鍛冶場 ' + v.inf + '：spell は -car・-gar・-zar だけ');
+    F.WHO.forEach(w => {
+      if (!F.can(v, w)) return;
+      inDict(v.inf + ' ' + w, F.form(v, w));
+      F.needs(v, w).forEach(id => { if (MQ.map && !MQ.map.nodes.some(n => n.id === id)) err('鍛冶場 ' + v.inf + ' ' + w + '：地図に枝 ' + id + ' がない'); });
+    });
+  });
+  if (F.verbs.length < 20 || F.verbs.length > 26) warn('鍛冶場：動詞が ' + F.verbs.length + ' 個（20〜26のはず）');
+  if (MQ.map) F.WHO.forEach(w => { if (!MQ.map.nodes.some(n => n.id === w && n.who)) err('鍛冶場：枝 ' + w + ' が地図にない'); });
+  if (process.argv.indexOf('--forge') >= 0) F.WHO.forEach(w => console.log(w + ': ' + F.verbs.filter(v => F.can(v, w)).map(v => v.inf + '→' + F.form(v, w) + (F.needs(v, w).length ? '[' + F.needs(v, w) + ']' : '')).join('  ')));
 }
 
 /* ---------- カード ---------- */
