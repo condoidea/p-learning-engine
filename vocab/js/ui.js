@@ -787,12 +787,14 @@
     if (lv >= 1 && w.def) t.push('def2w');
     if (lv >= 2 && !/\s/.test(w.w)) t.push('spell');
     /* 単語 → 英英の説明（定義が選択肢）は、高校生には難しすぎるので出さない（2026-10-09）。英英は「説明 → 単語」で使う */   /* 2語以上の表現（contento de）はつづりの組み立てに出さない */
-    /* 文のなかで使う練習（応用）：仲間から。相棒では、つづる問いのほうを多めに（2枚）。「ゆるく」の気分では出さない（上で返している） */
+    /* 文のなかで使う練習（応用）：仲間から。つづり・穴埋め・つづって完成は、下で片寄らないように選ぶ。「ゆるく」の気分では出さない（上で返している） */
     if (lv >= 2 && hasCloze(w)) t.push('cloze');
     if (lv >= 2 && exOk(w)) t.push('exspell');
-    if (lv >= 3 && exOk(w)) t.push('exspell');
     if (w.pos === 'v' && CU && learned(w).length && Math.random() < 0.45) return 'form';
-    return Math.random() < 0.5 ? t[t.length - 1] : pick(t);   // 半分は、いまのレベルのいちばん難しい問い方
+    /* 半分は、いまのレベルの難しい問い方。難しい問い方が3つ以上あるとき（仲間から：つづり・穴埋め・つづって完成）は、その中から選ぶ。
+       「つづって完成」ばかりになるとテンポが落ちるので、1つに片寄らせない（2026-11-12 実測：11問中6問がつづって完成だった） */
+    var hard = t.length >= 5 ? t.slice(-3) : [t[t.length - 1]];
+    return Math.random() < 0.5 ? pick(hard) : pick(t);
   }
   function hotType(w, lt, lv, easy) {
     var p = ['es2ja', 'ja2es'];
