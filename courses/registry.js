@@ -63,6 +63,13 @@ window.LE_COURSES = [
     desc: '下町新聞の新米記者になって、犯人を書かない文の「やった人」を見ぬく！ ser・estar ＋ 過去分詞、受身の se、無人称の se、再帰・相互、「勝手に」の se、se lo まで、見分けの手順で。即答ドリル・西検模試つき。西検4級。',
     color: '#b8212b', color2: '#1d1c1a', lessons: 7
   },
+  /* ¿QUÉ SERÁ?（futuro/）：時制（未来・過去未来・完了・進行形）の占い館もの。独立アプリ。進み具合は lessons[id].done を数える（lessons はレッスン数＝12） */
+  {
+    id: 'futuro', entry: 'futuro.html', storageKey: 'futuro.v1',
+    title: 'スペイン語 時制', brand: '¿QUÉ SERÁ?', icon: '🔮',
+    desc: '占い館の見習い予言者になって、お客の未来を言い当てる！ 未来・過去未来・現在完了・過去完了・未来完了・進行形を、日めくり・水晶玉・時間の地図で。西検4級。',
+    color: '#e7c36b', color2: '#145a55', lessons: 12
+  },
   /* ユーキ・クエスト（yuki/）：有機化学のRPG。独立アプリ。進み具合は lessons[id].done を数える（序章4＋1章4＋ボス2） */
   {
     id: 'yuki', entry: 'yuki.html', storageKey: 'yuki.v1',

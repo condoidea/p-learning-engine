@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<script src="shared/cloud.js?v=2"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿QUÉ SERÁ?｜スペイン語の時制</title>
+<meta name="theme-color" content="#06201f">
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet">
+<script src="shared/smooth-fonts.js?v=1"></script>
+<link rel="stylesheet" href="futuro/css/futuro.css?v=1">
+</head>
+<body>
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div id="app">
+
+  <!-- ============ ホーム（占い館の景色） ============ -->
+  <section id="home" class="screen">
+    <header class="topbar">
+      <a class="back" href="index.html" aria-label="コース一覧へ">←</a>
+      <button class="lv" id="hLv" aria-label="予言者の位"><b id="hLvN">1</b><span class="lv-bar"><i id="hLvBar"></i></span><small id="hLvTi"></small></button>
+      <span class="chip" id="hStreak" title="連続日数">🔥 <b>0</b></span>
+      <span class="chip" id="hTix" title="星めぐりのチケット">🎟 <b>0</b></span>
+    </header>
+    <h1 class="logo"><span>¿QUÉ SERÁ?</span><small>占い館の見習い予言者 ・ スペイン語の時制 ・ 西検4級</small></h1>
+    <div class="scene-wrap">
+      <div class="scene" id="scene" data-overlay-ok></div>
+      <span class="popc" id="hPop">⭐ 評判 <b>1</b></span>
+      <div class="ev" id="hEv"></div>
+    </div>
+    <button class="cta" id="hCta"></button>
+    <button class="skip" id="hSkip" hidden></button>
+    <button class="stop" id="hStop" hidden>✋ あとで（今日はここまで）</button>
+    <div class="quick">
+      <button class="qb" id="hReview"><span class="qi">🔁</span><b>復習</b><small id="hDue"></small></button>
+      <button class="qb" id="hRush"><span class="qi">⚡</span><b>ラッシュ</b><small id="hRushBest"></small></button>
+      <button class="qb" id="hMock"><span class="qi">🎓</span><b>西検</b><small id="hMockN"></small></button>
+      <button class="qb" id="hGacha"><span class="qi">✨</span><b>星めぐり</b><small id="hGachaN"></small></button>
+      <button class="qb" id="hMap"><span class="qi">🗺</span><b>地図</b><small id="hMapN"></small></button>
+      <button class="qb" id="hBook"><span class="qi">📖</span><b>予言の書</b><small id="hBookN"></small></button>
+    </div>
+    <button class="mis" id="hMis"></button>
+    <div class="settings">
+      <label><input type="checkbox" id="tgSound"> 🔈 効果音</label>
+      <label><input type="checkbox" id="tgSpeak"> 🗣 スペイン語を読み上げる</label>
+      <label><input type="checkbox" id="tgAuto"> ⏩ 次の予言を自動で始める</label>
+      <button class="link" id="hReset">記録をリセット</button>
+    </div>
+  </section>
+
+  <!-- ============ 予言（レッスン） ============ -->
+  <section id="play" class="screen fix" hidden>
+    <header class="pbar">
+      <button class="x" id="pQuit" aria-label="やめる">✕</button>
+      <div class="pmid"><b id="pTitle"></b><span class="prog"><i id="pProg"></i></span></div>
+      <button class="x map" id="pMap" aria-label="時間の地図">🗺</button>
+      <div class="pxp"><small>XP</small><b id="pXp">0</b></div>
+    </header>
+    <div class="stage" id="stage"></div>
+    <main class="board" id="board" aria-live="polite"></main>
+    <div class="talk" id="talk" hidden></div>
+    <div class="tray" id="tray"></div>
+  </section>
+
+  <!-- ============ ボス・ラッシュ・復習 ============ -->
+  <section id="quiz" class="screen fix" hidden>
+    <header class="pbar">
+      <button class="x" id="zQuit" aria-label="やめる">✕</button>
+      <div class="pmid"><b id="zTitle"></b><span class="prog"><i id="zProg"></i></span></div>
+      <button class="x map" id="zMap" aria-label="時間の地図">🗺</button>
+      <div class="pxp" id="zRight"></div>
+    </header>
+    <div id="zHud"></div>
+    <main id="zMain" class="board"></main>
+    <div class="tray" id="zTray"></div>
+  </section>
+
+  <section id="done" class="screen" hidden></section>
+  <section id="gacha" class="screen" hidden></section>
+  <section id="dex" class="screen" hidden></section>
+</div>
+
+<div id="combo" aria-hidden="true"></div>
+<div id="slam" aria-hidden="true"></div>
+<div id="modal" hidden><div class="mbox"><button class="mclose" aria-label="閉じる">✕</button><div id="mbody"></div></div></div>
+<div id="pop" hidden></div>
+<div id="toast" aria-live="polite"></div>
+
+<script src="shared/es-words.js?v=10"></script>
+<script src="futuro/js/data/lessons.js?v=1"></script>
+<script src="futuro/js/data/questions.js?v=1"></script>
+<script src="futuro/js/data/cards.js?v=1"></script>
+<script src="futuro/js/data/world.js?v=1"></script>
+<script src="engine/js/audio.js?v=10"></script>
+<script src="futuro/js/fx.js?v=1"></script>
+<script src="futuro/js/app.js?v=1"></script>
+<script src="news/news.js?v=4"></script>
+</body>
+</html>

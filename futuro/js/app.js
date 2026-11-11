@@ -1,0 +1,2015 @@
+/* =========================================================
+ * ¿QUÉ SERÁ? — スペイン語の時制（未来・過去未来・完了・進行形、西検4級）
+ *
+ *  エンジンを使わない独立アプリ（manda/ と同じ作り）。名前空間は window.FQ。
+ *   ホーム＝占い館の景色。次の「予言」（レッスン）がお客の相談として自動で出てくる（目次は 📖 予言の書 の中に隠す）。
+ *   レッスン＝場面（お客たち）・ボード（表・例文・問題）・ルナのセリフ・下のボタン。予言が当たると玉が光ってお客が動く。
+ *   クリア → 占い館が育つ（物が現れる・評判⭐がふえる）→ 次の予言が数秒で自動スタート
+ *   ほかに ⚡ラッシュ（60秒）・🔁星の復習（間隔反復）・✨星めぐり（ガチャ：星のカード）・📖 予言の書（目次・カード・Tips）・🗺 時間の地図
+ *   このアプリの中心：🗓 日めくり（flip）・🔮 水晶玉（orb）・🗺 時間の地図（map・tapwhen）
+ *  保存：localStorage 'futuro.v1'（?sandbox なら 'futuro.sandbox'）
+ *  教材：futuro/js/data/*.js、単語：shared/es-words.js
+ * ========================================================= */
+(function () {
+  'use strict';
+  var D = window.FQ, DICT = window.ES_WORDS, W = D.world;
+  var DAY = 864e5;
+  var LUNA = D.people.luna || { e: '🐈‍⬛', n: 'ルナ', d: '' };
+
+  /* ---------- 小物 ---------- */
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function ymd(t) { var d = new Date(t); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function today() { return ymd(Date.now()); }
+  function later(fn, ms) { return setTimeout(fn, ms); }
+  function norm(w) { return String(w).replace(/[¿?¡!.,—:;]/g, '').toLowerCase(); }
+  function plain(es) { return String(es).replace(/[\[\]{}^|]/g, '').replace(/___/g, '…'); }
+  function num(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  function hash(s) { var h = 7; for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 100003; return h; }
+
+  /* ---------- 保存 ---------- */
+  var SANDBOX = /[?&]sandbox\b/.test(location.search);
+  var KEY = SANDBOX ? 'futuro.sandbox' : 'futuro.v1';
+  function fresh() {
+    return { v: 1, xp: 0, tickets: 0, streak: { n: 0, last: '' }, lessons: {}, bosses: {}, q: {}, cards: {}, tips: {},
+      mis: { d: '', done: {}, bonus: false }, rushBest: 0, pulls: 0, sets: {}, cardp: {}, seen: {}, weak: {}, mockBest: 0, settings: { sound: true, speak: true, auto: true } };
+  }
+  function load() {
+    try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) { var f = fresh(); for (var k in s) f[k] = s[k]; return f; } } catch (e) { /* 保存領域が使えない */ }
+    return fresh();
+  }
+  var S = load();
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* 保存できない環境 */ } }
+  window.SfxOn = function () { return S.settings.sound; };
+
+  /* ---------- 索引 ---------- */
+  var LESSON = {}, BOSS = {}, QBY = {}, CARD = {}, TIPS = [];
+  D.lessons.forEach(function (L) { LESSON[L.id] = L; L.steps.forEach(function (st) { if (st.t === 'tip') TIPS.push({ tip: st, L: L }); }); });
+  D.bosses.forEach(function (b) { BOSS[b.id] = b; });
+  D.questions.forEach(function (q) { QBY[q.id] = q; });
+  D.cards.forEach(function (c) { CARD[c.id] = c; });
+  D.lessons.forEach(function (L, i) { L.ord = i + 1; });
+  var ORDER = [];
+  D.lessons.forEach(function (L) {
+    ORDER.push({ type: 'L', id: L.id, day: L.day });
+    D.bosses.forEach(function (b) { if (b.after === L.id) ORDER.push({ type: 'B', id: b.id, day: b.day }); });
+  });
+  function nodeDone(n) { return n.type === 'L' ? !!(S.lessons[n.id] && S.lessons[n.id].done) : !!(S.bosses[n.id] && S.bosses[n.id].win); }
+  function nodeOpen(i) { return i === 0 || nodeDone(ORDER[i]) || nodeDone(ORDER[i - 1]); }
+  function nextIdx() { for (var i = 0; i < ORDER.length; i++) if (!nodeDone(ORDER[i])) return i; return -1; }
+  function lessonDone(no) { return !!(S.lessons['L' + no] && S.lessons['L' + no].done); }
+  function unlockedQs() { return D.questions.filter(function (q) { return lessonDone(q.L); }); }
+  function dueQs() { var now = Date.now(); return unlockedQs().filter(function (q) { var r = S.q[q.id]; return r && r.due <= now; }); }
+  function cardPool() { return D.cards.filter(function (c) { return c.L && lessonDone(c.L); }); }
+  function oracleNo(L) { return '第' + L.ord + 'の予言'; }
+
+  /* 単語帳（バルーン用） */
+  var WORD = {};
+  DICT.words.forEach(function (e) { [e.w].concat(e.f).forEach(function (f) { WORD[f.toLowerCase()] = e; }); });
+  var POS = { n: '名詞', v: '動詞', adj: '形容詞', adv: '副詞', pron: '代名詞', art: '冠詞', prep: '前置詞', det: '', rel: '関係詞', int: '疑問詞', num: '数', phr: '表現', bad: '' };
+  var LVN = { 5: '5級', 4: '4級', 3: '4級＋α', 0: '' };
+
+  /* ---------- 予言者の位（レベル）・連続日数・ミッション ---------- */
+  function need(lv) { return 100 + (lv - 1) * 40; }
+  function levelOf(xp) { var lv = 1; while (xp >= need(lv)) { xp -= need(lv); lv++; } return { lv: lv, cur: xp, need: need(lv) }; }
+  var TITLES = [[1, '見習い予言者'], [3, '占い師'], [5, '星読み'], [8, '月の予言者'], [12, '大予言者'], [16, '星の賢者'], [20, '時の導き手']];
+  function titleOf(lv) { var t = TITLES[0][1]; TITLES.forEach(function (x) { if (lv >= x[0]) t = x[1]; }); return t; }
+  function addXp(n) { var b = levelOf(S.xp).lv; S.xp += n; var a = levelOf(S.xp).lv; return a > b ? a : 0; }
+  function touchDay() {
+    var t = today();
+    if (S.streak.last === t) return false;
+    S.streak.n = S.streak.last === ymd(Date.now() - DAY) ? S.streak.n + 1 : 1;
+    S.streak.last = t;
+    return true;
+  }
+  var MIS = [{ id: 'stage', icon: '📜', ti: '予言かボスを1つクリア' }, { id: 'review', icon: '🔁', ti: '星の復習を1回やりきる' }, { id: 'rush', icon: '⚡', ti: 'ラッシュを1回' }];
+  function mis() { if (S.mis.d !== today()) S.mis = { d: today(), done: {}, bonus: false }; return S.mis; }
+  function missionDone(id) {
+    var m = mis(), got = [];
+    if (m.done[id]) return got;
+    m.done[id] = 1; S.tickets += 1;
+    got.push({ icon: '🎟', t: 'ミッション達成 +1' });
+    if (MIS.every(function (x) { return m.done[x.id]; }) && !m.bonus) { m.bonus = true; S.tickets += 2; got.push({ icon: '🎉', t: 'ミッション コンプリート +2' }); }
+    return got;
+  }
+
+  /* 評判（占い館の育ち具合） */
+  function population() {
+    var p = 1;
+    ORDER.forEach(function (n) { if (nodeDone(n)) p += W.pop[n.id] || 0; });
+    p += Object.keys(S.cards).length * 7 + Math.floor(S.xp / 25);
+    return p;
+  }
+
+  /* ---------- 読み上げ（スペイン語の声がある端末だけ） ---------- */
+  var Speech = (function () {
+    var syn = window.speechSynthesis, voice = null;
+    function find() {
+      if (!syn) return null;
+      var vs = syn.getVoices() || [];
+      voice = vs.filter(function (v) { return /^es[-_]ES/i.test(v.lang); })[0] || vs.filter(function (v) { return /^es/i.test(v.lang); })[0] || null;
+      return voice;
+    }
+    if (syn) { find(); if ('onvoiceschanged' in syn) syn.onvoiceschanged = function () { find(); $$('.say').forEach(function (b) { b.hidden = !voice; }); }; }
+    return {
+      ok: function () { return !!(syn && (voice || find())); },
+      say: function (text, slow) {
+        if (!syn || !(voice || find())) return;
+        try { syn.cancel(); var u = new SpeechSynthesisUtterance(plain(text)); u.voice = voice; u.lang = voice.lang; u.rate = slow ? 0.7 : 0.92; syn.speak(u); } catch (e) { /* 読み上げできない */ }
+      },
+      stop: function () { try { if (syn) syn.cancel(); } catch (e) { /* なし */ } }
+    };
+  })();
+  function sayBtn(es) { return '<button class="say" data-say="' + esc(plain(es)) + '" aria-label="読み上げ"' + (Speech.ok() ? '' : ' hidden') + '>🔊</button>'; }
+  function autoSay(es) { if (S.settings.speak) Speech.say(es); }
+
+  /* 予言が当たったときの音（低い鐘＋光の音） */
+  function sfxStar() {
+    if (!window.Sfx || !Sfx.raw) return;
+    var R = Sfx.raw;
+    R.play(function (t) {
+      R.noise(t, 0.7, 0.16, 300, 7000);
+      [0, 7, 12, 16, 19].forEach(function (s, k) { R.tone(R.hz(s - 12), t + k * 0.035, 0.9, 'sine', 0.07); R.tone(R.hz(s), t + 0.05 + k * 0.035, 0.6, 'triangle', 0.05); });
+    });
+    R.buzz([15, 30, 40]);
+  }
+
+  /* ---------- 文の表示（色分け・バルーン） ---------- */
+  function roles(h) {
+    return h.replace(/\{([^}]+)\}/g, '<span class="r-cmd">$1</span>')
+      .replace(/\[([^\]]+)\]/g, '<span class="r-t">$1</span>')
+      .replace(/\^([^^]+)\^/g, '<span class="r-chg">$1</span>')
+      .replace(/___/g, '<span class="blank">？</span>');
+  }
+  function esHtml(s) { return roles(esc(s)); }
+  function ja(s) {
+    var h = esc(s);
+    h = h.replace(/`([^`]+)`/g, function (m, x) { return '<span class="es">' + roles(x) + '</span>'; });
+    h = h.replace(/\*\*([^*]+)\*\*/g, '<mark>$1</mark>');
+    h = h.replace(/__([^_]+)__/g, '<span class="hint">💡$1</span>');
+    h = h.replace(/\(\(([^)]+)\)\)/g, '<span class="conv">📎 $1</span>');
+    return h.replace(/\n/g, '<br>');
+  }
+  var WRE = /([A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+)/;
+  function glossEs(root) {
+    $$('.es-line, .es, .es-cell', root).forEach(function (box) {
+      walk(box, function (node) {
+        if (node.parentNode.closest('.tok, .gw, .fl, .vsw')) return;
+        var parts = node.nodeValue.split(WRE);
+        if (parts.length < 2) return;
+        var frag = document.createDocumentFragment(), hit = false;
+        parts.forEach(function (p, i) {
+          var e = i % 2 ? WORD[p.toLowerCase()] : null;
+          if (e && (e.lv === 4 || e.lv === 3)) { var s = el('span', 'gw', esc(p)); s.setAttribute('data-w', p.toLowerCase()); s.setAttribute('role', 'button'); frag.appendChild(s); hit = true; }
+          else frag.appendChild(document.createTextNode(p));
+        });
+        if (hit) node.parentNode.replaceChild(frag, node);
+      });
+    });
+  }
+  var GRE = new RegExp('(' + Object.keys(D.gloss).sort(function (a, b) { return b.length - a.length; }).join('|') + ')');
+  function glossJa(root) {
+    var used = {};
+    walk(root, function (node) {
+      if (node.parentNode.closest('.es, .es-line, .es-cell, .gj, .fmap, .smap, .tmap, button')) return;
+      var parts = node.nodeValue.split(GRE);
+      if (parts.length < 2) return;
+      var frag = document.createDocumentFragment(), hit = false;
+      parts.forEach(function (p, i) {
+        if (i % 2 && !used[p]) { used[p] = 1; var s = el('span', 'gj', esc(p)); s.setAttribute('data-t', p); s.setAttribute('role', 'button'); frag.appendChild(s); hit = true; }
+        else frag.appendChild(document.createTextNode(p));
+      });
+      if (hit) node.parentNode.replaceChild(frag, node);
+    });
+  }
+  function glossAll(root) { glossEs(root); glossJa(root); }
+  function walk(root, fn) {
+    var tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), list = [], n;
+    while ((n = tw.nextNode())) list.push(n);
+    list.forEach(fn);
+  }
+  function toks(s) {
+    return esc(s).split(' ').map(function (w) {
+      var m = /^([¿¡—]*)(.*?)([.,?!:;]*)$/.exec(w), core = m[2];
+      return m[1] + '<span class="tok" role="button" tabindex="0" data-n="' + esc(norm(core)) + '">' + core + '</span>' + m[3];
+    }).join(' ');
+  }
+  /* 時制の形の語（{…}）だけを取り出す：叩きつけ文字に使う */
+  function cmdWords(s) { var out = []; String(s).replace(/\{([^}]+)\}/g, function (m, x) { out.push(x.replace(/\^/g, '')); return m; }); return out; }
+
+  /* バルーン（タップで出す） */
+  var pop = $('#pop');
+  function showPop(target, html) {
+    pop.innerHTML = html; pop.hidden = false;
+    var r = target.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight;
+    var x = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2));
+    var y = r.top - h - 10; if (y < 8) y = r.bottom + 10;
+    pop.style.left = x + 'px'; pop.style.top = y + 'px';
+    FX.pop(pop, 1.08);
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest && e.target.closest('.gw, .gj, [data-say]');
+    if (!t) { if (!e.target.closest('#pop')) pop.hidden = true; return; }
+    e.stopPropagation(); e.preventDefault();
+    if (t.hasAttribute('data-say')) { Speech.say(t.getAttribute('data-say'), t.classList.contains('slow')); FX.pop(t); return; }
+    if (t.classList.contains('gw')) {
+      var w = WORD[t.getAttribute('data-w')];
+      showPop(t, '<b class="pw">' + esc(t.textContent) + (w.w.toLowerCase() !== t.textContent.toLowerCase() ? '<small>← ' + esc(w.w) + '</small>' : '') + '</b><span>' + esc(w.ja) + '</span><i>' + [POS[w.pos], LVN[w.lv]].filter(Boolean).join('・') + '</i>');
+    } else {
+      showPop(t, '<b class="pw">' + esc(t.getAttribute('data-t')) + '</b><span>' + esc(D.gloss[t.getAttribute('data-t')]) + '</span>');
+    }
+  }, true);
+
+  var toastT = 0;
+  function toast(msg) { var t = $('#toast'); t.innerHTML = msg; t.className = 'on'; clearTimeout(toastT); toastT = later(function () { t.className = ''; }, 2600); }
+
+  /* ---------- 画面の切りかえ ---------- */
+  function show(id) {
+    $$('.screen').forEach(function (s) { s.hidden = s.id !== id; });
+    document.body.setAttribute('data-screen', id);
+    window.scrollTo(0, 0);
+    if (id !== 'quiz' && id !== 'play') { feverOff(); FX.combo(0); }
+    $('#modal').hidden = true; Speech.stop();   // 前の画面で開いたもの（レベルアップなど）を、次の画面に持ちこまない
+    stopAuto();
+  }
+
+  /* ---------- 下のボタン置き場 ---------- */
+  function Tray(t) {
+    function btn(label, cls, fn) {
+      var b = el('button', 'tb ' + (cls || ''), label);
+      b.addEventListener('click', function () {
+        /* 同じボタンのすばやい2度押しで2回進まないように（ダブルタップ） */
+        var now = Date.now(); if (b.disabled || now - (b._t || 0) < 350) return; b._t = now;
+        if (window.Sfx) Sfx.tap(); fn(b);
+      });
+      return b;
+    }
+    return {
+      el: t,
+      clear: function () { t.innerHTML = ''; },
+      hint: function (html) { t.innerHTML = '<p class="thint">' + html + '</p>'; },
+      next: function (fn, label, cls) { t.innerHTML = ''; var b = btn(label || '▶ つぎへ', 'go ' + (cls || ''), function () { b.disabled = true; fn(); }); t.appendChild(b); if (!FX.RM && b.animate) b.animate([{ transform: 'translateY(24px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 240, easing: 'cubic-bezier(.2,1.5,.4,1)' }); },
+      btns: function (list) { t.innerHTML = ''; var w = el('div', 'tbs'); list.forEach(function (x) { w.appendChild(btn(x.t, x.cls, x.fn)); }); t.appendChild(w); },
+      options: function (list, cb, cls) {
+        t.innerHTML = '';
+        /* 短い選択肢（単語だけ）は2〜3列にして、高さを取らない */
+        var short = list.every(function (x) { return String(x.label).length <= 9; });
+        var w = el('div', 'opts ' + (cls || '') + (short ? ' cols' + Math.min(list.length, 3) : ''));
+        list.forEach(function (x, k) {
+          var b = btn(esc(x.label), 'opt', function () { $$('.opt', w).forEach(function (o) { o.disabled = true; }); b.classList.add('chosen'); cb(x.i, b, w); });
+          b.style.animationDelay = (k * 50) + 'ms';
+          b.setAttribute('data-i', x.i);
+          w.appendChild(b);
+        });
+        t.appendChild(w);
+      }
+    };
+  }
+  var T1 = Tray($('#tray')), T2 = Tray($('#zTray'));
+  function markOpts(wrap, correct, chosen) {
+    $$('.opt', wrap).forEach(function (b) { var i = +b.getAttribute('data-i'); if (i === correct) b.classList.add('ok'); else if (i === chosen) b.classList.add('ng'); });
+  }
+
+  /* ---------- 正解・まちがいの演出（コンボ・星の加護＝FEVER） ---------- */
+  var PRAISE = ['¡Bien!', '¡Muy bien!', '¡Genial!', '¡Perfecto!', '¡Olé!', '¡Increíble!', '¡Fantástico!', '¡Divino!'];
+  function newRun() { return { combo: 0, best: 0, xp: 0, ok: 0, ng: 0, fever: false, misses: [] }; }
+  function feverOn() { document.body.classList.add('fever'); }
+  function feverOff() { document.body.classList.remove('fever'); }
+  function hit(run, src, base) {
+    run.combo++; run.ok++; run.best = Math.max(run.best, run.combo);
+    var fever = run.combo >= 5;
+    if (run.combo === 5) { run.fever = true; feverOn(); FX.slam('ASTRAL!!', 'rainbow', '星の加護　XP ×2'); Sfx.combo(10); FX.confetti(70, 'divine'); }
+    else if (run.combo === 3) FX.slam(pick(['NICE!', 'GREAT!', '¡BIEN!']), 'cyan');
+    else if (run.combo === 10) { FX.slam('DIVINE!!', 'gold', '10 COMBO'); Sfx.combo(10); FX.confetti(90); }
+    else if (run.combo > 10 && run.combo % 5 === 0) { FX.slam(run.combo + ' COMBO!!', 'gold'); Sfx.combo(10); }
+    var xp = ((base || 10) + Math.min(run.combo, 10)) * (fever ? 2 : 1);
+    run.xp += xp;
+    Sfx.correct(run.combo);
+    var p = FX.at(src);
+    FX.burst(p.x, p.y, { pal: fever ? 'rainbow' : 'divine', n: fever ? 40 : 26, ring: true });
+    FX.floatText(p.x, p.y - 8, '+' + xp + ' XP', fever ? '#ffd23f' : '#7dffb0');
+    if (run.combo >= 2 && Math.random() < 0.5) later(function () { FX.floatText(p.x + (Math.random() * 120 - 60), p.y - 40, pick(PRAISE), '#ffe68a'); }, 180);
+    FX.combo(run.combo, fever);
+    return xp;
+  }
+  function miss(run, src) {
+    run.combo = 0; run.ng++; run.fever = false;
+    feverOff(); FX.combo(0); Sfx.wrong(); FX.shake(src); FX.flash('#ff2d55');
+  }
+  function bonus(run, n, src, label) { run.xp += n; var p = FX.at(src); FX.floatText(p.x, p.y, '+' + n + ' XP' + (label ? ' ' + label : ''), '#9be7ff'); }
+
+  /* ---------- 間隔反復 ---------- */
+  var IV = [0, 1, 2, 4, 7, 15, 30];
+  function srs(q, ok) {
+    var r = S.q[q.id] || (S.q[q.id] = { lv: 0, due: 0, ok: 0, ng: 0 });
+    if (ok) { r.ok++; r.lv = Math.min(r.lv + 1, IV.length - 1); r.due = Date.now() + IV[r.lv] * DAY - 2 * 3600e3; }
+    else { r.ng++; r.lv = 0; r.due = Date.now() + 10 * 60e3; }
+  }
+  function weighted(list) {
+    var now = Date.now();
+    return shuffle(list).sort(function (a, b) {
+      function w(q) { var r = S.q[q.id]; if (!r) return 2; if (r.due <= now) return 0; if (r.ng > r.ok) return 1; return 3 + r.lv; }
+      return w(a) - w(b);
+    });
+  }
+
+  /* =========================================================
+   * 問題の表示（レッスンの中・ボス・ラッシュ・復習で共通）
+   *  cb(ok, ms)
+   * ========================================================= */
+  var KIND = { pick: ['🎯', '空いている所に入るのは？'], form: ['🔨', '時制の形にしよう'], scene: ['🎭', 'この場面に合う予言は？'], who: ['🗓', 'いつの話？'],
+    ja: ['💬', '意味は？'], bug: ['🐛', 'まちがい探し'], build: ['🧩', 'ならべて文を作ろう'], listen: ['🎧', '聞こえた文はどれ？'] };
+  var SUBJ = { yo: 'yo（私）', 'tú': 'tú（君）', 'él': 'él（彼）', nosotros: 'nosotros（私たち）', vosotros: 'vosotros（君たち）', ellos: 'ellos（彼ら）' };
+  var TENSE = { fut: '未来形', cond: '過去未来形', perf: '現在完了', plup: '過去完了', futp: '未来完了', prog: '進行形' };
+  function ptag(q) { return '→ ' + (SUBJ[q.s] || q.s || '') + ' の ' + (TENSE[q.p] || q.p) + ' に'; }
+  /* 「いつの話？」の選択肢：正解のマスの名前 ＋ 近いマスの名前2つ（問題ごとに決まる） */
+  function whoOpts(q) {
+    var me = CELL[q.a]; if (!me) return [String(q.a)];
+    var near = function (c) { return (c.r === me.r ? 1 : 0) + (c.c === me.c ? 1 : 0); };
+    var others = MAP.cells.filter(function (c) { return c.id !== q.a && c.name !== me.name; })
+      .sort(function (a, b) { return near(b) - near(a) || hash(q.id + a.id) - hash(q.id + b.id); });
+    return [me.name].concat(others.slice(0, 2).map(function (c) { return c.name; }));
+  }
+  function fullOf(q) {
+    if (q.k === 'pick') return q.s.replace('___', '{' + q.o[q.a] + '}');
+    if (q.k === 'bug') return q.ok;
+    if (q.k === 'scene' || q.k === 'form') return q.o[q.a];
+    return q.s;
+  }
+  /* 2つの文を語ごとにくらべ、共通でない語に印をつける（最長共通部分列） */
+  function wordDiff(a, b) {
+    var x = a.split(' '), y = b.split(' '), n = x.length, m = y.length, L = [], i, j;
+    for (i = 0; i <= n; i++) { L.push([]); for (j = 0; j <= m; j++) L[i][j] = 0; }
+    for (i = n - 1; i >= 0; i--) for (j = m - 1; j >= 0; j--) L[i][j] = norm(x[i]) === norm(y[j]) ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+    var kx = {}, ky = {};
+    for (i = 0, j = 0; i < n && j < m;) {
+      if (norm(x[i]) === norm(y[j])) { kx[i] = ky[j] = 1; i++; j++; } else if (L[i + 1][j] >= L[i][j + 1]) i++; else j++;
+    }
+    return {
+      a: x.map(function (w, k) { return kx[k] ? esc(w) : '<b class="wrong">' + esc(w) + '</b>'; }).join(' '),
+      b: y.map(function (w, k) { return ky[k] ? esc(w) : '<b class="fix">' + esc(w) + '</b>'; }).join(' ')
+    };
+  }
+  function cmpRows(you, right, es, say) {
+    return '<div class="cmp"><div class="cmp-row ng"><i>✕ あなた</i><span' + (es ? ' class="es"' : '') + '>' + you + '</span></div>' +
+      '<div class="cmp-row ok' + (say ? ' has-say' : '') + '"><i>○ 正解</i><span' + (es ? ' class="es"' : '') + '>' + right + '</span>' + (say ? sayBtn(say) : '') + '</div></div>';
+  }
+  /* まちがえたとき：自分の答えと正解をならべる（ちがう所に色） */
+  function cmpHtml(q, chosen, withSay) {
+    var you, right, mark = function (w) { return '<b class="wrong">' + esc(w) + '</b>'; };
+    chosen = chosen == null ? '' : String(chosen);
+    if (q.k === 'pick') { you = esHtml(q.s.replace('___', '\u0001')).replace('\u0001', mark(chosen)); right = esHtml(fullOf(q)); }
+    else if (q.k === 'build' || q.k === 'listen' || q.k === 'scene' || q.k === 'form') { var df = wordDiff(chosen, fullOf(q)); you = df.a; right = df.b; }
+    else if (q.k === 'bug') { you = '「' + esc(chosen) + '」をまちがいにした'; right = 'まちがいは ' + mark(q.a) + ' → ' + esHtml(q.ok); }
+    else if (q.k === 'who') { you = esc(chosen); right = '<b class="fix">' + esc(cellName(q.a)) + '</b>'; }
+    else { you = esc(chosen); right = '<b class="fix">' + esc(q.o[q.a]) + '</b>'; }
+    var es = q.k !== 'who' && q.k !== 'ja';
+    return cmpRows(you, right, es, withSay && es ? fullOf(q) : '');
+  }
+  function renderQ(q, card, T, opts, cb) {
+    opts = opts || {};
+    var t0 = Date.now(), done = false;
+    card.className = 'card qcard k-' + q.k + (opts.fast ? ' fast' : '');
+    card.setAttribute('data-q', q.id);
+    var body = '';
+    if (q.k === 'pick' || q.k === 'ja' || q.k === 'who') body = '<div class="es-line">' + esHtml(q.s) + '</div>';
+    else if (q.k === 'bug') body = '<div class="es-line toks">' + toks(q.s) + '</div>';
+    else if (q.k === 'build') body = '<div class="build-line"></div>';
+    else if (q.k === 'form') body = '<div class="form-q"><b class="es-line">' + esc(q.v) + '</b><span>' + esc(ptag(q)) + '</span></div>';
+    else if (q.k === 'scene') body = '<p class="sit">' + ja(q.sit) + '</p>';
+    else if (q.k === 'listen') body = Speech.ok() ? '<div class="listen"><button class="say big" data-say="' + esc(q.s) + '" aria-label="もう一度聞く">🔊</button><button class="say slow" data-say="' + esc(q.s) + '" aria-label="ゆっくり聞く">🐢</button><small>何度でも聞けるよ</small></div>'
+      : '<p class="why">（この端末ではスペイン語の音声が使えないので、日本語の意味から選ぼう）</p><div class="es-line">' + esc(q.ja) + '</div>';
+    var showJa = q.ja && (q.k === 'pick' || q.k === 'bug' || q.k === 'build' || q.k === 'who');
+    card.innerHTML = '<div class="qtag"><span>' + KIND[q.k][0] + '</span> ' + KIND[q.k][1] + (opts.tag ? '<em>' + esc(opts.tag) + '</em>' : '') + '</div>' + body +
+      (showJa ? '<div class="ja-line">' + esc(q.ja) + '</div>' : '') + '<div class="qres"></div>';
+    glossAll(card);
+    if (q.k === 'listen' && Speech.ok()) later(function () { if (!done) Speech.say(q.s); }, 350);
+
+    function finish(ok, chosen) {
+      if (done) return; done = true;
+      var ms = Date.now() - t0;
+      card.classList.add(ok ? 'is-ok' : 'is-ng');
+      if (!ok && opts.run) opts.run.misses.push({ q: q, c: chosen });
+      if (!opts.fast) result(ok, chosen);
+      cb(ok, ms);
+    }
+    function result(ok, chosen) {
+      var r = $('.qres', card), s = fullOf(q);
+      var alt = card.hasAttribute('data-alt');
+      /* まちがえたら「あなた／正解」の2行に正解の文が入る（意味・相手の問題は、文をもう一度見せる） */
+      var showS = ok ? alt || !(q.k === 'ja' || q.k === 'who' || q.k === 'build') : q.k === 'ja' || q.k === 'who';
+      r.innerHTML = (ok ? '<b class="rk ok">⭕ ' + pick(PRAISE) + '</b>' : '<b class="rk ng">❌ おしい！ くらべてみよう</b>' + cmpHtml(q, chosen, true)) +
+        (alt ? '<p class="why">その語順でも正解！ 呼びかけの名前や por favor は、文の前でも後ろでも OK（コンマで区切る）。こんな言い方もあるよ：</p>' : '') +
+        (showS ? '<div class="es-line ans">' + esHtml(s) + sayBtn(s) + '</div>' : '') +
+        (q.k === 'ja' && ok ? '<div class="ja-line">' + esc(q.o[q.a]) + '</div>' : (q.k === 'listen' || q.k === 'build' && !ok) && q.ja ? '<div class="ja-line">' + esc(q.ja) + '</div>' : '') +
+        (q.why ? '<p class="why">' + ja(q.why) + '</p>' : '');
+      glossAll(r);
+      autoSay(s);
+    }
+
+    if (q.k === 'pick' || q.k === 'ja' || q.k === 'form' || q.k === 'scene' || q.k === 'who' || q.k === 'listen') {
+      var labels = q.k === 'who' ? whoOpts(q) : q.o, ans = q.k === 'who' ? 0 : q.a;
+      var list = labels.map(function (l, i) { return { label: l, i: i }; });
+      list = shuffle(list);
+      T.options(list, function (i, b, wrap) {
+        var ok = i === ans;
+        if (q.k === 'pick') { var bl = $('.blank', card); if (bl) { bl.textContent = q.o[i]; bl.className = 'blank filled ' + (ok ? 'ok' : 'ng'); } }
+        markOpts(wrap, ans, i);
+        finish(ok, labels[i]);
+      }, q.k === 'ja' || q.k === 'listen' || q.k === 'scene' ? 'long' : '');
+      return;
+    }
+    if (q.k === 'bug') {
+      T.hint('👆 まちがっている語を1つタップ');
+      $$('.tok', card).forEach(function (t) {
+        t.addEventListener('click', function () {
+          if (done) return;
+          var ok = t.getAttribute('data-n') === norm(q.a);
+          t.classList.add(ok ? 'ok' : 'ng');
+          if (!ok) $$('.tok', card).forEach(function (u) { if (u.getAttribute('data-n') === norm(q.a)) u.classList.add('right'); });
+          T.clear();
+          finish(ok, t.textContent);
+        });
+      });
+      return;
+    }
+    if (q.k === 'build') buildQ(q, card, T, finish, function () { return done; });
+  }
+
+  /* タイル並べ（タップで追加・ドラッグで好きな位置へ） */
+  /* タイルは記号なし・小文字（名前は大文字のまま）。コンマや大文字で並び順が分からないように。
+   * 呼びかけの名前・por favor は、前でも後ろでも正解（Lola, abre la puerta. ／ Abre la puerta, Lola.） */
+  var NAMES = {}; (DICT.names || []).forEach(function (n) { NAMES[n.toLowerCase()] = n; });
+  function tileWord(w) { var c = w.replace(/[¿?¡!.,;:]/g, ''), lc = c.toLowerCase(); return NAMES[lc] || lc; }
+  function buildAnswers(s) {
+    var segs = s.replace(/[.?!]+$/, '').split(/,\s*/).map(function (x) { return x.split(' ').map(tileWord).filter(Boolean); });
+    var movable = function (g) { var t = g.join(' '); return (g.length === 1 && (NAMES[t.toLowerCase()] || /^(amigos|chicos|señores|señor|señora)$/.test(t))) || t === 'por favor'; };
+    var core = segs.filter(function (g) { return !movable(g); }), mov = segs.filter(movable), out = {};
+    /* 動かせる部分を、それぞれ前か後ろに置く（2^n 通り） */
+    for (var m = 0; m < (1 << mov.length); m++) {
+      var front = [], back = [];
+      mov.forEach(function (g, k) { (m & (1 << k) ? front : back).push(g); });
+      out[[].concat.apply([], front.concat(core, back)).join(' ')] = 1;
+    }
+    out[[].concat.apply([], segs).join(' ')] = 1;
+    return out;
+  }
+  function buildQ(q, card, T, finish, isDone) {
+    var words = q.s.split(' ').map(tileWord), end = (/[.?!]+$/.exec(q.s) || [''])[0];
+    var answers = buildAnswers(q.s), canon = words.join(' ');
+    var line = $('.build-line', card), placed = [];
+    var tiles = shuffle(words.concat((q.d || []).map(tileWord)));
+    T.clear();
+    var pool = el('div', 'tiles'), dragEnd = 0, caret = null;
+    function insertAt(item, at) {
+      if (at == null || at >= placed.length) { placed.push(item); line.appendChild(item.el); }
+      else { line.insertBefore(item.el, placed[at].el); placed.splice(at, 0, item); }
+    }
+    function place(btn, w, at) {
+      btn.classList.add('used');
+      var p = el('span', 'tile on', esc(w)); p.setAttribute('role', 'button');
+      var item = { w: w, el: p, src: btn };
+      p.addEventListener('click', function () { if (isDone() || Date.now() - dragEnd < 400) return; Sfx.tap(); unplace(item); });
+      drag(p, item, btn, w);
+      insertAt(item, at); FX.pop(p, 1.2); paint();
+      if (placed.length === words.length) check();
+    }
+    function unplace(item) { placed.splice(placed.indexOf(item), 1); item.el.remove(); item.src.classList.remove('used'); paint(); }
+    function dropIndex(ev, skip) {
+      var list = placed.filter(function (x) { return x !== skip; });
+      for (var i = 0; i < list.length; i++) {
+        var r = list[i].el.getBoundingClientRect();
+        if (ev.clientY < r.top) return i;
+        if (ev.clientY <= r.bottom && ev.clientX < r.left + r.width / 2) return i;
+      }
+      return list.length;
+    }
+    function overLine(ev) { var r = line.getBoundingClientRect(); return ev.clientX >= r.left - 12 && ev.clientX <= r.right + 12 && ev.clientY >= r.top - 30 && ev.clientY <= r.bottom + 30; }
+    function showCaret(ev, skip) {
+      if (!overLine(ev)) { if (caret) caret.hidden = true; return; }
+      if (!caret) { caret = el('div', 'drop-caret'); document.body.appendChild(caret); }
+      var list = placed.filter(function (x) { return x !== skip; }), at = dropIndex(ev, skip), r, x;
+      if (list.length && at < list.length) { r = list[at].el.getBoundingClientRect(); x = r.left - 4; }
+      else if (list.length) { r = list[list.length - 1].el.getBoundingClientRect(); x = r.right + 2; }
+      else { r = line.getBoundingClientRect(); x = r.left + 8; r = { top: r.top + 10, height: r.height - 20 }; }
+      caret.hidden = false; caret.style.left = x + 'px'; caret.style.top = r.top + 'px'; caret.style.height = r.height + 'px';
+    }
+    function drag(src, item, btn, w) {
+      src.addEventListener('pointerdown', function (e) {
+        if (isDone() || (!item && btn.classList.contains('used'))) return;
+        var x0 = e.clientX, y0 = e.clientY, ghost = null;
+        function move(ev) {
+          if (!ghost) {
+            if (Math.abs(ev.clientX - x0) + Math.abs(ev.clientY - y0) < 8) return;
+            ghost = el('div', 'tile ghost', esc(w)); document.body.appendChild(ghost);
+            src.classList.add('dragging');
+          }
+          ev.preventDefault();
+          ghost.style.left = ev.clientX + 'px'; ghost.style.top = ev.clientY + 'px';
+          showCaret(ev, item);
+        }
+        function up(ev) {
+          document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); document.removeEventListener('pointercancel', up);
+          if (!ghost) return;
+          ghost.remove(); src.classList.remove('dragging'); if (caret) caret.hidden = true;
+          dragEnd = Date.now();
+          if (isDone() || ev.type === 'pointercancel') return;
+          Sfx.tap();
+          if (item) {
+            if (overLine(ev)) { var at = dropIndex(ev, item); placed.splice(placed.indexOf(item), 1); insertAt(item, at); FX.pop(item.el, 1.15); paint(); }
+            else unplace(item);
+          } else if (overLine(ev)) place(btn, w, dropIndex(ev, null));
+        }
+        document.addEventListener('pointermove', move, { passive: false });
+        document.addEventListener('pointerup', up); document.addEventListener('pointercancel', up);
+      });
+    }
+    tiles.forEach(function (w) {
+      var b = el('button', 'tile', esc(w));
+      b.addEventListener('click', function () {
+        if (isDone() || b.classList.contains('used') || Date.now() - dragEnd < 400) return;
+        Sfx.tap(); place(b, w);
+      });
+      drag(b, null, b, w);
+      pool.appendChild(b);
+    });
+    T.el.appendChild(el('p', 'tile-hint', 'タップで追加・ドラッグで好きな位置へ'));
+    T.el.appendChild(pool);
+    function paint() { line.setAttribute('data-end', end); line.classList.toggle('empty', !placed.length); }
+    function check() {
+      var mine = placed.map(function (x) { return x.w; }).join(' '), ok = !!answers[mine];
+      if (ok && mine !== canon) card.setAttribute('data-alt', '1');
+      line.classList.add(ok ? 'ok' : 'ng');
+      $$('.tile', pool).forEach(function (t) { t.disabled = true; });
+      if (caret) caret.remove();
+      finish(ok, mine + end);
+    }
+    paint();
+  }
+
+  /* =========================================================
+   * 占い館の景色（ホームの大きな絵・レッスンの場面）
+   *  館は、クリアが進むとテント → 小屋 → 館 → 塔つきの館と育つ。動かすのは transform・opacity だけ
+   * ========================================================= */
+  /* 空：夜 → 深い夜 → 疑いぶかい客が来る前（暗い）→ 予言の書がそろった（金） */
+  function skyOf() {
+    var ni = nextIdx();
+    if (ni < 0) return 'sky-gold';
+    if (ORDER[ni].type === 'B') return 'sky-dark';
+    return ni >= 7 ? 'sky-deep' : 'sky-night';
+  }
+  function houseOf() {
+    var n = ORDER.filter(nodeDone).length;
+    return n >= 12 ? ['🏰', 4] : n >= 8 ? ['🏛', 3] : n >= 4 ? ['🛖', 2] : ['🎪', 1];
+  }
+  function sprite(it, cls) {
+    return '<i class="sp' + (it.sky ? ' sky' : '') + (cls ? ' ' + cls : '') + '" style="left:' + it.x + '%;top:' + it.y + '%;--s:' + (it.s || 1) + ';z-index:' + Math.round(it.y) + '">' + it.e + '</i>';
+  }
+  function sceneHtml(newId) {
+    var hs = houseOf();
+    var h = '<div class="sk-stars"></div><i class="sp sky moon" style="left:84%;top:19%;--s:1.5">🌙</i><div class="ground"></div>' +
+      '<i class="sp house" style="left:50%;top:74%;--s:' + (1.9 + hs[1] * 0.4) + ';z-index:60">' + hs[0] + '</i>';
+    ORDER.forEach(function (n) {
+      if (!nodeDone(n) && n.id !== newId) return;
+      (W.grow[n.id] || []).forEach(function (it, k) { h += sprite(it, n.id === newId ? 'new n' + k : ''); });
+    });
+    /* ルナと、会ったことのあるお客 */
+    h += '<i class="sp folk" data-who="luna" style="left:32%;top:88%;z-index:88">' + (D.people.luna ? D.people.luna.e : '🐈‍⬛') + '</i>';
+    var met = [], spots = [[18, 84], [74, 86], [86, 78]];
+    D.lessons.forEach(function (L) { if (S.lessons[L.id] && S.lessons[L.id].done) (L.actors || []).forEach(function (k) { if (k !== 'luna' && D.people[k] && met.indexOf(k) < 0) met.push(k); }); });
+    met.slice(0, 3).forEach(function (k, i) { h += '<i class="sp folk" data-who="' + k + '" style="left:' + spots[i][0] + '%;top:' + spots[i][1] + '%;z-index:' + spots[i][1] + '">' + D.people[k].e + '</i>'; });
+    /* 手に入れた星のカード（位置は id から決める） */
+    D.cards.forEach(function (c) {
+      if (!S.cards[c.id]) return;
+      var hx = hash(c.id), x = 10 + hx % 80, y = 66 + (hx >> 3) % 26;
+      if (c.sky) y = 10 + (hx >> 3) % 30;
+      h += '<i class="sp res" style="left:' + x + '%;top:' + y + '%;--s:.72;z-index:' + y + '">' + c.icon + '</i>';
+    });
+    return h;
+  }
+
+  /* =========================================================
+   * レッスン（場面 ＋ ボード ＋ セリフ ＋ ボタン）
+   * ========================================================= */
+  var stageEl = $('#stage'), boardEl = $('#board'), talkEl = $('#talk');
+  var cur = null;   // いまのレッスン
+
+  /* ---- 場面（お客たち） ---- */
+  function stageSet(actors) {
+    stageEl.className = 'stage ' + skyOf();
+    stageEl.innerHTML = '<div class="st-skyb"></div><div class="st-sky" id="stSky"></div><div class="st-ground"></div><div class="actors" id="actors"></div>';
+    actors.forEach(function (k) { addActor(k, true); });
+  }
+  function addActor(k, quiet) {
+    var box = $('#actors');
+    if (!box || $('.actor[data-who="' + k + '"]', box)) return;
+    var p = D.people[k], a = el('button', 'actor', '<span class="af">' + p.e + '</span><span class="an">' + esc(p.n) + '</span><span class="am"></span>');
+    a.setAttribute('data-who', k); a.disabled = true;
+    box.appendChild(a);
+    if (!quiet) { FX.pop(a, 1.4); var pt = FX.at(a); FX.burst(pt.x, pt.y, { pal: 'divine', n: 18 }); Sfx.whoosh(); }
+  }
+  function actorEl(k) { return $('.actor[data-who="' + k + '"]', stageEl); }
+  function actorReact(k, e, mood) {
+    var a = actorEl(k); if (!a) return;
+    a.classList.remove('jump'); void a.offsetWidth; a.classList.add('jump');
+    if (mood) { var m = $('.am', a); m.textContent = mood; m.classList.remove('on'); void m.offsetWidth; m.classList.add('on'); }
+    if (e) {
+      var f = el('i', 'act-fx', e); stageEl.appendChild(f);
+      var r = a.getBoundingClientRect(), R = stageEl.getBoundingClientRect();
+      f.style.left = (r.left - R.left + r.width / 2) + 'px'; f.style.top = (r.top - R.top) + 'px';
+      later(function () { f.remove(); }, 1500);
+    }
+  }
+  function worldFx(key) {
+    var e = W.fx[key]; if (!e) return;
+    var sky = $('#stSky'); if (!sky) return;
+    /* 人と重ならないよう、空の左右の端に置く（3つめからは古いものと入れかわる） */
+    var i = el('i', 'st-item', e), n = sky.children.length;
+    if (n >= 2) sky.firstChild.remove();
+    sky.appendChild(i);
+    i.style.left = (n % 2 ? 92 : 8) + '%';
+    var p = FX.at(i); FX.rays(p.x, p.y, '#ffe68a');
+  }
+
+  /* ---- ボード（いまのカード） ---- */
+  /* 表（show）は、次の表が出るまで上に残す（「表を見て」の問いで表が消えないように）。ほかのカードは入れかわる */
+  function boardSet(card) {
+    var isTbl = card.classList.contains('board-tbl');
+    $$('.card', boardEl).forEach(function (old) { if (isTbl || !old.classList.contains('board-tbl')) old.remove(); });
+    boardEl.appendChild(card);
+    if (!FX.RM && card.animate) card.animate([{ transform: 'translateX(26px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 260, easing: 'cubic-bezier(.2,1.2,.4,1)' });
+    boardEl.scrollTop = 0;
+    if (!isTbl) later(function () { var r = card.getBoundingClientRect(), B = boardEl.getBoundingClientRect(); if (r.bottom > B.bottom) boardEl.scrollTop += Math.min(r.top - B.top - 6, r.bottom - B.bottom + 8); }, 30);
+    return card;
+  }
+  function boardScroll() { later(function () { boardEl.scrollTo({ top: boardEl.scrollHeight, behavior: FX.RM ? 'auto' : 'smooth' }); }, 40); }
+
+  /* ---- セリフ（1文字ずつ） ---- */
+  var typeT = 0, typeDone = null;
+  function talk(x, who, mood, then) {
+    talkEl.hidden = false;
+    clearTimeout(typeT);
+    var p = who ? D.people[who] : null;
+    talkEl.className = 'talk' + (p ? ' person' : '');
+    talkEl.innerHTML = '<div class="tk-av">' + (p ? '<span>' + p.e + '</span>' : FX.cat(mood)) + '</div><div class="tk-body"><b class="tk-name">' + (p ? esc(p.n) : 'ルナ') + '</b><div class="tk-x">' + ja(x) + '</div></div><button class="tk-log" aria-label="これまでのセリフ">📜</button>';
+    if (cur) cur.log.push({ who: who, x: x });
+    var box = $('.tk-x', talkEl);
+    glossAll(box);
+    /* 文字を1つずつ出す（タップで全部） */
+    var chars = [];
+    walk(box, function (node) {
+      var frag = document.createDocumentFragment();
+      Array.prototype.forEach.call(node.nodeValue, function (ch) { var s = el('span', 'ch', esc(ch)); chars.push(s); frag.appendChild(s); });
+      node.parentNode.replaceChild(frag, node);
+    });
+    var k = 0, step = Math.max(10, Math.min(28, 1500 / Math.max(1, chars.length)));
+    function finishType() { clearTimeout(typeT); chars.forEach(function (c) { c.classList.add('on'); }); typeDone = null; if (then) { var f = then; then = null; f(); } }
+    typeDone = finishType;
+    (function tick() {
+      if (k >= chars.length) return finishType();
+      chars[k++].classList.add('on');
+      typeT = later(tick, step);
+    })();
+    $('.tk-log', talkEl).addEventListener('click', function (e) { e.stopPropagation(); showLog(); });
+  }
+  talkEl.addEventListener('click', function (e) { if (e.target.closest('.gw, .gj, .tk-log')) return; if (typeDone) typeDone(); });
+  function talkHide() { clearTimeout(typeT); typeDone = null; talkEl.hidden = true; }
+  function showLog() {
+    if (!cur) return;
+    modal('<h3 class="m-h">📜 これまでのセリフ</h3><div class="log">' + cur.log.map(function (l) {
+      var p = l.who ? D.people[l.who] : null;
+      return '<div class="lg"><b>' + (p ? p.e + ' ' + esc(p.n) : '🐈‍⬛ ルナ') + '</b><p>' + ja(l.x) + '</p></div>';
+    }).join('') + '</div>', 'log-m');
+    glossAll($('#mbody'));
+    var lg = $('#mbody .log'); lg.scrollTop = lg.scrollHeight;
+  }
+
+  var REPLY = ['なるほど ▶', 'ふむふむ ▶', 'うんうん ▶', 'それで？ ▶', 'わかった ▶', 'OK ▶'];
+  var READY = ['やってみる ▶', 'まかせて ▶', 'よし、予言だ ▶', 'いくぞ ▶'];
+  function replyLabel() {
+    var nx = cur && cur.L.steps[cur.i];
+    return nx && /^(orb|cast|forge|ask|tapwhen|flip|q|drill)$/.test(nx.t) ? pick(READY) : pick(REPLY);
+  }
+
+  function startLesson(L) {
+    show('play');
+    boardEl.innerHTML = ''; T1.clear(); talkHide();
+    $('#pTitle').textContent = L.remedy ? '🩹 おさらい　' + oracleNo(L.base) : oracleNo(L) + '　' + L.ti;
+    cur = { L: L, i: 0, run: newRun(), used: {}, log: [], qok: {} };
+    L.steps.forEach(function (st) { if (st.t === 'q') cur.used[st.id] = 1; });
+    stageSet(L.actors || []);
+    boardSet(el('div', 'card lesson-title', '<small>' + (L.remedy ? '🩹 REPASO' : 'PROFECÍA ' + L.ord) + '</small><b>' + L.icon + ' ' + esc(L.ti) + '</b><span>' + esc(L.sub) + '</span>'));
+    FX.slam(L.remedy ? 'REPASO' : 'PROFECÍA ' + L.ord, 'gold', L.remedy ? 'おさらい：' + L.base.ti : L.ti);
+    sfxStar();
+    later(step, 900);
+  }
+  function setProg() { if (!cur) return; $('#pProg').style.width = Math.round(cur.i / cur.L.steps.length * 100) + '%'; $('#pXp').textContent = cur.run.xp; }
+  function step() {
+    if (!cur) return;
+    T1.clear();
+    setProg();
+    if (cur.i >= cur.L.steps.length) return finishLesson();
+    var st = cur.L.steps[cur.i++], run = cur.run;
+    ({ say: doSay, show: doShow, enter: doEnter, ask: doAsk, forge: doForge, orb: doOrb, cast: doOrb, tapwhen: doTapWhen, flip: doFlip, tip: doTip, map: doMap, q: doQ, drill: doDrill })[st.t](st, run);
+  }
+  function nextBtn(label) { if (!cur) return; setProg(); T1.next(step, label || replyLabel()); }
+
+  function doSay(st) {
+    if (st.who) { addActor(st.who); actorReact(st.who); }
+    var me = cur;
+    talk(st.x, st.who, st.who ? '' : pick(['', '', 'happy']), function () {
+      if (cur !== me) return;
+      if (!st.more) return nextBtn();
+      T1.btns([
+        { t: 'わかった ▶', cls: 'go', fn: function () { step(); } },
+        { t: '🤔 なんで？', cls: 'sub', fn: function () { talk(st.more, null, 'happy', function () { nextBtn(); }); } }
+      ]);
+    });
+  }
+  function doShow(st) {
+    var c = el('div', 'card board-tbl', (st.cap ? '<div class="qtag">📋 ' + esc(st.cap) + '</div>' : '') +
+      (st.tbl ? '<table class="tbl">' + st.tbl.map(function (r) { return '<tr><th class="es-cell">' + esHtml(r[0]) + '</th><td class="es-cell">' + esHtml(r[1]) + '</td></tr>'; }).join('') + '</table>' : '') +
+      (st.es ? '<div class="es-line big">' + esHtml(st.es) + sayBtn(st.es) + '</div>' : '') + (st.ja ? '<div class="ja-line">' + esc(st.ja) + '</div>' : ''));
+    glossEs(c);
+    boardSet(c);
+    step();
+  }
+  function doEnter(st) { addActor(st.who); later(step, 500); }
+
+  function doAsk(st, run) {
+    talkHide();
+    var c = boardSet(el('div', 'card ask' + (st.pred ? ' pred' : ''), '<div class="qtag">' + (st.pred ? '🤔 予想してみて <em>まちがえても OK</em>' : '❓ クイズ') + '</div><div class="qq">' + ja(st.q) + '</div>' + (st.es ? '<div class="es-line">' + esHtml(st.es) + '</div>' : '') + '<div class="qres"></div>'));
+    glossAll(c);
+    var list = st.o.map(function (o, i) { return { label: o, i: i }; });
+    if (!st.pred) list = shuffle(list);
+    T1.options(list, function (i, b, wrap) {
+      var ok = i === st.a, res = $('.qres', c);
+      if (st.pred) {
+        markOpts(wrap, st.a, -1);
+        res.innerHTML = '<p class="mine">あなたの予想：<b>' + esc(st.o[i]) + '</b>' + (ok ? '　🎯 的中！' : '') + '</p>';
+        if (ok) { bonus(run, 8, b, '予想的中！'); Sfx.correct(2); } else Sfx.tap();
+        later(function () { talk(st.r, null, ok ? 'happy' : 'wow', function () { nextBtn(); }); }, 300);
+        return;
+      }
+      markOpts(wrap, st.a, i);
+      res.innerHTML = ok ? '<b class="rk ok">⭕ ' + pick(PRAISE) + '</b>' : '<b class="rk ng">❌ おしい！ くらべてみよう</b>' + cmpRows(esc(st.o[i]), '<b class="fix">' + esc(st.o[st.a]) + '</b>');
+      if (ok) hit(run, b); else miss(run, c);
+      later(function () { talk(ok ? (st.why || 'そのとおり！') : (st.why || 'もう一度、表を思い出してみよう。'), null, ok ? 'happy' : 'sad', function () { nextBtn(); }); }, 300);
+    });
+  }
+
+  /* 語をきたえる：消す文字をタップ → つける文字を選ぶ → 形が完成 */
+  function doForge(st, run) {
+    talkHide();
+    var w = st.w, cut = st.cut || '', start = w.length - cut.length, errs = 0, left = cut.length;
+    var c = boardSet(el('div', 'card forge', '<div class="qtag">🔨 語をきたえる</div><div class="fg-word">' + w.split('').map(function (ch, i) { return '<button class="fl" data-i="' + i + '">' + esc(ch) + '</button>'; }).join('') + '</div><div class="qres"></div>'));
+    var fls = $$('.fl', c);
+    T1.hint('👆 ' + ja(st.hint));
+    function wrong(src) {
+      errs++; if (errs === 1) miss(run, src); else { Sfx.wrong(); FX.shake(src); }
+      if (errs >= 2) fls.forEach(function (f, i) { if (i >= start) f.classList.add('hintme'); });
+    }
+    function cutDone() {
+      if (!st.add) return finish();
+      T1.options(st.o.map(function (o, i) { return { label: o, i: i }; }), function (i, b, wrap) {
+        if (st.o[i] !== st.add) {
+          wrong(b);
+          $$('.opt', wrap).forEach(function (o) { if (o !== b) o.disabled = false; });
+          b.classList.add('ng'); b.classList.remove('chosen');
+          return;
+        }
+        var nl = el('span', 'fl add', esc(st.add)); $('.fg-word', c).appendChild(nl); FX.pop(nl, 1.6);
+        var p = FX.at(nl); FX.burst(p.x, p.y, { pal: 'rel', n: 24 });
+        later(finish, 380);
+      });
+      $('.opts', T1.el).insertAdjacentHTML('beforebegin', '<p class="thint">つける文字は？</p>');
+    }
+    function finish() {
+      T1.clear();
+      $('.fg-word', c).classList.add('done');
+      later(function () {
+        $('.fg-word', c).outerHTML = '<div class="es-line big fg-out">' + esHtml(st.out) + sayBtn(plain(st.out)) + '</div>';
+        $('.qres', c).innerHTML = '<div class="ja-line">' + esc(st.ja) + '</div>';
+        glossEs(c);
+        var words = cmdWords(st.out);
+        FX.slam('¡' + (words.length ? words.join(' ') : plain(st.out)).toUpperCase() + '!', 'gold');
+        sfxStar();
+        var p = FX.at($('.fg-out', c)); FX.rays(p.x, p.y); FX.burst(p.x, p.y, { pal: 'divine', n: 50, sp: 10, ring: true });
+        if (!errs) hit(run, $('.fg-out', c)); else bonus(run, 5, $('.fg-out', c));
+        autoSay(plain(st.out));
+        later(function () { nextBtn('▶ ' + pick(['できた！', 'かんぺき！', 'ふむ、いい形だ'])); }, 500);
+      }, 300);
+    }
+    fls.forEach(function (f) {
+      f.addEventListener('click', function () {
+        var i = +f.getAttribute('data-i');
+        if (f.classList.contains('gone') || !left) return;
+        if (i >= start) {
+          f.classList.add('gone'); Sfx.whoosh(); var p = FX.at(f); FX.burst(p.x, p.y, { pal: 'rel', n: 14 });
+          left--;
+          if (!left) later(cutDone, 360);
+        } else wrong(f);
+      });
+    });
+    if (!left) cutDone();
+  }
+
+  /* =========================================================
+   * 🔮 水晶玉（orb）：お客の相談 → 玉に先が浮かぶ → 予言をえらぶ → 玉が光ってお客が動く（cast も同じ動き）
+   *  fog:true の玉は、もやがかかって「はっきりとは見えない」＝推量の問題
+   * ========================================================= */
+  var YES = ['¡Vaya!', '¡Increíble!', '¡Qué bien!', '¡Gracias!', '¡Es verdad!'];
+  function doOrb(st, run) {
+    talkHide();
+    addActor(st.who);
+    var p = D.people[st.who] || { e: '🙂', n: '' }, see = st.see || {}, fog = !!st.fog;
+    var c = boardSet(el('div', 'card orbcard', '<div class="qtag">🔮 水晶玉 <em>予言をえらべ</em></div><div class="need"><span class="nf">' + p.e + '</span><div class="nb"><b>' + esc(p.n) + '</b><p>' + ja(st.need) + '</p></div></div>' +
+      '<div class="orb-wrap"><div class="orb-ball' + (fog ? ' fog' : '') + '"><i class="ob-glow"></i><span class="ob-e">' + (see.e || '✨') + '</span><i class="ob-fog"></i></div>' +
+      '<div class="orb-see">' + (see.x ? '<p>' + ja(see.x) + '</p>' : '') + (fog ? '<small>🌫 もやがかかって、はっきりとは見えない…</small>' : '') + '</div></div><div class="qres"></div>'));
+    glossAll(c);
+    var a = actorEl(st.who); if (a) a.classList.add('ask');
+    var ball = $('.orb-ball', c);
+    var list = shuffle(st.o.map(function (o, i) { return { label: o, i: i }; }));
+    T1.options(list, function (i, b, wrap) {
+      var ok = i === st.a;
+      markOpts(wrap, st.a, i);
+      if (a) a.classList.remove('ask');
+      var res = $('.qres', c);
+      res.innerHTML = '<div class="es-line big cast-out">' + esHtml(st.out) + sayBtn(plain(st.out)) + '</div><div class="ja-line">' + esc(st.ja) + '</div>';
+      glossEs(res);
+      if (ok) {
+        hit(run, b, 12);
+        ball.classList.add('lit');
+        var words = cmdWords(st.out);
+        later(function () {
+          FX.slam('¡' + words.join(' ').toUpperCase() + '!', 'gold');
+          sfxStar();
+          var pt = FX.at(ball); FX.rays(pt.x, pt.y); FX.burst(pt.x, pt.y, { pal: 'divine', n: 40, sp: 9 });
+          actorReact(st.who, st.fx && st.fx.e, st.fx && st.fx.mood);
+          if (st.fx && st.fx.world) worldFx(st.fx.world);
+          var fp = FX.at(a || c); FX.floatText(fp.x, fp.y - 10, '⭐ 評判 UP', '#ffe68a');
+          autoSay(plain(st.out));
+        }, 250);
+        later(function () { talk(pick(YES), st.who, '', function () { nextBtn(); }); }, 900);
+      } else {
+        miss(run, c);
+        ball.classList.add('dim');
+        if (a) { var m = $('.am', a); m.textContent = '❓'; m.classList.remove('on'); void m.offsetWidth; m.classList.add('on'); }
+        res.insertAdjacentHTML('afterbegin', '<b class="rk ng">❌ 玉が曇った…　正しい予言はこれ</b>');
+        autoSay(plain(st.out));
+        later(function () { talk(st.why || '', null, 'sad', function () { nextBtn('▶ もう覚えた'); }); }, 400);
+      }
+    });
+  }
+
+  /* =========================================================
+   * 🗓 日めくり（flip）：時間を自分でめくると、語尾が入れかわる
+   *  動くのは「めくる紙」と「入れかわる語尾」だけ（transform・opacity）。o があれば、めくったあとに b の動詞を選ばせる
+   * ========================================================= */
+  function firstGroup(s) { var m = /\{([^}]+)\}/.exec(s); return m ? m[1] : ''; }
+  /* a の動詞と b の動詞を、芯（先頭の共通部分）・変わる所・うしろの共通部分に分ける */
+  function swapParts(a, b) {
+    var pa = firstGroup(a).replace(/\^/g, ''), pb = firstGroup(b).replace(/\^/g, '');
+    if (!pa || !pb) return null;
+    var i = 0; while (i < pa.length && i < pb.length && pa.charAt(i) === pb.charAt(i)) i++;
+    var j = 0; while (j < pa.length - i && j < pb.length - i && pa.charAt(pa.length - 1 - j) === pb.charAt(pb.length - 1 - j)) j++;
+    return { stem: pb.slice(0, i), ea: pa.slice(i, pa.length - j), eb: pb.slice(i, pb.length - j), tail: j ? pb.slice(pb.length - j) : '' };
+  }
+  /* b の文。最初の {…} だけ、芯＋入れかわる語尾（いまは a の語尾）に差しかえる */
+  function swapHtml(b, sw) {
+    var core = '<span class="r-cmd"><span class="vsw"><span class="v-stem">' + esc(sw.stem) + '</span><span class="v-ends"><span class="v-e0">' + esc(sw.ea) + '</span><span class="v-e1">' + esc(sw.eb) + '</span></span>' + esc(sw.tail) + '</span></span>';
+    return roles(esc(b).replace(/\{[^}]+\}/, '\u0002')).replace('\u0002', core);
+  }
+  function doFlip(st, run) {
+    talkHide();
+    var me = cur, flipped = false, hasQ = !!(st.o && st.o.length);
+    var c = boardSet(el('div', 'card flipcard', '<div class="qtag">🗓 日めくり <em>めくると、語尾が変わる</em></div><div class="flip-row">' +
+      '<button class="cal" type="button" aria-label="日めくりをめくる"><i class="cal-ring"></i><span class="cal-pg under"><b>' + esc(st.day_b) + '</b></span><span class="cal-pg top"><b>' + esc(st.day_a) + '</b></span></button>' +
+      '<div class="flip-txt"><div class="es-line flip-es">' + esHtml(st.a) + sayBtn(plain(st.a)) + '</div><div class="ja-line flip-ja">' + esc(st.ja_a) + '</div></div></div><div class="qres"></div>'));
+    glossEs(c);
+    var cal = $('.cal', c), top = $('.cal-pg.top', c), es = $('.flip-es', c), jl = $('.flip-ja', c);
+    T1.hint('👆 ' + ja(st.hint || '日めくりをタップ（上へスワイプでも OK）'));
+    function go() {
+      if (flipped || cur !== me) return; flipped = true;
+      Sfx.whoosh();
+      stageEl.classList.add('flipped');
+      cal.classList.add('turned');
+      if (!FX.RM && top.animate) top.animate([{ transform: 'rotateX(0deg)', opacity: 1 }, { transform: 'rotateX(-100deg)', opacity: 1, offset: 0.7 }, { transform: 'rotateX(-110deg)', opacity: 0 }], { duration: 560, easing: 'cubic-bezier(.5,0,.6,1)', fill: 'forwards' });
+      else top.style.opacity = 0;
+      later(function () { if (cur !== me) return; (hasQ ? afterAsk : afterSwap)(); }, FX.RM ? 60 : 620);
+    }
+    var y0 = 0;
+    cal.addEventListener('pointerdown', function (e) { y0 = e.clientY; });
+    cal.addEventListener('pointerup', function (e) { if (e.clientY - y0 < -22) { cal._sw = Date.now(); go(); } });
+    cal.addEventListener('click', function () { if (Date.now() - (cal._sw || 0) < 500) return; go(); });
+    function fadeEs() { if (!FX.RM && es.animate) es.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260 }); }
+    /* o なし：文が b に変わり、動詞の語尾だけが入れかわる */
+    function afterSwap() {
+      var sw = swapParts(st.a, st.b);
+      es.innerHTML = (sw ? swapHtml(st.b, sw) : esHtml(st.b)) + sayBtn(plain(st.b));
+      jl.textContent = st.ja_b; fadeEs();
+      T1.clear();
+      later(function () {
+        if (cur !== me) return;
+        var ve = $('.v-ends', es); if (ve) { ve.classList.add('go'); Sfx.tap(); var pt = FX.at(ve); FX.burst(pt.x, pt.y, { pal: 'rel', n: 16 }); }
+        later(function () {
+          if (cur !== me) return;
+          if (ve) ve.outerHTML = sw.eb ? '<span class="r-chg">' + esc(sw.eb) + '</span>' : '';
+          glossEs(c); autoSay(plain(st.b));
+          talk(st.why || '同じ芯のまま、語尾だけが入れかわる。', null, 'happy', function () { if (cur === me) nextBtn(); });
+        }, FX.RM ? 80 : 900);
+      }, FX.RM ? 60 : 520);
+    }
+    /* o あり：b の動詞を空所にして選ばせる */
+    function afterAsk() {
+      var blankB = st.b.replace(/\{[^}]*\}/, '___'), ans = st.ans || 0;
+      es.innerHTML = esHtml(blankB); jl.textContent = st.ja_b; fadeEs();
+      var list = shuffle(st.o.map(function (o, i) { return { label: o, i: i }; }));
+      T1.options(list, function (i, b, wrap) {
+        var ok = i === ans, res = $('.qres', c);
+        var bl = $('.blank', es); if (bl) { bl.textContent = st.o[i]; bl.className = 'blank filled ' + (ok ? 'ok' : 'ng'); }
+        markOpts(wrap, ans, i);
+        var right = esHtml(st.b);
+        res.innerHTML = ok ? '<b class="rk ok">⭕ ' + pick(PRAISE) + '</b>' : '<b class="rk ng">❌ おしい！ くらべてみよう</b>' + cmpRows(esHtml(blankB.replace('___', '\u0001')).replace('\u0001', '<b class="wrong">' + esc(st.o[i]) + '</b>'), right, true, plain(st.b));
+        if (ok) hit(run, b); else miss(run, c);
+        if (ok) { es.innerHTML = right + sayBtn(plain(st.b)); glossEs(es); }
+        glossEs(res); autoSay(plain(st.b));
+        later(function () { talk(ok ? (st.why || 'そのとおり！') : (st.why || '語尾に気をつけて、もう一度。'), null, ok ? 'happy' : 'sad', function () { if (cur === me) nextBtn(); }); }, 300);
+      });
+    }
+  }
+
+  /* いつの話？：文を見て、小さな地図から、その形のマスをタップ */
+  function doTapWhen(st, run) {
+    talkHide();
+    var c = boardSet(el('div', 'card tapwhen', '<div class="qtag">🗓 いつの話？ <em>その形のマスをタップ</em></div><div class="es-line big">' + esHtml(st.es) + sayBtn(plain(st.es)) + '</div><div class="ja-line">' + esc(st.ja) + '</div>' + tapMapHtml(nowL()) + '<div class="qres"></div>'));
+    glossEs(c);
+    autoSay(plain(st.es));
+    T1.hint('👆 この文の時を表すマスを、<b>地図</b>でタップ！');
+    var done = false;
+    $$('.tm-c.btn', c).forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (done) return; done = true;
+        var id = b.getAttribute('data-id'), ok = id === st.a, right = $('.tm-c[data-id="' + st.a + '"]', c);
+        $$('.tm-c.btn', c).forEach(function (x) { x.disabled = true; });
+        b.classList.add(ok ? 'ok' : 'ng'); if (!ok && right) right.classList.add('right');
+        $('.qres', c).innerHTML = ok ? '<b class="rk ok">⭕ ' + pick(PRAISE) + '</b>' : '<b class="rk ng">❌ 正解は「' + esc(cellName(st.a)) + '」</b>';
+        T1.clear();
+        if (ok) { hit(run, b); sfxStar(); } else miss(run, c);
+        later(function () { talk(st.why, null, ok ? 'happy' : 'sad', function () { nextBtn(); }); }, 350);
+      });
+    });
+  }
+  function doTip(st, run) {
+    var first = !S.tips[st.id];
+    S.tips[st.id] = 1; save();
+    var c = boardSet(el('div', 'card tip', '<div class="tip-h"><span>📜 TIP GET!</span>' + (first ? '<em>NEW</em>' : '') + '</div><b class="tip-ti">' + esc(st.ti) + '</b><div class="tip-x">' + ja(st.x) + '</div>' +
+      (st.why ? '<details><summary>🤔 なぜ？</summary><p>' + ja(st.why) + '</p></details>' : '')));
+    glossAll(c);
+    if (first) { Sfx.coin(); var p = FX.at(c); FX.burst(p.x, p.y, { pal: 'gold', n: 30 }); bonus(run, 5, c, 'Tips'); }
+    var me = cur;
+    talk(pick(['これは大事！ 予言の書の Tips にしまっておくね。', 'ここ、テストに出るよ。\nTips にメモしたから、いつでも読み返せる。', 'まとめのメモだよ。\n「🤔 なぜ？」を開くと、理由も読める。']), null, 'happy', function () { if (cur === me) nextBtn(); });
+  }
+  function lessonQ(q, run, then, tag) {
+    talkHide();
+    $$('.board-tbl', boardEl).forEach(function (t) { t.remove(); });   // 問題では表を見せない（思い出す練習）
+    var c = boardSet(el('div', 'card qcard'));
+    renderQ(q, c, T1, { tag: tag, run: run }, function (ok) {
+      srs(q, ok); if (cur) cur.qok[q.id] = ok; save();
+      var src = $('.chosen', T1.el) || $('.tok.ok, .tok.ng', c) || c;
+      if (ok) hit(run, src); else miss(run, c);
+      boardScroll();
+      later(then, 250);
+    });
+  }
+  function doQ(st, run) { lessonQ(QBY[st.id], run, function () { nextBtn('▶ つぎへ'); }, st.tag); }
+  function doDrill(st, run) {
+    var pool = D.questions.filter(function (q) { return q.L === cur.L.no && !cur.used[q.id]; });
+    var list = weighted(pool).slice(0, st.n);
+    var k = 0, me = cur;
+    talk(pick(['仕上げの試練だ！\n' + list.length + '問、5連続正解で「星の加護」が来るよ🔥', 'さあ、予言の腕だめし！\n' + list.length + '問。連続正解をねらって！', '最後に ' + list.length + '問の試練。\n迷ったら、Tips を思い出して！']), null, 'happy', function () {
+      if (cur !== me) return;
+      T1.next(function () { FX.slam('TRIAL ×' + list.length, 'gold'); later(one, 600); }, '⚔ 試練をうける');
+    });
+    function one() {
+      if (cur !== me) return;
+      if (k >= list.length) return nextBtn('▶ 試練クリア！');
+      var q = list[k++];
+      lessonQ(q, run, function () { setProg(); T1.next(one, k < list.length ? '▶ つぎ（' + (k + 1) + '/' + list.length + '）' : '▶ 試練クリア！'); }, k + ' / ' + list.length);
+    }
+  }
+  function finishLesson() {
+    if (cur.L.remedy) return finishRemedy();
+    var L = cur.L, run = cur.run, rec = S.lessons[L.id] || {}, first = !rec.done;
+    var acc = run.ok + run.ng ? run.ok / (run.ok + run.ng) : 1;
+    var stars = acc >= 0.9 ? 3 : acc >= 0.7 ? 2 : 1;
+    var rewards = [], card = null;
+    run.xp += 30;
+    if (first) {
+      S.tickets += 3; rewards.push({ icon: '🎟', t: '初クリア +3' });
+      var mine = D.cards.filter(function (c) { return c.L === L.no; });
+      var fresh2 = mine.filter(function (c) { return !S.cards[c.id]; });
+      card = (fresh2.length ? fresh2 : mine)[0];
+      if (card) S.cards[card.id] = (S.cards[card.id] || 0) + 1;
+    }
+    S.lessons[L.id] = { done: true, stars: Math.max(stars, rec.stars || 0), at: Date.now() };
+    var sets = setRewards();
+    rewards = rewards.concat(missionDone('stage'), sets);
+    var mapNew = first ? mapCells().filter(function (c) { return c.L === L.no; }).slice(0, 3) : [];
+    if (mapNew.length) rewards.push({ icon: '🗺', t: '地図に書きこまれた', h: mapChips(mapNew) });
+    setFx(sets);
+    touchDay();
+    var up = addXp(run.xp);
+    save(); cur = null;
+    showResult({ title: 'PROFECÍA CLEAR!!', sub: oracleNo(L) + '　' + L.ti, stars: stars, run: run, rewards: rewards, card: card, up: up,
+      next: { label: first ? '🏮 占い館へもどる（占い館が育つ！）' : '🏮 占い館へもどる', fn: function () { home(first ? { grow: L.id } : null); } }, noHome: true });
+  }
+  $('#pQuit').addEventListener('click', function () {
+    if (cur && !confirm('予言をやめる？\n（この予言の進み具合は保存されません。答えた問題は復習に入ります）')) return;
+    cur = null; Speech.stop(); home();
+  });
+
+  /* =========================================================
+   * 結果画面
+   * ========================================================= */
+  function nodeLabel(n) { if (n.type === 'L') { var L = LESSON[n.id]; return oracleNo(L) + '　' + L.ti; } var B = BOSS[n.id]; return '⚔ ' + B.name; }
+  var resTok = 0;
+  function showResult(o) {
+    var scr = $('#done'); show('done');
+    /* 結果画面の演出（星・XP・レベルアップ）は、まだこの結果画面にいるときだけ。先に占い館へもどったら出さない */
+    var tok = ++resTok, onRes = function () { return tok === resTok && !scr.hidden; };
+    var run = o.run || newRun();
+    var lvBefore = levelOf(S.xp - run.xp), lvNow = levelOf(S.xp);
+    scr.innerHTML = '<div class="res">' +
+      '<h2 class="res-ti ' + (o.lose ? 'lose' : '') + '">' + esc(o.title) + '</h2><p class="res-sub">' + esc(o.sub || '') + '</p>' +
+      (o.stars ? '<div class="stars">' + [1, 2, 3].map(function (k) { return '<i class="' + (k <= o.stars ? 'on' : '') + '">★</i>'; }).join('') + '</div>' : '') +
+      (o.rank ? '<div class="rank r-' + o.rank + '">' + o.rank + '<small>RANK</small></div>' : '') +
+      (o.big ? '<div class="bignum"><b>' + o.big[0] + '</b><small>' + esc(o.big[1]) + '</small></div>' : '') +
+      '<div class="res-stats"><span>⭕ <b>' + run.ok + '</b></span><span>❌ <b>' + run.ng + '</b></span><span>🔥 最大 <b>' + run.best + '</b> コンボ</span></div>' +
+      '<div class="res-xp"><div class="rx-top"><b>+<span id="rXp">0</span> XP</b><span>予言者の位 Lv.<b id="rLv">' + lvBefore.lv + '</b></span></div><span class="lv-bar big"><i id="rBar" style="width:' + Math.round(lvBefore.cur / lvBefore.need * 100) + '%"></i></span></div>' +
+      (o.rewards && o.rewards.length ? '<ul class="rewards">' + o.rewards.map(function (r) { return '<li><span>' + r.icon + '</span>' + (r.h || esc(r.t)) + '</li>'; }).join('') + '</ul>' : '') +
+      (o.card ? '<div class="newcard"><p>🃏 新しい星のカード！ タップでめくる</p>' + cardHtml(o.card, true) + '</div>' : '') +
+      (o.note ? '<p class="res-note">' + o.note + '</p>' : '') +
+      (run.misses && run.misses.length ? '<details class="misses"' + (o.openMisses ? ' open' : '') + '><summary>📝 まちがえた問題を見直す（' + run.misses.length + '問）</summary>' +
+        run.misses.map(function (m) {
+          var full = fullOf(m.q);
+          return '<div class="miss"><div class="es-line">' + esHtml(full) + sayBtn(full) + '</div>' + (m.q.ja ? '<div class="ja-line">' + esc(m.q.ja) + '</div>' : '') +
+            cmpHtml(m.q, m.c) + (m.q.why ? '<p class="why">' + ja(m.q.why) + '</p>' : '') + '</div>';
+        }).join('') + '</details>' : '') +
+      (o.weak && o.weak.length ? '<div class="weakbox"><h3>🩹 あやしい所をおさらい</h3><p>1回読んだだけで全部は覚えられない。まちがえた予言の要点を、もう一度さっと回ろう。</p>' +
+        o.weak.map(function (no, i) { var L = LESSON['L' + no]; return '<button class="tb ' + (i ? 'sub' : 'go') + ' wk" data-no="' + no + '">' + esc(oracleNo(L)) + '　' + esc(L.ti) + ' <small>まちがえた問題 ' + S.weak[no].ids.length + ' 問</small></button>'; }).join('') + '</div>' : '') +
+      (o.extra || '') +
+      '<div class="res-btns"></div></div>';
+    $$('.weakbox .wk', scr).forEach(function (b) { b.addEventListener('click', function () { if (!onRes()) return; resTok++; Sfx.tap(); startLesson(remedyLesson(+b.getAttribute('data-no'))); }); });
+    if (o.after) o.after(scr);
+    var bt = $('.res-btns', scr);
+    var hasWeak = o.weak && o.weak.length;
+    if (o.retry) bt.appendChild(mkBtn(o.retry.label, hasWeak ? 'sub' : 'go', o.retry.fn));
+    if (o.next) bt.appendChild(mkBtn(o.next.label, o.retry || hasWeak ? 'sub' : 'go', o.next.fn));
+    if (!o.noHome) bt.appendChild(mkBtn('🏮 占い館へ', 'sub', function () { home(); }));
+    if (o.lose) { Sfx.wrong(); FX.shake(null, true); }
+    else { FX.slam(o.title, o.rank === 'S' || o.stars === 3 ? 'gold' : 'cyan'); FX.confetti(o.stars === 3 || o.rank === 'S' ? 160 : 80, 'divine'); Sfx.levelUp(); }
+    $$('.stars i.on', scr).forEach(function (s, k) { later(function () { if (!onRes()) return; s.classList.add('pop'); Sfx.coin(); var p = FX.at(s); FX.burst(p.x, p.y, { pal: 'gold', n: 18 }); }, 500 + k * 280); });
+    var xpEl = $('#rXp'), t0 = 0, dur = 900;
+    later(function () {
+      if (!onRes()) return;
+      t0 = performance.now();
+      (function tick(t) { var k = Math.min(1, (t - t0) / dur); xpEl.textContent = Math.round(run.xp * k); if (k < 1) requestAnimationFrame(tick); })(t0);
+      $('#rBar').style.width = (lvNow.lv > lvBefore.lv ? 100 : Math.round(lvNow.cur / lvNow.need * 100)) + '%';
+    }, 700);
+    if (o.up) later(function () { if (!onRes()) return; $('#rLv').textContent = lvNow.lv; $('#rBar').style.width = Math.round(lvNow.cur / lvNow.need * 100) + '%'; levelUp(o.up); }, 1700);
+    var nc = $('.newcard .pcard', scr);
+    if (nc) nc.addEventListener('click', function () { flipCard(nc); });
+  }
+  /* 結果画面のボタンは1回だけ（2度押しで占い館の演出・自動スタートが二重に動かないように） */
+  function mkBtn(label, cls, fn) { var b = el('button', 'tb ' + cls, esc(label)); b.addEventListener('click', function () { if (b.disabled || $('#done').hidden) return; b.disabled = true; Sfx.tap(); fn(); }); return b; }
+  function levelUp(lv) {
+    Sfx.levelUp(); FX.confetti(200, 'divine'); FX.flash('#ffd23f');
+    modal('<div class="lvup"><small>予言者の位 UP!!</small><b>' + lv + '</b><span>' + esc(titleOf(lv)) + '</span>' + FX.cat('happy') + '</div>', 'lvup-m');
+  }
+
+  /* =========================================================
+   * 星のカード
+   * ========================================================= */
+  var RCOL = { N: 'n', R: 'r', SR: 'sr', SSR: 'ssr', UR: 'ur' };
+  function cardHtml(c, back) {
+    return '<div class="pcard rr-' + RCOL[c.r] + (back ? ' down' : '') + '" data-c="' + c.id + '" role="button" tabindex="0">' +
+      '<div class="pc-in"><div class="pc-front"><span class="pc-r">' + c.r + '</span><span class="pc-tag">' + esc(c.tag || '') + '</span>' +
+      '<div class="pc-ico">' + c.icon + '</div><b class="pc-name">' + esc(c.name) + '</b>' +
+      '<div class="es-line">' + esHtml(c.es) + '</div><div class="ja-line">' + esc(c.ja) + '</div>' + sayBtn(c.es) + '</div>' +
+      '<div class="pc-back"><b>✦</b></div></div></div>';
+  }
+  function flipCard(nc) {
+    if (!nc.classList.contains('down')) return;
+    nc.classList.remove('down');
+    var c = CARD[nc.getAttribute('data-c')];
+    var tier = { N: 'common', R: 'rare', SR: 'epic', SSR: 'legendary', UR: 'legendary' }[c.r];
+    Sfx.chestOpen(tier);
+    var p = FX.at(nc); FX.burst(p.x, p.y, { pal: c.r === 'N' || c.r === 'R' ? 'ok' : c.r === 'SR' ? 'rel' : 'gold', n: c.r === 'N' ? 20 : 60, sp: 10, ring: true });
+    if (c.r === 'SSR' || c.r === 'UR') { FX.slam(c.r + '!!', c.r === 'UR' ? 'rainbow' : 'gold'); FX.confetti(80, c.r === 'UR' ? 'rainbow' : 'gold'); FX.rays(p.x, p.y); }
+    glossEs(nc);
+    autoSay(c.es);
+  }
+
+  /* =========================================================
+   * ボス戦・ラッシュ・復習（1問ずつの画面）
+   * ========================================================= */
+  var zMain = $('#zMain'), zHud = $('#zHud'), zRun = null, zTimer = 0, zActive = false;
+  function zStop() { zActive = false; clearInterval(zTimer); Speech.stop(); $('#quiz').classList.remove('exam'); $('#zMap').hidden = false; }
+  $('#zQuit').addEventListener('click', function () {
+    if (zActive && !confirm('やめる？（ここまでの XP はもらえません）')) return;
+    zStop(); home();
+  });
+  function zCard() { zMain.innerHTML = ''; var c = el('div', 'card qcard'); zMain.appendChild(c); return c; }
+
+  /* ----- ボス：疑いぶかい客に、当ててみせる ----- */
+  function bossIntro(B) {
+    zStop(); show('quiz'); feverOff();
+    $('#zTitle').textContent = (B.final ? 'FINAL BOSS' : 'BOSS') + '  ' + B.name; $('#zProg').style.width = '0%'; $('#zRight').innerHTML = '';
+    zHud.innerHTML = '<div class="warn"><span>⚠ WARNING ⚠ 疑いぶかい客が来た ⚠ WARNING ⚠ 疑いぶかい客が来た ⚠</span></div>';
+    var rec = S.bosses[B.id];
+    zMain.innerHTML = '<div class="boss-intro" style="--bc:' + B.col + '"><div class="bface big">' + B.face + '</div><small>' + esc(B.en) + '</small><h2>' + esc(B.name) + '</h2>' +
+      '<p class="bline">「' + esc(B.line) + '」</p>' +
+      '<ul class="rules"><li>🔮 水晶玉は3つ。まちがえると1つ曇る</li><li>⚡ 即答ゲージが残っているうちに正解するとクリティカル</li><li>🏆 ノーミスで S ランク</li><li>📚 出題：' + B.from.map(function (id) { return oracleNo(LESSON[id]).replace('の予言', ''); }).join('・') + ' の予言</li></ul>' +
+      (rec && rec.win ? '<p class="best">これまでの最高：<b>' + rec.rank + '</b> ランク</p>' : '') + '</div>';
+    Sfx.combo(10); FX.shake(null, true);
+    T2.next(function () { bossFight(B); }, '⚡ 予言を当ててみせる！', 'boss');
+  }
+  function bossFight(B) {
+    var pool = D.questions.filter(function (q) { return B.from.indexOf('L' + q.L) >= 0; });
+    var queue = weighted(pool), qi = 0;
+    var hpMax = 1000, hp = hpMax, hearts = 3, dmgBase = Math.ceil(hpMax / B.n), n = 0;
+    zRun = newRun(); zActive = true;
+    zHud.innerHTML = '<div class="bhud" style="--bc:' + B.col + '"><div class="bface" id="bFace">' + B.face + '</div><div class="bstat"><b>' + esc(B.name) + '</b><span class="hp"><i id="bHp"></i><em id="bHpN">' + hp + '</em></span><span class="speed"><i id="bSpd"></i></span></div><div class="hearts" id="bHearts"></div></div>';
+    function paint() {
+      $('#bHp').style.width = Math.max(0, hp / hpMax * 100) + '%'; $('#bHpN').textContent = Math.max(0, hp);
+      $('#bHearts').innerHTML = [0, 1, 2].map(function (k) { return '<i class="' + (k < hearts ? 'on' : '') + '">🔮</i>'; }).join('');
+      $('#zProg').style.width = Math.round((hpMax - hp) / hpMax * 100) + '%';
+      $('#zRight').innerHTML = '<small>XP</small><b>' + zRun.xp + '</b>';
+    }
+    paint();
+    FX.slam('¡LUCHA!', 'pink', 'たたかえ！');
+    function one() {
+      if (!zActive) return;
+      if (qi >= queue.length) { queue = weighted(pool); qi = 0; }
+      var q = queue[qi++]; n++;
+      var c = zCard();
+      var limit = q.k === 'build' ? 14000 : q.k === 'ja' || q.k === 'scene' || q.k === 'who' ? 9000 : 6500;
+      /* 即答ゲージ（残っているうちに正解でクリティカル） */
+      var spd = $('#bSpd'), t0 = Date.now();
+      clearInterval(zTimer);
+      zTimer = setInterval(function () { var k = Math.max(0, 1 - (Date.now() - t0) / limit); spd.style.width = (k * 100) + '%'; spd.classList.toggle('low', k < 0.3); if (!k) clearInterval(zTimer); }, 80);
+      renderQ(q, c, T2, { tag: 'TURN ' + n, run: zRun }, function (ok, ms) {
+        clearInterval(zTimer);
+        srs(q, ok); save();
+        var face = $('#bFace');
+        if (ok) {
+          var crit = ms < limit, dmg = Math.round(dmgBase * (crit ? 1.5 : 1));
+          hp -= dmg;
+          hit(zRun, $('.chosen', T2.el) || c, crit ? 15 : 10);
+          var p = FX.at(face);
+          later(function () {
+            FX.rays(p.x, p.y, '#ffe68a');
+            FX.burst(p.x, p.y, { pal: crit ? 'gold' : 'divine', n: crit ? 60 : 30, sp: 11, ring: true });
+            FX.floatText(p.x, p.y + 10, (crit ? 'CRITICAL! ' : '') + '-' + dmg, crit ? '#ffd23f' : '#ffffff');
+            FX.shake(face, true); face.classList.add('hurt'); later(function () { face.classList.remove('hurt'); }, 400);
+            if (crit) { Sfx.crit(); FX.slam('即答!!', 'gold', 'CRITICAL'); } else sfxStar();
+            paint();
+            if (hp <= 0) return later(function () { bossEnd(B, true, hearts); }, 700);
+            T2.next(one, pick(['▶ つぎの客', '▶ たたみかける', '▶ まだまだ！']));
+          }, 260);
+        } else {
+          hearts--;
+          miss(zRun, c);
+          face.classList.add('atk'); later(function () { face.classList.remove('atk'); }, 500);
+          later(function () {
+            FX.shake(null, true); FX.flash('#ff0040'); paint();
+            if (hearts <= 0) return later(function () { bossEnd(B, false, 0); }, 900);
+            var hi = mapHiFor(q), lab = '▶ 立て直す（🔮 ' + hearts + '）';
+            if (hi.length) T2.btns([{ t: lab, cls: 'go', fn: one }, { t: '🗺 地図で見る', cls: 'sub', fn: function () { mapModal(hi); } }]);
+            else T2.next(one, lab);
+          }, 300);
+        }
+      });
+    }
+    one();
+  }
+  function bossEnd(B, win, hearts) {
+    zStop();
+    var weak = markWeak(zRun);
+    var rewards = [], card = null, rank = win ? (hearts === 3 ? 'S' : hearts === 2 ? 'A' : 'B') : null;
+    var rec = S.bosses[B.id] || {}, first = win && !rec.win;
+    if (win) {
+      zRun.xp += B.final ? 200 : 100;
+      if (first) {
+        S.tickets += 5; rewards.push({ icon: '🎟', t: '初撃破 +5' });
+        card = CARD['u-' + B.id]; if (card) S.cards[card.id] = (S.cards[card.id] || 0) + 1;
+      } else { S.tickets += 1; rewards.push({ icon: '🎟', t: '撃破 +1' }); }
+      var better = !rec.rank || 'SAB'.indexOf(rank) < 'SAB'.indexOf(rec.rank);
+      S.bosses[B.id] = { win: true, rank: better ? rank : rec.rank, at: Date.now() };
+      rewards = rewards.concat(missionDone('stage'));
+    }
+    touchDay();
+    var up = addXp(zRun.xp);
+    save();
+    showResult({ title: win ? (B.final ? 'ESTRELLA!!' : 'K.O.!!') : 'GAME OVER', sub: win ? B.win : B.name + ' に見破られてしまった…', lose: !win, rank: rank, run: zRun, rewards: rewards, card: card, up: up, weak: weak,
+      note: win ? (B.final && rank !== 'S' ? 'ノーミスで S ランクをねらってみよう！' : '') : '答えた問題は復習に入ったよ。Tips を見直して、もう一回！',
+      retry: win ? null : { label: '⚡ もう一回！', fn: function () { bossIntro(B); } },
+      next: win ? { label: first ? '🏮 占い館へもどる（占い館が育つ！）' : '🏮 占い館へもどる', fn: function () { home(first ? { grow: B.id } : null); } } : null, noHome: win });
+  }
+
+  /* ----- ラッシュ（60秒） ----- */
+  function rushIntro() {
+    var pool = unlockedQs().filter(function (q) { return q.k !== 'build'; });
+    if (!pool.length) return toast('🔒 第1の予言をクリアすると、ラッシュが遊べるよ');
+    zStop(); show('quiz');
+    $('#zTitle').textContent = '⚡ 予言ラッシュ'; $('#zProg').style.width = '100%'; $('#zRight').innerHTML = '';
+    zHud.innerHTML = '';
+    zMain.innerHTML = '<div class="rush-intro"><b class="ri-ti">60 SEC RUSH</b><ul class="rules"><li>⏱ 60秒で、できるだけたくさん正解</li><li>🔥 5連続正解で <b>星の加護</b>（得点2倍・正解ごとに +1秒）</li><li>💥 まちがえると −3秒</li><li>📚 出題：クリアした予言の問題（' + pool.length + '問）</li></ul>' +
+      '<p class="best">ハイスコア：<b>' + S.rushBest + '</b></p></div>';
+    T2.next(function () { rushGo(pool); }, '⚡ スタート！', 'boss');
+  }
+  function rushGo(pool) {
+    T2.clear(); zMain.innerHTML = ''; $('#zMap').hidden = true;   // 60秒の時間が減らないように、ラッシュ中は地図を出さない
+    var k = 3;
+    (function count() {
+      if (k > 0) { FX.slam(String(k), 'cyan'); Sfx.tap(); k--; later(count, 700); }
+      else { FX.slam('¡YA!', 'gold'); Sfx.combo(10); rushRun(pool); }
+    })();
+  }
+  function rushRun(pool) {
+    var score = 0, queue = weighted(pool), qi = 0, endAt = Date.now() + 60000;
+    zRun = newRun(); zActive = true;
+    zHud.innerHTML = '<div class="rhud"><span class="rtime"><i id="rT"></i></span><b id="rS">0</b></div>';
+    function paint() {
+      var ms = Math.max(0, endAt - Date.now());
+      $('#rT').style.width = (ms / 600) + '%'; $('#rT').classList.toggle('low', ms < 10000);
+      $('#zProg').style.width = (ms / 600) + '%';
+      $('#zRight').innerHTML = '<small>' + Math.ceil(ms / 1000) + 's</small><b>' + score + '</b>';
+      if (ms <= 0) end();
+    }
+    zTimer = setInterval(paint, 100);
+    function end() {
+      if (!zActive) return;
+      zStop(); T2.clear();
+      FX.slam('TIME UP!!', 'pink');
+      later(function () { rushEnd(score); }, 900);
+    }
+    function one() {
+      if (!zActive) return;
+      if (qi >= queue.length) { queue = weighted(pool); qi = 0; }
+      var q = queue[qi++], c = zCard();
+      renderQ(q, c, T2, { fast: true, run: zRun }, function (ok) {
+        srs(q, ok);
+        if (ok) {
+          var pts = (100 + zRun.combo * 10) * (zRun.combo + 1 >= 5 ? 2 : 1);
+          score += pts; hit(zRun, $('.chosen', T2.el) || c, 5);
+          if (zRun.combo >= 5) endAt += 1000;
+          var p = FX.at($('#rS')); FX.floatText(p.x, p.y + 20, '+' + pts, '#ffd23f'); FX.pop($('#rS'), 1.4);
+          later(one, 380);
+        } else {
+          endAt -= 3000; miss(zRun, c);
+          var p2 = FX.at($('#rT')); FX.floatText(p2.x, p2.y + 16, '−3s', '#ff5c5c');
+          later(one, 1100);
+        }
+        $('#rS').textContent = score;
+      });
+    }
+    paint(); one();
+  }
+  function rushEnd(score) {
+    var weak = markWeak(zRun);
+    var best = score > S.rushBest, tix = score >= 6000 ? 3 : score >= 3500 ? 2 : score >= 1500 ? 1 : 0;
+    if (best) S.rushBest = score;
+    S.tickets += tix;
+    var rewards = tix ? [{ icon: '🎟', t: 'スコアボーナス +' + tix }] : [];
+    rewards = rewards.concat(missionDone('rush'));
+    touchDay(); save();
+    var up = addXp(zRun.xp); save();
+    showResult({ openMisses: true, title: best ? 'NEW RECORD!!' : 'TIME UP!', sub: '60秒の予言ラッシュ', run: zRun, weak: weak, rewards: rewards, up: up, big: [score, best ? 'ハイスコア更新！' : 'ハイスコア ' + S.rushBest],
+      note: '🎟 1500点で1枚・3500点で2枚・6000点で3枚', retry: { label: '⚡ もう一回！', fn: rushIntro } });
+  }
+
+  /* ----- 星の復習 ----- */
+  function reviewGo() {
+    var all = unlockedQs();
+    if (!all.length) return toast('🔒 第1の予言をクリアすると、復習ができるよ');
+    var list = weighted(all).slice(0, 10), k = 0;
+    zStop(); show('quiz'); zActive = true; zRun = newRun();
+    $('#zTitle').textContent = '🔁 星の復習'; zHud.innerHTML = '';
+    var due = dueQs().length;
+    FX.slam('ESTRELLAS', 'cyan', due ? '忘れかけの問題 ' + Math.min(due, 10) + ' 問から' : '星の復習');
+    function paint() { $('#zProg').style.width = Math.round(k / list.length * 100) + '%'; $('#zRight').innerHTML = '<small>XP</small><b>' + zRun.xp + '</b>'; }
+    function one() {
+      paint();
+      if (k >= list.length) return end();
+      var q = list[k++], c = zCard();
+      renderQ(q, c, T2, { tag: k + ' / ' + list.length + '　' + oracleNo(LESSON['L' + q.L]), run: zRun }, function (ok) {
+        srs(q, ok); save();
+        if (ok) hit(zRun, $('.chosen', T2.el) || c); else miss(zRun, c);
+        paint();
+        var nx = k < list.length ? '▶ つぎへ' : '▶ おわり！';
+        later(function () {
+          if (ok) return T2.next(one, nx);
+          var hi = mapHiFor(q);
+          T2.btns([{ t: nx, cls: 'go', fn: one }, { t: hi.length ? '📜 ヒント' : '📜 ヒントを見る', cls: 'sub', fn: function () { hintModal(q.L); } }]
+            .concat(hi.length ? [{ t: '🗺 地図', cls: 'sub', fn: function () { mapModal(hi); } }] : []));
+        }, 250);
+      });
+    }
+    function end() {
+      zStop();
+      S.tickets += 1;
+      var rewards = [{ icon: '🎟', t: '復習やりきり +1' }].concat(missionDone('review'));
+      touchDay();
+      var weak = markWeak(zRun);
+      var up = addXp(zRun.xp + 20); zRun.xp += 20; save();
+      var acc = zRun.ok / list.length;
+      showResult({ title: acc === 1 ? 'PERFECT!!' : 'ESTRELLAS CLEAR!', sub: '星の復習 ' + list.length + '問', stars: acc >= 0.9 ? 3 : acc >= 0.7 ? 2 : 1, run: zRun, rewards: rewards, up: up, weak: weak,
+        note: 'まちがえた問題は、10分後からまた出てくるよ。正解した問題は、1日後・2日後・4日後…と間をあけて出る。', retry: { label: '🔁 もう10問', fn: reviewGo } });
+    }
+    one();
+  }
+
+  /* =========================================================
+   * 🗺 時間の地図
+   *  4行（いま・あの日・これから・あの日から見た先）×3列（そのとき・それまでに済んだ・その最中）。
+   *  データは FQ.map（lessons.js）。まだ無いときは下の既定を使う。given:true のマスは、もう知っている時制（最初から開いている・うすい色）。
+   *  表示は2種類：①しぼった表示（mapSmallHtml：レッスンのボード・まちがえたとき。hi のマスの行と列だけ。高さ 150px 以内）
+   *              ②全体の表示（mapFullHtml：🗺 ボタンのモーダル・予言の書の先頭。一画面に入る）
+   *  動かすのは hi のマスだけ（opacity だけのパルス）。
+   * ========================================================= */
+  var MAP = D.map || {
+    rows: [{ id: 'now', ti: 'いま' }, { id: 'past', ti: 'あの日（過去）' }, { id: 'fut', ti: 'これから' }, { id: 'cond', ti: 'あの日から見た先' }],
+    cols: [{ id: 's', ti: 'そのとき' }, { id: 'p', ti: 'それまでに済んだ', sub: 'haber ＋ 過去分詞' }, { id: 'g', ti: 'その最中', sub: 'estar ＋ 現在分詞' }],
+    cells: [
+      { id: 'now-s', r: 'now', c: 's', given: true, name: '現在', ex: 'hago' },
+      { id: 'past-s', r: 'past', c: 's', given: true, name: '点過去・線過去', ex: 'hice・hacía' },
+      { id: 'fut-s', r: 'fut', c: 's', L: 1, name: '未来', op: '原形 ＋ é・ás・á・emos・éis・án', ex: '{haré}' },
+      { id: 'cond-s', r: 'cond', c: 's', L: 5, name: '過去未来', op: '同じ芯 ＋ ía・ías・ía・íamos・íais・ían', ex: '{haría}' },
+      { id: 'now-p', r: 'now', c: 'p', L: 8, name: '現在完了', op: 'he ＋ 過去分詞', ex: '{he hecho}' },
+      { id: 'past-p', r: 'past', c: 'p', L: 9, name: '過去完了', op: 'había ＋ 過去分詞', ex: '{había hecho}' },
+      { id: 'fut-p', r: 'fut', c: 'p', L: 10, name: '未来完了', op: 'habré ＋ 過去分詞', ex: '{habré hecho}' },
+      { id: 'now-g', r: 'now', c: 'g', L: 11, name: '現在進行', op: 'estoy ＋ 現在分詞', ex: '{estoy haciendo}' },
+      { id: 'past-g', r: 'past', c: 'g', L: 11, name: '過去進行', op: 'estaba ＋ 現在分詞', ex: '{estaba haciendo}' },
+      { id: 'fut-g', r: 'fut', c: 'g', L: 11, name: '未来進行', op: 'estaré ＋ 現在分詞', ex: '{estaré haciendo}' }
+    ],
+    notes: [
+      { id: 'stems', L: 3, at: ['fut-s', 'cond-s'], ti: '形が変わる芯', ex: 'tendr-・pondr-・saldr-・vendr-・podr-・sabr-・habr-・querr-・dir-・har-' },
+      { id: 'pp', L: 8, at: ['now-p', 'past-p', 'fut-p'], ti: '過去分詞', ex: '-ado・-ido／hecho・dicho・visto・escrito・puesto・vuelto・abierto' },
+      { id: 'ger', L: 11, at: ['now-g', 'past-g', 'fut-g'], ti: '現在分詞', ex: '-ando・-iendo' }
+    ]
+  };
+  MAP.notes = MAP.notes || [];
+  var CELL = {}; MAP.cells.forEach(function (c) { CELL[c.id] = c; });
+  /* 形の問題（k:'form'）の時制 → そのマス */
+  var PMAP = { fut: 'fut-s', cond: 'cond-s', perf: 'now-p', plup: 'past-p', futp: 'fut-p', prog: 'now-g' };
+  function cellName(id) { return CELL[id] ? CELL[id].name : String(id); }
+  function mapCells() { return MAP.cells.filter(function (c) { return !c.given; }); }
+  function mapOpenN() { return mapCells().filter(function (c) { return lessonDone(c.L); }).length; }
+  function nowL() { return cur ? (cur.L.base ? cur.L.base.no : cur.L.no) : 0; }
+  /* マスが開く条件：given・その L をクリア済み・hi にふくまれる・いま受けているレッスンの L */
+  function cellOpen(c, hi, nl) { return !!c.given || lessonDone(c.L) || (hi && hi.indexOf(c.id) >= 0) || (!!nl && c.L === nl); }
+  /* 補足の札（芯・過去分詞・現在分詞）が開く条件：その L をクリア済み、または「いま受けているレッスン」の並び順がその L 以降。
+     おさらい・復習・ボスから開いたとき（受けているレッスンがない）は、クリア済みかどうかだけ */
+  function curOrd() { return cur && !cur.L.remedy ? cur.L.ord : 0; }
+  function noteReached(n) { var L = LESSON['L' + n.L]; return lessonDone(n.L) || (!!L && curOrd() >= L.ord && curOrd() > 0); }
+  function lockHtml(c, cls) { return '<div class="' + cls + ' lock"><i>？</i><small>' + (c.L ? '第' + c.L + 'の予言' : '') + '</small></div>'; }
+
+  /* ② 全体の表示 */
+  function mapFullHtml(hi, nl) {
+    hi = hi || [];
+    var h = '<div class="fmap"><div class="fm-cols">' + MAP.cols.map(function (col) { return '<div class="fm-col"><b>' + esc(col.ti) + '</b>' + (col.sub ? '<small>' + esc(col.sub) + '</small>' : '') + '</div>'; }).join('') + '</div>';
+    MAP.rows.forEach(function (r) {
+      h += '<div class="fm-r"><div class="fm-rt">' + esc(r.ti) + '</div><div class="fm-row">';
+      MAP.cols.forEach(function (col) {
+        var c = MAP.cells.filter(function (x) { return x.r === r.id && x.c === col.id; })[0];
+        if (!c) { h += '<div class="fm-c none"></div>'; return; }
+        if (!cellOpen(c, hi, nl)) { h += lockHtml(c, 'fm-c'); return; }
+        var on = hi.indexOf(c.id) >= 0;
+        h += '<button type="button" class="fm-c btn' + (c.given ? ' given' : '') + (on ? ' hi' : '') + '" data-id="' + esc(c.id) + '"><span class="fm-n">' + esc(c.name) + '</span><span class="fm-x">' + esHtml(c.ex || '') + '</span>' + (on ? '<b class="fm-here">いまここ</b>' : '') + '</button>';
+      });
+      h += '</div></div>';
+    });
+    h += '<p class="fm-op">マスをタップすると、作り方が出るよ</p>';
+    var ns = MAP.notes.map(function (n) { return noteReached(n) ? '<button type="button" class="fm-note btn" data-note="' + esc(n.id) + '"><b>🔑</b>' + esc(n.ti) + '</button>' : '<span class="fm-note lock"><b>？</b>第' + n.L + 'の予言</span>'; }).join('');
+    return h + (ns ? '<div class="fm-notes">' + ns + '</div>' : '') + '</div>';
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.fmap .fm-c.btn, .fmap .fm-note.btn'); if (!b) return;
+    var box = b.closest('.fmap'), op = $('.fm-op', box); if (!op) return;
+    $$('.fm-c.sel', box).forEach(function (x) { x.classList.remove('sel'); });
+    if (b.hasAttribute('data-note')) {
+      var n = MAP.notes.filter(function (x) { return x.id === b.getAttribute('data-note'); })[0]; if (!n) return;
+      op.innerHTML = '<b>' + esc(n.ti) + '</b>　<span class="fm-ex">' + esHtml(n.ex) + '</span>';
+    } else {
+      var c = CELL[b.getAttribute('data-id')]; if (!c) return;
+      b.classList.add('sel');
+      op.innerHTML = '<b>' + esc(c.name) + '</b>　' + (c.op ? esc(c.op) : 'もう知っている形') + '　<span class="fm-ex">' + esHtml(c.ex || '') + '</span>';
+    }
+    Sfx.tap();
+  });
+
+  /* ① しぼった表示（hi のマスがある行と列の見出し ＋ hi のマス ＋ かかる notes） */
+  function mapSmallHtml(hi) {
+    var cells = (hi || []).map(function (id) { return CELL[id]; }).filter(Boolean);
+    if (!cells.length) return '';
+    var rows = MAP.rows.filter(function (r) { return cells.some(function (c) { return c.r === r.id; }); });
+    var cols = MAP.cols.filter(function (k) { return cells.some(function (c) { return c.c === k.id; }); });
+    var compact = rows.length >= 3 || (cols.length === 1 && rows.length >= 2), showOp = rows.length === 1;
+    var h = '<div class="smap' + (compact ? ' compact' : '') + '" style="grid-template-columns:46px repeat(' + cols.length + ',1fr)"><i></i>' +
+      cols.map(function (k) { return '<b class="sm-ch">' + esc(k.ti) + '</b>'; }).join('');
+    rows.forEach(function (r) {
+      h += '<b class="sm-rh">' + esc(r.sh || r.ti) + '</b>';
+      cols.forEach(function (k) {
+        var c = cells.filter(function (x) { return x.r === r.id && x.c === k.id; })[0];
+        h += c ? '<div class="sm-c hi"><span class="fm-n">' + esc(c.name) + '</span><span class="fm-x">' + esHtml(c.ex || '') + '</span>' + (showOp && c.op ? '<small>' + esc(c.op) + '</small>' : '') + '</div>' : '<div class="sm-c none"></div>';
+      });
+    });
+    h += '</div>';
+    var ns = MAP.notes.filter(function (n) { return (n.at || []).some(function (id) { return hi.indexOf(id) >= 0; }) && noteReached(n); });   // 札は、その L のレッスンに届いたあと（受けている最中をふくむ）だけ
+    return h + (ns.length ? '<div class="sm-notes">' + ns.map(function (n) { return '<span><b>' + esc(n.ti) + '</b>' + esHtml(n.ex) + '</span>'; }).join('') + '</div>' : '');
+  }
+
+  /* 「いつの話？」用の、しぼっていない小さな地図（マスの名前だけ・開いているマスだけ押せる） */
+  function tapMapHtml(nl) {
+    var h = '<div class="tmap" style="grid-template-columns:46px repeat(' + MAP.cols.length + ',1fr)"><i></i>' + MAP.cols.map(function (k) { return '<b class="sm-ch">' + esc(k.ti) + '</b>'; }).join('');
+    MAP.rows.forEach(function (r) {
+      h += '<b class="sm-rh">' + esc(r.ti) + '</b>';
+      MAP.cols.forEach(function (k) {
+        var c = MAP.cells.filter(function (x) { return x.r === r.id && x.c === k.id; })[0];
+        if (!c) h += '<div class="tm-c none"></div>';
+        else if (cellOpen(c, [], nl)) h += '<button type="button" class="tm-c btn' + (c.given ? ' given' : '') + '" data-id="' + esc(c.id) + '">' + esc(c.name) + '</button>';
+        else h += '<div class="tm-c lock">？</div>';
+      });
+    });
+    return h + '</div>';
+  }
+
+  /* 🗺 ボタン（いつでも）。レッスン中は、いま習っているマスも開いて見せる。
+   *  hi があるとき（まちがえた問題のマス）は、まず「しぼった表示」を出し、「全体を見る」で全体の表示にする */
+  function mapModal(hi) {
+    hi = hi || [];
+    var full = function () {
+      modal('<h3 class="m-h">🗺 時間の地図</h3><div class="card fmap-card">' + mapFullHtml(hi, nowL()) + '</div>' +
+        '<p class="m-note">' + mapOpenN() + ' / ' + mapCells().length + ' マスが書きこまれている。習うたびに増えるよ。</p>', 'map-m');
+    };
+    if (!hi.length) return full();
+    modal('<h3 class="m-h">🗺 この問題の時</h3><div class="card smap-card">' + mapSmallHtml(hi) + '</div><div class="tbs m-btns"><button class="tb sub" id="mFull">🗺 地図の全体を見る</button></div>', 'map-m');
+    $('#mFull').addEventListener('click', function () { Sfx.tap(); full(); });
+  }
+  /* まちがえた問題に当たるマス：形の問題は時制のマス、いつの話？は答えのマス、それ以外はそのレッスンで習うマス */
+  function mapHiFor(q) {
+    if (q.k === 'form' && PMAP[q.p]) return [PMAP[q.p]];
+    if (q.k === 'who' && CELL[q.a]) return [q.a];
+    return mapCells().filter(function (c) { return c.L === q.L; }).map(function (c) { return c.id; }).slice(0, 3);
+  }
+  /* 結果画面：そのレッスンで新しく開いたマスの札（1〜2枚） */
+  function mapChips(cells) {
+    return '<div class="cmap-rw"><b>地図に書きこまれた</b>' + cells.map(function (c) {
+      return '<div class="cmap-chip"><i>' + esc(c.name) + '</i>　<b>' + esHtml(c.ex || '') + '</b>' + (c.op ? '<br><small>' + esc(c.op) + '</small>' : '') + '</div>';
+    }).join('') + '</div>';
+  }
+  function doMap(st) {
+    var c = el('div', 'card board-tbl smap-card', '<div class="qtag">🗺 時間の地図 <em>光っているマスが、いまの話</em></div>' + mapSmallHtml(st.hi || []));
+    boardSet(c);
+    var me = cur;
+    talk(st.x, null, 'happy', function () { if (cur === me) nextBtn(); });
+  }
+  $('#pMap').addEventListener('click', function () { Sfx.tap(); mapModal([]); });
+  $('#zMap').addEventListener('click', function () { Sfx.tap(); mapModal([]); });
+  $('#hMap').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); mapModal([]); });
+
+  /* =========================================================
+   * 🩹 あやしい所 → おさらい予言
+   *  人は1回読んだだけでは覚えきれない。復習・ボス・ラッシュ・西検チャレンジでまちがえた問題を
+   *  予言ごとに S.weak に残し、その予言の要点（表・その説明・形を作る操作・命令・予想の問い・Tips）を短く回り直して、
+   *  最後にまちがえた問題そのものにリベンジする。正解できた問題だけ S.weak から消える。
+   * ========================================================= */
+  function markWeak(run) {
+    var got = {};
+    (run.misses || []).forEach(function (m) {
+      var q = m.q; if (!q || !q.L || !QBY[q.id]) return;
+      var w = S.weak[q.L] || (S.weak[q.L] = { ids: [], at: 0 });
+      if (w.ids.indexOf(q.id) < 0) w.ids.push(q.id);
+      w.at = Date.now(); got[q.L] = 1;
+    });
+    save();
+    return Object.keys(got).map(Number).sort(function (a, b) { return LESSON['L' + a].ord - LESSON['L' + b].ord; });
+  }
+  /* いちばんあやしい予言（まちがえた問題が多い順・同じなら前の予言から） */
+  function weakNext() {
+    var list = Object.keys(S.weak).map(Number).filter(function (no) { return LESSON['L' + no] && S.weak[no].ids.length; });
+    list.sort(function (a, b) { return S.weak[b].ids.length - S.weak[a].ids.length || LESSON['L' + a].ord - LESSON['L' + b].ord; });
+    return list[0] || 0;
+  }
+  var REMEDY_KEEP = { show: 1, forge: 1, orb: 1, cast: 1, tapwhen: 1, flip: 1, ask: 1, tip: 1, map: 1 };
+  function remedyLesson(no) {
+    var L = LESSON['L' + no], ids = (S.weak[no] ? S.weak[no].ids : []).slice(0, 4), steps = [];
+    steps.push({ t: 'say', x: oracleNo(L) + '「' + L.ti + '」で、\nまちがえた問題があったね。\n1回で覚えきれないのは、あたりまえ。\n要点だけ、さっともう一度いこう！' });
+    L.steps.forEach(function (st, i) {
+      var prev = L.steps[i - 1];
+      if (REMEDY_KEEP[st.t] || (st.t === 'say' && !st.who && ((prev && prev.t === 'show') || String(st.x).indexOf('**') >= 0))) steps.push(st);   // 表の説明・覚えること（**）の入った説明は残す
+    });
+    if (ids.length) {
+      steps.push({ t: 'say', x: 'では、まちがえた問題にリベンジ！\n' + ids.length + '問。さっきの要点を思い出して。' });
+      ids.forEach(function (id, k) { steps.push({ t: 'q', id: id, tag: 'リベンジ ' + (k + 1) + ' / ' + ids.length }); });
+    }
+    return { id: 'R' + no, no: no, ord: L.ord, remedy: true, base: L, icon: '🩹', ti: L.ti, sub: 'おさらい：' + L.sub, actors: L.actors, steps: steps };
+  }
+  function finishRemedy() {
+    var L = cur.L, run = cur.run, base = L.base, w = S.weak[base.no], fixed = 0, left = 0;
+    if (w) {
+      w.ids = w.ids.filter(function (id) { if (cur.qok[id] === true) { fixed++; return false; } if (cur.qok[id] === false) left++; return true; });
+      if (!w.ids.length) delete S.weak[base.no];
+    }
+    run.xp += 20 + fixed * 10;
+    touchDay();
+    var up = addXp(run.xp);
+    save(); cur = null;
+    var more = weakNext();
+    showResult({ title: left ? 'REPASO OK!' : 'REPASO PERFECTO!!', sub: '🩹 おさらい：' + oracleNo(base) + '　' + base.ti, stars: left ? 2 : 3, run: run, up: up,
+      rewards: fixed ? [{ icon: '🩹', t: 'まちがえた問題 ' + fixed + ' 問をクリア' }] : [],
+      note: left ? 'まだ ' + left + ' 問があやしい。また今度、おさらいで出てくるよ。' : 'この予言のあやしい所は、ぜんぶ消えた！ 忘れかけたころに、復習でまた出てくるよ。',
+      next: more ? { label: '🩹 つぎのおさらい：' + oracleNo(LESSON['L' + more]), fn: function () { startLesson(remedyLesson(more)); } } : { label: '🏮 占い館へもどる', fn: function () { home(); } }, noHome: !more });
+  }
+  /* 復習でまちがえたときの「📜 ヒント」：その予言の Tips と表 */
+  function hintModal(no) {
+    var L = LESSON['L' + no], tip = L.steps.filter(function (st) { return st.t === 'tip'; })[0], shows = L.steps.filter(function (st) { return st.t === 'show' && st.tbl; });
+    modal('<h3 class="m-h">📜 ' + esc(oracleNo(L)) + '　' + esc(L.ti) + '</h3>' +
+      (tip ? '<div class="card tip"><b class="tip-ti">' + esc(tip.ti) + '</b><div class="tip-x">' + ja(tip.x) + '</div>' + (tip.why ? '<details><summary>🤔 なぜ？</summary><p>' + ja(tip.why) + '</p></details>' : '') + '</div>' : '') +
+      shows.map(function (st) { return '<div class="card board-tbl"><div class="qtag">📋 ' + esc(st.cap || '') + '</div><table class="tbl">' + st.tbl.map(function (r) { return '<tr><th class="es-cell">' + esHtml(r[0]) + '</th><td class="es-cell">' + esHtml(r[1]) + '</td></tr>'; }).join('') + '</table></div>'; }).join('') +
+      '<p class="m-note">この予言は、復習のあとで「🩹 おさらい」できるよ。</p>', 'hint-m');
+    glossAll($('#mbody'));
+  }
+
+  /* =========================================================
+   * 🎓 西検チャレンジ：試験と同じ形の20問を分野ごとに。答え合わせは最後にまとめて。
+   *  分野ごとの正解数を出し、まちがえた予言は「🩹 おさらい」へ。合格ライン 70%
+   * ========================================================= */
+  /* 分野（FQ.topics があればそれ）。L は、その分野に入るレッスン番号。問題が1つも無い分野は出さない */
+  var TOPICS = D.topics || [
+    { id: 'fut', ti: '未来形（hablaré・tendré・lloverá）', L: [1, 2, 3, 4], n: 5 },
+    { id: 'cond', ti: '過去未来（hablaría・tendría）', L: [5, 6, 7], n: 5 },
+    { id: 'perf', ti: '完了形（he hecho・había hecho・habré hecho）', L: [8, 9, 10], n: 5 },
+    { id: 'prog', ti: '進行形（estoy haciendo・estaba haciendo）', L: [11, 12], n: 5 }
+  ];
+  var EXAMK = { pick: 1, form: 1, scene: 1, who: 1, bug: 1, ja: 1 };
+  function topicOf(q) { for (var i = 0; i < TOPICS.length; i++) if (TOPICS[i].L.indexOf(q.L) >= 0) return TOPICS[i]; }
+  function allLessonsDone() { return D.lessons.every(function (L) { return lessonDone(L.no); }); }
+  function mockGo() {
+    if (!allLessonsDone()) return toast('🔒 予言をぜんぶクリアすると、西検チャレンジが開くよ');
+    var list = [], tps = TOPICS.filter(function (tp) { return D.questions.some(function (q) { return tp.L.indexOf(q.L) >= 0 && EXAMK[q.k]; }); });
+    tps.forEach(function (tp) {
+      var pool = D.questions.filter(function (q) { return tp.L.indexOf(q.L) >= 0 && EXAMK[q.k]; });
+      /* 空所を選ぶ形（試験でいちばん多い）を先に、その中で苦手・期限切れから */
+      var picks = weighted(pool.filter(function (q) { return q.k === 'pick'; })), rest = weighted(pool.filter(function (q) { return q.k !== 'pick'; }));
+      picks.slice(0, Math.ceil(tp.n / 2)).concat(rest).slice(0, tp.n).forEach(function (q) { list.push(q); });
+    });
+    list = shuffle(list);
+    var k = 0, ok = 0, got = {};
+    zStop(); show('quiz'); $('#quiz').classList.add('exam'); $('#zMap').hidden = true; zActive = true; zRun = newRun();
+    $('#zTitle').textContent = '🎓 西検チャレンジ'; zHud.innerHTML = '';
+    FX.slam('EXAMEN', 'gold', '試験と同じ形で ' + list.length + '問');
+    function paint() { $('#zProg').style.width = Math.round(k / list.length * 100) + '%'; $('#zRight').innerHTML = '<small>問</small><b>' + Math.min(k + 1, list.length) + '/' + list.length + '</b>'; }
+    function one() {
+      paint();
+      if (k >= list.length) return end();
+      var q = list[k++], c = zCard();
+      renderQ(q, c, T2, { run: zRun, fast: true, tag: '第' + k + '問' }, function (good) {
+        if (good) { ok++; zRun.ok++; } else zRun.ng++;
+        got[q.id] = good;
+        srs(q, good); save();
+        later(one, 450);
+      });
+    }
+    function end() {
+      zStop();
+      var weak = markWeak(zRun);
+      var pct = Math.round(ok / list.length * 100), pass = pct >= 70, best = S.mockBest || 0;
+      S.mockBest = Math.max(best, pct);
+      var tix = pct >= 90 ? 5 : pass ? 3 : 1;
+      S.tickets += tix;
+      touchDay();
+      zRun.xp = ok * 10 + (pass ? 50 : 0);
+      var up = addXp(zRun.xp); save();
+      var rows = tps.map(function (tp) {
+        var qs = list.filter(function (q) { return topicOf(q) === tp; }), n = qs.filter(function (q) { return got[q.id]; }).length, all = qs.length;
+        return '<div class="tp' + (n < all ? ' weak' : '') + '"><div class="tp-h"><b>' + esc(tp.ti) + '</b><span>' + n + ' / ' + all + '</span></div><span class="tp-bar"><i style="width:' + Math.round(n / all * 100) + '%"></i></span></div>';
+      }).join('');
+      showResult({ title: pct >= 90 ? 'EXCELENTE!!' : pass ? 'APROBADO!!' : 'もう一歩！', sub: '🎓 西検チャレンジ（合格ライン 70%）', lose: !pass, run: zRun, up: up, openMisses: true, weak: weak,
+        big: [pct + '%', ok + ' / ' + list.length + ' 問正解' + (pct > best ? '　自己ベスト更新！' : '　自己ベスト ' + S.mockBest + '%')],
+        rewards: [{ icon: '🎟', t: (pass ? '合格' : 'チャレンジ') + ' +' + tix }],
+        extra: '<div class="topics"><h3>分野ごとの結果</h3>' + rows + '</div>',
+        retry: { label: '🎓 もう一回（問題は入れかわる）', fn: mockGo } });
+    }
+    one();
+  }
+
+  /* ----- 星のカードで練習（🎧聞き取り・🧩並べ替え） ----- */
+  function cardQ(c, kind) {
+    var s = plain(c.es);
+    if (kind === 'build') return { id: 'card:' + c.id + ':b', k: 'build', s: s, d: [], ja: c.ja, card: c.id };
+    var others = shuffle(D.cards.filter(function (x) { return x.id !== c.id && plain(x.es) !== s; }))
+      .sort(function (a, b) { return (b.L === c.L) - (a.L === c.L); }).slice(0, 2);
+    return { id: 'card:' + c.id + ':l', k: 'listen', s: s, o: [s].concat(others.map(function (x) { return plain(x.es); })), a: 0, ja: c.ja, card: c.id };
+  }
+  function ownedCards() { return D.cards.filter(function (c) { return S.cards[c.id]; }); }
+  function cardGo(ids) {
+    var cards = ids ? ids.map(function (id) { return CARD[id]; })
+      : shuffle(ownedCards()).sort(function (a, b) { return (S.cardp[a.id] || 0) - (S.cardp[b.id] || 0); }).slice(0, 5);
+    if (!cards.length) return toast('🃏 星のカードを手に入れると、カードで練習できるよ');
+    var list = [], k = 0, full = !ids;
+    cards.forEach(function (c) { list.push(cardQ(c, 'listen'), cardQ(c, 'build')); });
+    $('#modal').hidden = true;
+    zStop(); show('quiz'); zActive = true; zRun = newRun();
+    $('#zTitle').textContent = '🃏 星のカードで練習'; zHud.innerHTML = '';
+    FX.slam('PRÁCTICA', 'cyan', '🎧 聞き取り ・ 🧩 並べ替え');
+    function paint() { $('#zProg').style.width = Math.round(k / list.length * 100) + '%'; $('#zRight').innerHTML = '<small>XP</small><b>' + zRun.xp + '</b>'; }
+    function one() {
+      paint();
+      if (k >= list.length) return end();
+      var q = list[k++], c = zCard();
+      renderQ(q, c, T2, { tag: k + ' / ' + list.length + '　' + CARD[q.card].icon + ' ' + CARD[q.card].name, run: zRun }, function (ok) {
+        if (ok) { S.cardp[q.card] = (S.cardp[q.card] || 0) + 1; hit(zRun, $('.chosen', T2.el) || c); } else miss(zRun, c);
+        save(); paint();
+        later(function () { T2.next(one, k < list.length ? '▶ つぎへ' : '▶ おわり！'); }, 250);
+      });
+    }
+    function end() {
+      zStop();
+      var rewards = [];
+      if (full) { S.tickets += 1; rewards.push({ icon: '🎟', t: 'カード練習やりきり +1' }); }
+      touchDay();
+      zRun.xp += 10;
+      var up = addXp(zRun.xp); save();
+      var acc = zRun.ok / list.length;
+      showResult({ title: acc === 1 ? 'PERFECT!!' : 'PRÁCTICA CLEAR!', sub: '星のカードで練習 ' + list.length + '問', stars: acc >= 0.9 ? 3 : acc >= 0.7 ? 2 : 1, run: zRun, rewards: rewards, up: up,
+        note: '練習で正解したカードは、図鑑に 🎧 の回数がつくよ。まだ練習していないカードから順に出る。',
+        retry: { label: '🃏 もう一回', fn: function () { cardGo(ids); } }, next: { label: '📖 図鑑へ', fn: function () { dexScreen('cards'); } } });
+    }
+    one();
+  }
+
+  /* ----- 予言ごとに5人そろえるとボーナス ----- */
+  var SET_TIX = 3, SET_XP = 50;
+  function setRewards() {
+    var got = [];
+    D.lessons.forEach(function (L) {
+      var mine = D.cards.filter(function (c) { return c.L === L.no; });
+      if (!mine.length || S.sets[L.no] || !mine.every(function (c) { return S.cards[c.id]; })) return;
+      S.sets[L.no] = Date.now(); S.tickets += SET_TIX; S.xp += SET_XP;
+      got.push({ icon: '🏆', t: oracleNo(L) + ' の星のカード5枚コンプリート！ 🎟+' + SET_TIX + '・+' + SET_XP + ' XP', set: L.no });
+    });
+    return got;
+  }
+  function setFx(got) {
+    if (!got.length) return;
+    later(function () { FX.slam('SET COMPLETE!!', 'gold', '星のカードが5枚そろった'); FX.confetti(140, 'gold'); Sfx.levelUp(); }, 600);
+  }
+
+  /* =========================================================
+   * 星めぐり（ガチャ）：星のカードが占い館にやって来る
+   * ========================================================= */
+  var RATE = [['SSR', 5], ['SR', 13], ['R', 30], ['N', 52]];
+  function roll(minSR) {
+    var pool = cardPool(), x = Math.random() * 100, r = 'N', acc = 0;
+    for (var i = 0; i < RATE.length; i++) { acc += RATE[i][1]; if (x < acc) { r = RATE[i][0]; break; } }
+    if (minSR && (r === 'N' || r === 'R')) r = 'SR';
+    var order = ['SSR', 'SR', 'R', 'N'], k = order.indexOf(r), list = [];
+    while (!list.length && k < order.length) { var rr = order[k++]; list = pool.filter(function (c) { return c.r === rr; }); }
+    if (!list.length) list = pool;
+    return list[Math.floor(Math.random() * list.length)];
+  }
+  function gachaScreen() {
+    show('gacha');
+    var pool = cardPool(), own = Object.keys(S.cards).length;
+    var g = $('#gacha');
+    g.innerHTML = '<header class="pbar"><button class="x" id="gBack" aria-label="もどる">←</button><div class="pmid"><b>✨ 星めぐり</b></div><div class="pxp"><small>🎟</small><b>' + S.tickets + '</b></div></header>' +
+      '<div class="gacha"><div class="altar" id="gm"><div class="orb"><i></i><i></i><i></i></div><div class="pedestal"></div></div>' +
+      '<p class="g-info">めぐると、占い館に新しい星のカードがやって来る。<br>クリアした予言のカードが出るよ（いま ' + pool.length + ' 種類）。カード ' + own + ' / ' + D.cards.length + '</p>' +
+      '<div class="g-btns"><button class="tb go" id="g1">1回めぐる <small>🎟1</small></button><button class="tb gold" id="g10">10連めぐり <small>🎟10・SR以上1枚確定</small></button></div>' +
+      '<p class="g-rate">出る確率：SSR 5%・SR 13%・R 30%・N 52%（UR はボスを倒したときだけ）<br>もう持っているカードが来たら +15 XP<br>🏆 予言ごとにカード5枚そろえると 🎟+3・+50 XP</p><div id="gOut"></div></div>';
+    $('#gBack').addEventListener('click', function () { home(); });
+    $('#g1').addEventListener('click', function () { pull(1); });
+    $('#g10').addEventListener('click', function () { pull(10); });
+  }
+  var pulling = false;
+  function pull(n) {
+    if (pulling) return;
+    if (!cardPool().length) return toast('🔒 第1の予言をクリアすると、めぐれるようになるよ');
+    if (S.tickets < n) return toast('🎟 チケットが足りない！ 予言・ボス・ミッション・ラッシュでもらえるよ');
+    pulling = true;
+    S.tickets -= n; S.pulls += n;
+    var got = [];
+    for (var i = 0; i < n; i++) got.push(roll(n === 10 && i === 9 && !got.some(function (c) { return c.r === 'SR' || c.r === 'SSR'; })));
+    var dupXp = 0, news = 0;
+    got.forEach(function (c) { if (S.cards[c.id]) dupXp += 15; else news++; S.cards[c.id] = (S.cards[c.id] || 0) + 1; });
+    var up = dupXp ? addXp(dupXp) : 0;
+    var sets = setRewards();
+    save();
+    var top = got.reduce(function (m, c) { return 'N R SR SSR'.split(' ').indexOf(c.r) > 'N R SR SSR'.split(' ').indexOf(m) ? c.r : m; }, 'N');
+    var m = $('#gm'), out = $('#gOut');
+    out.innerHTML = '';
+    m.className = 'altar pray t-' + RCOL[top];
+    var k = 0;
+    (function rattle() {
+      if (k < 4) { Sfx.chestShake(); FX.shake(m); k++; later(rattle, 280); return; }
+      m.className = 'altar t-' + RCOL[top];
+      var p = FX.at(m); FX.rays(p.x, p.y, top === 'SSR' ? '#ffd23f' : top === 'SR' ? '#ff8fd0' : '#9be7ff'); sfxStar();
+      if (top === 'SSR') { FX.flash('#ffd23f'); FX.slam('!?', 'gold'); }
+      var cap = el('button', 'capsule t-' + RCOL[top], '<span>TAP!</span>');
+      out.appendChild(cap); FX.pop(cap, 1.3);
+      cap.addEventListener('click', function () {
+        cap.remove();
+        var grid = el('div', 'g-grid' + (n === 1 ? ' one' : ''));
+        got.forEach(function (c) { grid.insertAdjacentHTML('beforeend', cardHtml(c, true)); });
+        out.appendChild(grid);
+        $$('.pcard', grid).forEach(function (nc, i) {
+          var id = nc.getAttribute('data-c');
+          if (S.cards[id] === 1 && got.filter(function (c) { return c.id === id; }).length === 1) nc.insertAdjacentHTML('beforeend', '<em class="newtag">NEW</em>');
+          nc.addEventListener('click', function () { flipCard(nc); });
+          later(function () { flipCard(nc); }, 300 + i * 260);
+        });
+        later(function () {
+          out.insertAdjacentHTML('beforeend', '<p class="g-sum">新しい星のカード <b>' + news + '</b> 人' + (dupXp ? '　かぶり → <b>+' + dupXp + ' XP</b>' : '') + '</p>' +
+            sets.map(function (g) { return '<p class="g-set">' + g.icon + ' ' + esc(g.t) + '</p>'; }).join('') +
+            '<div class="tbs"><button class="tb go" id="gIsle">🏮 占い館で会う</button><button class="tb sub" id="gDex">🃏 カードで練習</button></div>');
+          $('#gIsle').addEventListener('click', function () { Sfx.tap(); home(); });
+          $('#gDex').addEventListener('click', function () { Sfx.tap(); dexScreen('cards'); });
+          setFx(sets);
+          $('.pxp b', $('#gacha')).textContent = S.tickets;
+          pulling = false;
+          if (up) levelUp(up);
+        }, 400 + got.length * 260);
+      });
+    })();
+  }
+
+  /* =========================================================
+   * 📖 予言の書（目次・星のカード図鑑・Tips）
+   * ========================================================= */
+  function dexScreen(tab) {
+    tab = tab || 'book';
+    show('dex');
+    var d = $('#dex');
+    var own = D.cards.filter(function (c) { return S.cards[c.id]; }).length, tips = TIPS.filter(function (t) { return S.tips[t.tip.id]; }).length;
+    d.innerHTML = '<header class="pbar"><button class="x" id="dBack" aria-label="もどる">←</button><div class="pmid"><div class="tabs">' +
+      '<button data-tab="book" class="' + (tab === 'book' ? 'on' : '') + '">📖 予言の書</button><button data-tab="cards" class="' + (tab === 'cards' ? 'on' : '') + '">🃏 カード ' + own + '</button><button data-tab="tips" class="' + (tab === 'tips' ? 'on' : '') + '">📜 Tips ' + tips + '</button></div></div></header><div class="dex-body"></div>';
+    $('#dBack').addEventListener('click', function () { home(); });
+    $$('.tabs button', d).forEach(function (b) { b.addEventListener('click', function () { Sfx.tap(); dexScreen(b.getAttribute('data-tab')); }); });
+    var body = $('.dex-body', d);
+    if (tab === 'tips') {
+      body.innerHTML = '<p class="dex-note">予言で手に入れたコツ。🤔 なぜ？ を開くと理由が読めるよ。</p>' + TIPS.map(function (t) {
+        var st = t.tip, have = S.tips[st.id];
+        return have ? '<div class="card tip"><div class="tip-h"><span>' + esc(oracleNo(t.L)) + '</span></div><b class="tip-ti">' + esc(st.ti) + '</b><div class="tip-x">' + ja(st.x) + '</div>' + (st.why ? '<details><summary>🤔 なぜ？</summary><p>' + ja(st.why) + '</p></details>' : '') + '</div>'
+          : '<div class="card tip locked"><b class="tip-ti">？？？</b><small>' + esc(oracleNo(t.L)) + ' でゲット</small></div>';
+      }).join('');
+      glossAll(body);
+      return;
+    }
+    if (tab === 'book') {
+      var ni = nextIdx(), lastDay = D.days.length ? D.days[D.days.length - 1].d : 0, html = '<div class="card fmap-card"><div class="qtag">🗺 時間の地図　' + mapOpenN() + ' / ' + mapCells().length + '</div>' + mapFullHtml([], 0) + '</div><p class="dex-note">これまでの予言の記録。クリアした予言は、何度でもやり直せるよ。</p>';
+      D.days.forEach(function (dd) {
+        var nodes = ORDER.map(function (n, i) { return { n: n, i: i }; }).filter(function (x) { return x.n.day === dd.d; });
+        html += '<div class="day"><div class="day-h"><b>DÍA ' + dd.d + '</b><span>' + esc(dd.ti) + '</span><small>' + esc(dd.x) + '</small></div><div class="nodes">';
+        nodes.forEach(function (x) {
+          var n = x.n, done = nodeDone(n), open = nodeOpen(x.i), now = x.i === ni;
+          var st = (done ? ' done' : '') + (open ? '' : ' lock') + (now ? ' now' : '');
+          if (n.type === 'L') {
+            var L = LESSON[n.id], rec = S.lessons[n.id];
+            html += '<button class="node' + st + '" data-i="' + x.i + '"><span class="ni">' + (open ? L.icon : '🔒') + '</span><span class="nt"><small>' + esc(oracleNo(L)) + '</small>' + (open ? esc(L.ti) + '<em>' + esc(L.sub) + '</em>' : '？？？') + '</span>' +
+              (rec ? '<span class="ns">' + [1, 2, 3].map(function (k) { return k <= rec.stars ? '★' : '☆'; }).join('') + '</span>' : '') + '</button>';
+          } else {
+            var B = BOSS[n.id], br = S.bosses[n.id];
+            html += '<button class="node boss' + st + '" data-i="' + x.i + '" style="--bc:' + B.col + '"><span class="ni">' + (open ? B.face : '🔒') + '</span><span class="nt"><small>' + (B.final ? 'FINAL BOSS' : 'BOSS') + '</small>' + (open ? esc(B.name) : '？？？') + '</span>' +
+              (br && br.win ? '<span class="ns rk">' + br.rank + '</span>' : '') + '</button>';
+          }
+        });
+        if (!nodes.length || dd.d === lastDay) html += '<div class="extra"><button class="mini" data-act="review">🔁 星の復習</button><button class="mini" data-act="rush">⚡ ラッシュ</button>' + (dd.d === lastDay ? '<button class="mini" data-act="mock">🎓 西検チャレンジ</button>' : '') + '</div>';
+        html += '</div></div>';
+      });
+      body.innerHTML = html;
+      $$('.node', body).forEach(function (b) { b.addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); openNode(+b.getAttribute('data-i')); }); });
+      $$('.mini', body).forEach(function (b) { b.addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); var a = b.getAttribute('data-act'); if (a === 'review') reviewGo(); else if (a === 'mock') mockGo(); else rushIntro(); }); });
+      return;
+    }
+    var html2 = '<button class="tb go" id="dPractice"' + (own ? '' : ' disabled') + '>🃏 カードで練習 <small>カードの文で 🎧聞き取り・🧩並べ替え 10問</small></button>' +
+      '<p class="dex-note">カードをタップすると、その1人だけで練習もできるよ。<br>🏆 予言ごとに5人そろえると 🎟+3・+50 XP</p>';
+    D.lessons.forEach(function (L) {
+      var mine = D.cards.filter(function (c) { return c.L === L.no; }), have = mine.filter(function (c) { return S.cards[c.id]; }).length;
+      html2 += '<h3 class="dex-h">' + esc(oracleNo(L)) + (S.sets[L.no] ? '<span class="set done">🏆 COMPLETE</span>' : '<span class="set">' + have + ' / ' + mine.length + '</span>') + '</h3><div class="dex-grid">' + mine.map(slot).join('') + '</div>';
+    });
+    html2 += '<h3 class="dex-h">👑 ボス撃破の証（UR）</h3><div class="dex-grid">' + D.cards.filter(function (c) { return c.boss; }).map(slot).join('') + '</div>';
+    body.innerHTML = html2;
+    $('#dPractice').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); cardGo(); });
+    function slot(c) {
+      var n = S.cards[c.id], p = S.cardp[c.id];
+      return n ? '<button class="slot rr-' + RCOL[c.r] + '" data-c="' + c.id + '"><span class="pc-r">' + c.r + '</span><span class="sl-ico">' + c.icon + '</span><span class="sl-nm">' + esc(c.name) + '</span>' + (n > 1 ? '<em>×' + n + '</em>' : '') + (p ? '<i class="sl-p">🎧' + p + '</i>' : '') + '</button>'
+        : '<div class="slot none"><span>？</span></div>';
+    }
+    $$('button.slot', body).forEach(function (b) {
+      b.addEventListener('click', function () {
+        var c = CARD[b.getAttribute('data-c')];
+        modal(cardHtml(c, false) + '<p class="m-note">来た回数：' + S.cards[c.id] + '　練習で正解：' + (S.cardp[c.id] || 0) + '回</p>' +
+          '<div class="tbs m-btns"><button class="tb go" id="mPractice">🎧 聞き取り ＋ 🧩 並べ替え</button></div>', 'card-m');
+        $('#mPractice').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); cardGo([c.id]); });
+        glossEs($('#mbody .pcard')); autoSay(c.es);
+      });
+    });
+  }
+
+  function modal(html, cls) {
+    var m = $('#modal'); $('#mbody').innerHTML = html; m.className = cls || ''; m.hidden = false;
+    stopAuto();   // 何か開いたら、ホームの自動スタートは止める（後ろで勝手に始まらないように）
+    var box = $('.mbox', m); if (box.animate && !FX.RM) box.animate([{ transform: 'scale(.7)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 320, easing: 'cubic-bezier(.2,1.5,.4,1)' });
+  }
+  $('#modal').addEventListener('click', function (e) { if (e.target.id === 'modal' || e.target.closest('.mclose')) { $('#modal').hidden = true; Speech.stop(); } });
+
+  /* =========================================================
+   * ホーム（占い館の景色）
+   *  次の予言は、お客の相談として出る。クリア直後は占い館が育つ演出 → 数秒で次の予言が自動スタート
+   * ========================================================= */
+  function openNode(i) {
+    if (!nodeOpen(i)) return toast('🔒 前の予言をクリアすると開くよ');
+    var n = ORDER[i];
+    if (n.type === 'L') startLesson(LESSON[n.id]); else bossIntro(BOSS[n.id]);
+  }
+  var autoT = 0, homeGen = 0;
+  function stopAuto() { clearInterval(autoT); autoT = 0; var c = $('#hCta'); if (c) c.classList.remove('counting'); var s = $('#hStop'); if (s) s.hidden = true; }
+  function home(opts) {
+    opts = opts || {};
+    zStop(); cur = null; show('home');
+    var gen = ++homeGen;   // 前のホームの演出（占い館が育つ・自動スタート）は、ここで無効になる
+    var sets = setRewards();
+    if (sets.length) { save(); setFx(sets); toast(sets.map(function (g) { return g.icon + ' ' + esc(g.t); }).join('<br>')); }
+    var L = levelOf(S.xp);
+    $('#hLvN').textContent = L.lv; $('#hLvBar').style.width = Math.round(L.cur / L.need * 100) + '%'; $('#hLvTi').textContent = titleOf(L.lv) + '　あと ' + (L.need - L.cur) + ' XP';
+    $('#hStreak b').textContent = S.streak.last === today() || S.streak.last === ymd(Date.now() - DAY) ? S.streak.n : 0;
+    $('#hTix b').textContent = S.tickets;
+
+    var growId = opts.grow, ni = nextIdx();
+    var scene = $('#scene');
+    scene.className = 'scene ' + skyOf();
+    scene.innerHTML = sceneHtml(growId);
+    var popEl = $('#hPop b'), popNow = population(), popOld = growId ? popNow - (W.pop[growId] || 0) : popNow;
+    popEl.textContent = num(popOld);
+
+    /* 次の予言（お客の相談）／ボス（疑いぶかい客の気配） */
+    var cta = $('#hCta'), evEl = $('#hEv');
+    cta.onclick = null; $('#hSkip').onclick = null;   // 前のホームのボタンの動きを残さない（このあと付け直す）
+    evEl.innerHTML = ''; evEl.className = 'ev';
+    if (ni < 0) {
+      cta.innerHTML = '<small>予言の書 完成</small>⚡ ラッシュでハイスコア！';
+      cta.className = 'cta';
+      evEl.innerHTML = '<span class="ev-f">🐈‍⬛</span><p>予言の書がそろったね、おめでとう！<br>復習とラッシュで、予言の腕をみがこう。</p>';
+    } else if (ORDER[ni].type === 'B') {
+      var B = BOSS[ORDER[ni].id];
+      cta.innerHTML = '<small>⚠ 疑いぶかい客が近づいている</small>' + B.face + ' ' + esc(B.name) + ' に立ち向かう';
+      cta.className = 'cta boss';
+      evEl.className = 'ev danger';
+      evEl.innerHTML = '<span class="ev-f">' + B.face + '</span><p>「' + esc(B.line) + '」</p>';
+    } else {
+      var NL = LESSON[ORDER[ni].id], nev = NL.ev || {}, who = D.people[nev.who] || D.people.luna || LUNA;
+      cta.innerHTML = '<small>📜 ' + esc(oracleNo(NL)) + '</small>' + esc(NL.ti);
+      cta.className = 'cta';
+      evEl.innerHTML = '<span class="ev-f">' + who.e + '</span><p><b>' + esc(who.n) + '</b>' + esc(nev.line || NL.sub || '') + '</p>';
+    }
+    var go = function () { if (ni < 0) { if ((S.mockBest || 0) < 70) mockGo(); else rushIntro(); } else openNode(ni); };
+    if (ni < 0) {
+      cta.innerHTML = (S.mockBest || 0) < 70 ? '<small>🎓 仕上げ（合格ライン 70%）</small>西検チャレンジ 20問' : '<small>🎓 西検チャレンジ 合格！ 自己ベスト ' + S.mockBest + '%</small>⚡ ラッシュでハイスコア！';
+      evEl.innerHTML = '<span class="ev-f">🐈‍⬛</span><p>' + ((S.mockBest || 0) < 70 ? '予言の書がそろったね、おめでとう！<br>仕上げは、試験と同じ形の20問。合格ラインは 70% だよ。' : '西検チャレンジ合格！<br>あとは忘れないように、復習とラッシュで。') + '</p>';
+    }
+    var wk = weakNext(), skip = $('#hSkip');
+    skip.hidden = true;
+    if (wk) {
+      var WL = LESSON['L' + wk];
+      cta.innerHTML = '<small>🩹 先におさらい（まちがえた問題 ' + S.weak[wk].ids.length + ' 問）</small>' + esc(oracleNo(WL)) + '　' + esc(WL.ti);
+      cta.className = 'cta remedy';
+      evEl.className = 'ev';
+      evEl.innerHTML = '<span class="ev-f">🐈‍⬛</span><p><b>ルナ</b>' + esc(oracleNo(WL)) + 'で、まちがえた問題があったよ。1回で覚えきれないのは、あたりまえ。要点だけ、さっともう一度！</p>';
+      skip.hidden = false;
+      skip.textContent = ni < 0 ? 'おさらいはあとで（西検チャレンジ・ラッシュへ）' : 'おさらいはあとで → ' + nodeLabel(ORDER[ni]).replace(/^⚔ /, '');
+      skip.onclick = function () { Sfx.unlock(); Sfx.tap(); stopAuto(); go(); };
+    }
+    cta.onclick = function () { Sfx.unlock(); Sfx.tap(); stopAuto(); if (wk) startLesson(remedyLesson(wk)); else go(); };
+
+    var unlocked = unlockedQs().length > 0, due = dueQs().length;
+    $('#hDue').innerHTML = !unlocked ? '🔒' : due ? '<em>' + due + '</em> 問' : 'OK';
+    $('#hRushBest').textContent = unlocked ? 'BEST ' + S.rushBest : '🔒';
+    $('#hGachaN').textContent = '🎟 ' + S.tickets;
+    $('#hBookN').textContent = Object.keys(S.cards).length + '人';
+    $('#hMapN').textContent = mapOpenN() + '/' + mapCells().length;
+    $('#hMockN').textContent = allLessonsDone() ? (S.mockBest ? 'BEST ' + S.mockBest + '%' : '20問') : '🔒';
+    $('#hMock').classList.toggle('alert', allLessonsDone() && (S.mockBest || 0) < 70);
+    $('#hReview').classList.toggle('alert', due >= 3);
+    $('#hGacha').classList.toggle('alert', S.tickets > 0 && cardPool().length > 0);
+    var m = mis(), md = MIS.filter(function (x) { return m.done[x.id]; }).length;
+    $('#hMis').innerHTML = '📅 今日のミッション <b>' + MIS.map(function (x) { return m.done[x.id] ? '●' : '○'; }).join('') + '</b>' + (m.bonus ? ' コンプリート！' : ' <small>' + md + '/3</small>');
+    $('#tgSound').checked = S.settings.sound; $('#tgSpeak').checked = S.settings.speak; $('#tgAuto').checked = S.settings.auto;
+
+    if (growId) growFx(growId, popOld, popNow, ni, gen);
+    else { evEl.classList.add('on'); }
+  }
+  /* 占い館が育つ演出 → 次の予言の頼みごと → 自動スタート */
+  function growFx(id, popOld, popNow, ni, gen) {
+    var news = $$('#scene .sp.new'), k = 0;
+    var live = function () { return gen === homeGen && !$('#home').hidden; };
+    later(function () { if (!live()) return; FX.slam(id === 'B3' ? '¡PROFECÍA!' : '¡BRILLA!', 'gold', W.msg[id] || '占い館が育った！'); sfxStar(); }, 300);
+    (function one() {
+      if (!live()) return;
+      if (k >= news.length) return after();
+      var s = news[k++];
+      s.classList.add('in');
+      var p = FX.at(s); FX.burst(p.x, p.y, { pal: 'divine', n: 22, ring: true }); Sfx.coin();
+      later(one, 380);
+    })();
+    var t0 = performance.now(), popEl = $('#hPop b');
+    later(function () {
+      if (!live()) return;
+      FX.pop($('#hPop'), 1.3);
+      (function tick(t) { var q = Math.min(1, (t - t0 - 900) / 1200); if (q < 0) q = 0; popEl.textContent = num(Math.round(popOld + (popNow - popOld) * q)); if (q < 1) requestAnimationFrame(tick); })(performance.now());
+      var pp = FX.at($('#hPop')); FX.floatText(pp.x, pp.y + 10, '👥 +' + num(popNow - popOld), '#7dffb0');
+    }, 900);
+    function after() {
+      later(function () {
+        if (!live()) return;
+        var ev = $('#hEv'); ev.classList.add('on'); Sfx.whoosh();
+        if ((ni < 0 && !weakNext()) || !S.settings.auto || !$('#modal').hidden) return;
+        /* 自動スタート（数秒のカウント。「あとで」で止まる） */
+        var cta = $('#hCta'), left = 5;
+        cta.classList.add('counting'); cta.style.setProperty('--cd', '0%');
+        $('#hStop').hidden = false;
+        var tStart = Date.now();
+        stopAuto(); cta.classList.add('counting'); $('#hStop').hidden = false;
+        var me = autoT = setInterval(function () {
+          /* 自分が止められた・別のホームになった・何か開いている → このタイマーは自分で消える */
+          if (me !== autoT || !live() || !$('#modal').hidden) { clearInterval(me); if (me === autoT) stopAuto(); return; }
+          var q = Math.min(1, (Date.now() - tStart) / (left * 1000));
+          cta.style.setProperty('--cd', Math.round(q * 100) + '%');
+          if (q >= 1) { stopAuto(); cta.onclick(); }
+        }, 60);
+      }, 700);
+    }
+  }
+  document.addEventListener('visibilitychange', function () { if (document.hidden) stopAuto(); });
+  $('#hStop').addEventListener('click', function () { Sfx.tap(); stopAuto(); toast('🐈‍⬛ 了解。つづきは、また今度ね'); });
+  $('#hReview').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); reviewGo(); });
+  $('#hRush').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); rushIntro(); });
+  $('#hMock').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); mockGo(); });
+  $('#hGacha').addEventListener('click', function () { Sfx.unlock(); Sfx.tap(); gachaScreen(); });
+  $('#hBook').addEventListener('click', function () { Sfx.tap(); dexScreen('book'); });
+  $('#hMis').addEventListener('click', function () {
+    var m = mis();
+    modal('<h3 class="m-h">📅 今日のミッション</h3><p class="m-note">' + (m.bonus ? 'コンプリート！🎉' : 'ぜんぶ達成で 🎟 +2 ボーナス') + '</p>' +
+      MIS.map(function (x) { return '<div class="mi ' + (m.done[x.id] ? 'ok' : '') + '"><span>' + x.icon + '</span>' + x.ti + '<b>' + (m.done[x.id] ? '✔' : '🎟1') + '</b></div>'; }).join(''));
+  });
+  $('#scene').addEventListener('click', function (e) {
+    var f = e.target.closest('.folk');
+    if (!f) return;
+    var p = D.people[f.getAttribute('data-who')];
+    FX.pop(f, 1.5); Sfx.tap();
+    showPop(f, '<b class="pw">' + p.e + ' ' + esc(p.n) + '</b><span>' + esc(p.d) + '</span>');
+  });
+  $('#hLv').addEventListener('click', function () {
+    var L = levelOf(S.xp);
+    modal('<div class="lvinfo"><b>予言者の位 Lv.' + L.lv + '　' + esc(titleOf(L.lv)) + '</b><p>XP 合計 ' + S.xp + '　⭐ 評判 ' + num(population()) + '</p><ul>' + TITLES.map(function (t) { return '<li class="' + (L.lv >= t[0] ? 'on' : '') + '">Lv.' + t[0] + '　' + t[1] + '</li>'; }).join('') + '</ul></div>');
+  });
+  $('#tgSound').addEventListener('change', function (e) { S.settings.sound = e.target.checked; save(); if (e.target.checked) { Sfx.unlock(); Sfx.coin(); } });
+  $('#tgSpeak').addEventListener('change', function (e) { S.settings.speak = e.target.checked; save(); if (e.target.checked) Speech.say('¡Hola!'); });
+  $('#tgAuto').addEventListener('change', function (e) { S.settings.auto = e.target.checked; save(); });
+  $('#hReset').addEventListener('click', function () {
+    if (!confirm('記録をぜんぶ消しますか？（予言者の位・カード・クリア記録）')) return;
+    if (!confirm('本当に消しますか？ もとに戻せません。')) return;
+    S = fresh(); save(); home(); toast('記録をリセットしました');
+  });
+  document.addEventListener('keydown', function (e) {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('[role=button]')) { e.preventDefault(); e.target.click(); }
+  });
+  if (SANDBOX) document.body.classList.add('sandbox');
+  /* 不具合しらべ用：?debug で、画面の左上に「1秒のコマ数・いちばん長いコマ・エラー」を出す（実機でスクリーンショットをもらうため） */
+  if (/[?&]debug\b/.test(location.search)) (function () {
+    var box = el('div', '', ''), errs = [], n = 0, worst = 0, last = performance.now(), t0 = last;
+    box.style.cssText = 'position:fixed;left:4px;top:4px;z-index:999;pointer-events:none;padding:2px 6px;border-radius:6px;background:rgba(0,0,0,.75);color:#7dffb0;font:11px/1.4 monospace;white-space:pre;max-width:90vw;overflow:hidden';
+    document.body.appendChild(box);
+    addEventListener('error', function (e) { errs.push(String(e.message).slice(0, 80)); });
+    addEventListener('unhandledrejection', function (e) { errs.push('promise: ' + String(e.reason).slice(0, 70)); });
+    (function f(t) {
+      n++; worst = Math.max(worst, t - last); last = t;
+      if (t - t0 >= 1000) {
+        box.textContent = 'fps ' + Math.round(n * 1000 / (t - t0)) + '  最長 ' + Math.round(worst) + 'ms  ' + document.body.dataset.screen + '  絵 ' + $$('#scene .sp').length + (errs.length ? '\n⚠ ' + errs.slice(-3).join('\n⚠ ') : '');
+        n = 0; worst = 0; t0 = t;
+      }
+      requestAnimationFrame(f);
+    })(last);
+  })();
+  /* 動作確認用：?sandbox で window.__futuro（状態の参照・クリア記録の書きかえ） */
+  if (SANDBOX) window.__futuro = { S: function () { return S; }, save: save, home: home, start: function (id) { startLesson(LESSON[id]); }, boss: function (id) { bossIntro(BOSS[id]); }, finish: function () { if (cur) { cur.i = cur.L.steps.length; step(); } }, step: function () { step(); }, cur: function () { return cur; }, Q: QBY, whoLabel: function (q) { return cellName(q.a); },
+    testQ: function (id) { zStop(); show('quiz'); zRun = newRun(); renderQ(QBY[id], zCard(), T2, {}, function () {}); } };
+  home();
+})();

@@ -782,9 +782,65 @@
   /* わざとまちがえた形（ひっかけの選択肢。バルーン・復習には出ない） */
   W('（受身アプリのひっかけ）', '（実在しない形）', 'bad', 0, 'rompida, rompido, escribida, escribido, escribado, escribar, abrido, hacidos, vido, cayeras, comprido, compraso, conocado, conoceso, ado, ar');
 
+  /* ---------- ¿QUÉ SERÁ?（時制 futuro/）で足した語・形 ----------
+   *  未来・過去未来・完了・進行の形も、活用形として見出し語の下に入れる。
+   *  語ではない断片（芯の podr-・tendr-、語尾の -ado・-iendo）は入れない（tests/check-futuro.js が、ハイフンつきの断片と forge の語尾を検査から外す） */
+  W('alguno', 'ある・どれか（語頭は algún：algún día＝いつか）', 'det', 5, 'algún');
+  W('tiempo', '時間・天気（hace buen tiempo＝天気がよい）', 'n', 5);
+  W('partido', '試合', 'n', 5);
+  W('futuro', '未来・将来', 'n', 4);
+  W('puerto', '港', 'n', 5);
+  W('cuando', '〜のとき（cuando llegué＝着いたとき）', 'conj', 0);
+  W('mismo', 'まさに・同じ（ahora mismo＝いま、まさに）', 'adv', 4);
+  W('viernes', '金曜日', 'n', 5);
+  W('comida', '食べ物・食事', 'n', 5);
+  W('salida', '出口・出発', 'n', 4);
+  F('bueno', 'buen');
+  F('hablar', 'hablaré, hablarás, hablará, hablaremos, hablaréis, hablarán, hablaría, hablarías, hablaríamos, hablaríais, hablarían, hablaba, hablaban, hablabais, hablasteis, hablado, hablando');
+  F('comer', 'comeré, comerás, comerá, comeremos, comerán, comería, comeríamos, comía, comiendo, comidos');
+  F('vivir', 'viviré, vivirás, vivirá, viviremos, viviréis, vivirán, vivirían, vivíamos, vivieron, vivido, viviendo, vivía');
+  F('llover', 'llovió, llovía, llovería, llovido, lloviendo');
+  F('ganar', 'ganará, ganarán, ganaremos, ganaríamos, ganaríais, ganaron, ganaban');
+  F('escribir', 'escribirá, escribirás, escribiréis, escribisteis, escribíais, escribiendo, escritos');
+  F('dormir', 'dormiré, dormirás, dormí, durmiendo');
+  F('llegar', 'llegará, llegarán, llegaremos, llegaba, llegaron, llegado, llegamos, llegaré, llegaría');
+  F('bailar', 'bailaremos, bailaréis, bailamos');
+  F('poder', 'podré, podrás, podrá, podremos, podréis, podrán, podría, podrías, podríamos, podemos, pude, pudiste, pudisteis, pudieron, podía');
+  F('saber', 'sabré, sabrás, sabrán, sabremos, sabría, sabríamos, sabías, sabíamos, supieron');
+  F('querer', 'querré, querrá, querremos, quiso, quisimos');
+  F('haber', 'he, has, ha, hemos, habéis, han, habías, habíamos, habíais, habían, habré, habrás, habrá, habremos, habréis, habrán, habría');
+  F('tener', 'tendré, tendrás, tendrá, tendremos, tendrán, tendría, tendrías, teniendo');
+  F('poner', 'pondré, pondrán');
+  F('salir', 'saldré, saldrá, saldremos, saldría, saldrían, salieron, salido, salidos, salía');
+  F('venir', 'vendré, vendrá, vendrás, vendremos, vendréis, vendría, vendríamos, veníamos, vinisteis');
+  F('decir', 'diré, dirá, dirás, diría, dirías, diciendo');
+  F('hacer', 'haré, hará, haremos, haría, hizo, hacemos');
+  F('gustar', 'gustaría, gustará, gustó');
+  F('abrir', 'abriré, abrirá, abrirás, abriste');
+  F('estudiar', 'estudiaré, estudiarás, estudiaste, estudiabas, estudiando');
+  F('trabajar', 'trabajará, trabajarán, trabajado, trabajados, trabajadas, trabajando, trabajé, trabajó, trabajaría');
+  F('viajar', 'viajaré, viajarán, viajaréis, viajaba');
+  F('comprar', 'comprarás, compraste, comprabas');
+  F('ser', 'serán, serían, eran');
+  F('estar', 'estará, estaremos, estaría, estuvo, estábamos');
+  F('volver', 'volverá');
+  F('leer', 'leído, leída, leyendo');
+  F('pedir', 'pedido, pidiendo');
+  F('terminar', 'terminaré, terminada');
+  F('aprobar', 'aprobado');
+  F('vender', 'vendiste');
+  F('ver', 'vistos');
+  F('ir', 'iré, iría');
+  F('ella', 'ellas');
+  F('uno', 'unos');
+  F('pan', 'panes');
+  F('tren', 'trenes');
+  /* わざとまちがえた形（ひっかけの選択肢。バルーン・復習には出ない） */
+  W('（時制アプリのひっかけ）', '（実在しない形）', 'bad', 0, 'duermirás, duermiré, duermás, sabé, saberé, saberás, saberán, poderé, poderás, poderemos, poderéis, poderán, poderá, poderías, quererá, quereremos, haberá, tenerás, teneré, tenerán, tenerías, tenería, tenremos, teneremos, tenré, salré, saliré, saliremos, salirá, salirían, salremos, venirá, venirás, veniréis, venrás, venríamos, ponerán, ponrán, deciré, decirá, decirías, decería, dicé, hacerá, hacería, haceremos, hacido, volvido, vivado, vivando, deciendo, dicendo, dormiendo, pediendo, leiendo, leido, veído');
+
   window.ES_WORDS = {
     words: words,
     /* 人名・地名（単語として数えない・バルーンなし） */
-    names: ['Ana', 'Pablo', 'Carlos', 'Madrid', 'Sevilla', 'Barcelona', 'Japón', 'Tokio', 'Kioto', 'Osaka', 'Perú', 'Chile', 'México', 'París', 'Corea', 'Pepe', 'Lola', 'Tomás', 'Marina', 'Paco', 'Coco', 'Nico', 'Mimí', 'Pavón', 'Nacho', 'Lupe', 'Pata', 'Lili', 'Tito', 'Mateo', 'Pancho', 'Hilda', 'Beni', 'Gil', 'Lucía', 'Rosa', 'Vela', 'Pedro', 'Luis', 'Rocío', 'Elena', 'Nuria', 'Sebastián', 'Serrano', 'Carmen', 'España', 'Italia', 'Marta', 'Hugo', 'Inés', 'Paz', 'Juan', 'Sara', 'Ruiz', 'Costa', 'Luna', 'Mar']
+    names: ['Ana', 'Pablo', 'Carlos', 'Madrid', 'Sevilla', 'Barcelona', 'Japón', 'Tokio', 'Kioto', 'Osaka', 'Perú', 'Chile', 'México', 'París', 'Corea', 'Pepe', 'Lola', 'Tomás', 'Marina', 'Paco', 'Coco', 'Nico', 'Mimí', 'Pavón', 'Nacho', 'Lupe', 'Pata', 'Lili', 'Tito', 'Mateo', 'Pancho', 'Hilda', 'Beni', 'Gil', 'Lucía', 'Rosa', 'Vela', 'Pedro', 'Luis', 'Rocío', 'Elena', 'Nuria', 'Sebastián', 'Serrano', 'Carmen', 'España', 'Italia', 'Marta', 'Hugo', 'Inés', 'Paz', 'Juan', 'Sara', 'Ruiz', 'Costa', 'Luna', 'Mar', 'Beto', 'Duda']
   };
 })();
