@@ -15,7 +15,7 @@
 3. 解放された問題を**間隔反復**（忘却曲線）で復習する
 4. ユニットを終えたら**ユニットボス**（範囲を混ぜた総合問題）に挑む
 
-学習理論との対応は [docs/学習設計.md](docs/学習設計.md) を参照。
+学習理論との対応は [docs/engine/学習設計.md](docs/engine/学習設計.md) を参照。
 
 ## フォルダ構成
 ```
@@ -23,14 +23,14 @@ index.html              コース選択（タイトル画面）
 fe.html                 基本情報コースの入口（中身は数行。engine/js/boot.js が組み立てる）
 habsburg.html           ハプスブルク年代記コースの入口
 trig.html               三角比・平面図形コースの入口
-vocab.html              単語アプリ（スペイン語）の入口。中身は vocab/（設計は docs/単語アプリ設計.md）
+vocab.html              単語アプリ（スペイン語）の入口。中身は vocab/（設計は docs/vocab/設計.md）
 mole.html               モル教室（化学基礎・物質量）。エンジンを使わない独立アプリ。中身は mole/（先生とのトーク形式）
 relativo.html           ¡QUE FUSIÓN!（スペイン語の関係詞・西検4級）。独立アプリ。中身は relativo/（文の合体・使い分けマスター・道場・西検チャレンジ・ボス戦・ガチャ）
 manda.html              ¡MANDA!（スペイン語の命令表現・西検4級）。独立アプリ。中身は manda/（島を育てる神さまの命令・自動で進む神託・ボス戦・ラッシュ・奇跡の祈り）
 protesto.html           ¡PROTESTO!（スペイン語の比較・西検4級）。独立アプリ。中身は protesto/（森のどうぶつ裁判：捜査→尋問・ムジュン・証拠のつきつけ、全6話、証言台ドリル）
 quien.html              ¿QUIÉN FUE?（スペイン語の受身と se の使い分け・西検4級）。独立アプリ。中身は quien/（下町新聞の事件記者：取材→対決、現場ボード・決め手の語・赤ペン、全7話、即答ドリル・西検模試・単語の復習）
 yuki.html               ユーキ・クエスト（有機化学）。独立アプリ。中身は yuki/（錬成・詠唱の儀式・属性ごとの BGM・読み上げ・ボス戦）
-shared/es-words.js      スペイン語の共通単語帳（アプリ横断）。一覧は docs/スペイン語単語メモ.md
+shared/es-words.js      スペイン語の共通単語帳（アプリ横断）。一覧は docs/vocab/スペイン語単語メモ.md
 shared/cloud.js         クラウド保存（Supabase）。全アプリの入口の <head> の最初で読み込む。設定画面は cloud.html（docs/クラウド保存.md）
 engine/
   js/boot.js            起動処理（スタイル・画面・スクリプトを順に読み込む）
@@ -56,7 +56,7 @@ tests/
   check-course.js       教材の整合性チェック（Node）
   e2e.js                ブラウザでの通しテスト（<コース>.html?e2e で起動）
 news/news.js            アプリのお知らせ（中央管理）。全アプリの入口に1行で読み込み済み。お知らせを足すときは news.js の ITEMS に1件足すだけ
-docs/                   設計・コースの作り方
+docs/                   ドキュメント（まず docs/README.md の索引）
 ```
 
 ## テスト
@@ -64,7 +64,7 @@ docs/                   設計・コースの作り方
 ```bash
 node tests/check-course.js fe
 node tests/check-mole.js        # モル教室の台本・計算ドリルのチェック（通しテストは mole.html?e2e）
-node tests/check-relativo.js    # 関係詞アプリの教材チェック（--memo で docs/スペイン語単語メモ.md を作り直す）
+node tests/check-relativo.js    # 関係詞アプリの教材チェック（--memo で docs/vocab/スペイン語単語メモ.md を作り直す）
 node tests/check-manda.js       # 命令表現アプリの教材チェック（ブラウザの通しテストは tests/e2e-manda.js）
 node tests/check-protesto.js    # 比較の法廷アプリの台本チェック（--words で単語帳にない語。通しテストは tests/e2e-protesto.js）
 node tests/check-quien.js       # 受身と se の新聞記者アプリの台本チェック（--words で単語帳にない語。通しテストは tests/e2e-quien.js）
@@ -85,4 +85,4 @@ node tests/check-yuki.js        # ユーキ・クエストの教材チェック�
 - 旧版（`基本情報技術者試験/`）のデータが同じブラウザにあれば、初回起動時に自動で引き継ぐ
 
 ## 新しいコースを作る
-[docs/コースの作り方.md](docs/コースの作り方.md) を参照。
+[docs/engine/コースの作り方.md](docs/engine/コースの作り方.md) を参照。

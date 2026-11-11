@@ -6,7 +6,7 @@
  *  LE.cats / LE.fields … 分野（試験の出題範囲）。fields[].weight は予測スコアの重み
  *  LE.add(分野ID, 問題[])         … 本番形式の4択問題を登録（o[0] が正解。a で変更可）
  *  LE.unit({id,name,icon,color,desc}) … ロードマップのユニットを登録（登録順＝表示順）
- *  LE.defLesson(ユニットID, レッスン) … レッスンを登録（steps の書式は docs/教材の書き方.md）
+ *  LE.defLesson(ユニットID, レッスン) … レッスンを登録（steps の書式は docs/engine/コースの作り方.md（教材の書き方））
  *  LE.addTo(レッスンID, 分野ID, 問題[]) … 問題を登録し、そのレッスンの解放対象に加える
  *  LE.gloss({用語: 説明})        … 用語集（本文の [[用語]] をタップすると表示）
  *  LE.bosses[ユニットID] = {name, ico} … ユニットボス

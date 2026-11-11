@@ -3,7 +3,7 @@
  * ¡QUE FUSIÓN!（関係詞アプリ relativo/）の教材チェック ＋ スペイン語単語メモの書き出し
  *
  *   node tests/check-relativo.js           チェックだけ
- *   node tests/check-relativo.js --memo    チェックして docs/スペイン語単語メモ.md を書き直す
+ *   node tests/check-relativo.js --memo    チェックして docs/vocab/スペイン語単語メモ.md を書き直す
  *
  *  チェックすること
  *   ・スペイン語の文に出てくる語が、すべて共通の単語帳（shared/es-words.js）にあるか
@@ -121,7 +121,7 @@ console.log('\nレッスン ' + RQ.lessons.length + '・問題 ' + RQ.questions.
 console.log('スペイン語の文 ' + texts.length + '・使った見出し語 ' + used.size + '／単語帳 ' + DICT.words.length);
 console.log(errors ? '\n❌ エラー ' + errors + '・注意 ' + warns : '\n✅ エラーなし（注意 ' + warns + '）');
 
-/* ---------- スペイン語単語メモ（docs/スペイン語単語メモ.md） ---------- */
+/* ---------- スペイン語単語メモ（docs/vocab/スペイン語単語メモ.md） ---------- */
 if (process.argv.indexOf('--memo') >= 0) {
   let vamos = new Set();
   try {
@@ -169,7 +169,7 @@ if (process.argv.indexOf('--memo') >= 0) {
   out.push('');
   out.push('スペイン語のアプリで、問題・例文に織り込んだ単語の一覧。**次のアプリを作るときに「どれを復習として使うか」「どれと被らないように新しく足すか」を決めるためのメモ。**');
   out.push('');
-  out.push('- 元のデータは [shared/es-words.js](../shared/es-words.js)（共通の単語帳）。アプリはこれを読んで、難しめの語（4級・4級より上）にバルーンを出す');
+  out.push('- 元のデータは [shared/es-words.js](../../shared/es-words.js)（共通の単語帳）。アプリはこれを読んで、難しめの語（4級・4級より上）にバルーンを出す');
   out.push('- この文書は `node tests/check-relativo.js --memo` で作り直す（手で直さない）。回数は、そのアプリの例文・問題に出てきた回数（活用形もまとめて数える）。「よく出した語」はアプリの合計');
   out.push('- 「¡VAMOS!」の列：単語アプリ（vocab.html）のスペイン語デッキにもある語は ✓');
   out.push('- 新しいアプリを作ったら：使う語を単語帳に足し（ない語はチェックでエラーになる）、このスクリプトにそのアプリの文を集める処理と列を足す');
@@ -212,7 +212,7 @@ if (process.argv.indexOf('--memo') >= 0) {
   out.push('');
   out.push((DICT.names || []).join('、'));
   out.push('');
-  fs.writeFileSync(path.join(ROOT, 'docs', 'スペイン語単語メモ.md'), out.join('\n'), 'utf8');
-  console.log('📝 docs/スペイン語単語メモ.md を書き直しました（' + usedList.length + '語）');
+  fs.writeFileSync(path.join(ROOT, 'docs', 'vocab', 'スペイン語単語メモ.md'), out.join('\n'), 'utf8');
+  console.log('📝 docs/vocab/スペイン語単語メモ.md を書き直しました（' + usedList.length + '語）');
 }
 process.exit(errors ? 1 : 0);

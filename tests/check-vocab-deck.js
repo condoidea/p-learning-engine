@@ -2,7 +2,7 @@
  * 単語デッキのチェック（node で実行）
  *   node tests/check-vocab-deck.js <デッキ.json または deck.js> [--verbs]
  *  エラーがあれば終了コード 1。--verbs で、規則動詞として活用した動詞の表も出す。
- *  形式の説明は docs/単語データの作り方.md
+ *  形式の説明は docs/vocab/単語データの作り方.md
  * ========================================================= */
 'use strict';
 var fs = require('fs'), path = require('path'), vm = require('vm');

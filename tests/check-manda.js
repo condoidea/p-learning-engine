@@ -11,7 +11,7 @@
  *     読むだけ（say・show・tip）が4つ以上続かないか、ブーホが3回つづけて話さないか、吹き出しの1行が長すぎないか
  *   ・カード：id の重複・絵文字の重複・レッスンごとの枚数
  *   ・🔨 鍛冶場（forge.js）：動詞の形（tú・yo・命令）と、全部の「枝 × 動詞」の正解の形が単語帳にあるか（--forge で一覧を出す）
- *  単語メモ（docs/スペイン語単語メモ.md）は node tests/check-relativo.js --memo で書き出す（manda の列もそこで作る）
+ *  単語メモ（docs/vocab/スペイン語単語メモ.md）は node tests/check-relativo.js --memo で書き出す（manda の列もそこで作る）
  * ========================================================= */
 'use strict';
 const fs = require('fs');
