@@ -264,6 +264,7 @@
       { id: 'meet', ico: '🌱', name: '出会い', sub: meet ? '新しい単語を3つ' : 'ぜんぶ出会った！', off: !meet },
       { id: 'wild', ico: '⚔', name: '野生戦', sub: (S.day.chunks > 0 ? '✔ 今日は済み。' : '') + (wild ? (S.day.chunks > 0 ? 'もう' : '') + 'ひと区切り ' + Math.min(wild, chunkSize()) + '体（約' + chunkMin(Math.min(wild, chunkSize())) + '分）' : untilWild()), off: !wild },
       { id: 'care', ico: '🤝', name: 'なつかせる', sub: soon ? 'もうすぐしおれる子 ' + soon + '体（しおれる前に会う）' : 'いまは大丈夫', off: !soon },
+      { id: 'exfill', ico: '📝', name: '文で使う', sub: exReady() ? '応用：例文の中で単語を使う' : 'もう少し育つと遊べる', off: !exReady(), hide: !D.words.some(hasCloze) },
       { id: 'conj', ico: '🔁', name: '活用', sub: conjSub(), hide: !CU || !D.words.some(function (w) { return w.pos === 'v'; }) },
       { id: 'play', ico: '🎈', name: 'あそび場', sub: bngReady() ? '🎯 思い出しビンゴ' : 'あと少し集めると遊べる', off: !bngReady() },
       { id: 'dex', ico: '📖', name: '図鑑', sub: got + '枚' }
@@ -373,7 +374,7 @@
    * セッション（ブロックを順に回す）
    * ========================================================= */
   var ses = null;
-  var BNAME = { face: '👀 顔見知りチェック', meet: '🌱 出会い', wild: '⚔ 野生戦', rescue: '🚑 救出', conj: '🔁 活用', learn: '💬 新しいフォルム', care: '🤝 なつかせる', morning: '☀ ゆうべの3体' };
+  var BNAME = { face: '👀 顔見知りチェック', meet: '🌱 出会い', wild: '⚔ 野生戦', rescue: '🚑 救出', conj: '🔁 活用', learn: '💬 新しいフォルム', care: '🤝 なつかせる', exfill: '📝 文で使う', morning: '☀ ゆうべの3体' };
   function start(plan, label) {
     if (!plan.length) { toast('いまは、やることがありません', '図鑑を眺めたり、別のメニューを選んだりしてみよう'); return; }
     if (window.Sfx) Sfx.unlock();
@@ -393,16 +394,25 @@
     renderSteps();
     var b = ses.plan[ses.bi];
     if (!b) return finish();
-    ({ face: blockFace, meet: blockMeet, wild: blockWild, rescue: blockRescue, conj: blockConj, learn: blockLearn, care: blockCare, morning: blockMorning })[b.type](b, nextBlock);
+    ({ face: blockFace, meet: blockMeet, wild: blockWild, rescue: blockRescue, conj: blockConj, learn: blockLearn, care: blockCare, morning: blockMorning, exfill: blockEx })[b.type](b, nextBlock);
   }
   function stage(html) { document.body.classList.remove('hot-typing'); var s = $('#stage'); s.innerHTML = html; tw(s.firstElementChild, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' }); return s; }
 
   /* ---- 選択肢 ---- */
   function others(w, n, key) {
     var val = function (x) { return key === 'head' ? V.head(x) : key === 'form' ? formOf(x) : key === 'def' ? x.def : x.ja; };
-    var fit = function (x) { return x !== w && !sameSpell(x, w) && (key === 'ja' || x.ja !== w.ja) && (key !== 'def' || x.def); };
+    var fit = function (x) { return x !== w && !sameSpell(x, w) && (key === 'ja' || x.ja !== w.ja) && (key !== 'def' || x.def) && (key !== 'form' || hasCloze(x)); };
     var mine = val(w), seen = {}; seen[mine] = 1;
     var same = shuffle(D.words.filter(function (x) { return fit(x) && x.pos === w.pos; }));
+    /* 穴埋め（form）：同じ品詞のなかで、名詞なら同じ性・語尾（とくに動詞は活用の語尾）が近い形を先に。文法でははずれと分からせず、意味から選ばせる */
+    if (key === 'form') {
+      var mf = formOf(w).toLowerCase(), sc = function (x) {
+        var f = formOf(x).toLowerCase(), n = 0;
+        while (n < 3 && n < f.length && n < mf.length && f.charAt(f.length - 1 - n) === mf.charAt(mf.length - 1 - n)) n++;
+        return n + (Math.abs(f.length - mf.length) <= 1 ? 1 : 0) + (w.pos === 'n' && x.g && x.g === w.g ? 3 : 0);
+      };
+      same.sort(function (a, b) { return sc(b) - sc(a); });
+    }
     var rest = shuffle(D.words.filter(function (x) { return fit(x) && x.pos !== w.pos; }));
     /* 前にこの語ととりちがえた語（まぎらわしい語）を、2つまで先に入れる＝見分ける練習 */
     var pri = shuffle(V.mixOf(w.id).filter(fit)).slice(0, 2);
@@ -418,8 +428,10 @@
     opt = opt || {};
     var right, list, body, prompt;
     var tag = opt.tag || '';
+    if (type === 'exspell' && !exOk(w)) type = 'cloze';   /* つづれない語（空白がある・13文字以上・例文なし）は4択の穴埋めに */
     if (type === 'spell') return askSpell(w, opt, done);
     if (type === 'form') return askForm(w, opt, done);
+    if (type === 'exspell') return askExSpell(w, opt, done);
     if (type === 'def2w') {
       prompt = '<div class="q-card def' + rankCls(w.id) + '">' + tag + '<p class="q-def">' + glossify(w.def) + '</p><small class="pos">' + POS[w.pos] + '・📖 英英辞典の説明</small>' + sayBtn(w.def) + '</div><p class="q-ask">この説明の単語は？</p>';
       right = V.head(w); list = shuffle([right].concat(others(w, 3, 'head'))).map(esc);
@@ -445,7 +457,8 @@
     var s = stage('<div class="q">' + (opt.track || '') + prompt + choiceHtml(list, type === 'w2def' ? 'one defs' : type === 'ja2es' || type === 'cloze' || type === 'def2w' ? 'es' : '') + '<div class="after"></div></div>');
     if (type === 'es2ja' || type === 'listen' || type === 'w2def') setTimeout(function () { Speech.say(V.head(w)); }, 250);
     var answered = false, ri = list.indexOf(esc(right));
-    s._mix = '';
+    s._mix = ''; s._exq = type === 'cloze';
+    if (type === 'cloze' && window.VUI) VUI.cur = { id: w.id, type: 'cloze', right: right };
     $$('.ch', s).forEach(function (b) {
       b.addEventListener('click', function () {
         if (answered) return; answered = true;
@@ -454,13 +467,13 @@
         if (!ok) { b.classList.add('wrong'); s._mix = mixHtml(w, type, list[+b.dataset.i]); }
         var card = $('.q-card', s);
         if (type === 'listen') card.insertAdjacentHTML('beforeend', '<div class="q-word reveal' + gcls(w) + '">' + headHtml(w) + '</div>');
-        if (type === 'cloze') { var bl = $('.blank', s); if (bl) { bl.textContent = right; bl.classList.add('filled'); } }
+        if (type === 'cloze') { var bl = $('.blank', s); if (bl) { bl.textContent = right; bl.classList.add('filled'); } $('.q-ex', s).insertAdjacentHTML('beforeend', ' ' + sayBtn(right, 'inl')); }   /* 🔊 はその語だけ（例文の全文は読まない） */
         if (type === 'def2w') {
           Speech.say(V.head(w));
           $('.q-card', s).insertAdjacentHTML('beforeend', '<div class="def-after">' + (w.defJa ? '<p class="def-ja">📖 訳：' + esc(w.defJa) + '</p>' : '') +
             '<p class="def-ans">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b></p></div>');
         }
-        if (type === 'ja2es' || type === 'cloze') Speech.say(type === 'cloze' ? w.ex[0] : V.head(w));
+        if (type === 'ja2es' || type === 'cloze') Speech.say(type === 'cloze' ? right : V.head(w));   /* 文は自動で読まない（精度が低い）。答えたあとに、その語だけ */
         feedback(ok, b, card);
         done(ok, s);
       });
@@ -508,6 +521,57 @@
           if (!ok) $('.spell', s).insertAdjacentHTML('afterend', cmpHtml(now, w.w));
           Speech.say(V.head(w));
           feedback(ok, slot, $('.q-card', s));
+          done(ok, s);
+        }
+      });
+    });
+    $('.undo', s).addEventListener('click', function () { if (!fin) { got.pop(); draw(); } });
+  }
+
+  /* ---- つづって完成（応用）：例文の空所に入る形を、文字の札でつづる。答える前に音は鳴らさない ---- */
+  function exForm(w) { return hasCloze(w) ? formOf(w) : ''; }
+  function exOk(w) { var f = exForm(w); return !!f && !/\s/.test(f) && f.length <= 12; }
+  var PLAIN = { 'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u', 'ü': 'u', 'ñ': 'n', 'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U', 'Ñ': 'N' };
+  /* 札：正解の部品（askSpell と同じ作り＝音のまとまり、短い語は1文字ずつ）＋まぎらわしいもの。アクセントつきの字はそのまま出し、アクセントなしの札を1枚まぜる */
+  function exTiles(ans, other) {
+    var parts = chunks(ans), decoy = pick(chunks(other));
+    if (parts.length < 3) { parts = ans.split(''); decoy = pick(other.split('')); }
+    var out = parts.slice();
+    if (out.indexOf(decoy) < 0) out.push(decoy);
+    for (var i = 0; i < parts.length; i++) {
+      var pl = parts[i].replace(/[áéíóúüñÁÉÍÓÚÑ]/g, function (c) { return PLAIN[c]; });
+      if (pl !== parts[i]) { if (out.indexOf(pl) < 0) out.push(pl); break; }
+    }
+    return { parts: parts, tiles: shuffle(out) };
+  }
+  function askExSpell(w, opt, done) {
+    var ans = formOf(w), top = /^[¿¡]?\{/.test(w.ex[0]);
+    var low = function (x) { return top ? x.charAt(0).toLowerCase() + x.slice(1) : x; };   /* 文頭の大文字は、大文字・小文字を区別しない */
+    var disp = function (x) { return top ? x.charAt(0).toUpperCase() + x.slice(1) : x; };
+    var target = low(ans), pool = D.words.filter(function (x) { return x !== w && exOk(x); });
+    var oth = pool.length ? exForm(pick(pool)) : 'sol';
+    if (!/[A-ZÁÉÍÓÚÑ]/.test(target)) oth = oth.toLowerCase();   /* はずれの札だけ大文字、だと見分けがつくので、そろえる */
+    var tt = exTiles(target, oth), tiles = tt.tiles;
+    var s = stage('<div class="q">' + (opt.track || '') + '<div class="q-card cloze exq-card' + rankCls(w.id) + '">' + (opt.tag || '') + '<div class="q-ex">' + exHtml(w.ex[0], '<span class="blank exq-blank">？</span>') + '</div><small class="q-exja">' + esc(w.ex[1]) + '</small></div>' +
+      '<p class="q-ask">？に入る形をつづろう</p>' +
+      '<div class="tiles exq-tiles">' + tiles.map(function (t, i) { return '<button class="tl" data-i="' + i + '">' + esc(t) + '</button>'; }).join('') + '</div>' +
+      '<div class="spell-ctl"><button class="undo">⌫ 1つ戻す</button></div><div class="exq-cmp"></div><div class="after"></div></div>');
+    s._mix = ''; s._exq = true;
+    if (window.VUI) VUI.cur = { id: w.id, type: 'exspell', right: ans };
+    var got = [], bl = $('.blank', s), fin = false, now = '';
+    function draw() { now = got.map(function (g) { return tiles[g]; }).join(''); bl.textContent = now ? disp(now) : '？'; $$('.tl', s).forEach(function (b) { b.disabled = fin || got.indexOf(+b.dataset.i) >= 0; }); }
+    $$('.tl', s).forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (fin) return;
+        got.push(+b.dataset.i); if (window.Snd && Snd.tap) Snd.tap(); draw();
+        if (now.length >= target.length) {
+          fin = true; draw();
+          var ok = now.toLowerCase() === target.toLowerCase();
+          if (!ok) $('.exq-cmp', s).innerHTML = cmpHtml(disp(now), disp(target));
+          bl.textContent = ans; bl.classList.add('filled');
+          $('.q-ex', s).insertAdjacentHTML('beforeend', ' ' + sayBtn(ans, 'inl'));   /* 🔊 はその語だけ（例文の全文は読まない） */
+          Speech.say(ans);
+          feedback(ok, bl, $('.q-card', s));
           done(ok, s);
         }
       });
@@ -575,8 +639,8 @@
     var sec = V.SEC[w.s];
     return '<small class="ref">📗 ' + esc(sec ? sec.name : w.s) + (w.ref ? '・' + esc(w.ref) : '') + '</small>';
   }
-  function memoHtml(w, edit) {
-    return '<div class="exp-box"><div class="ex">' + exHtml(w.ex[0]) + ' ' + sayBtn(w.ex[0]) + '</div><small>' + esc(w.ex[1]) + '</small>' + noteHtml(w, edit) +
+  function memoHtml(w, edit, wordSay) {   /* wordSay：例文の 🔊 を、その語だけにする（文の読み上げは精度が低いので、文で使う練習では全文を読まない） */
+    return '<div class="exp-box"><div class="ex">' + exHtml(w.ex[0]) + ' ' + sayBtn(wordSay && hasCloze(w) ? formOf(w) : w.ex[0]) + '</div><small>' + esc(w.ex[1]) + '</small>' + noteHtml(w, edit) +
       (w.def ? '<p class="memo">📖 <span class="q-def">' + glossify(w.def) + '</span> ' + sayBtn(w.def, 'inl') + (w.defJa ? '<span class="def-ja">訳：' + esc(w.defJa) + '</span>' : '') + '</p>' : '') +
       (w.memo ? '<p class="memo">💡 ' + esc(w.memo) + '</p>' : '') + otherSensesHtml(w) + verbHtml(w) + (CU ? famHtml(w) : '') + '</div>';
   }
@@ -723,7 +787,10 @@
     if (lv >= 1 && w.def) t.push('def2w');
     if (lv >= 2 && !/\s/.test(w.w)) t.push('spell');
     /* 単語 → 英英の説明（定義が選択肢）は、高校生には難しすぎるので出さない（2026-10-09）。英英は「説明 → 単語」で使う */   /* 2語以上の表現（contento de）はつづりの組み立てに出さない */
-    if (lv >= 3) t.push('cloze');
+    /* 文のなかで使う練習（応用）：仲間から。相棒では、つづる問いのほうを多めに（2枚）。「ゆるく」の気分では出さない（上で返している） */
+    if (lv >= 2 && hasCloze(w)) t.push('cloze');
+    if (lv >= 2 && exOk(w)) t.push('exspell');
+    if (lv >= 3 && exOk(w)) t.push('exspell');
     if (w.pos === 'v' && CU && learned(w).length && Math.random() < 0.45) return 'form';
     return Math.random() < 0.5 ? t[t.length - 1] : pick(t);   // 半分は、いまのレベルのいちばん難しい問い方
   }
@@ -732,7 +799,8 @@
     if (Speech.ok()) p.push('listen');
     if (!easy) {
       if (w.def) p.push('def2w');
-      if (/\{[^}]+\}/.test(w.ex[0])) p.push('cloze');
+      if (hasCloze(w)) p.push('cloze');
+      if (exOk(w)) p.push('exspell');
       if (lv >= 1 && !/\s/.test(w.w)) p.push('spell');
       if (w.pos === 'v' && CU && learned(w).length) p.push('form');
     }
@@ -744,17 +812,17 @@
    *  ✨ きらきらの子：野生戦でときどき現れる。思い出せたら長持ち＋15%（ボスに勝ったときと同じおまけ）。まちがえても何も失わない */
   var SHINY = 0.08;
   function fight(w, tagText, cb, mode) {
-    var care = mode === 'care', retry = mode === 'retry', st0 = V.state(w.id), wasWild = st0 === 'wild';
-    var shiny = !care && !retry && !V.grad(w.id) && Math.random() < SHINY;
+    var care = mode === 'care', retry = mode === 'retry', exm = mode === 'ex', st0 = V.state(w.id), wasWild = st0 === 'wild';
+    var shiny = !care && !retry && !exm && !V.grad(w.id) && Math.random() < SHINY;
     var hot0 = V.hot(w.id);
-    var badge = (retry ? '🔁 もう一度' : shiny ? '✨ きらきら' : care ? '⏳ もうすぐしおれる' : wasWild ? '🍂 野生に戻りかけ' : '🥀 しおれかけ') + (hot0 ? ' 🌶' : '');
+    var badge = (retry ? '🔁 もう一度' : exm ? '📝 文で使う' : shiny ? '✨ きらきら' : care ? '⏳ もうすぐしおれる' : wasWild ? '🍂 野生に戻りかけ' : '🥀 しおれかけ') + (hot0 ? ' 🌶' : '');
     var tag = '<span class="qtag">' + tagText + '</span><span class="wild-badge">' + badge + '</span>';
     var c0 = nowClose(w.id), m0 = Chara.moodOf(st0), mem0 = V.memory(w.id);
-    stage('<div class="appear"><p>' + (retry ? 'さっき にげた' : care ? 'もうすぐしおれそうな' : wasWild ? '野生に戻りかけの' : 'しおれかけの') + '</p><div class="ap-bud' + (shiny ? ' shiny' : '') + '">' + cs(w, { mood: m0 }) + '</div><p>' + (retry ? 'を 追いかけよう' : care ? 'に 会いに行こう' : 'が 遠くに いる！') + '</p>' +
+    stage('<div class="appear"><p>' + (retry ? 'さっき にげた' : exm ? '例文の中の' : care ? 'もうすぐしおれそうな' : wasWild ? '野生に戻りかけの' : 'しおれかけの') + '</p><div class="ap-bud' + (shiny ? ' shiny' : '') + '">' + cs(w, { mood: m0 }) + '</div><p>' + (retry ? 'を 追いかけよう' : exm ? 'を 使ってみよう' : care ? 'に 会いに行こう' : 'が 遠くに いる！') + '</p>' +
       (shiny ? '<p class="ap-shiny">✨ きらきらの子だ！ 思い出せたら 長持ち＋15%</p>' : '') + '</div>');
     if (window.Snd) Snd.appear();
     setTimeout(function () {
-      var ty = typesFor(w);
+      var ty = exTypes && exTypes[w.id] || typesFor(w);
       ask(w, ty, { tag: tag, track: trackHtml(w, c0, m0) }, function (ok, s) {
         var r = V.answer(w.id, ok, ty);
         if (!ok) ses.miss[w.id] = (ses.miss[w.id] || 0) + 1;
@@ -787,7 +855,7 @@
   }
   /* まちがえたときの答え合わせ：とりちがえた相手（なければ意味）・例文・✍ 自分のメモ・💡 メモ。3回目のまちがい（手ごわい子になった瞬間）だけ、覚え方を書く欄を足す */
   function missAfter(s, w, r, extra, cb) {
-    after(s, (s._mix || '<div class="meaning' + gcls(w) + '">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b></div>') + memoHtml(w) + (r.hotNew ? hotBoxHtml(w) : '') + (extra || ''), cb);
+    after(s, (s._mix || '<div class="meaning' + gcls(w) + '">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b></div>') + memoHtml(w, false, s._exq) + (r.hotNew ? hotBoxHtml(w) : '') + (extra || ''), cb);
     if (r.hotNew) { ses.hotNew++; bindHot(s, w); }
   }
   /* しおれた子と順に会い、思い出せなかった子には、ブロックの最後にもう一度会う（1回だけ）。
@@ -848,6 +916,26 @@
   function wildAll() {
     return V.wildList().map(function (w) { return w.id; }).concat(V.cjWildList())
       .sort(function (a, b) { return V.condition(a) - V.condition(b); });
+  }
+  /* =========================================================
+   * 📝 文で使う（応用）：集めた語（顔なじみ以上・例文あり・卒業前）から6問。もうすぐしおれる子・しおれた子・手ごわい子が先。
+   *  4択の穴埋め（cloze）とつづって完成（exspell）を交互に。思い出せなかった子は、ブロックの最後にもう一度（runFights）。答えはふだんの復習と同じに数える
+   * ========================================================= */
+  var exTypes = null;
+  function exCands() {
+    var r = S.settings.range, soon = {}, wild = {};
+    careAll().forEach(function (id) { soon[id] = 1; }); wildAll().forEach(function (id) { wild[id] = 1; });
+    return Object.keys(S.cards).map(function (id) { return V.isCj(id) ? null : V.word(id); }).filter(function (w) {
+      var c = w && V.card(w.id);
+      return c && c.lv >= 1 && !c.grad && hasCloze(w) && (!r || !r.length || r.indexOf(w.s) >= 0);
+    }).map(function (w) { return { id: w.id, p: V.hot(w.id) || soon[w.id] || wild[w.id] ? 0 : 1, r: V.condition(w.id) + Math.random() * 0.02 }; })
+      .sort(function (a, b) { return (a.p - b.p) || (a.r - b.r); }).map(function (x) { return x.id; });
+  }
+  function exReady() { return exCands().length >= 3; }
+  function blockEx(b, next) {
+    var ids = (b.ids || exCands()).slice(0, b.n || 6);
+    exTypes = {}; ids.forEach(function (id, i) { exTypes[id] = i % 2 === 1 && exOk(V.word(id)) ? 'exspell' : 'cloze'; });
+    runFights(ids, function (i, n) { return '📝 ' + i + ' / ' + n; }, 'ex', function () { exTypes = null; next(); });
   }
   function blockRescue(b, next) { ses.rescueId = b.id; runFights([b.id], function () { return '🚑 救出'; }, null, next); }
 
@@ -2415,8 +2503,8 @@
       wire(ri, function (ok) {
         var bl = $('.blank', box); if (bl) { bl.textContent = cl.right; bl.classList.add('filled'); }
         V.answer(w.id, ok, 'cloze');
-        if (ok) Speech.say(w.ex[0]);   /* その子の声で */
-        after(ok ? '<p class="evt-line">ありがとう！ ぼくの声で 読むね ' + sayBtn(w.ex[0], 'inl') + '</p>' : '<p class="evt-line">正解は <b>' + esc(cl.right) + '</b> ' + sayBtn(w.ex[0], 'inl') + '</p>',
+        if (ok) Speech.say(cl.right);   /* その子の声で。文は自動で読まない（精度が低い）ので、その語だけ */
+        after(ok ? '<p class="evt-line">ありがとう！ ぼくの声で 読むね ' + sayBtn(cl.right, 'inl') + '</p>' : '<p class="evt-line">正解は <b>' + esc(cl.right) + '</b> ' + sayBtn(cl.right, 'inl') + '</p>',
           function () { finish(ok ? 'ぼくの文が できた。ありがとう！' : 'いっしょに 読めて うれしかった。'); }, 0);
       });
     }
@@ -2442,6 +2530,7 @@
       if (id === 'conj') return go('conj');
       if (id === 'play') return openPlay();
       if (id === 'care') return start([{ type: 'care', n: 8 }]);
+      if (id === 'exfill') return start([{ type: 'exfill', n: 6 }]);
       start([{ type: id, n: id === 'meet' ? 3 : id === 'face' ? 10 : id === 'wild' ? chunkSize() : 6 }]);
     });
     $('#quit').addEventListener('click', function () { if (window.speechSynthesis) speechSynthesis.cancel(); finish(); });
@@ -2519,6 +2608,13 @@
       if (!isDebug()) return false;
       if (dates) { V.streakOverride(dates, todayStr); if (!$('#home').hidden) renderHome(); }
       return V.streak();
+    },
+    /* 「文で使う」を始める（?debug のときだけ）。ids を省くと自動で選ぶ（集めた語がなければ、例文のある語を仮に使う）。VUI.cur ＝ { id, type:'exspell'|'cloze', right } */
+    exfill: function (ids) {
+      if (!isDebug()) return false;
+      var l = ids && ids.length ? ids.filter(function (id) { return V.word(id) && hasCloze(V.word(id)); }) : exCands();
+      if (!l.length) l = D.words.filter(hasCloze).slice(0, 6).map(function (w) { return w.id; });
+      start([{ type: 'exfill', n: 6, ids: l }]); return l.slice(0, 6);
     },
     hot: function (id, miss) { if (!/[?&](sandbox|debug)\b/.test(location.search)) return false; var ok = V.debugHot(id, miss); if (ok && !$('#home').hidden) renderHome(); return ok; }
   };

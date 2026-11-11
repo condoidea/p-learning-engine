@@ -681,3 +681,11 @@ body.hot-typing #stage, body.hot-typing .sh { padding-bottom: 42vh; }   /* キ�
 @keyframes evt-hop { 40% { transform: translateY(-18px) scale(1.1); } }
 @media (prefers-reduced-motion: reduce) { .evt-bub, .evt-heart, .evt-hop .chara, .bng-cell.hint, .bng-cell.pop .bng-st, .bng-cell.hop .bng-st, .bng-cell.hop-all .bng-st { animation: none; } }
 .evt-ans .evt-stage, .evt-ans .evt-eye { display: none; }
+
+/* 📝 文で使う（応用）：つづって完成（exspell）。例文が長くても折り返し、「…」で切らない。札は ✍ つづりの札（.tl）と同じ大きさ */
+.exq-card { min-height: 0; padding: 28px 14px 14px; }
+.exq-card .q-ex { overflow-wrap: anywhere; }
+.exq-blank { min-width: 2.2em; }
+.exq-tiles { padding: 0 2px; }
+.exq-cmp:empty { display: none; }
+.exq-cmp .cmp { margin: 0; }
