@@ -50,7 +50,59 @@
   function rollDay() { var t = today(); if (S.day.date !== t) S.day = { date: t, exp: 0, grown: [], caught: [] }; }
   rollDay();
   /* 会いに来た日（通算）。連続記録ではないので、休んでも減らない・途切れない。その日に1問でも答えたら数える */
-  function came() { var t = today(); if (S.cameDay !== t) { S.cameDay = t; S.cameN = (S.cameN || 0) + 1; } }
+  function came() {
+    var t = today();
+    if (S.cameDay !== t) { S.cameDay = t; S.cameN = (S.cameN || 0) + 1; }
+    streakAdd(t);
+  }
+
+  /* ---- 休んでも切れにくい連続記録 ----
+   *  「来た日」（came() と同じきっかけ）の並びから計算する。来た日どうしが 3日以内（あいた日が 0〜2日）なら続く。まる3日あいたら、新しく1日目から。
+   *  あいた日は「おやすみ」として自動であつかう（券も操作もない）。数字は「来た日の数」。S.streak = { d: [日付…直近60日], best, pend }
+   *  streakCalc は純粋な関数（引数：日付の列と今日。'2026-11-05' のゼロ埋めなしでも可） */
+  var STK_GAP = 3, STK_KEEP = 60;
+  function dayNo(s) { var m = /^(\d+)-(\d+)-(\d+)$/.exec(String(s)); return m ? Math.round(Date.UTC(+m[1], +m[2] - 1, +m[3]) / 864e5) : NaN; }
+  function streakCalc(dates, todayStr) {
+    var T = dayNo(todayStr), seen = {}, ds = [];
+    (dates || []).forEach(function (s) { var n = dayNo(s); if (!isNaN(n) && n <= T && !seen[n]) { seen[n] = 1; ds.push(n); } });
+    ds.sort(function (a, b) { return a - b; });
+    var best = 0, run = 0, i;
+    for (i = 0; i < ds.length; i++) { run = i && ds[i] - ds[i - 1] <= STK_GAP ? run + 1 : 1; if (run > best) best = run; }
+    var L = ds.length ? ds[ds.length - 1] : null, came = L === T, alive = L !== null && T - L <= STK_GAP;
+    var n = alive ? run : 0;
+    var week = [];
+    for (var d = T - 6; d <= T; d++) {
+      var st = 'off';
+      if (seen[d]) st = 'on';
+      else if (d === T) st = 'today';
+      else {
+        var prev = null, next = null;
+        for (i = 0; i < ds.length; i++) { if (ds[i] < d) prev = ds[i]; else if (ds[i] > d && next === null) next = ds[i]; }
+        if (prev !== null && (next !== null ? next - prev <= STK_GAP : T - prev <= STK_GAP)) st = 'rest';
+      }
+      week.push(st);
+    }
+    return { n: n, alive: alive, today: came, best: best, week: week };
+  }
+  (function streakInit() {
+    if (S.streak && S.streak.d) return;
+    /* この仕組みが入る前からの人：最後に来た日が今日か直近3日以内なら 1日目として始める（過去の日付は分からないので作らない） */
+    var d = [], c = S.cameDay ? dayNo(S.cameDay) : NaN, T = dayNo(today());
+    if (!isNaN(c) && T - c >= 0 && T - c <= STK_GAP) d.push(S.cameDay);
+    S.streak = { d: d, best: d.length };
+  })();
+  function streakAdd(t) {
+    var st = S.streak;
+    if (st.d.indexOf(t) >= 0) return;
+    var before = streakCalc(st.d, t), L = st.d.length ? dayNo(st.d[st.d.length - 1]) : NaN, T = dayNo(t);
+    st.d.push(t);
+    var after = streakCalc(st.d, t), prevBest = Math.max(st.best || 0, before.best);
+    st.best = Math.max(prevBest, after.best);
+    st.pend = { day: t, n: after.n, rest: before.alive && !isNaN(L) && T - L > 1, longest: after.n >= 2 && after.n > prevBest };
+    var lim = T - STK_KEEP;
+    st.d = st.d.filter(function (s) { return dayNo(s) >= lim; });
+  }
+  var STK_OV = null;   /* テスト用：?debug のとき VUI.streak(dates) が日付の列を差しかえる（保存はしない） */
 
   var W = {}; D.words.forEach(function (w, i) { w.i = i; W[w.id] = w; });
   /* 動詞のくせ（cj）がデッキに書かれていれば、活用エンジンに足す */
@@ -251,6 +303,21 @@
     },
     awayDays: AWAY,
     cameDays: function () { return S.cameN || 0; },
+    /* 連続記録：{ n, alive, today, best, week }。dates を渡すとその列で計算（テスト用。渡した列は streakOverride で画面にも使える） */
+    streakCalc: streakCalc,
+    streak: function (dates, todayStr) {
+      if (dates) return streakCalc(dates, todayStr || today());
+      var r = streakCalc(STK_OV ? STK_OV.d : S.streak.d, STK_OV && STK_OV.t || today());
+      if (!STK_OV) r.best = Math.max(r.best, S.streak.best || 0);
+      return r;
+    },
+    streakOverride: function (dates, todayStr) { STK_OV = dates ? { d: dates, t: todayStr } : null; },
+    /* その日はじめて来たときの最初の結果で、一度だけ返す：{ n, rest, longest }。なければ null */
+    streakNote: function () {
+      var p = S.streak.pend; if (!p) return null;
+      delete S.streak.pend; save();
+      return p.day === today() ? p : null;
+    },
     /* まぎらわしい語：id の問題で other を選んでまちがえた（新しい順に3つまで）。次からは選択肢に入れて、見分ける練習にする */
     mixed: function (id, other) {
       S.mix = S.mix || {};

@@ -275,6 +275,10 @@
     $('#hWant').hidden = !wl.length;
     if (wl.length) $('#hWant').innerHTML = '<span class="wb">' + cs(wl[0].w, { mood: 'wow' }) + '</span><span>💬 <b>' + esc(wl[0].w.w) + '</b> が <b>' + TN[wl[0].t].name + '</b> を覚えたがっている！' +
       '</span>';   /* ほかに何体いるかは出さない（数で急かさない） */
+    var sk = V.streak(), hs = $('#hStk');
+    hs.hidden = !sk.n;   /* 0日（まだ・3日以上あいた）のときは何も出さない。「切れた」とは言わない */
+    if (sk.n) hs.innerHTML = '<span class="stk-t">🔥 つづいて <b>' + sk.n + '日</b></span><span class="stk-dots" aria-hidden="true">' +
+      sk.week.map(function (s) { return s === 'rest' ? '<i class="stk-d rest">💤</i>' : '<i class="stk-d ' + s + '"></i>'; }).join('') + '</span>';
     $('#hRange').hidden = D.sections.length < 2;
     $('#hRange').innerHTML = '📗 範囲：<b>' + esc(rangeText()) + '</b><small>変える ›</small>';
     /* 久しぶりのときだけ、やさしく声をかける（急かす言葉や残りの数は出さない） */
@@ -285,6 +289,22 @@
     $('#tgSpeak').checked = S.settings.speak;
     $('#tgSpeakRow').hidden = !Speech.ok();
     if (G) G.fromTo('#home .anim', { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, stagger: 0.05, ease: 'power3.out' });
+  }
+
+  /* 連続記録の説明（ホームの1行をタップ）。数字は「来た日の数」。切れたこと・残りの時間にはふれない */
+  function openStreak() {
+    var sk = V.streak(), box = $('#sheetBody');
+    box.innerHTML = '<p class="u-title">🔥 つづいて ' + sk.n + '日</p>' +
+      '<p class="stk-exp">1問でも答えた日が「来た日」。<br>1日・2日休んでも続く。<br>3日あいたら、また1日目から。<br>通算の「会いに来た日」は減らない。</p>' +
+      '<p class="stk-exp"><b>最長</b>　' + Math.max(sk.best, sk.n) + '日<br><b>通算</b>　' + V.cameDays() + '日</p>';
+    $('#sheet').hidden = false;
+    tw($('#sheet .sh'), { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' });
+  }
+  /* 結果の画面の1行（その日はじめて来たときの最初の結果だけ）。新しく1日目のときは、明るく「1日目」とだけ言う */
+  function streakLine() {
+    var p = V.streakNote(); if (!p) return null;
+    if (p.n <= 1) return '🔥 つづいて <b>1日目</b>';
+    return '🔥 ' + (p.rest ? '（おやすみをはさんで）' : '') + 'つづいて <b>' + p.n + '日目</b>' + (p.longest ? '　いままででいちばん長い' : '');
   }
 
   function conjSub() {
@@ -1853,6 +1873,7 @@
     lines.push('⭐ <b>+' + ses.exp + ' EXP</b>（今日 +' + S.day.exp + '）');
     var rc = V.rankCounts();
     if (cWords || rc[0] + rc[1] + rc[2] + rc[3]) lines.push('🤝 単語は いま　出会い <b>' + (rc[0] + rc[1]) + '</b>・定着 <b>' + (rc[2] + rc[3]) + '</b>（仲間・相棒）');
+    var skl = streakLine(); if (skl) lines.push(skl);
     if (V.cameDays()) lines.push('📅 会いに来た日　通算 <b>' + V.cameDays() + '日</b>');
     /* 🏅 あしあと（節目）：学習の途中には出さず、結果の画面でまとめて */
     var nm = newMarks();
@@ -1886,6 +1907,7 @@
     steps('set', '🤝', rc[2] + rc[3], [5, 10, 30, 50, 100, 200, 500], function (n) { return '定着 ' + n + '語（仲間・相棒）'; });
     steps('grad', '🎓', V.gradCount(), [1, 10, 30, 50, 100, 300], function (n) { return n === 1 ? 'はじめての卒業' : '卒業 ' + n + '語'; });
     steps('day', '📅', V.cameDays(), [3, 7, 14, 30, 50, 100, 200, 365], function (n) { return '通算 ' + n + '日 会いに来た'; });
+    steps('stk', '🔥', V.streak().n, [7, 14, 30, 60, 100], function (n) { return 'つづいて ' + n + '日'; });   /* 休んでも続く連続記録。「あと○日」は出さない */
     steps('boss', '🏆', (S.bossWins || []).length, [1, 5, 10, 30], function (n) { return n === 1 ? 'はじめてのボス撃破' : 'ボス撃破 ' + n + '体'; });
     D.sections.forEach(function (sec) {
       var ws = D.words.filter(function (w) { return w.s === sec.id; });
@@ -2021,22 +2043,41 @@
   }
 
   function cellEl(i) { return $$('#bngBoard .bng-cell')[i]; }
-  function fitCells(root) { $$('.bng-t', root).forEach(function (t) { t.classList.remove('sm'); if (t.scrollHeight > t.clientHeight + 1 || t.scrollWidth > t.clientWidth + 1) t.classList.add('sm'); }); }   /* 長い意味は2行まで。あふれたら少し小さく（15px まで） */
+  /* 文字を切らない。入らなければ、その要素だけ字を小さく（15 → 14 → 13 → 12px）。12px でも入らないときは折り返しを許し、行の高さを中身に合わせて伸ばす（同じ行のマスもそろって伸びる）。
+   *  caps：[ふつうの字の大きさでの最大行数, 小さくしたときの最大行数] */
+  function fitEl(t, sizes, caps) {
+    t.style.fontSize = ''; t.classList.remove('bng-brk');
+    function bad(small) { var fs = parseFloat(getComputedStyle(t).fontSize); return t.scrollWidth > t.clientWidth + 1 || t.offsetHeight > fs * 1.3 * caps[small ? 1 : 0] + 2; }
+    if (!bad(false)) return;
+    for (var i = 0; i < sizes.length; i++) { t.style.fontSize = sizes[i] + 'px'; if (!bad(true)) return; }
+    t.classList.add('bng-brk');
+  }
+  function fitCells(root) {
+    $$('.bng-t', root).forEach(function (t) { fitEl(t, [15, 14, 13, 12], t.parentNode.classList.contains('es') ? [2, 3] : [3, 4]); });
+    $$('.bng-w', root).forEach(function (t) { fitEl(t, [14, 13, 12], [2, 3]); });
+    $$('.bng-j', root).forEach(function (t) { fitEl(t, [14, 13, 12], [3, 4]); });
+  }
+  function fitCall() {
+    $$('#bngCall .bng-word').forEach(function (t) { fitEl(t, [32, 28, 24, 20, 16], [1, 2]); });
+    $$('#bngCall .bng-ja').forEach(function (t) { fitEl(t, [22, 20, 18, 16], [3, 4]); });
+  }
+  /* 日本語の意味：「・」「、」のあと、「（」の前で折れやすくする */
+  function jaHtml(s) { return esc(s).replace(/([・、])/g, '$1<wbr>').replace(/(（)/g, '<wbr>$1'); }
   function bngCell(i) {
     var B = BNG, w = B.words[i], A = B.dir === 'A';
-    if (B.filled[i]) return '<button class="bng-cell done' + (B.free === i ? ' free' : '') + gcls(w) + '" data-i="' + i + '" aria-label="' + esc(w.w) + '"><span class="bng-st">' + cs(w, { mood: 'happy' }) + '</span><span class="bng-w">' + headHtml(w) + '</span><span class="bng-j">' + esc(w.ja) + '</span></button>';
-    return '<button class="bng-cell' + (A ? '' : ' es') + '" data-i="' + i + '"><span class="bng-t">' + (A ? esc(w.ja) : headHtml(w)) + '</span></button>';
+    if (B.filled[i]) return '<button class="bng-cell done' + (B.free === i ? ' free' : '') + gcls(w) + '" data-i="' + i + '" aria-label="' + esc(w.w) + '"><span class="bng-st">' + cs(w, { mood: 'happy' }) + '</span><span class="bng-w">' + headHtml(w) + '</span><span class="bng-j">' + jaHtml(w.ja) + '</span></button>';
+    return '<button class="bng-cell' + (A ? '' : ' es') + '" data-i="' + i + '"><span class="bng-t">' + (A ? jaHtml(w.ja) : headHtml(w)) + '</span></button>';
   }
   function bngSetCell(i, cls) {
     var old = cellEl(i); old.outerHTML = bngCell(i);
     var n = cellEl(i); if (cls) n.classList.add(cls);
     fitCells(n); return n;
   }
-  function bngCall(html, cls) { var c = $('#bngCall'); c.className = 'bng-call' + (cls ? ' ' + cls : ''); c.innerHTML = html; }
+  function bngCall(html, cls) { var c = $('#bngCall'); c.className = 'bng-call' + (cls ? ' ' + cls : ''); c.innerHTML = html; fitCall(); }
   function bngLater(fn, ms) { var B = BNG; setTimeout(function () { if (BNG === B) fn(); }, ms); }
 
-  function startBingo(force) {
-    var words = bngPick(force && isDebug());
+  function startBingo(force, fixed) {
+    var words = fixed && fixed.length >= 9 ? fixed : bngPick(force && isDebug());
     if (words.length < 9) { toast('あと少し集めると、遊べるよ', ''); return; }
     if (window.Sfx) Sfx.unlock();
     S.bngN = (S.bngN || 0) + 1; V.save();   /* 遊ぶたびに、盤と呼び出しの向きを入れかえる */
@@ -2065,7 +2106,7 @@
     B.cur = w; B.cell = B.words.indexOf(w); B.busy = false;
     B.audio = B.dir === 'A' && !!k && k.lv >= 1 && Speech.ok() && Math.random() < 0.4;   /* ランクが高めの子は、ときどき音だけ（listen と同じ）。読み上げが使えない端末では必ずつづり */
     if (window.VUI) VUI.cur = { id: w.id, cell: B.cell, dir: B.dir, audio: B.audio };
-    if (B.dir === 'B') bngCall('<span class="bng-lab">' + T.inLang + '</span><div class="bng-ja">' + esc(w.ja) + '</div><small class="pos">' + POS[w.pos] + '</small>');
+    if (B.dir === 'B') bngCall('<span class="bng-lab">' + T.inLang + '</span><div class="bng-ja">' + jaHtml(w.ja) + '</div><small class="pos">' + POS[w.pos] + '</small>');
     else if (B.audio) bngCall('<button class="big-say" data-say="' + esc(V.head(w)) + '" aria-label="読み上げ">🔊</button><button class="say slow" data-say="' + esc(V.head(w)) + '" aria-label="ゆっくり読み上げ">🐢</button><span class="bng-lab">聞こえた単語の意味は？</span>', 'listen');
     else bngCall('<span class="bng-lab">この単語の意味は？</span><div class="bng-word' + gcls(w) + '">' + headHtml(w) + '</div>' + homoHtml(w) + sayBtn(V.head(w)));
     if (B.dir === 'A') setTimeout(function () { if (BNG === B && B.cur === w) Speech.say(V.head(w)); }, 250);
@@ -2162,6 +2203,7 @@
     if (ses.hotNew) lines.push('🌶 手ごわい子が <b>' + ses.hotNew + '体</b>。次はちがう聞き方で会える');
     if (ses.hotGrad) lines.push('🎓 手ごわい子を <b>' + ses.hotGrad + '体</b>、卒業させた');
     lines.push('⭐ <b>+' + ses.exp + ' EXP</b>（今日 +' + S.day.exp + '）');
+    var skl = streakLine(); if (skl) lines.push(skl);
     if (V.cameDays()) lines.push('📅 会いに来た日　通算 <b>' + V.cameDays() + '日</b>');
     var nm = newMarks();
     $('#dLines').innerHTML = nm.map(function (m) { return '<li class="mark-new">🏅 あしあと　<b>' + m.ico + ' ' + esc(m.text) + '</b></li>'; }).join('') + lines.map(function (l) { return '<li>' + l + '</li>'; }).join('');
@@ -2434,6 +2476,7 @@
     $$('.x-tabs button').forEach(function (b) { b.addEventListener('click', function () { dexTab = b.dataset.tab; renderDex(); }); });
     $('#cjList').addEventListener('click', function (e) { var u = e.target.closest('.cunit'); if (u) start([{ type: 'conj', unit: u.dataset.unit, n: 4 }]); });
     $('#dCards').addEventListener('click', function (e) { var m = e.target.closest('.mini'); if (m) openSheet(m.dataset.id); });
+    $('#hStk').addEventListener('click', openStreak);
     $('#sheet').addEventListener('click', function (e) { if (e.target.id === 'sheet' || e.target.closest('.sh-close')) closeSheet(); });
     $('#tgSound').addEventListener('change', function (e) { S.settings.sound = e.target.checked; V.save(); });
     $('#tgSpeak').addEventListener('change', function (e) { S.settings.speak = e.target.checked; V.save(); });
@@ -2456,7 +2499,7 @@
       startMorning(); return morningIds();
     },
     /* ビンゴを始める（?debug のときは、集めた語が足りなくても遊べる）。VUI.cur ＝ { id, cell, dir, audio }：いま呼ばれている語の id と、正解のマスの番号 */
-    bingo: function () { startBingo(true); return !!BNG; },
+    bingo: function (ids) { startBingo(true, isDebug() && ids && ids.length >= 9 ? ids.map(function (id) { return V.word(id); }).filter(Boolean).slice(0, 9) : null); return !!BNG; },   /* ids：盤の語を指定（?debug のときだけ） */
     /* ふれあいイベントを、条件を無視して始める（?debug のときだけ）。kind：'anniv' | 'intro' | 'ask' */
     event: function (kind, id) {
       if (!isDebug() || EV_KINDS.indexOf(kind) < 0) return false;
@@ -2470,6 +2513,12 @@
       }
       startEvent({ k: kind, id: id, p: p, m: 0 });
       return { k: kind, id: id, p: p };
+    },
+    /* 連続記録（?debug のときだけ）。日付の列 ['2026-11-05', …] を入れるとホームをそれで描き直す（保存はしない）。省くと、いまの計算結果を返す。2つめの引数で「今日」も差しかえられる */
+    streak: function (dates, todayStr) {
+      if (!isDebug()) return false;
+      if (dates) { V.streakOverride(dates, todayStr); if (!$('#home').hidden) renderHome(); }
+      return V.streak();
     },
     hot: function (id, miss) { if (!/[?&](sandbox|debug)\b/.test(location.search)) return false; var ok = V.debugHot(id, miss); if (ok && !$('#home').hidden) renderHome(); return ok; }
   };
