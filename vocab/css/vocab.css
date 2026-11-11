@@ -527,3 +527,47 @@ mark { background: var(--mark); color: inherit; padding: 0 3px; border-radius: 4
 .marks .u-cap small { margin-left: 8px; color: var(--muted); font-weight: 500; font-size: 12px; }
 .mk-list { display: flex; flex-wrap: wrap; gap: 6px; }
 .mk { padding: 4px 10px; border-radius: 999px; background: var(--sel-bg); font-size: 13px; font-weight: 700; line-height: 1.5; }
+
+/* ---- 活用のテンポ（cjq-）：正解は短い1行で0.6秒ほどで次へ／お手本は問題の画面の小さなボタンから ---- */
+.cjq-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 12px; padding: 8px 12px; border-radius: 14px; background: var(--ok-bg); }
+.cjq-ok { font-family: var(--f-es); font-size: 22px; color: var(--ok); }
+.cjq-ok b { font-weight: 800; }
+.cjq-who { font-size: 16px; font-weight: 700; }
+.cjq-tab, .cjq-model { min-height: 36px; padding: 4px 12px; border-radius: 12px; border: 2px solid var(--line-strong); background: var(--card); color: var(--muted); font-size: 14px; font-weight: 700; }
+.cjq-model { position: absolute; top: 4px; right: 8px; z-index: 1; }
+.b-lab.cjq-lab { font-size: 14px; }
+
+/* ---- 手ごわい子（hot-）：自分の覚え方メモ ---- */
+.hot-box { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-radius: 16px; background: var(--warn-bg); border: 1px solid var(--line-strong); text-align: left; }
+.hot-h { margin: 0; font-size: 16px; font-weight: 800; line-height: 1.5; }
+.hot-h small { display: block; font-size: 14px; font-weight: 500; color: var(--muted); }
+.hot-lab { display: block; font-size: 14px; font-weight: 700; color: var(--muted); }
+.hot-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.hot-chip { min-height: 36px; padding: 4px 12px; border-radius: 999px; border: 2px solid var(--line-strong); background: var(--card); font-size: 14px; font-weight: 700; }
+.hot-chip.on { border-color: var(--accent2); background: var(--sel-bg); }
+.hot-q { margin: 0; font-size: 16px; font-weight: 800; color: var(--accent2); }
+.hot-q[hidden] { display: none; }
+.hot-row { display: flex; gap: 8px; margin-top: 4px; }
+.hot-in { flex: 1; min-width: 0; min-height: 44px; padding: 8px 12px; border-radius: 12px; border: 2px solid var(--line-strong); background: var(--card); color: var(--ink); font: inherit; font-size: 16px; }
+.hot-save { flex: none; min-height: 44px; padding: 0 16px; border-radius: 12px; background: var(--accent2); color: var(--on-accent); font-size: 15px; font-weight: 900; }
+.memo.hot-mine { font-size: 15px; }
+.hot-edit { min-height: 32px; margin-left: 6px; padding: 2px 10px; border-radius: 10px; border: 2px solid var(--line-strong); font-size: 14px; font-weight: 700; color: var(--muted); }
+.hot-none { color: var(--muted); }
+.mini .hot-mk { position: absolute; top: 2px; right: 24px; font-size: 13px; }
+body.hot-typing #stage, body.hot-typing .sh { padding-bottom: 42vh; }   /* キーボードの分、欄を持ち上げられるように */
+
+/* ---- おやすみ前（nite-）：結果の画面の控えめなボタン／朝の3体／眺めるカード ---- */
+.nite-btn { width: 100%; margin-top: 8px; font-size: 15px; color: var(--muted); }
+.nite-btn:disabled { opacity: .6; }
+.nite-morning { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; padding: 8px 10px 8px 12px; border-radius: 16px; background: var(--sel-bg); border: 2px solid var(--accent2); }
+.nite-morning[hidden] { display: none; }
+.nite-go { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; min-height: 44px; text-align: left; }
+.nite-go b { display: block; font-size: 16px; }
+.nite-go small { display: block; font-size: 14px; color: var(--muted); }
+.nite-sun { flex: none; font-size: 24px; line-height: 1; }
+.nite-later { flex: none; min-height: 36px; padding: 4px 8px; border-radius: 12px; border: 2px solid var(--line-strong); font-size: 14px; font-weight: 700; color: var(--muted); }
+.sh.nite { max-height: 96vh; }
+.nite-eye { margin: 0; text-align: center; font-size: 16px; font-weight: 900; }
+.nite-eye small { display: block; font-size: 14px; font-weight: 500; color: var(--muted); }
+.nite-card { min-height: 110px; }
+.nite-ja { font-size: 22px; font-weight: 900; }

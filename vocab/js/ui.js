@@ -251,6 +251,7 @@
     var gc = V.gradCount();
     $('#hRel').innerHTML = '出会い <b>' + (rc[0] + rc[1]) + '</b>　定着 <b>' + (rc[2] + rc[3]) + '</b>' + (gc ? '　🎓 <b>' + gc + '</b>' : '');
     refreshChunk();
+    renderMorning();
     renderBossBanner();
     renderPlaza();
     $('#hExp').textContent = '+' + (S.day.date ? S.day.exp : 0);
@@ -349,12 +350,12 @@
    * セッション（ブロックを順に回す）
    * ========================================================= */
   var ses = null;
-  var BNAME = { face: '👀 顔見知りチェック', meet: '🌱 出会い', wild: '⚔ 野生戦', rescue: '🚑 救出', conj: '🔁 活用', learn: '💬 新しいフォルム', care: '🤝 なつかせる' };
+  var BNAME = { face: '👀 顔見知りチェック', meet: '🌱 出会い', wild: '⚔ 野生戦', rescue: '🚑 救出', conj: '🔁 活用', learn: '💬 新しいフォルム', care: '🤝 なつかせる', morning: '☀ ゆうべの3体' };
   function start(plan, label) {
     if (!plan.length) { toast('いまは、やることがありません', '図鑑を眺めたり、別のメニューを選んだりしてみよう'); return; }
     if (window.Sfx) Sfx.unlock();
     var w0 = CU ? wantsList().map(function (x) { return x.w.id + ':' + x.t; }) : [];
-    ses = { grads: [], wants0: w0, plan: plan, bi: -1, label: label || '', caught: [], ups: [], exp: 0, ok: 0, ng: 0, combo: 0, backs: 0, backIds: [], met: [], fixed: 0, shiny: 0 };
+    ses = { grads: [], wants0: w0, plan: plan, bi: -1, label: label || '', caught: [], ups: [], exp: 0, ok: 0, ng: 0, combo: 0, backs: 0, backIds: [], met: [], fixed: 0, shiny: 0, hotNew: 0, hotGrad: 0, miss: {}, hotSeen: {}, saved: {}, rescueId: '' };
     go('play');
     renderSteps();
     nextBlock();
@@ -369,9 +370,9 @@
     renderSteps();
     var b = ses.plan[ses.bi];
     if (!b) return finish();
-    ({ face: blockFace, meet: blockMeet, wild: blockWild, rescue: blockRescue, conj: blockConj, learn: blockLearn, care: blockCare })[b.type](b, nextBlock);
+    ({ face: blockFace, meet: blockMeet, wild: blockWild, rescue: blockRescue, conj: blockConj, learn: blockLearn, care: blockCare, morning: blockMorning })[b.type](b, nextBlock);
   }
-  function stage(html) { var s = $('#stage'); s.innerHTML = html; tw(s.firstElementChild, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' }); return s; }
+  function stage(html) { document.body.classList.remove('hot-typing'); var s = $('#stage'); s.innerHTML = html; tw(s.firstElementChild, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' }); return s; }
 
   /* ---- 選択肢 ---- */
   function others(w, n, key) {
@@ -551,8 +552,8 @@
     var sec = V.SEC[w.s];
     return '<small class="ref">📗 ' + esc(sec ? sec.name : w.s) + (w.ref ? '・' + esc(w.ref) : '') + '</small>';
   }
-  function memoHtml(w) {
-    return '<div class="exp-box"><div class="ex">' + exHtml(w.ex[0]) + ' ' + sayBtn(w.ex[0]) + '</div><small>' + esc(w.ex[1]) + '</small>' +
+  function memoHtml(w, edit) {
+    return '<div class="exp-box"><div class="ex">' + exHtml(w.ex[0]) + ' ' + sayBtn(w.ex[0]) + '</div><small>' + esc(w.ex[1]) + '</small>' + noteHtml(w, edit) +
       (w.def ? '<p class="memo">📖 <span class="q-def">' + glossify(w.def) + '</span> ' + sayBtn(w.def, 'inl') + (w.defJa ? '<span class="def-ja">訳：' + esc(w.defJa) + '</span>' : '') + '</p>' : '') +
       (w.memo ? '<p class="memo">💡 ' + esc(w.memo) + '</p>' : '') + otherSensesHtml(w) + verbHtml(w) + (CU ? famHtml(w) : '') + '</div>';
   }
@@ -691,6 +692,8 @@
    * ========================================================= */
   function typesFor(w) {
     var c = V.card(w.id), lv = c ? c.lv : 0, easy = S.settings.mood === 'easy', t = ['es2ja'];
+    var lt = V.lastMiss(w.id);
+    if (lt) return hotType(w, lt, lv, easy);   /* 🌶 手ごわい子は、前回まちがえた問い方とちがう種類で出す */
     if (Speech.ok()) t.push('listen');
     if (easy) return pick(t);
     if (lv >= 1) t.push('ja2es');
@@ -701,6 +704,18 @@
     if (w.pos === 'v' && CU && learned(w).length && Math.random() < 0.45) return 'form';
     return Math.random() < 0.5 ? t[t.length - 1] : pick(t);   // 半分は、いまのレベルのいちばん難しい問い方
   }
+  function hotType(w, lt, lv, easy) {
+    var p = ['es2ja', 'ja2es'];
+    if (Speech.ok()) p.push('listen');
+    if (!easy) {
+      if (w.def) p.push('def2w');
+      if (/\{[^}]+\}/.test(w.ex[0])) p.push('cloze');
+      if (lv >= 1 && !/\s/.test(w.w)) p.push('spell');
+      if (w.pos === 'v' && CU && learned(w).length) p.push('form');
+    }
+    var q = p.filter(function (x) { return x !== lt; });
+    return pick(q.length ? q : p);
+  }
   /* mode：'care'（なつかせる）／'retry'（さっき にげた子に、もう一度）／なし（野生戦・救出）
    *  cb(false)＝思い出せなかった（runFights が、ブロックの最後にもう一度出す）
    *  ✨ きらきらの子：野生戦でときどき現れる。思い出せたら長持ち＋15%（ボスに勝ったときと同じおまけ）。まちがえても何も失わない */
@@ -708,15 +723,21 @@
   function fight(w, tagText, cb, mode) {
     var care = mode === 'care', retry = mode === 'retry', st0 = V.state(w.id), wasWild = st0 === 'wild';
     var shiny = !care && !retry && !V.grad(w.id) && Math.random() < SHINY;
-    var badge = retry ? '🔁 もう一度' : shiny ? '✨ きらきら' : care ? '⏳ もうすぐしおれる' : wasWild ? '🍂 野生に戻りかけ' : '🥀 しおれかけ';
+    var hot0 = V.hot(w.id);
+    var badge = (retry ? '🔁 もう一度' : shiny ? '✨ きらきら' : care ? '⏳ もうすぐしおれる' : wasWild ? '🍂 野生に戻りかけ' : '🥀 しおれかけ') + (hot0 ? ' 🌶' : '');
     var tag = '<span class="qtag">' + tagText + '</span><span class="wild-badge">' + badge + '</span>';
     var c0 = nowClose(w.id), m0 = Chara.moodOf(st0), mem0 = V.memory(w.id);
     stage('<div class="appear"><p>' + (retry ? 'さっき にげた' : care ? 'もうすぐしおれそうな' : wasWild ? '野生に戻りかけの' : 'しおれかけの') + '</p><div class="ap-bud' + (shiny ? ' shiny' : '') + '">' + cs(w, { mood: m0 }) + '</div><p>' + (retry ? 'を 追いかけよう' : care ? 'に 会いに行こう' : 'が 遠くに いる！') + '</p>' +
       (shiny ? '<p class="ap-shiny">✨ きらきらの子だ！ 思い出せたら 長持ち＋15%</p>' : '') + '</div>');
     if (window.Snd) Snd.appear();
     setTimeout(function () {
-      ask(w, typesFor(w), { tag: tag, track: trackHtml(w, c0, m0) }, function (ok, s) {
-        var r = V.answer(w.id, ok);
+      var ty = typesFor(w);
+      ask(w, ty, { tag: tag, track: trackHtml(w, c0, m0) }, function (ok, s) {
+        var r = V.answer(w.id, ok, ty);
+        if (!ok) ses.miss[w.id] = (ses.miss[w.id] || 0) + 1;
+        if (hot0 || r.hotNew) ses.hotSeen[w.id] = 1;
+        if (ok && (r.back || r.relearn || ses.rescueId === w.id)) ses.saved[w.id] = 1;
+        if (r.hotGrad) ses.hotGrad++;
         if (ok) moveTrack(s, w, Chara.closeness(V.card(w.id).lv, 1), 'happy', r.relearn ? '取り返した！' : r.back ? 'おかえり！' : r.up ? V.RANKS[r.up].rel + 'に！' : T.hi);
         else moveTrack(s, w, Math.max(0.03, c0 - 0.12), 'sleep', '…');
         if (ok) {
@@ -736,11 +757,15 @@
           else go();
         } else {
           /* まちがえたその場で、とりちがえた相手と、覚え方（例文・💡）をもう一度見せる（読むだけにしない：このあと、もう一度出す） */
-          after(s, (s._mix || '<div class="meaning' + gcls(w) + '">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b></div>') + memoHtml(w) +
-            '<p class="note">' + (retry ? 'また今度。次の野生戦で、もう一度会える' : 'にげられた… このあと、もう一度追いかけよう') + '</p>', function () { cb(false); });
+          missAfter(s, w, r, '<p class="note">' + (retry ? 'また今度。次の野生戦で、もう一度会える' : 'にげられた… このあと、もう一度追いかけよう') + '</p>', function () { cb(false); });
         }
       });
     }, 900);
+  }
+  /* まちがえたときの答え合わせ：とりちがえた相手（なければ意味）・例文・✍ 自分のメモ・💡 メモ。3回目のまちがい（手ごわい子になった瞬間）だけ、覚え方を書く欄を足す */
+  function missAfter(s, w, r, extra, cb) {
+    after(s, (s._mix || '<div class="meaning' + gcls(w) + '">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b></div>') + memoHtml(w) + (r.hotNew ? hotBoxHtml(w) : '') + (extra || ''), cb);
+    if (r.hotNew) { ses.hotNew++; bindHot(s, w); }
   }
   /* しおれた子と順に会い、思い出せなかった子には、ブロックの最後にもう一度会う（1回だけ）。
    *  答えを見て終わりにしない：少し間をおいて自分で思い出す。ここでの正解は「覚え直し」（強さは伸ばさない。core.js） */
@@ -801,7 +826,7 @@
     return V.wildList().map(function (w) { return w.id; }).concat(V.cjWildList())
       .sort(function (a, b) { return V.condition(a) - V.condition(b); });
   }
-  function blockRescue(b, next) { runFights([b.id], function () { return '🚑 救出'; }, null, next); }
+  function blockRescue(b, next) { ses.rescueId = b.id; runFights([b.id], function () { return '🚑 救出'; }, null, next); }
 
   /* =========================================================
    * 🔁 活用（動詞の形）
@@ -929,28 +954,80 @@
       });
     });
   }
-  /* 組み立て：① 語幹（または haber）→ ② 語尾（または過去分詞） */
+  /* 活用の正解：短い1行（✓ comió　él・点過去）を出して、0.6秒ほどで自動で次へ。その間に画面のどこをタップしても すぐ次へ。
+   *  「表」を押すと自動送りを止めて活用表を出す（つぎへ ▶ で進む）。
+   *  まちがえたとき・新しく覚えた瞬間（capCj）・ランクアップ（levelFx）は、ここを使わず今までどおり（急がせない・演出の時間をとる） */
+  var CJ_FAST = 600;
+  function cjFast(s, w, t, p, cb) {
+    var box = $('.after', s), gone = false, timer = 0, mb = $('.cjq-model', s);
+    if (mb) mb.remove();
+    box.innerHTML = '<div class="cjq-row"><span class="cjq-ok">✓ <b>' + esc(Conj.form(w.w, t, p)) + '</b></span><span class="cjq-who">' + pronOf(p, t) + '・' + esc(TN[t].name) + '</span><button class="cjq-tab" type="button">表</button></div>';
+    function off() { clearTimeout(timer); document.removeEventListener('click', tap, true); }
+    function tap(e) {
+      var el = e.target;
+      if (!el || !el.closest || el.closest('[data-say]') || gone) return;
+      gone = true; off();
+      if (el.closest('.cjq-tab')) { after(s, conjTable(w.w, t, p), cb); return; }
+      if (window.speechSynthesis) { try { speechSynthesis.cancel(); } catch (x) { /* 読み上げを止められない */ } }   /* 次の問題に読み上げがかぶらないように */
+      cb();
+    }
+    timer = setTimeout(function () { if (gone) return; gone = true; off(); cb(); }, CJ_FAST);
+    document.addEventListener('click', tap, true);
+  }
+  /* 練習の問題の画面から開く「📖 お手本」（ユニットのお手本の表と決まり） */
+  function openModel(U) {
+    var m = mw(U.model), tenses = U.tenses || [U.tense], box = $('#sheetBody');
+    box.innerHTML = '<p class="u-title">📖 お手本：' + esc(U.name) + '</p>' + tBadge(U.tense) +
+      '<div class="u-model"><p class="u-cap">お手本：<b>' + esc(m.w) + '</b>（' + esc(m.ja) + '）<small>' + esc(Conj.kind(m.w)) + '</small></p>' + conjTable(m.w, U.tense, -1) +
+      (tenses.length > 1 ? '<p class="u-cap">' + TN[tenses[1]].name + '</p>' + conjTable(m.w, tenses[1], -1) : '') + '</div><div class="u-rule">💡 ' + esc(U.rule) + '</div>';
+    $('#sheet').hidden = false;
+    tw($('#sheet .sh'), { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' });
+  }
+  /* 組み立ての語尾の札：正解のほかに、まちがえやすい3つ
+   *  （同じ時制のとなりの人称・別の時制の同じ人称・-ar と -er/-ir の取りちがえ。足りなければ同じ時制のほかの語尾） */
+  function endDecoys(v, t, p, right) {
+    var E = Conj.END, c = v.cls, list = endingsFor(v, t, p), near, conf = [], cross = [], out = [];
+    var oc = c === 'ar' ? 'er' : 'ar', oc2 = c === 'er' ? 'ir' : 'er';
+    if (t === 'imp') {
+      near = [p === 1 ? E.subj[c][2] : E.pres[c][2]];
+      conf = [E.pres[c][1], E.subj[c][1]];
+      cross = [(p === 1 ? E.pres : E.subj)[oc][2]];
+    } else {
+      near = [list[p - 1], list[p + 1]].filter(Boolean);
+      var cm = { subj: E.pres[c], pres: E.subj[c], pret: E.pres[c], cond: Conj.FUT, fut: Conj.COND, impf: E.pret[c] }[t];
+      if (cm) conf = [cm[p]];
+      if (E[t]) cross = [E[t][oc][p]].concat(c === 'ar' ? [] : [E[t][oc2][p]]);
+    }
+    function add(x) { if (x && x !== right && out.indexOf(x) < 0 && out.length < 3) out.push(x); }
+    if (near.length) add(near[Math.floor(Math.random() * near.length)]);
+    conf.forEach(add); cross.forEach(add); near.forEach(add); shuffle(list).forEach(add);
+    return out;
+  }
+  /* 組み立て：① 語幹（または haber）→ ② 語尾（または過去分詞）。
+   *  語幹にくせがない形（原形の語幹のまま）は、語幹を最初から入れて、語尾を1タップで選ぶ。くせがある形（tuv-・pid-・-ie-・-zc- など）は語幹も選ばせる */
   function askBuild(it, sp, opt, done) {
     var w = it.w, t = it.t, p = it.p, v = Conj.parse(w.w), A, B;
+    var plain = !sp.perf && sp.a === (t === 'fut' || t === 'cond' ? v.base : v.stem);
     if (sp.perf) {
       A = shuffle(Conj.HABER.slice());
       var reg = v.cls === 'ar' ? v.stem + 'ado' : v.stem + 'ido', wrong = v.stem + (v.cls === 'ar' ? 'ido' : 'ado');
       B = shuffle(uniq([sp.b, reg, wrong, Conj.form(w.w, 'pret', 2)]));
     } else {
       var stems = [];
-      [t, 'pres'].forEach(function (tt) { [0, 1, 2, 3, 4, 5].forEach(function (q) { var x = splitForm(w.w, tt, q); if (x && !x.perf) stems.push(x.a); }); });
-      stems.push(v.stem, t === 'fut' || t === 'cond' ? v.base : '');
-      A = shuffle([sp.a].concat(shuffle(uniq(stems).filter(function (x) { return x !== sp.a; })).slice(0, 3)));
-      var ends = endingsFor(v, t, p), conf = t === 'subj' ? Conj.END.pres[v.cls] : t === 'pres' ? Conj.END.subj[v.cls] : t === 'pret' ? Conj.END.pres[v.cls] : t === 'cond' ? Conj.FUT : t === 'fut' ? Conj.COND : Conj.END.pret[v.cls];
-      B = shuffle([sp.b].concat(shuffle(uniq(ends.concat(conf)).filter(function (x) { return x !== sp.b; })).slice(0, 5)));
+      if (!plain) [t, 'pres'].forEach(function (tt) { [0, 1, 2, 3, 4, 5].forEach(function (q) { var x = splitForm(w.w, tt, q); if (x && !x.perf) stems.push(x.a); }); });
+      if (plain) A = [sp.a];
+      else {
+        stems.push(v.stem, t === 'fut' || t === 'cond' ? v.base : '');
+        A = shuffle([sp.a].concat(shuffle(uniq(stems).filter(function (x) { return x !== sp.a; })).slice(0, 3)));
+      }
+      B = shuffle([sp.b].concat(endDecoys(v, t, p, sp.b)));   /* 語尾の札は4枚 */
     }
     var oneA = A.length === 1;
     var s = stage('<div class="q">' + (opt.track || '') + cjCard(w, t, p, opt.tag) +
       '<p class="q-ask">組み立てよう</p><div class="spell build">' + (sp.pre ? '<span class="art">' + esc(sp.pre) + '</span>' : '') + '<span class="slot sa">' + (oneA ? esc(sp.a) : '') + '</span><span class="slot sb"></span></div>' +
-      '<p class="b-lab">① ' + (sp.perf ? 'haber の形' : '語幹') + '</p><div class="tiles ta">' + A.map(function (x, i) { return '<button class="tl" data-i="' + i + '">' + esc(x) + '</button>'; }).join('') + '</div>' +
-      '<p class="b-lab">② ' + (sp.perf ? '過去分詞' : '語尾') + '</p><div class="tiles tb">' + B.map(function (x, i) { return '<button class="tl" data-i="' + i + '">' + esc(x) + (sp.perf ? '' : '') + '</button>'; }).join('') + '</div><div class="after"></div></div>');
+      (oneA ? '' : '<p class="b-lab">① ' + (sp.perf ? 'haber の形' : '語幹') + '</p><div class="tiles ta">' + A.map(function (x, i) { return '<button class="tl" data-i="' + i + '">' + esc(x) + '</button>'; }).join('') + '</div>') +
+      '<p class="b-lab' + (oneA ? ' cjq-lab' : '') + '">' + (oneA ? '語尾をえらぼう' : '② ' + (sp.perf ? '過去分詞' : '語尾')) + '</p><div class="tiles tb">' + B.map(function (x, i) { return '<button class="tl" data-i="' + i + '">' + esc(x) + (sp.perf ? '' : '') + '</button>'; }).join('') + '</div><div class="after"></div></div>');
     var a = oneA ? sp.a : null, b = null, fin = false;
-    if (oneA) $$('.ta .tl', s).forEach(function (x) { x.disabled = true; x.classList.add('sel'); });
     function check() {
       if (a === null || b === null) return;
       fin = true; $$('.tl', s).forEach(function (x) { x.disabled = true; });
@@ -968,7 +1045,7 @@
   function blockConj(b, next) {
     var U = unitOf(b.unit) || nextUnit(), tenses = U.tenses || [U.tense];
     S.cjSeen = S.cjSeen || {};
-    if (!S.cjSeen[U.id] || b.intro) intro(); else practice();
+    if (!S.cjSeen[U.id] || b.intro) intro(); else practice(true);   /* 見たことのあるユニットは「練習 ▶」の画面を出さず、すぐ1問目へ */
     function intro() {
       var m = mw(U.model), t = U.tense;
       var s = stage('<div class="q unit-intro"><p class="u-eyebrow">🔁 活用のくせ</p><h2 class="u-title">' + esc(U.name) + '</h2>' + tBadge(t) +
@@ -998,7 +1075,7 @@
         });
       });
     }
-    function practice() {
+    function practice(quick) {
       /* 練習するカード：まだ覚えていない→しおれた→ほか の順に4枚。1枚につき2問（作る問題 → 見分ける問題） */
       var cards = unitCards(U);
       var fresh = shuffle(cards.filter(function (id) { return !V.card(id); }));
@@ -1010,21 +1087,25 @@
       var secondT = shuffle(pickC.map(function (id) { return [id, pick(['cue', 'which', 'cue'])]; }));
       q = firstT.concat(secondT);
       var total = q.length, n = 0;
-      stage('<div class="interlude"><p class="big-t">🔁 ' + esc(U.name) + '</p><p>' + esc(U.rule) + '</p><button class="next go">練習 ▶</button><button class="ghost again">📖 お手本をもう一度</button></div>');
-      $('#stage .go').addEventListener('click', one);
-      $('#stage .again').addEventListener('click', intro);
+      if (quick === true) one();
+      else {
+        stage('<div class="interlude"><p class="big-t">🔁 ' + esc(U.name) + '</p><p>' + esc(U.rule) + '</p><button class="next go">練習 ▶</button><button class="ghost again">📖 お手本をもう一度</button></div>');
+        $('#stage .go').addEventListener('click', one);
+        $('#stage .again').addEventListener('click', intro);
+      }
       function one() {
         var x = q.shift(); if (!x) return next();
         n++;
         var c = V.cj(x[0]), w = c.verb, t = c.tense, p = pick(personsOf(w, t));
         askConj({ w: w, t: t, p: p }, x[1], { tag: '<span class="qtag">🔁 ' + Math.min(n, total) + ' / ' + total + '</span>', track: trackHtml(w, close[x[0]], 'happy') }, function (ok, s) {
-          var id = x[0], had = !!V.card(id);
+          var id = x[0], had = !!V.card(id), big = false;
           if (ok) {
             need[id]--;
-            if (had) { var r = V.answer(id, true); ses.exp += r.exp; if (r.up) levelFx({ id: id, w: w.w + '（' + TN[t].short + '）' }, r.up); }
-            if (need[id] <= 0 && !had) { close[id] = REL_C[0]; moveTrack(s, w, close[id], 'happy', '覚えた！'); capCj(id, $('.q-card', s)); }
+            if (had) { var r = V.answer(id, true); ses.exp += r.exp; if (r.up) { levelFx({ id: id, w: w.w + '（' + TN[t].short + '）' }, r.up); big = true; } }
+            if (need[id] <= 0 && !had) { close[id] = REL_C[0]; moveTrack(s, w, close[id], 'happy', '覚えた！'); capCj(id, $('.q-card', s)); big = true; }
             else { close[id] = Math.min(REL_C[0], close[id] + 0.07); moveTrack(s, w, close[id], 'happy'); }
-            after(s, conjTable(w.w, t, p), one, 1500);
+            if (big) after(s, conjTable(w.w, t, p), one, 1500);   /* 覚えた瞬間・ランクアップは演出の時間をとる */
+            else cjFast(s, w, t, p, one);
           } else {
             if (had) V.answer(id, false);
             close[id] = Math.max(0.04, close[id] - 0.04); moveTrack(s, w, close[id], 'meh');
@@ -1032,6 +1113,11 @@
             after(s, '<p class="note">' + esc(Conj.kind(w.w)) + '</p>' + conjTable(w.w, t, p), one);
           }
         });
+        var qc = $('#stage .q-card');
+        if (qc) {
+          qc.insertAdjacentHTML('beforeend', '<button class="cjq-model" type="button">📖 お手本</button>');
+          $('.cjq-model', qc).addEventListener('click', function () { openModel(U); });
+        }
       }
     }
   }
@@ -1058,13 +1144,160 @@
           FX.float($('.q-card', s), '+' + r.exp + ' EXP', 'exp');
           if (r.back) { ses.backs++; ses.backIds.push(id); }
           if (r.up) levelFx({ id: id, w: w.w + '（' + TN[t].short + '）' }, r.up);
-          after(s, conjTable(w.w, t, p) + gaugeHtml({ id: id }), cb, r.up ? 0 : 1800);
+          if (r.up) after(s, conjTable(w.w, t, p) + gaugeHtml({ id: id }), cb, 0); else cjFast(s, w, t, p, cb);
         } else {
           moveTrack(s, w, Math.max(0.03, c0 - 0.12), 'sleep', '…');
           after(s, '<p class="note">' + esc(Conj.kind(w.w)) + '</p>' + conjTable(w.w, t, p) + '<p class="note">' + (retry ? 'また今度。次の野生戦で、もう一度会える' : 'このあと、もう一度追いかけよう') + '</p>', function () { cb(false); });
         }
       });
-    }, 900);
+    }, 350);   /* 活用カードは「遠くにいる！」を短く（単語の野生戦 fight は変えない） */
+  }
+
+  /* =========================================================
+   * ✍ 自分の覚え方メモ・🌶 手ごわい子
+   *  通算3回まちがえた単語は「手ごわい子」（そのあと2回続けて正解で卒業）。なった瞬間（3回目のまちがいの答え合わせ）に、
+   *  自分のことばで覚え方を1行（60字まで・書かなくても OK）。メモは答える前には見せない。
+   *  まちがえたときの答え合わせ・図鑑の語の画面に「✍ 自分のメモ」を、deck の 💡 メモより先に出す
+   * ========================================================= */
+  var HOT_Q = D.lang === 'en' ? ['音が似ている日本語は？', 'ほかのどの英語に似ている？', 'どんな場面で使う？'] : ['音が似ている日本語は？', '英語のどの語に似ている？', 'どんな場面で使う？'];
+  function noteHtml(w, edit) {
+    var n = V.note(w.id);
+    if (!n && !edit) return '';
+    return '<p class="memo hot-mine">' + (n ? '✍ 自分のメモ：<b class="hot-txt">' + esc(n) + '</b>' : '<span class="hot-none">✍ 自分のメモ：まだない</span>') +
+      (edit ? ' <button class="hot-edit" type="button">' + (n ? '書き直す' : '書く') + '</button>' : '') + '</p>';
+  }
+  function hotChipsHtml() {
+    return '<div class="hot-chips">' + HOT_Q.map(function (q) { return '<button type="button" class="hot-chip">' + esc(q) + '</button>'; }).join('') + '</div><p class="hot-q" hidden></p>';
+  }
+  function hotRowHtml(v) {
+    return '<div class="hot-row"><input class="hot-in" type="text" maxlength="60" enterkeyhint="done" autocomplete="off" autocapitalize="off" aria-label="自分の覚え方メモ" value="' + esc(v || '') + '"><button type="button" class="hot-save">保存</button></div>';
+  }
+  function hotBoxHtml(w) {
+    return '<div class="hot-box"><p class="hot-h">🌶 手ごわい子になった。自分のことばで、覚え方を1行<small>（書かなくても OK）</small></p>' + hotChipsHtml() + hotRowHtml(V.note(w.id)) + '</div>';
+  }
+  /* 入力欄・保存・きっかけのチップをつなぐ。フォーカスしたら、キーボードで隠れないよう欄が見える位置までスクロール */
+  function wireHot(root, w, onSave) {
+    var inp = $('.hot-in', root), btn = $('.hot-save', root);
+    if (!inp) return null;
+    function save() {
+      var t = V.setNote(w.id, inp.value);
+      document.body.classList.remove('hot-typing');
+      btn.textContent = '✔ 保存した';
+      if (onSave) onSave(t);
+    }
+    function show() { try { inp.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { inp.scrollIntoView(); } }
+    btn.addEventListener('click', save);
+    inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); inp.blur(); save(); } });
+    inp.addEventListener('input', function () { btn.textContent = '保存'; });
+    inp.addEventListener('focus', function () { document.body.classList.add('hot-typing'); setTimeout(show, 120); setTimeout(show, 450); });   /* キーボードが出きってから、もう一度 */
+    $$('.hot-chip', root).forEach(function (c) {
+      c.addEventListener('click', function () {
+        var q = $('.hot-q', root); q.textContent = c.textContent; q.hidden = false;
+        $$('.hot-chip', root).forEach(function (x) { x.classList.toggle('on', x === c); });
+      });
+    });
+    return inp;
+  }
+  /* 答え合わせの画面：「つぎへ ▶」を押したとき、書きかけのメモも保存する */
+  function bindHot(s, w) {
+    var inp = wireHot($('.hot-box', s), w), nx = $('.after .next', s);
+    if (inp && nx) nx.addEventListener('click', function () { var v = inp.value.trim(); if (v && v !== V.note(w.id)) V.setNote(w.id, v); });
+  }
+  /* 図鑑の語の画面：メモを書く・書き直す（手ごわい子でなくても、どの語にも書ける） */
+  function bindNoteEdit(root, w) {
+    $$('.hot-edit', root).forEach(function (b) {
+      b.addEventListener('click', function () {
+        var p = b.closest('.hot-mine');
+        p.classList.add('editing');
+        p.innerHTML = '<span class="hot-lab">✍ 自分のメモ（60字まで）</span>' + hotChipsHtml() + hotRowHtml(V.note(w.id));
+        var inp = wireHot(p, w, function () { p.outerHTML = noteHtml(w, true); bindNoteEdit(root, w); });
+        if (inp) inp.focus();
+      });
+    });
+  }
+
+  /* =========================================================
+   * 🌙 おやすみ前の3体 → ☀ ゆうべの3体、おぼえてる？
+   *  その日の「まちがえた語・手ごわい子・救出した語」から あやしい順に最大3語。結果の画面から、1枚ずつ眺めるだけ（問題は出さない）。
+   *  見た語と日付を S.nite.seen に残し、次の日にホームの一番上から1問ずつ（意味を思い出す向き）。正解なら少しボーナス（V.bonus ×1.15）。
+   *  見なかった・やらなかった日は何も起きない（記録を消すだけ。催促しない）
+   * ========================================================= */
+  var niteIds = [];
+  function niteCands() {
+    var score = {};
+    function add(id, n) { if (V.word(id) && V.card(id)) score[id] = (score[id] || 0) + n; }
+    Object.keys(ses.miss).forEach(function (id) { add(id, ses.miss[id] * 3); });
+    Object.keys(ses.hotSeen).forEach(function (id) { add(id, 2); });
+    Object.keys(ses.saved).forEach(function (id) { add(id, 1); });
+    return Object.keys(score).sort(function (a, b) { return score[b] - score[a] || V.condition(a) - V.condition(b); }).slice(0, 3);
+  }
+  function openNite(ids) {
+    var list = (ids || []).filter(function (id) { return V.word(id); }).slice(0, 3), i = 0, box = $('#sheetBody');
+    if (!list.length) return;
+    var rec = { day: dayStr(), t: Date.now(), ids: [], res: {} };
+    $('#sheet .sh').classList.add('nite');
+    $('#sheet').hidden = false;
+    show();
+    function show() {
+      var w = V.word(list[i]);
+      if (rec.ids.indexOf(w.id) < 0) rec.ids.push(w.id);
+      S.nite = S.nite || {}; S.nite.seen = rec; V.save();   /* 見た語と日付 */
+      box.innerHTML = '<p class="nite-eye">🌙 ' + (i + 1) + ' / ' + list.length + '<small>ながめるだけ。問題は出ません</small></p>' +
+        '<div class="q-card nite-card' + gcls(w) + rankCls(w.id) + '"><div class="q-word">' + headHtml(w) + '</div>' + sayBtn(V.head(w)) + useHtml(w) + '<div class="nite-ja">' + esc(w.ja) + '</div></div>' +
+        '<div class="exp-box"><div class="ex">' + exHtml(w.ex[0]) + ' ' + sayBtn(w.ex[0]) + '</div><small>' + esc(w.ex[1]) + '</small>' + noteHtml(w) + (w.memo ? '<p class="memo">💡 ' + esc(w.memo) + '</p>' : '') + '</div>' +
+        '<button class="next nite-next">' + (i + 1 >= list.length ? 'おやすみ 🌙' : 'つぎ ▶') + '</button>';
+      $('#sheet .sh').scrollTop = 0;
+      tw(box.firstElementChild, { opacity: 0 }, { opacity: 1, duration: 0.3 });
+      $('.nite-next', box).addEventListener('click', function () {
+        if (++i < list.length) return show();
+        closeSheet();
+        var b = $('#dNite'); if (b) { b.textContent = '🌙 おやすみなさい。また明日'; b.disabled = true; }
+      });
+    }
+  }
+  /* 次の日（日付が変わってから）に、ゆうべの語を返す。それより古い記録は静かに消す */
+  function morningIds() {
+    var n = S.nite && S.nite.seen; if (!n || !n.ids) return [];
+    var t = dayStr(); if (n.day === t) return [];
+    var d = new Date(n.t); d.setDate(d.getDate() + 1);
+    if (d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() !== t) { S.nite.seen = null; V.save(); return []; }
+    return n.ids.filter(function (id) { return V.word(id) && V.card(id); });
+  }
+  function renderMorning() {
+    var box = $('#hMorning'), ids = morningIds();
+    box.hidden = !ids.length;
+    if (ids.length) $('#hMorningGo').innerHTML = '<span class="nite-sun">☀</span><span><b>ゆうべの' + ids.length + '体、おぼえてる？</b><small>タップで はじまる</small></span>';
+  }
+  function startMorning() { if (morningIds().length) start([{ type: 'morning' }], '朝の3体'); }
+  function blockMorning(b, next) {
+    var all = morningIds(), n = S.nite && S.nite.seen;
+    if (!all.length || !n) return next();
+    n.res = n.res || {};
+    var list = all.filter(function (id) { return !(id in n.res); }), i = 0;
+    (function one() {
+      var id = list[i++]; if (!id) return end();
+      var w = V.word(id), ty = Speech.ok() && Math.random() < 0.5 ? 'listen' : 'es2ja';
+      ask(w, ty, { tag: '<span class="qtag">☀ ' + (all.indexOf(id) + 1) + ' / ' + all.length + '</span>', track: trackHtml(w, nowClose(id), Chara.moodOf(V.state(id))) }, function (ok, s) {
+        var r = V.answer(id, ok, ty);
+        n.res[id] = ok ? 1 : 0;
+        if (r.hotGrad) ses.hotGrad++;
+        if (ok) {
+          V.bonus(id, 1.15);   /* ひと晩こえて思い出せた：いつもの成長に、少しボーナス */
+          ses.exp += r.exp;
+          if (r.up) levelFx(w, r.up);
+          after(s, '<div class="meaning' + gcls(w) + '">' + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b></div>', one, r.up ? 0 : 1100);
+        } else {
+          missAfter(s, w, r, '', one);   /* まちがえても罰なし（ふつうのまちがいとして数えるだけ） */
+        }
+        V.save();
+      });
+    })();
+    function end() {
+      var good = all.filter(function (id) { return n.res[id] === 1; }).length;
+      S.nite.seen = null; V.save();
+      var s = stage('<div class="interlude"><p class="big-t">☀</p><p>' + (good ? all.length + '体のうち <b>' + good + '体</b>、ひと晩こえて覚えていた' : all.length + '体に、もう一度会えた。ここからまた育つ') + '</p><button class="next go">つづける ▶</button></div>');
+      $('.go', s).addEventListener('click', next);
+    }
   }
 
   /* ---- 活用のメニュー（ユニット一覧） ---- */
@@ -1252,7 +1485,7 @@
               var bud = $('.t-bud', s4); if (bud) bud.firstChild.outerHTML = cs(w, { mood: 'happy' });
               FX.slam(T.newForm, w.w + ' が ' + TN[t].name + ' を覚えた');
             }
-            after(s4, conjTable(w.w, t, p), one, got ? 0 : 1500);
+            if (got) after(s4, conjTable(w.w, t, p), one, 0); else cjFast(s4, w, t, p, one);
           } else { q.push(ty); total++; after(s4, '<p class="note">' + esc(U.rule) + '</p>' + conjTable(w.w, t, p), one); }
         });
       })();
@@ -1609,6 +1842,8 @@
     if (ses.grads.length) lines.push('🎓 <b>' + ses.grads.length + '体</b> が卒業（もう野生に出ない）');
     if (ses.backs) lines.push('🤝 野生から <b>' + ses.backs + '枚</b> 取り返した');
     if (ses.fixed) lines.push('🔁 にげた子を <b>' + ses.fixed + '体</b> 追いかけて取り返した');
+    if (ses.hotNew) lines.push('🌶 手ごわい子が <b>' + ses.hotNew + '体</b>。次はちがう聞き方で会える');
+    if (ses.hotGrad) lines.push('🎓 手ごわい子を <b>' + ses.hotGrad + '体</b>、卒業させた');
     if (ses.shiny) lines.push('✨ きらきらの子を <b>' + ses.shiny + '体</b> 思い出した（長持ち＋15%）');
     if (CU) wantsList().forEach(function (x) { if (ses.wants0.indexOf(x.w.id + ':' + x.t) < 0) lines.push('💬 <b>' + esc(x.w.w) + '</b> が ' + TN[x.t].name + ' を覚えたがっている（ホームから）'); });
     if (ses.met.length) lines.push('🌱 <b>' + ses.met.length + '語</b> と出会った');
@@ -1630,6 +1865,8 @@
     if (V.faceList().length) ntxt += '<br>👀 顔見知りチェックは あと ' + V.faceList().length + '語';
     $('#dNext').innerHTML = ntxt;
     $('#dMore').textContent = wilt ? 'もうひと区切り ▶' : 'もう5分 ▶';
+    niteIds = niteCands();   /* 🌙 おやすみ前の3体（控えめなボタン。1語もなければ出さない） */
+    var nb = $('#dNite'); nb.hidden = !niteIds.length; nb.disabled = false; nb.textContent = '🌙 おやすみ前に、' + niteIds.length + '体だけ顔を見る';
     if (G) G.fromTo('#done .anim, #dCards .mini', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.06, ease: 'back.out(1.6)' });
     if (ses.caught.length + ses.ups.length >= 3 || nm.length) FX.rain();
   }
@@ -1675,7 +1912,7 @@
     if (!c) return '<button class="mini none" data-id="' + w.id + '"><span class="no">' + (w.i + 1) + '</span>' + cs(w, { mood: 'none' }) + '</button>';
     var st = shownState(w.id);
     return '<button class="mini' + gcls(w) + ' r-' + V.RANKS[c.lv].id + ' st-' + st + '" data-id="' + w.id + '" style="--cond:' + V.condition(w.id).toFixed(2) + '">' +
-      '<span class="no">' + V.RANKS[c.lv].mark + ' ' + (w.i + 1) + '</span>' + (st !== 'fresh' ? '<span class="stb">' + (st === 'nap' ? '💤' : st === 'wild' ? '🍂' : '🥀') + '</span>' : '') +
+      '<span class="no">' + V.RANKS[c.lv].mark + ' ' + (w.i + 1) + '</span>' + (st !== 'fresh' ? '<span class="stb">' + (st === 'nap' ? '💤' : st === 'wild' ? '🍂' : '🥀') + '</span>' : '') + (V.hot(w.id) ? '<span class="hot-mk">🌶</span>' : '') +
       cs(w, { mood: moodOfShown(st), holo: c.lv === 3 }) + '<span class="mw">' + headHtml(w) + '</span><span class="mj">' + esc(w.ja) + '</span>' + pipsHtml(w) + '<span class="rb">' + (c.grad ? '🎓 卒業' : V.RANKS[c.lv].rel) + '</span></button>';
   }
   var dexTab = 'words';
@@ -1711,21 +1948,22 @@
       box.innerHTML = '<div class="sh-none"><div class="sh-sil">' + cs(w, { mood: 'none' }) + '</div><p>No.' + (w.i + 1) + '　まだ出会っていない単語</p><p class="note">' + (V.SEC[w.s].known ? '👀 顔見知りチェック' : '🌱 出会い') + 'で会えるよ</p></div>';
     } else {
       var st = V.state(id), cond = Math.round(V.condition(id) * 100);
-      box.innerHTML = '<div class="q-card big' + gcls(w) + ' r-' + V.RANKS[c.lv].id + '"><span class="qtag">No.' + (w.i + 1) + '</span><div class="q-word">' + headHtml(w) + '</div>' + sayBtn(V.head(w)) +
-        useHtml(w) + '<small class="pos">' + POS[w.pos] + '</small>' + refHtml(w) + '</div><div class="meaning">' + esc(w.ja) + '</div>' + trackHtml(w, nowClose(id), Chara.moodOf(st)) + formsHtml(w) + memoHtml(w) + gaugeHtml(w) +
+      box.innerHTML = '<div class="q-card big' + gcls(w) + ' r-' + V.RANKS[c.lv].id + '"><span class="qtag">No.' + (w.i + 1) + (V.hot(id) ? ' 🌶' : '') + '</span><div class="q-word">' + headHtml(w) + '</div>' + sayBtn(V.head(w)) +
+        useHtml(w) + '<small class="pos">' + POS[w.pos] + '</small>' + refHtml(w) + '</div><div class="meaning">' + esc(w.ja) + '</div>' + trackHtml(w, nowClose(id), Chara.moodOf(st)) + formsHtml(w) + memoHtml(w, true) + gaugeHtml(w) +
         memLine(null, V.memory(id)) +
         '<div class="cond"><span>コンディション</span><div class="gbar c"><i style="width:' + cond + '%"></i></div><b>' + (st === 'fresh' ? '元気' : !chunkSet[id] ? '💤 お昼寝中' : st === 'wilt' ? '🥀 しおれかけ' : '🍂 野生に戻りかけ') + '</b></div>' +
         (st !== 'fresh' && !chunkSet[id] ? '<p class="note">' + ((V.memory(id) || {}).s >= 14 ? '記憶が強い子なので、少し待っても大丈夫。' : '順番を待っている。') + 'そのうち野生戦で会える（いま会いに行ってもいい）</p>' : '') +
         (st !== 'fresh' ? '<button class="next rescue" data-id="' + id + '">🚑 救出する</button>' : '');
       var rb = $('.rescue', box);
       if (rb) rb.addEventListener('click', function () { closeSheet(); start([{ type: 'rescue', id: id }]); });
+      bindNoteEdit(box, w);
       $$('.fchip[data-cj]', box).forEach(function (b) { b.addEventListener('click', function () { openCjSheet(b.dataset.cj); }); });
       $$('.fchip[data-learn]', box).forEach(function (b) { b.addEventListener('click', function () { var a = b.dataset.learn.split(':'); closeSheet(); start([{ type: 'learn', verb: a[0], tense: a[1] }]); }); });
     }
     $('#sheet').hidden = false;
     tw($('#sheet .sh'), { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' });
   }
-  function closeSheet() { $('#sheet').hidden = true; }
+  function closeSheet() { $('#sheet').hidden = true; $('#sheet .sh').classList.remove('nite'); document.body.classList.remove('hot-typing'); }
 
   function toast(t, sub) {
     var el = document.createElement('div'); el.className = 'toast'; el.innerHTML = '<b>' + esc(t) + '</b><small>' + esc(sub || '') + '</small>';
@@ -1760,6 +1998,9 @@
     $('#hRange').addEventListener('click', openRange);
     $('#hBoss').addEventListener('click', function () { var b = todaysBoss(); if (b && !b.won) startBoss(); });
     $('#hDeck').addEventListener('click', function () { openDecks(); });
+    $('#hMorningGo').addEventListener('click', startMorning);
+    $('#hMorningLater').addEventListener('click', function () { if (S.nite) S.nite.seen = null; V.save(); renderMorning(); });
+    $('#dNite').addEventListener('click', function () { openNite(niteIds); });
     $('#deckFile').addEventListener('change', function (e) {
       var f = e.target.files && e.target.files[0]; if (!f) return;
       dkMsg('読み込み中…（' + Math.round(f.size / 1024) + 'KB）');
@@ -1785,6 +2026,21 @@
     if (!S.marks) newMarks(true);
     go('home');
   }
-  window.VUI = { go: go, start: start, makePlan: makePlan, chunks: chunks };
+  /* 自動テスト用の入口。VUI.cur（活用の問題の正解）は askConj が書く。
+   *  nite(ids)：おやすみ前を開く／morning(ids)：朝の3体を始める（記録がなければ、ゆうべ見たことにして）／hot(id, miss)：手ごわい子にする（?sandbox か ?debug のときだけ） */
+  function someWords() { return Object.keys(S.cards).filter(function (id) { return V.word(id); }).slice(0, 3); }
+  window.VUI = {
+    go: go, start: start, makePlan: makePlan, chunks: chunks,
+    nite: function (ids) { var l = (ids && ids.length ? ids : niteIds.length ? niteIds : someWords()).slice(0, 3); openNite(l); return l; },
+    morning: function (ids) {
+      if (!morningIds().length) {
+        S.nite = S.nite || {};
+        S.nite.seen = { day: 'test', t: Date.now() - 24 * 3600e3, ids: (ids && ids.length ? ids : someWords()).slice(0, 3), res: {} };
+        V.save();
+      }
+      startMorning(); return morningIds();
+    },
+    hot: function (id, miss) { if (!/[?&](sandbox|debug)\b/.test(location.search)) return false; var ok = V.debugHot(id, miss); if (ok && !$('#home').hidden) renderHome(); return ok; }
+  };
   bind();
 })();

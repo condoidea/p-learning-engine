@@ -31,10 +31,11 @@
   var GRAD = 240;                   // これを超えたら卒業（もう野生に出ない）
   var DUE = Math.log(1 / FRESH) / Math.LN2;   // s のうち、しおれ始めるまでの割合（約0.415）
   var RELEARN = 6;                  // まちがえてからこの時間（h）以内の正解は「覚え直し」（強さは伸ばさない）
+  var HOT_MISS = 3, HOT_OK = 2;     // 🌶 手ごわい子：通算3回まちがえたらなる／そのあと2回続けて正解で卒業（単語のカードだけ）
 
   function fresh() {
     return { cards: {}, meet: [], day: { date: '', exp: 0, grown: [], caught: [] }, total: { exp: 0, answered: 0, correct: 0 },
-      settings: { sound: true, speak: true, mood: 'firm' } };
+      settings: { sound: true, speak: true, mood: 'firm' }, notes: {} };
   }
   function load() {
     try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && s.cards) { var f = fresh(); for (var k in f) if (!(k in s)) s[k] = f[k]; return s; } } catch (e) { /* 保存領域が使えない */ }
@@ -135,7 +136,7 @@
       return r;
     },
     /* 野生戦・救出などの答え。正解なら経験値、まちがいならコンディションを下げる（レベルは下げない） */
-    answer: function (id, ok) {
+    answer: function (id, ok, type) {
       rollDay();
       var c = S.cards[id], now = Date.now(), r = { exp: 0, up: 0, back: false, grad: false };
       S.total.answered++;
@@ -161,8 +162,15 @@
           else balance(id, c);
         }
         delete c.lapse;
+        /* 🌶 手ごわい子：そのあと2回続けて正解したら卒業（印を外す。まちがえた回数は残す＝hb に基準を移す） */
+        if (!isCj(id) && c.hot) { c.hs = (c.hs || 0) + 1; if (c.hs >= HOT_OK) { c.hot = 0; c.hs = 0; c.hb = c.miss || 0; r.hotGrad = true; } }
       } else {
         c.streak = 0; c.miss = (c.miss || 0) + 1;
+        if (type) c.lt = type;                                           // 前回まちがえた問い方（手ごわい子は、次はちがう聞き方で出す）
+        if (!isCj(id)) {
+          if (c.hot) c.hs = 0;
+          else if (c.miss - (c.hb || 0) >= HOT_MISS) { c.hot = 1; c.hs = 0; r.hotNew = true; }
+        }
         c.s = Math.max(S0, c.s * 0.4); c.j = 1;                          // 忘れていたら、強さを4割に
         c.ok = Math.min(c.ok, now - c.s * DAY);                          // コンディションを半分に（まだ敵として残る）
         c.lapse = now;
@@ -170,6 +178,23 @@
       c.last = now; S.lastSeen = now; came();
       save();
       return r;
+    },
+    /* 🌶 手ごわい子（通算3回まちがえた語）。前回まちがえた問い方・自分の覚え方メモ（最大60字）も持つ */
+    hot: function (id) { var c = card(id); return !!(c && c.hot && !isCj(id)); },
+    lastMiss: function (id) { var c = card(id); return c && c.hot ? (c.lt || '') : ''; },
+    note: function (id) { return (S.notes || {})[id] || ''; },
+    setNote: function (id, t) {
+      t = Array.from(String(t || '').replace(/\s+/g, ' ').trim()).slice(0, 60).join('');
+      S.notes = S.notes || {};
+      if (t) S.notes[id] = t; else delete S.notes[id];
+      save(); return t;
+    },
+    /* 動作確認用：その語を手ごわい子にする（miss を渡すと「あと1回まちがえたらなる」状態にする） */
+    debugHot: function (id, miss) {
+      var c = card(id); if (!c || isCj(id)) return false;
+      c.hb = 0; c.hs = 0;
+      if (miss == null) { c.hot = 1; c.miss = Math.max(c.miss || 0, HOT_MISS); } else { c.hot = 0; c.miss = miss; }
+      save(); return true;
     },
     /* 顔見知りチェックで答えられなかった語 → 出会いへ */
     toMeet: function (id) { if (S.meet.indexOf(id) < 0 && !S.cards[id]) S.meet.push(id); save(); },
