@@ -65,6 +65,31 @@
     return '';
   }
 
+  /* かざり：体の形がちがっても、顔の位置（faceY）とてっぺん（top）を目安に置く */
+  var DECO_NAME = ['', 'リボン', 'ぼうし', 'マフラー', '花', '星のピン'];
+  function deco(k, cx, top, faceY) {
+    var x, y, a = '';
+    if (k === 1) {
+      x = cx - 22; y = faceY - 12;
+      return '<path d="M' + x + ' ' + y + ' l-11 -8 l0 16z M' + x + ' ' + y + ' l11 -8 l0 16z" fill="#ff5c8a" stroke="#8a1f45" stroke-width="1.6" stroke-linejoin="round"/><circle cx="' + x + '" cy="' + y + '" r="3.4" fill="#ff9bb8" stroke="#8a1f45" stroke-width="1.4"/>';
+    }
+    if (k === 2) {
+      x = cx + 4; y = top + 5;
+      return '<g transform="rotate(-10 ' + x + ' ' + y + ')"><path d="M' + (x - 11) + ' ' + y + ' L' + x + ' ' + (y - 24) + ' L' + (x + 11) + ' ' + y + 'z" fill="#ffd23f" stroke="#8a5a00" stroke-width="1.8" stroke-linejoin="round"/><path d="M' + (x - 6) + ' ' + (y - 9) + ' h12" stroke="#e8553d" stroke-width="3"/><circle cx="' + x + '" cy="' + (y - 25) + '" r="3.4" fill="#fff" stroke="#8a5a00" stroke-width="1.4"/></g>';
+    }
+    if (k === 3) {
+      y = faceY + 17;
+      return '<path d="M' + (cx - 26) + ' ' + y + ' q26 14 52 0 l-3 9 q-23 10 -46 0z" fill="#4aa3df" stroke="#1d5f8f" stroke-width="1.8" stroke-linejoin="round"/><path d="M' + (cx - 26) + ' ' + (y + 4) + ' q26 14 52 0" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="5 5"/><path d="M' + (cx + 12) + ' ' + (y + 11) + ' l3 14 l8 -2 l-2 -14z" fill="#4aa3df" stroke="#1d5f8f" stroke-width="1.6" stroke-linejoin="round"/>';
+    }
+    if (k === 4) {
+      x = cx - 22; y = faceY - 14;
+      for (var i = 0; i < 5; i++) { var t = i / 5 * 6.283; a += '<circle cx="' + r1(x + Math.cos(t) * 5.5) + '" cy="' + r1(y + Math.sin(t) * 5.5) + '" r="4.4" fill="#ff8fb8" stroke="#a02f63" stroke-width="1.2"/>'; }
+      return a + '<circle cx="' + x + '" cy="' + y + '" r="3.2" fill="#ffd23f" stroke="#a02f63" stroke-width="1"/>';
+    }
+    x = cx + 23; y = faceY - 12;
+    return '<path d="M' + x + ' ' + (y - 10) + ' l3 7 l8 1 l-6 5 l2 8 l-7 -4 l-7 4 l2 -8 l-6 -5 l8 -1z" fill="#ffd23f" stroke="#8a5a00" stroke-width="1.6" stroke-linejoin="round"/>';
+  }
+
   /* 単語キャラの SVG。mood: happy | meh | sleep | wow | none（まだ会っていない＝シルエット） */
   function svg(w, opt) {
     opt = opt || {};
@@ -108,6 +133,8 @@
       }
       s += '<path d="M' + at(0.86, H - 2) + ' l5 12 l-8 0z" fill="' + opt.forms[n - 1] + '" stroke="' + P.dark + '" stroke-width="1.3" stroke-linejoin="round"/>';
     }
+    /* かざり（💛 が3つたまった子）。顔のまわりに描き足す：1 リボン／2 ぼうし／3 マフラー／4 花／5 星のピン */
+    if (opt.deco && mood !== 'none') s += deco(opt.deco, cx, top, faceY);
     if (opt.holo) s += '<g class="spark"><path d="M14 20 l2 -6 l2 6 l6 2 l-6 2 l-2 6 l-2 -6 l-6 -2z" fill="#fff6a8"/><path d="M84 30 l1.5 -4 l1.5 4 l4 1.5 l-4 1.5 l-1.5 4 l-1.5 -4 l-4 -1.5z" fill="#c8f7ff"/></g>';
     return '<svg class="chara pos-' + w.pos + ' mood-' + mood + '" viewBox="0 0 100 100" aria-hidden="true">' + s + '</svg>';
   }
@@ -134,5 +161,7 @@
   function closeness(lv, cond) { return Math.max(0.05, Math.min(1, (lv + 1) / 4 * (0.35 + 0.65 * cond))); }
   function moodOf(state) { return state === 'wild' ? 'sleep' : state === 'wilt' ? 'meh' : 'happy'; }
 
-  window.Chara = { svg: svg, me: me, closeness: closeness, moodOf: moodOf, hash: hash };
+  /* その語のかざりの種類（1〜5。語の id で決まる）と名前 */
+  function decoKind(id) { return 1 + hash(String(id) + '~deco') % 5; }
+  window.Chara = { svg: svg, me: me, closeness: closeness, moodOf: moodOf, hash: hash, decoKind: decoKind, decoName: function (k) { return DECO_NAME[k] || ''; } };
 })();

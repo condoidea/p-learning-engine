@@ -571,3 +571,103 @@ body.hot-typing #stage, body.hot-typing .sh { padding-bottom: 42vh; }   /* キ�
 .nite-eye small { display: block; font-size: 14px; font-weight: 500; color: var(--muted); }
 .nite-card { min-height: 110px; }
 .nite-ja { font-size: 22px; font-weight: 900; }
+
+/* =========================================================
+ * 🎯 思い出しビンゴ（bng-）：3×3。マスは 1辺96px 以上、字は 15px 以上。filter のアニメーションはしない
+ * ========================================================= */
+#bingo { display: flex; flex-direction: column; gap: 8px; margin-bottom: -16px; }   /* 下の余白を少し詰めて、375×550 でも盤の下までスクロールなしで見える */
+.bng-head { display: flex; align-items: center; gap: 10px; }
+.bng-head b { font-size: 18px; }
+.bng-quit { width: 38px; height: 38px; border-radius: 50%; background: var(--card); border: 1px solid var(--line); flex: none; font-size: 16px; }
+.bng-call { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 96px; padding: 8px 54px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); text-align: center; }
+.bng-call.fbk { align-items: stretch; padding: 8px 12px; gap: 6px; text-align: left; }
+.bng-call.listen { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 4px 14px; padding: 8px 14px; }
+.bng-call .big-say { width: 64px; height: 64px; font-size: 28px; }
+.bng-call .say.slow { position: static; }
+.bng-lab { font-size: 16px; font-weight: 700; color: var(--muted); }
+.bng-call.listen .bng-lab { flex-basis: 100%; text-align: center; }
+.bng-word { font-family: var(--f-es); font-weight: 800; font-size: clamp(28px, 9vw, 36px); line-height: 1.2; overflow-wrap: anywhere; }
+.bng-ja { font-size: 26px; font-weight: 900; line-height: 1.3; }
+.bng-lead { margin: 0; font-size: 17px; font-weight: 900; text-align: center; }
+.bng-sub { margin: 0; font-size: 16px; color: var(--muted); text-align: center; line-height: 1.5; }
+.bng-ng, .bng-ok { margin: 0; padding: 4px 10px; border-radius: 10px; font-size: 16px; line-height: 1.45; overflow-wrap: anywhere; }
+.bng-ng { background: var(--ng-bg); } .bng-ok { background: var(--ok-bg); }
+.bng-ng b, .bng-ok b { font-family: var(--f-es); }
+.bng-call .bng-next { padding: 10px; font-size: 16px; }
+.bng-btns { display: flex; flex-direction: column; gap: 6px; }
+.bng-btns .next { padding: 10px; font-size: 16px; }
+.bng-btns .ghost { min-height: 44px; font-size: 16px; }
+.bng-skip { min-height: 44px; font-size: 16px; color: var(--muted); }
+
+.bng-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.bng-cell { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 96px; padding: 6px 4px; border-radius: 16px; border: 2px solid var(--line-strong); background: var(--card);
+  box-shadow: 0 3px 0 var(--line-strong); text-align: center; min-width: 0; overflow: hidden; }
+.bng-cell:active:not(.done) { transform: translateY(2px); box-shadow: 0 1px 0 var(--line-strong); }
+.bng-t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-width: 100%; font-size: 17px; font-weight: 700; line-height: 1.3; }   /* 単語の途中では折らない。入らなければ .sm で少し小さく */
+.bng-cell.es .bng-t { font-family: var(--f-es); font-weight: 600; font-size: 19px; }
+.bng-t.sm, .bng-cell.es .bng-t.sm { font-size: 15px; }
+.bng-cell.done { border-color: var(--ok); background: var(--ok-bg); box-shadow: 0 3px 0 var(--ok); gap: 0; }
+.bng-cell.free { border-style: dashed; }
+.bng-st { display: block; width: 34px; flex: none; }
+.bng-w { max-width: 100%; font-family: var(--f-es); font-weight: 800; font-size: 15px; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bng-w .art { font-size: 15px; }
+.bng-j { max-width: 100%; font-size: 15px; line-height: 1.25; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bng-cell.pop .bng-st { animation: bng-pop .4s ease-out; }
+.bng-cell.hint { border-color: var(--ok); box-shadow: 0 0 0 4px var(--ok); animation: bng-glow .8s ease-in-out infinite alternate; }
+.bng-cell.shake { animation: bng-shake .38s ease-in-out; }
+.bng-cell.hop .bng-st { animation: bng-hop .5s ease-out 3; }
+.bng-cell.hop-all .bng-st { animation: bng-hop .5s ease-out 1; animation-delay: var(--d, 0s); }
+@keyframes bng-pop { from { transform: scale(.3); } 60% { transform: scale(1.25); } to { transform: scale(1); } }
+@keyframes bng-glow { from { box-shadow: 0 0 0 3px var(--ok); } to { box-shadow: 0 0 0 7px var(--ok-bg); } }
+@keyframes bng-shake { 20% { transform: translateX(-5px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(3px); } }
+@keyframes bng-hop { 40% { transform: translateY(-14px) scale(1.12); } }
+.bng-game { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); }
+.bng-game b { font-size: 18px; }
+.bng-game p { margin: 0; font-size: 16px; }
+.bng-note { text-align: left; font-size: 16px; }
+
+/* =========================================================
+ * 💬 ふれあいイベント（evt-）：広場の「！」と、画面いっぱいの短い場面（bondMoment に近い見た目）
+ * ========================================================= */
+.evt-bub { position: absolute; left: -12px; top: -12px; z-index: 3; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--on-accent); box-shadow: 0 2px 0 var(--accent-d);
+  font-size: 17px; font-weight: 900; line-height: 28px; text-align: center; animation: evt-pulse 2.4s ease-in-out infinite; }
+.evt-bub::after { content: ''; position: absolute; inset: -10px; }
+@keyframes evt-pulse { 50% { transform: scale(1.18); } }
+.evt-sheet { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 0; font-size: 16px; }
+.evt-sheet span { padding: 2px 10px; border-radius: 999px; background: var(--sel-bg); }
+.evt { position: fixed; inset: 0; z-index: 85; display: flex; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch; background: radial-gradient(ellipse at 50% 38%, var(--card) 0%, var(--bg) 72%); text-align: center; }
+.evt-x { position: absolute; top: max(8px, env(safe-area-inset-top)); right: 10px; z-index: 2; width: 44px; height: 44px; border-radius: 50%; background: var(--card); border: 1px solid var(--line); font-size: 16px; }
+.evt-in { margin: auto; width: 100%; max-width: 440px; padding: 40px 20px 16px; }
+.evt-sc, .evt-end { display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
+.evt-stage { display: flex; align-items: flex-end; justify-content: center; gap: 6px; }
+.evt-me { width: 64px; }
+.evt-bud { width: 76px; }
+.evt-three .evt-me { width: 54px; } .evt-three .evt-bud { width: 66px; }
+.evt-bud.big { width: 104px; }
+.evt-eye { margin: 0; font-size: 20px; font-weight: 900; color: var(--accent); line-height: 1.4; }
+.evt-sub { margin: 0; font-size: 16px; font-weight: 700; line-height: 1.5; }
+.evt-sub small { display: block; font-size: 16px; font-weight: 500; color: var(--muted); }
+.evt-sub b { font-family: var(--f-es); font-size: 24px; color: var(--accent); }
+.evt-days { font-size: 18px; }
+.evt-word { font-family: var(--f-es); font-weight: 800; font-size: clamp(30px, 10vw, 40px); line-height: 1.2; overflow-wrap: anywhere; }
+.evt-word.ja { font-family: var(--f-ja); font-size: 28px; }
+.evt-line { margin: 0; font-size: 16px; line-height: 1.6; }
+.evt-line b { font-family: var(--f-es); }
+.evt-deco { font-weight: 900; color: var(--accent); }
+.evt-after:empty { display: none; }
+.evt-after { display: flex; flex-direction: column; gap: 8px; }
+.evt-card { min-height: 0; padding: 12px 14px; }
+.evt-pair { padding: 8px 12px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); text-align: left; }
+.evt-pw { font-family: var(--f-es); font-size: 20px; font-weight: 800; }
+.evt-pw b { font-family: var(--f-ja); font-size: 18px; }
+.evt-ex { font-family: var(--f-es); font-size: 16px; font-weight: 600; line-height: 1.5; }
+.evt-ex small { display: block; font-family: var(--f-ja); font-size: 16px; font-weight: 400; color: var(--muted); }
+.evt .say.inl { position: static; }
+.evt .choices.es .ch { font-size: 19px; }
+.evt-hearts { font-size: 30px; letter-spacing: 4px; }
+.evt-heart { display: inline-block; animation: evt-heart .7s ease-out; }
+@keyframes evt-heart { from { transform: translateY(10px) scale(.4); opacity: 0; } 60% { transform: translateY(-6px) scale(1.2); opacity: 1; } to { transform: none; } }
+.evt-hop .chara { animation: evt-hop .6s ease-out 2; }
+@keyframes evt-hop { 40% { transform: translateY(-18px) scale(1.1); } }
+@media (prefers-reduced-motion: reduce) { .evt-bub, .evt-heart, .evt-hop .chara, .bng-cell.hint, .bng-cell.pop .bng-st, .bng-cell.hop .bng-st, .bng-cell.hop-all .bng-st { animation: none; } }
+.evt-ans .evt-stage, .evt-ans .evt-eye { display: none; }

@@ -162,6 +162,7 @@
           else balance(id, c);
         }
         delete c.lapse;
+        if (r.back) c.rb = (c.rb || 0) + 1;   /* 野生から取り戻した回数（💬 きねん日で「取り戻した回数」に使う） */
         /* 🌶 手ごわい子：そのあと2回続けて正解したら卒業（印を外す。まちがえた回数は残す＝hb に基準を移す） */
         if (!isCj(id) && c.hot) { c.hs = (c.hs || 0) + 1; if (c.hs >= HOT_OK) { c.hot = 0; c.hs = 0; c.hb = c.miss || 0; r.hotGrad = true; } }
       } else {

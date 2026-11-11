@@ -123,10 +123,12 @@
   /* デッキの言語ごとのことば（ほめ言葉・捕獲・進化・あいさつ） */
   var T = D.lang === 'en' ? {
     praise: ['Nice!', 'Great!', 'Awesome!', 'Perfect!', 'Brilliant!', 'Outstanding!'], cap: 'Got it!', evo: ['LEVEL UP!', 'BRAVO!', 'SWEET!'],
-    hi: 'Hi!', yes: 'Yes!', newForm: 'NEW FORM!', mark: 'MILESTONE!', titleA: 'Great job!', titleB: 'Nice work!', inLang: '英語では？'
+    hi: 'Hi!', yes: 'Yes!', newForm: 'NEW FORM!', mark: 'MILESTONE!', titleA: 'Great job!', titleB: 'Nice work!', inLang: '英語では？',
+    bingo: 'BINGO!', fest: 'Happy day!', friend: 'Friends!', deco: 'Looking good!', pls: 'Help me!'
   } : {
     praise: ['¡Bien!', '¡Muy bien!', '¡Eso es!', '¡Perfecto!', '¡Olé!', '¡Genial!'], cap: '¡Capturado!', evo: ['¡EVOLUCIÓN!', '¡OLÉ!', '¡ARRIBA!'],
-    hi: '¡Hola!', yes: '¡Sí!', newForm: '¡NUEVA FORMA!', mark: '¡LOGRO!', titleA: '¡Muy bien!', titleB: '¡Buen trabajo!', inLang: 'スペイン語では？'
+    hi: '¡Hola!', yes: '¡Sí!', newForm: '¡NUEVA FORMA!', mark: '¡LOGRO!', titleA: '¡Muy bien!', titleB: '¡Buen trabajo!', inLang: 'スペイン語では？',
+    bingo: '¡BINGO!', fest: '¡Felicidades!', friend: '¡Amigos!', deco: '¡Qué guapo!', pls: '¡Ayúdame!'
   };
   var PRAISE = T.praise;
   if (window.SndPacks && SndPacks[D.sound]) window.Snd = SndPacks[D.sound];
@@ -216,10 +218,10 @@
   function renderPlaza() {
     var box = $('#plaza'), ids = Object.keys(S.cards).filter(function (id) { return V.word(id); });
     if (!ids.length) { box.innerHTML = '<span class="p-me">' + Chara.me() + '</span><p class="p-empty">まだ仲間がいない。' + (V.faceList().length ? '👀 や 🌱' : '🌱 出会い') + ' で単語と出会おう</p>'; return; }
-    var rings = [[], [], [], [], []], CAP = [6, 8, 10, 12, 12], shown = 0;
+    var rings = [[], [], [], [], []], CAP = [6, 8, 10, 12, 12], shown = 0, ev = evtToday(), evId = ev ? ev.id : '';
     ids.map(function (id) { return { id: id, c: nowClose(id), st: shownState(id), h: Chara.hash(id) }; })
       .sort(function (a, b) { var fa = famOf(V.word(a.id)) || '~', fb = famOf(V.word(b.id)) || '~'; return fa < fb ? -1 : fa > fb ? 1 : a.h - b.h; })
-      .forEach(function (x) { var k = ringOf(x.c); if (rings[k].length < CAP[k]) { rings[k].push(x); shown++; } });
+      .forEach(function (x) { var k = ringOf(x.c); if (rings[k].length < CAP[k] || x.id === evId) { rings[k].push(x); shown++; } });   /* 「！」の子は、輪がいっぱいでも必ず出す */
     var html = '';
     rings.forEach(function (list, k) {
       list.forEach(function (x, i) {
@@ -229,7 +231,7 @@
         var left = 50 + Math.cos(ang) * r * 46, bottom = 6 + -Math.sin(ang) * r * 74;
         var w = V.word(x.id);
         html += '<button class="p-bud st-' + x.st + '" data-id="' + x.id + '" aria-label="' + esc(w.w) + '" style="left:' + left.toFixed(1) + '%;bottom:' + bottom.toFixed(1) + '%;width:' + RSIZE[k] + 'px;z-index:' + Math.round(100 - bottom) + '">' +
-          cs(w, { mood: moodOfShown(x.st), holo: V.card(x.id).lv === 3 }) + (x.st === 'nap' ? '' : x.st !== 'fresh' ? '<span class="p-st">' + (x.st === 'wild' ? '🍂' : '🥀') + '</span>' : V.grad(x.id) ? '<span class="p-st">🎓</span>' : CU && wantOf(w) ? '<span class="p-st">💬</span>' : '') + '</button>';
+          cs(w, { mood: moodOfShown(x.st), holo: V.card(x.id).lv === 3 }) + (x.st === 'nap' ? '' : x.st !== 'fresh' ? '<span class="p-st">' + (x.st === 'wild' ? '🍂' : '🥀') + '</span>' : V.grad(x.id) ? '<span class="p-st">🎓</span>' : CU && wantOf(w) ? '<span class="p-st">💬</span>' : '') + (x.id === evId ? '<span class="evt-bub" role="button" aria-label="ふれあい">！</span>' : '') + '</button>';
       });
     });
     var more = ids.length - shown;
@@ -263,6 +265,7 @@
       { id: 'wild', ico: '⚔', name: '野生戦', sub: (S.day.chunks > 0 ? '✔ 今日は済み。' : '') + (wild ? (S.day.chunks > 0 ? 'もう' : '') + 'ひと区切り ' + Math.min(wild, chunkSize()) + '体（約' + chunkMin(Math.min(wild, chunkSize())) + '分）' : untilWild()), off: !wild },
       { id: 'care', ico: '🤝', name: 'なつかせる', sub: soon ? 'もうすぐしおれる子 ' + soon + '体（しおれる前に会う）' : 'いまは大丈夫', off: !soon },
       { id: 'conj', ico: '🔁', name: '活用', sub: conjSub(), hide: !CU || !D.words.some(function (w) { return w.pos === 'v'; }) },
+      { id: 'play', ico: '🎈', name: 'あそび場', sub: bngReady() ? '🎯 思い出しビンゴ' : 'あと少し集めると遊べる', off: !bngReady() },
       { id: 'dex', ico: '📖', name: '図鑑', sub: got + '枚' }
     ];
     $('#alacarte').innerHTML = tiles.filter(function (t) { return !t.hide; }).map(function (t) {
@@ -1360,7 +1363,7 @@
   function learned(w) { return TSTEPS.filter(function (t) { return formCard(w, t); }); }
   function formColors(w) { return learned(w).map(function (t) { return CU.look[t].color; }); }
   /* 単語キャラ（動詞は衣装つき） */
-  function cs(w, o) { o = o || {}; if (w.pos === 'v' && CU && window.Conj) o.forms = formColors(w); return Chara.svg(w, o); }
+  function cs(w, o) { o = o || {}; if (w.pos === 'v' && CU && window.Conj) o.forms = formColors(w); var dk = decoOf(w.id); if (dk && !o.nodeco) o.deco = dk; return Chara.svg(w, o); }
   /* 次に覚えたがっている時制（なければ null） */
   function wantOf(w) {
     if (w.pos !== 'v' || !V.card(w.id) || !CU) return null;
@@ -1949,7 +1952,7 @@
     } else {
       var st = V.state(id), cond = Math.round(V.condition(id) * 100);
       box.innerHTML = '<div class="q-card big' + gcls(w) + ' r-' + V.RANKS[c.lv].id + '"><span class="qtag">No.' + (w.i + 1) + (V.hot(id) ? ' 🌶' : '') + '</span><div class="q-word">' + headHtml(w) + '</div>' + sayBtn(V.head(w)) +
-        useHtml(w) + '<small class="pos">' + POS[w.pos] + '</small>' + refHtml(w) + '</div><div class="meaning">' + esc(w.ja) + '</div>' + trackHtml(w, nowClose(id), Chara.moodOf(st)) + formsHtml(w) + memoHtml(w, true) + gaugeHtml(w) +
+        useHtml(w) + '<small class="pos">' + POS[w.pos] + '</small>' + refHtml(w) + '</div><div class="meaning">' + esc(w.ja) + '</div>' + trackHtml(w, nowClose(id), Chara.moodOf(st)) + evtSheetHtml(id) + formsHtml(w) + memoHtml(w, true) + gaugeHtml(w) +
         memLine(null, V.memory(id)) +
         '<div class="cond"><span>コンディション</span><div class="gbar c"><i style="width:' + cond + '%"></i></div><b>' + (st === 'fresh' ? '元気' : !chunkSet[id] ? '💤 お昼寝中' : st === 'wilt' ? '🥀 しおれかけ' : '🍂 野生に戻りかけ') + '</b></div>' +
         (st !== 'fresh' && !chunkSet[id] ? '<p class="note">' + ((V.memory(id) || {}).s >= 14 ? '記憶が強い子なので、少し待っても大丈夫。' : '順番を待っている。') + 'そのうち野生戦で会える（いま会いに行ってもいい）</p>' : '') +
@@ -1973,6 +1976,412 @@
   }
 
   /* =========================================================
+   * 🎈 あそび場 → 🎯 思い出しビンゴ（いつもの流れ＝出会い・野生戦には混ぜない。ホームのタイルから始める）
+   *  ・集めた語（活用カードは除く）が9語以上あるときだけ。盤は3×3。もうすぐしおれる子・しおれた子・手ごわい子を先に、足りない分はほかの子から。
+   *    卒業した子は入れない。同じ意味・同じつづりの語は同じ盤に入れない
+   *  ・遊ぶたびに向きが交互に：A＝盤が「意味」・呼び出しが「語」／B＝盤が「語」・呼び出しが「意味」
+   *  ・最初にフリーのマスを1つ（その語は、その回は答えたことにしない）。呼ばれる順はランダム
+   *  ・正解＝そのマスにその子のスタンプ（V.answer(true)。ふだんの復習と同じ計算）
+   *  ・まちがい＝押したマスがゆれ、正しいマスが光る。V.answer(false) は、その語につき1回のゲームで最初の1度だけ。
+   *    その語はあとでもう一度呼ばれる（2度目の正解は、6時間以内なら「覚え直し」の扱い。core.js）。とりちがえた相手は V.mixed
+   *  ・1列そろったら ¡BINGO!（その列だけ跳ねる）→ つづけて全部うめる／ここで終わる。時間制限・負けはなし。途中でやめても答えた分は記録ずみ
+   *  ・進化・取り戻し・卒業は、遊んでいる途中では知らせず、結果の画面でまとめて
+   * ========================================================= */
+  var BNG_LINES = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+  var BNG = null;
+  function isDebug() { return /[?&]debug\b/.test(location.search); }
+  /* 盤に入れる9語（足りなければ 9語に満たない配列を返す）。lenient：?debug のとき、足りない分は図鑑にない語で埋める */
+  function bngPick(lenient) {
+    var out = [], sp = {}, jj = {};
+    function add(w) {
+      if (!w || out.length >= 9) return;
+      var k = String(w.w).toLowerCase(), j = String(w.ja);
+      if (sp[k] || jj[j]) return;
+      sp[k] = jj[j] = 1; out.push(w);
+    }
+    var have = Object.keys(S.cards).filter(function (id) { var w = V.word(id); return w && V.inRange(w) && !V.grad(id); });
+    var pri = {};
+    V.soonList(72).forEach(function (id) { if (!V.isCj(id)) pri[id] = 1; });
+    V.wildList().forEach(function (w) { pri[w.id] = 1; });
+    have.forEach(function (id) { if (V.hot(id)) pri[id] = 1; });
+    shuffle(have.filter(function (id) { return pri[id]; })).concat(shuffle(have.filter(function (id) { return !pri[id]; }))).forEach(function (id) { add(V.word(id)); });
+    if (lenient && out.length < 9) shuffle(D.words.filter(function (w) { return !V.card(w.id); })).forEach(add);
+    return out;
+  }
+  function bngReady() { return bngPick(isDebug()).length >= 9; }
+
+  function openPlay() {
+    var box = $('#sheetBody'), ok = bngReady();
+    box.innerHTML = '<p class="u-title">🎈 あそび場</p><p class="note bng-note">いつもの流れ（出会い・野生戦）とは別の、あそびの時間。やらなくても、何も失わない</p>' +
+      '<div class="bng-game"><b>🎯 思い出しビンゴ</b><p>集めた子9人を、3×3のマスにならべて遊ぶ。呼ばれたものに合うマスをタップ。時間制限も、負けもなし。</p>' +
+      (ok ? '<button class="next" id="bngGo">はじめる ▶</button>' : '<p class="note">あと少し集めると遊べる</p>') + '</div>';
+    if (ok) $('#bngGo', box).addEventListener('click', function () { closeSheet(); startBingo(true); });
+    $('#sheet').hidden = false;
+    tw($('#sheet .sh'), { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' });
+  }
+
+  function cellEl(i) { return $$('#bngBoard .bng-cell')[i]; }
+  function fitCells(root) { $$('.bng-t', root).forEach(function (t) { t.classList.remove('sm'); if (t.scrollHeight > t.clientHeight + 1 || t.scrollWidth > t.clientWidth + 1) t.classList.add('sm'); }); }   /* 長い意味は2行まで。あふれたら少し小さく（15px まで） */
+  function bngCell(i) {
+    var B = BNG, w = B.words[i], A = B.dir === 'A';
+    if (B.filled[i]) return '<button class="bng-cell done' + (B.free === i ? ' free' : '') + gcls(w) + '" data-i="' + i + '" aria-label="' + esc(w.w) + '"><span class="bng-st">' + cs(w, { mood: 'happy' }) + '</span><span class="bng-w">' + headHtml(w) + '</span><span class="bng-j">' + esc(w.ja) + '</span></button>';
+    return '<button class="bng-cell' + (A ? '' : ' es') + '" data-i="' + i + '"><span class="bng-t">' + (A ? esc(w.ja) : headHtml(w)) + '</span></button>';
+  }
+  function bngSetCell(i, cls) {
+    var old = cellEl(i); old.outerHTML = bngCell(i);
+    var n = cellEl(i); if (cls) n.classList.add(cls);
+    fitCells(n); return n;
+  }
+  function bngCall(html, cls) { var c = $('#bngCall'); c.className = 'bng-call' + (cls ? ' ' + cls : ''); c.innerHTML = html; }
+  function bngLater(fn, ms) { var B = BNG; setTimeout(function () { if (BNG === B) fn(); }, ms); }
+
+  function startBingo(force) {
+    var words = bngPick(force && isDebug());
+    if (words.length < 9) { toast('あと少し集めると、遊べるよ', ''); return; }
+    if (window.Sfx) Sfx.unlock();
+    S.bngN = (S.bngN || 0) + 1; V.save();   /* 遊ぶたびに、盤と呼び出しの向きを入れかえる */
+    ses = { grads: [], wants0: [], plan: [], bi: 0, label: 'ビンゴ', caught: [], ups: [], exp: 0, ok: 0, ng: 0, combo: 0, backs: 0, backIds: [], met: [], fixed: 0, shiny: 0, hotNew: 0, hotGrad: 0, miss: {}, hotSeen: {}, saved: {}, rescueId: '', bingo: true };
+    BNG = { dir: S.bngN % 2 ? 'A' : 'B', words: shuffle(words), filled: [], free: -1, queue: [], cur: null, cell: -1, phase: 'free', busy: false, missed: {}, lines: {}, nLines: 0, asked: false, stamped: [], audio: false };
+    for (var i = 0; i < 9; i++) BNG.filled.push(false);
+    go('bingo');
+    $('#bngBoard').innerHTML = BNG.words.map(function (w, k) { return bngCell(k); }).join('');
+    fitCells($('#bngBoard'));
+    bngCall('<p class="bng-lead">🎯 まず、フリーのマスを1つ えらぼう</p><p class="bng-sub">自信のない子を、先に外せる（そのマスは はじめからうまる）</p><button class="ghost bng-skip" id="bngSkip">えらばずに はじめる</button>', 'fbk');
+    $('#bngSkip').addEventListener('click', function () { bngFree(-1); });
+  }
+  function bngFree(i) {
+    var B = BNG; if (!B || B.phase !== 'free') return;
+    B.phase = 'play';
+    if (i >= 0) { B.free = i; B.filled[i] = true; bngSetCell(i, 'pop'); }
+    B.queue = shuffle(B.words.filter(function (w, k) { return k !== i; }));
+    bngLater(bngNext, i >= 0 ? 600 : 0);
+    B.busy = true;
+  }
+  function bngNext() {
+    var B = BNG; if (!B) return;
+    if (!B.queue.length) return bngAllDone();
+    $$('#bngBoard .bng-cell').forEach(function (c) { c.classList.remove('hint', 'shake', 'hop'); });
+    var w = B.queue.shift(), k = V.card(w.id);
+    B.cur = w; B.cell = B.words.indexOf(w); B.busy = false;
+    B.audio = B.dir === 'A' && !!k && k.lv >= 1 && Speech.ok() && Math.random() < 0.4;   /* ランクが高めの子は、ときどき音だけ（listen と同じ）。読み上げが使えない端末では必ずつづり */
+    if (window.VUI) VUI.cur = { id: w.id, cell: B.cell, dir: B.dir, audio: B.audio };
+    if (B.dir === 'B') bngCall('<span class="bng-lab">' + T.inLang + '</span><div class="bng-ja">' + esc(w.ja) + '</div><small class="pos">' + POS[w.pos] + '</small>');
+    else if (B.audio) bngCall('<button class="big-say" data-say="' + esc(V.head(w)) + '" aria-label="読み上げ">🔊</button><button class="say slow" data-say="' + esc(V.head(w)) + '" aria-label="ゆっくり読み上げ">🐢</button><span class="bng-lab">聞こえた単語の意味は？</span>', 'listen');
+    else bngCall('<span class="bng-lab">この単語の意味は？</span><div class="bng-word' + gcls(w) + '">' + headHtml(w) + '</div>' + homoHtml(w) + sayBtn(V.head(w)));
+    if (B.dir === 'A') setTimeout(function () { if (BNG === B && B.cur === w) Speech.say(V.head(w)); }, 250);
+  }
+  function bngType() { return BNG.audio ? 'listen' : BNG.dir === 'A' ? 'es2ja' : 'ja2es'; }
+  function bngTap(i) {
+    var B = BNG; if (!B || B.busy) return;
+    if (B.phase === 'free') return bngFree(i);
+    if (B.phase !== 'play' || B.filled[i]) return;
+    B.busy = true;
+    if (i === B.cell) bngRight(i); else bngWrong(i);
+  }
+  function bngRight(i) {
+    var B = BNG, w = B.cur, ty = bngType();
+    B.filled[i] = true; if (B.stamped.indexOf(w.id) < 0) B.stamped.push(w.id);
+    var r = V.answer(w.id, true, ty);
+    ses.ok++; ses.combo++; ses.exp += r.exp;
+    if (r.up && ses.ups.indexOf(w.id) < 0) ses.ups.push(w.id);
+    if (r.back) { ses.backs++; ses.backIds.push(w.id); }
+    if (r.grad) ses.grads.push(w.id);
+    if (r.hotGrad) ses.hotGrad++;
+    if (r.back || r.relearn) ses.saved[w.id] = 1;
+    if (r.relearn) ses.fixed++;
+    var el = bngSetCell(i, 'pop');
+    if (window.Snd) Snd.ok(ses.combo);
+    FX.burst(el, null, 10);
+    if (B.dir === 'B') Speech.say(V.head(w));
+    var nl = [];
+    BNG_LINES.forEach(function (l, k) { if (!B.lines[k] && l.every(function (c) { return B.filled[c]; })) { B.lines[k] = 1; B.nLines++; nl.push(l); } });
+    if (B.filled.every(Boolean)) { if (nl.length) bngBingo(nl); return bngLater(bngAllDone, nl.length ? 1700 : 700); }
+    if (!nl.length) return bngLater(bngNext, 700);
+    bngBingo(nl);
+    if (B.asked) return bngLater(bngNext, 1500);
+    B.asked = true;
+    bngLater(function () {
+      bngCall('<p class="bng-lead">🎯 1列そろった！</p><div class="bng-btns"><button class="next" id="bngMore">つづけて全部うめる ▶</button><button class="ghost" id="bngStop">ここで終わる</button></div>', 'fbk');
+      $('#bngMore').addEventListener('click', bngNext);
+      $('#bngStop').addEventListener('click', bngEnd);
+    }, 1300);
+  }
+  /* ¡BINGO!：跳ねるのは、そろった列の子だけ */
+  function bngBingo(lines) {
+    var cells = [];
+    lines.forEach(function (l) { l.forEach(function (c) { if (cells.indexOf(c) < 0) cells.push(c); }); });
+    cells.forEach(function (c) { cellEl(c).classList.add('hop'); });
+    if (window.Snd) Snd.levelUp(2);
+    FX.slam(T.bingo, BNG.nLines + '列 そろった');
+  }
+  function bngWrong(i) {
+    var B = BNG, w = B.cur, o = B.words[i], ty = bngType();
+    if (!B.missed[w.id]) {   /* その語につき、1回のゲームで最初の1度だけ数える */
+      B.missed[w.id] = 1;
+      if (V.hot(w.id)) ses.hotSeen[w.id] = 1;
+      var r = V.answer(w.id, false, ty);
+      ses.ng++; ses.combo = 0; ses.miss[w.id] = 1;
+      if (r.hotNew) { ses.hotNew++; ses.hotSeen[w.id] = 1; }
+    }
+    V.mixed(w.id, o.id);   /* とりちがえた相手。次からその語の選択肢に入る */
+    var el = cellEl(i), good = cellEl(B.cell);
+    if (window.Snd) Snd.ng();
+    el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
+    good.classList.add('hint');
+    B.queue.splice(Math.min(B.queue.length, 2), 0, w);   /* あとでもう一度。正しいマスは開いたまま */
+    bngCall('<p class="bng-ng">✕ このマスは <b>' + esc(V.head(o)) + '</b> ＝ <b>' + esc(o.ja) + '</b></p><p class="bng-ok">○ 正解のマスは ここ（<b>' + esc(V.head(w)) + '</b> ＝ <b>' + esc(w.ja) + '</b>）</p><button class="next bng-next">つぎへ ▶</button>', 'fbk');
+    $('.bng-next').addEventListener('click', bngNext);
+  }
+  /* 全部うまった：盤ぜんぶの子がならぶ */
+  function bngAllDone() {
+    var B = BNG; if (!B) return;
+    B.phase = 'end'; B.busy = true;
+    $$('#bngBoard .bng-cell').forEach(function (c, k) { c.style.setProperty('--d', (k * 0.07).toFixed(2) + 's'); c.classList.add('hop-all'); });
+    bngCall('<p class="bng-lead">🎉 ぜんぶ ならんだ！</p><button class="next" id="bngRes">けっかへ ▶</button>', 'fbk');
+    $('#bngRes').addEventListener('click', bngEnd);
+  }
+  function bngEnd() {
+    var B = BNG; if (!B) return go('home');
+    BNG = null;
+    if (window.VUI) VUI.cur = null;
+    if (window.speechSynthesis) { try { speechSynthesis.cancel(); } catch (e) { /* 読み上げを止められない */ } }
+    if (!ses.ok && !ses.ng) return go('home');
+    bngResult(B);
+  }
+  /* 結果：そろった列の数、会えた子（mini カード）、まちがえた子は「次の野生戦でもう一度」。総数や点数の比較は出さない */
+  function bngResult(B) {
+    if (window.Snd) Snd.finish();
+    go('done');
+    var n = B.nLines, lines = [], missIds = Object.keys(ses.miss).filter(function (id) { return V.word(id); });
+    $('#dTitle').textContent = n ? T.bingo : T.titleB;
+    if (n) lines.push('🎯 そろった列 <b>' + n + '</b>');
+    if (ses.ups.length) lines.push('✨ <b>' + ses.ups.length + '枚</b> が進化');
+    if (ses.grads.length) lines.push('🎓 <b>' + ses.grads.length + '体</b> が卒業（もう野生に出ない）');
+    if (ses.backs) lines.push('🤝 野生から <b>' + ses.backs + '枚</b> 取り返した');
+    if (ses.fixed) lines.push('🔁 まちがえた子を、もう一度で <b>' + ses.fixed + '体</b> 取り返した');
+    if (ses.hotNew) lines.push('🌶 手ごわい子が <b>' + ses.hotNew + '体</b>。次はちがう聞き方で会える');
+    if (ses.hotGrad) lines.push('🎓 手ごわい子を <b>' + ses.hotGrad + '体</b>、卒業させた');
+    lines.push('⭐ <b>+' + ses.exp + ' EXP</b>（今日 +' + S.day.exp + '）');
+    if (V.cameDays()) lines.push('📅 会いに来た日　通算 <b>' + V.cameDays() + '日</b>');
+    var nm = newMarks();
+    $('#dLines').innerHTML = nm.map(function (m) { return '<li class="mark-new">🏅 あしあと　<b>' + m.ico + ' ' + esc(m.text) + '</b></li>'; }).join('') + lines.map(function (l) { return '<li>' + l + '</li>'; }).join('');
+    if (nm.length) setTimeout(function () { if (window.Snd) Snd.levelUp(2); FX.slam(T.mark, nm[nm.length - 1].text); }, 500);
+    $('#dCards').innerHTML = B.stamped.map(function (id) { return miniCard(V.word(id)); }).join('');
+    $('#dNext').innerHTML = missIds.length
+      ? '🔁 まちがえた子（' + missIds.map(function (id) { return '<b>' + esc(V.word(id).w) + '</b>'; }).join('・') + '）は、<b>次の野生戦で、もう一度会える</b>'
+      : '🎈 また、ちがう盤であそぼう';
+    $('#dMore').textContent = 'もう1枚 ▶';
+    niteIds = niteCands();   /* 🌙 おやすみ前の3体：ビンゴでまちがえた語も候補に入る（ses.miss） */
+    var nb = $('#dNite'); nb.hidden = !niteIds.length; nb.disabled = false; nb.textContent = '🌙 おやすみ前に、' + niteIds.length + '体だけ顔を見る';
+    if (G) G.fromTo('#done .anim, #dCards .mini', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.06, ease: 'back.out(1.6)' });
+    if (n || nm.length) FX.rain();
+  }
+
+  /* =========================================================
+   * 💬 ふれあいイベント（集めた子のほうから起きる、小さな出来事）
+   *  ・ホームの広場で、1体だけに「！」。1日に1つまで、その日のうちだけ。集めた語が5語以上になってから。ホームを開いても音は出さない。
+   *    やらなくても何も失わない（翌日には静かに消える。催促しない・「やっていない」と出さない）
+   *  ・種類：🎂 きねん日（出会って 7・30・100…日）／🤝 しょうかい（とりちがえた子を連れてくる）／✏ おねがい（例文の穴埋め）
+   *    その日に条件が合うものから1つ（複数なら、最近出ていない種類を）。問いの結果は V.answer（ふだんの復習と同じ計算）
+   *  ・終わるたびに、その子に 💛 が1つ（最大3つ）。3つたまると「かざり」がつく（語の id で決まる）→ chara.js の deco
+   *  ・記録は S.evt = { log: [{d, t, k, id, m, p}], hearts: {id: n}, friends: [[a, b]], today: {day, k, id, p, m, done} }
+   * ========================================================= */
+  var EV_KINDS = ['anniv', 'intro', 'ask'], ANNIV = [7, 30, 100, 200, 365];
+  function EV() {
+    var e = S.evt;
+    if (!e || typeof e !== 'object') e = S.evt = {};
+    if (!Array.isArray(e.log)) e.log = [];
+    if (!e.hearts || typeof e.hearts !== 'object') e.hearts = {};
+    if (!Array.isArray(e.friends)) e.friends = [];
+    return e;
+  }
+  function hearts(id) { return Math.max(0, Math.min(3, (EV().hearts[id] | 0))); }
+  function decoOf(id) { return hearts(id) >= 3 ? Chara.decoKind(id) : 0; }
+  function heartsText(n) { return '💛💛💛'.slice(0, n * 2) + '🤍🤍🤍'.slice(0, (3 - n) * 2); }
+  function dayNum(t) { var d = new Date(t); return Math.round(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000); }
+  function pairKey(a, b) { return a < b ? a + '|' + b : b + '|' + a; }
+  function isFriend(a, b) { var k = pairKey(a, b); return EV().friends.some(function (f) { return pairKey(f[0], f[1]) === k; }); }
+  function friendsOf(id) { return EV().friends.filter(function (f) { return f[0] === id || f[1] === id; }).map(function (f) { return V.word(f[0] === id ? f[1] : f[0]); }).filter(Boolean); }
+  function hasCloze(w) { return !!(w && w.ex && w.ex[0] && /\{[^}]+\}/.test(w.ex[0]) && w.ex[1]); }
+  function evDone(k, id, m) { return EV().log.some(function (l) { return l.k === k && l.id === id && (m == null || l.m === m); }); }
+  function evCands() {
+    var now = Date.now(), out = { anniv: [], intro: [], ask: [] };
+    Object.keys(S.cards).forEach(function (id) {
+      var w = V.word(id), c = S.cards[id]; if (!w) return;
+      var d = c.cap ? dayNum(now) - dayNum(c.cap) : 0, m = 0;
+      ANNIV.forEach(function (x) { if (d >= x) m = x; });
+      if (m && !evDone('anniv', id, m)) out.anniv.push({ id: id, m: m });
+      if (hasCloze(w)) out.ask.push({ id: id });
+      var p = V.mixOf(id).filter(function (x) { return V.card(x.id) && x.ja !== w.ja && !sameSpell(x, w) && !isFriend(id, x.id); })[0];
+      if (p) out.intro.push({ id: id, p: p.id });
+    });
+    return out;
+  }
+  /* 今日のイベント（なければ null）。1日に1つ：決めたら記録して、その日のうちは同じ子・同じ種類 */
+  function evtToday() {
+    var e = EV(), t = e.today;
+    if (t && t.day === dayStr()) return t.done ? null : t;
+    if (V.caughtCount() < 5) return null;
+    var c = evCands(), kinds = EV_KINDS.filter(function (k) { return c[k].length; });
+    if (!kinds.length) return null;
+    var last = {}; e.log.forEach(function (l, i) { last[l.k] = i; });
+    kinds = shuffle(kinds).sort(function (a, b) { return (a in last ? last[a] : -1) - (b in last ? last[b] : -1); });   /* 最近出ていない種類を先に */
+    var list = c[kinds[0]], low = list.filter(function (x) { return hearts(x.id) < 3; });
+    var x = pick(low.length ? low : list);
+    e.today = { day: dayStr(), k: kinds[0], id: x.id, p: x.p || '', m: x.m || 0 };
+    V.save();
+    return e.today;
+  }
+  function evtSheetHtml(id) {
+    var n = hearts(id), fr = friendsOf(id), dk = decoOf(id);
+    if (!n && !fr.length) return '';
+    return '<p class="evt-sheet">' + (n ? '<span>' + heartsText(n) + ' なかよし' + (dk ? '　🎀 かざり：' + Chara.decoName(dk) : '') + '</span>' : '') +
+      fr.map(function (x) { return '<span>🤝 ともだち：<b>' + esc(x.w) + '</b></span>'; }).join('') + '</p>';
+  }
+  function evStage(ws, cls) {
+    return '<div class="evt-stage' + (cls ? ' ' + cls : '') + '"><span class="evt-me">' + Chara.me({ mood: 'happy' }) + '</span>' +
+      ws.map(function (x) { return '<span class="evt-bud" data-id="' + esc(x.id) + '">' + cs(x, { mood: 'happy' }) + '</span>'; }).join('') + '</div>';
+  }
+  function clozeSet(w) {
+    var top = /^[¿¡]?\{/.test(w.ex[0]);
+    var fix = function (x) { return top ? x.charAt(0).toUpperCase() + x.slice(1) : x.charAt(0).toLowerCase() + x.slice(1); };
+    var right = formOf(w);
+    return { right: right, list: shuffle([right].concat(others(w, 3, 'form').map(fix))) };
+  }
+
+  /* 場面。o = { k, id, p, m }。途中で ✕（あとで）を押しても、何も失わない（💛 は、終わったときだけ） */
+  function startEvent(o) {
+    var w = V.word(o.id), k = o.k, p = o.p ? V.word(o.p) : null;
+    if (!w || $('#evt') || (k === 'intro' && !p)) return;
+    var el = document.createElement('div'), done = false;
+    el.id = 'evt'; el.className = 'evt evt-' + k;
+    el.innerHTML = '<button class="evt-x" type="button" aria-label="あとで">✕</button><div class="evt-in"></div>';
+    document.body.appendChild(el);
+    var box = $('.evt-in', el);
+    function alive() { return !!el.parentNode; }
+    function later(fn, ms) { setTimeout(function () { if (alive()) fn(); }, ms); }
+    function put(html) { box.classList.remove('evt-ans'); box.innerHTML = html; el.scrollTop = 0; tw(box, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power3.out' }); return box; }
+    function close() { if (window.speechSynthesis) { try { speechSynthesis.cancel(); } catch (e) { /* 読み上げを止められない */ } } el.remove(); go('home'); }
+    $('.evt-x', el).addEventListener('click', close);
+    /* 選択肢をつなぐ（まちがえても罰なし：色をつけるだけ） */
+    function wire(ri, cb) {
+      var got = false;
+      $$('.ch', box).forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (got) return; got = true;
+          var ok = +b.dataset.i === ri;
+          $$('.ch', box).forEach(function (x) { x.disabled = true; if (+x.dataset.i === ri) x.classList.add('right'); });
+          if (!ok) b.classList.add('wrong');
+          if (window.Snd) (ok ? Snd.ok(0) : Snd.flip());
+          cb(ok);
+        });
+      });
+    }
+    /* 答えのあと：短い1行と「つぎへ」。正解は auto ミリ秒で自動で進む */
+    function after(html, cb, auto) {
+      var a = $('.evt-after', box), gone = false;
+      box.classList.add('evt-ans');   /* 答えたあとは上の自キャラを畳んで、「つぎへ」が画面内に収まるように */
+      a.innerHTML = html + '<button class="next evt-nx" type="button">つぎへ ▶</button>';
+      tw(a, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3 });
+      function nx() { if (gone || !alive()) return; gone = true; cb(); }
+      $('.evt-nx', a).addEventListener('click', nx);
+      if (auto) later(nx, auto);
+    }
+    /* 終わり：💛 を1つ。3つたまったら、場面の最後に「かざり」（動かすのはその子だけ） */
+    function finish(msg, ws) {
+      if (done) return; done = true;
+      var E = EV(), before = hearts(w.id), friend = ws && ws.length > 1;
+      if (friend && !isFriend(w.id, p.id)) E.friends.push([w.id, p.id]);
+      E.log.push({ d: dayStr(), t: Date.now(), k: k, id: w.id, m: o.m || 0, p: o.p || '' });
+      if (E.log.length > 300) E.log = E.log.slice(-300);
+      E.hearts[w.id] = Math.min(3, before + 1);
+      if (E.today && E.today.day === dayStr() && E.today.k === k && E.today.id === w.id) E.today.done = true;
+      V.save();
+      var n = hearts(w.id), gotDeco = before < 3 && n >= 3, row = (ws || [w]);
+      put('<div class="evt-end"><p class="evt-eye">' + (friend ? '🤝 ' + T.friend : '💛 なかよしの印') + '</p><div class="evt-stage">' +
+        row.map(function (x) { return '<span class="evt-bud big" data-id="' + esc(x.id) + '">' + cs(x, { mood: 'happy', nodeco: gotDeco }) + '</span>'; }).join('') + '</div>' +
+        '<div class="evt-hearts"><span class="evt-heart">' + heartsText(n) + '</span></div>' +
+        '<p class="evt-line">' + esc(msg) + '</p>' + (gotDeco ? '<p class="evt-line evt-deco" hidden></p>' : '') +
+        '<button class="next evt-ok" type="button">もどる ▶</button></div>');
+      if (window.Snd) Snd.capture();
+      $('.evt-ok', box).addEventListener('click', close);
+      if (gotDeco) later(function () {
+        var b = $('.evt-bud', box), t = $('.evt-deco', box);
+        if (window.Snd) Snd.levelUp(2);
+        b.innerHTML = cs(w, { mood: 'happy' });
+        b.classList.remove('evt-hop'); void b.offsetWidth; b.classList.add('evt-hop');
+        t.hidden = false; t.textContent = T.deco + '　かざり（' + Chara.decoName(decoOf(w.id)) + '）が ついた！';
+        tw(t, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4 });
+      }, 900);
+    }
+
+    /* 🎂 きねん日：その子の歩みを1行ずつ（責めずに、成長として）→ 最後に自分で1回思い出す */
+    function anniv() {
+      var c = V.card(w.id), cd = new Date(c.cap), days = Math.max(0, dayNum(Date.now()) - dayNum(c.cap)), mem = V.memory(w.id), L = [];
+      L.push('はじめて会った日は ' + (cd.getMonth() + 1) + '月' + cd.getDate() + '日。' + ((c.miss || 0) >= 2 ? 'あのころは、よくにげたね。' : c.miss ? 'あのころは、ちょっとドキドキだったね。' : 'はじめから、なかよしだったね。'));
+      if (c.miss) L.push('まちがえたのは ' + c.miss + '回。そのたびに、また会いに来てくれた。');
+      if (c.rb) L.push('野生から ' + c.rb + '回、取り戻してくれた。');
+      if (mem) L.push(mem.grad ? 'いまは もう、野生には出ない。🎓' : 'いまの長持ちは ' + daysText(mem.s * 0.415) + (mem.s > 1.5 ? '（はじめは 約12時間）' : '') + '。');
+      put('<div class="evt-sc">' + evStage([w]) + '<p class="evt-eye">🎂 ' + T.fest + '</p><div class="evt-word">' + headHtml(w) + '</div><p class="evt-sub evt-days">出会って <b>' + days + '日</b></p>' +
+        L.map(function (x) { return '<p class="evt-line evt-l">' + esc(x) + '</p>'; }).join('') + '<button class="next evt-go" type="button">最後に、思い出してみよう ▶</button></div>');
+      if (G) G.fromTo($$('.evt-l', box), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.5, delay: 0.3 });
+      $('.evt-go', box).addEventListener('click', recall);
+      setTimeout(function () { if (alive()) Speech.say(V.head(w)); }, 500);
+    }
+    function recall() {
+      var list = shuffle([w.ja].concat(others(w, 3, 'ja'))), ri = list.indexOf(w.ja);
+      put('<div class="evt-sc">' + evStage([w]) + '<p class="evt-sub">いま、この子の意味を 思い出せる？<small>（まちがえても 大丈夫）</small></p><div class="evt-word">' + headHtml(w) + sayBtn(V.head(w), 'inl') + '</div>' + choiceHtml(list.map(esc)) + '<div class="evt-after"></div></div>');
+      wire(ri, function (ok) {
+        V.answer(w.id, ok, 'es2ja');
+        after('<p class="evt-line">' + (ok ? '○ ' : '') + headHtml(w) + ' ＝ <b>' + esc(w.ja) + '</b></p>', function () { finish(ok ? 'ちゃんと 思い出せたね。ここから また、いっしょに。' : 'また会えば、きっと もっと仲良くなれる。'); }, ok ? 900 : 0);
+      });
+    }
+
+    /* 🤝 しょうかい：よくまちがえられる子を連れてくる。ふたりの語・意味・例文 → どっちがどっち？ 2問 */
+    function intro() {
+      var A = w, B2 = p;
+      put('<div class="evt-sc">' + evStage([A, B2], 'evt-three') +
+        '<p class="evt-eye">🤝 よくまちがえられる子を 連れてきたよ</p>' +
+        [A, B2].map(function (x) {
+          return '<div class="evt-pair"><div class="evt-pw">' + headHtml(x) + ' ＝ <b>' + esc(x.ja) + '</b> ' + sayBtn(V.head(x), 'inl') + '</div><div class="evt-ex">' + exHtml(x.ex[0]) + ' ' + sayBtn(x.ex[0], 'inl') + '<small>' + esc(x.ex[1]) + '</small></div></div>';
+        }).join('') + '<button class="next evt-go" type="button">どっちがどっち？ ▶</button></div>');
+      $('.evt-go', box).addEventListener('click', function () { q(0, []); });
+      function q(n, res) {
+        var order = n === 0 ? shuffle([A, B2]) : [res.t === A ? B2 : A], t = order[0], o2 = t === A ? B2 : A, list, right, head;
+        if (n === 0) { list = shuffle([t.ja, o2.ja]); right = t.ja; head = '<div class="evt-word">' + headHtml(t) + sayBtn(V.head(t), 'inl') + '</div><p class="evt-sub">どっちの意味？</p>'; }
+        else { list = shuffle([V.head(t), V.head(o2)]); right = V.head(t); head = '<div class="evt-word ja">' + esc(t.ja) + '</div><p class="evt-sub">どっちの単語？</p>'; }
+        put('<div class="evt-sc">' + evStage([A, B2], 'evt-three') + head + choiceHtml(list.map(esc), n ? 'es' : '') + '<div class="evt-after"></div></div>');
+        if (n === 0) Speech.say(V.head(t));
+        wire(list.indexOf(right), function (ok) {
+          V.answer(t.id, ok, n === 0 ? 'es2ja' : 'ja2es');
+          if (n === 0 && ok) Speech.say(V.head(t));
+          after('<p class="evt-line">' + (ok ? '○ ' : '') + headHtml(t) + ' ＝ <b>' + esc(t.ja) + '</b></p>', function () {
+            if (n === 0) return q(1, { t: t, ok: ok });
+            var both = res.ok && ok;
+            finish(both ? 'ふたりは ともだちに なった！ 図鑑にも のこるよ。' : 'ちがい、もうすこしで つかめそう。また会おうね。', both ? [A, B2] : [w]);
+          }, ok ? 900 : 0);
+        });
+      }
+    }
+
+    /* ✏ おねがい：その子の例文の穴埋め。正解したら、その子の声で例文を読む */
+    function ask() {
+      var cl = clozeSet(w), ri = cl.list.indexOf(cl.right);
+      put('<div class="evt-sc">' + evStage([w]) + '<p class="evt-eye">✏ ' + T.pls + '</p><p class="evt-sub">ぼくの文、いっしょに作って</p>' +
+        '<div class="q-card cloze evt-card"><div class="q-ex">' + exHtml(w.ex[0], '<span class="blank">？</span>') + '</div><small class="q-exja">' + esc(w.ex[1]) + '</small></div>' +
+        choiceHtml(cl.list.map(esc), 'es') + '<div class="evt-after"></div></div>');
+      wire(ri, function (ok) {
+        var bl = $('.blank', box); if (bl) { bl.textContent = cl.right; bl.classList.add('filled'); }
+        V.answer(w.id, ok, 'cloze');
+        if (ok) Speech.say(w.ex[0]);   /* その子の声で */
+        after(ok ? '<p class="evt-line">ありがとう！ ぼくの声で 読むね ' + sayBtn(w.ex[0], 'inl') + '</p>' : '<p class="evt-line">正解は <b>' + esc(cl.right) + '</b> ' + sayBtn(w.ex[0], 'inl') + '</p>',
+          function () { finish(ok ? 'ぼくの文が できた。ありがとう！' : 'いっしょに 読めて うれしかった。'); }, 0);
+      });
+    }
+    ({ anniv: anniv, intro: intro, ask: ask })[k]();
+  }
+
+  /* =========================================================
    * つなぎこみ
    * ========================================================= */
   function bind() {
@@ -1989,12 +2398,13 @@
       var id = t.dataset.block;
       if (id === 'dex') return go('dex');
       if (id === 'conj') return go('conj');
+      if (id === 'play') return openPlay();
       if (id === 'care') return start([{ type: 'care', n: 8 }]);
       start([{ type: id, n: id === 'meet' ? 3 : id === 'face' ? 10 : id === 'wild' ? chunkSize() : 6 }]);
     });
     $('#quit').addEventListener('click', function () { if (window.speechSynthesis) speechSynthesis.cancel(); finish(); });
     $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { go(b.dataset.go); }); });
-    $('#dMore').addEventListener('click', function () { if (wildAll().length) start([{ type: 'wild', n: chunkSize() }], 'ひと区切り'); else start(makePlan(5), '5分'); });
+    $('#dMore').addEventListener('click', function () { if (ses && ses.bingo) return startBingo(true); if (wildAll().length) start([{ type: 'wild', n: chunkSize() }], 'ひと区切り'); else start(makePlan(5), '5分'); });
     $('#hRange').addEventListener('click', openRange);
     $('#hBoss').addEventListener('click', function () { var b = todaysBoss(); if (b && !b.won) startBoss(); });
     $('#hDeck').addEventListener('click', function () { openDecks(); });
@@ -2011,7 +2421,12 @@
       e.target.value = '';
     });
     $('#hWant').addEventListener('click', function () { var wl = wantsList(); if (wl.length) start([{ type: 'learn', verb: wl[0].w.id, tense: wl[0].t }]); });
-    $('#plaza').addEventListener('click', function (e) { var m = e.target.closest('.p-bud'); if (m) openSheet(m.dataset.id); });
+    $('#plaza').addEventListener('click', function (e) {
+      if (e.target.closest('.evt-bub')) { var t = evtToday(); if (t) startEvent(t); return; }
+      var m = e.target.closest('.p-bud'); if (m) openSheet(m.dataset.id);
+    });
+    $('#bngQuit').addEventListener('click', function () { bngEnd(); });
+    $('#bngBoard').addEventListener('click', function (e) { var c = e.target.closest('.bng-cell'); if (c) bngTap(+c.dataset.i); });
     $('#xBody').addEventListener('click', function (e) {
       var m = e.target.closest('.mini'); if (m) return openSheet(m.dataset.id);
       var c = e.target.closest('.cjc'); if (c) openCjSheet(c.dataset.cj);
@@ -2039,6 +2454,22 @@
         V.save();
       }
       startMorning(); return morningIds();
+    },
+    /* ビンゴを始める（?debug のときは、集めた語が足りなくても遊べる）。VUI.cur ＝ { id, cell, dir, audio }：いま呼ばれている語の id と、正解のマスの番号 */
+    bingo: function () { startBingo(true); return !!BNG; },
+    /* ふれあいイベントを、条件を無視して始める（?debug のときだけ）。kind：'anniv' | 'intro' | 'ask' */
+    event: function (kind, id) {
+      if (!isDebug() || EV_KINDS.indexOf(kind) < 0) return false;
+      var ids = Object.keys(S.cards).filter(function (x) { return V.word(x); }), p = '';
+      id = id && V.card(id) ? id : kind === 'ask' ? ids.filter(function (x) { return hasCloze(V.word(x)); })[0] : ids[0];
+      if (!id) return false;
+      if (kind === 'intro') {
+        var m = V.mixOf(id).filter(function (x) { return V.card(x.id) && x.ja !== V.word(id).ja; })[0];
+        if (!m) { var q = ids.filter(function (x) { return x !== id && V.word(x).ja !== V.word(id).ja && !sameSpell(V.word(x), V.word(id)); })[0]; if (!q) return false; V.mixed(id, q); m = V.word(q); }
+        p = m.id;
+      }
+      startEvent({ k: kind, id: id, p: p, m: 0 });
+      return { k: kind, id: id, p: p };
     },
     hot: function (id, miss) { if (!/[?&](sandbox|debug)\b/.test(location.search)) return false; var ok = V.debugHot(id, miss); if (ok && !$('#home').hidden) renderHome(); return ok; }
   };
