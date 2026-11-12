@@ -9,6 +9,7 @@
 | 理由づけを書く・新しい仕組み（ごほうび・連続記録・演出）を足す | **根拠/README.md**（優先順位：出典 ＞ 依頼者の経験則 ＞ AI の推論。印〔出典 L○〕〔経験則〕〔推論〕） |
 | 新しいエンジンのコースを作る・直す | 原則.md ＋ engine/コースの作り方.md ＋ engine/学習設計.md ＋ engine/部品と落とし穴.md |
 | 画面が崩れる・iPhone だけ重い・はみ出す | engine/部品と落とし穴.md の「画面づくりの落とし穴」（独立アプリにも効く） |
+| 読み上げが出ない（とくに iPhone の消音モード） | 未解決の課題.md ＋ engine/部品と落とし穴.md の「読み上げ（speechSynthesis）と iPhone」 |
 | ¡MANDA!・¡PROTESTO!・¿QUIÉN FUE?・¿QUÉ SERÁ?・¡QUE FUSIÓN! を直す | 原則.md ＋ 語学アプリの型.md ＋ apps/manda.md・protesto.md・quien.md・futuro.md・relativo.md |
 | モル教室・ユーキ・クエストを直す | 原則.md ＋ apps/mole.md・yuki.md |
 | 単語アプリ（vocab.html）を直す | vocab/設計.md（履歴は必要な v だけ） |
