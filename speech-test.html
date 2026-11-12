@@ -22,12 +22,12 @@
 <script>
   /* ?raw をつけると、対策（shared/speech-fix.js）なしで開く */
   var RAW = /[?&]raw\b/.test(location.search);
-  if (!RAW) document.write('<script src="shared/speech-fix.js?v=1"><\/script>');
+  if (!RAW) document.write('<script src="shared/speech-fix.js?v=2"><\/script>');
 </script>
 </head>
 <body>
 <h1>読み上げの診断</h1>
-<p>上から順に <b>▶</b> を押して、<b>聞こえたか</b>を ○ か × で答えてください。最後に、いちばん下の「結果をコピー」を押して、そのまま貼ってください。</p>
+<p><b>消音モードのまま</b>、上から順に <b>▶</b> を押して、<b>聞こえたか</b>を ○ か × で答えてください。最後に、いちばん下の「結果をコピー」を押して、そのまま貼ってください。</p>
 <p class="small" id="mode"></p>
 
 <div id="tests"></div>
@@ -92,13 +92,35 @@
     if (box) box.textContent = ev.join(' → '); report();
   }
 
+  /* 無音の音を流しつづける（音の種類が「再生」になり、消音スイッチに従わなくなる、という古くからの手） */
+  var hush = null;
+  function silentLoop() {
+    if (hush) return hush.play();
+    var rate = 8000, len = rate / 2, b = new ArrayBuffer(44 + len), d = new DataView(b), i;
+    function str(o, t) { for (var k = 0; k < t.length; k++) d.setUint8(o + k, t.charCodeAt(k)); }
+    str(0, 'RIFF'); d.setUint32(4, 36 + len, true); str(8, 'WAVEfmt '); d.setUint32(16, 16, true); d.setUint16(20, 1, true); d.setUint16(22, 1, true);
+    d.setUint32(24, rate, true); d.setUint32(28, rate, true); d.setUint16(32, 1, true); d.setUint16(34, 8, true); str(36, 'data'); d.setUint32(40, len, true);
+    for (i = 0; i < len; i++) d.setUint8(44 + i, 128);
+    hush = new Audio(URL.createObjectURL(new Blob([b], { type: 'audio/wav' })));
+    hush.loop = true; hush.setAttribute('playsinline', '');
+    return hush.play();
+  }
+  function runHush() {
+    var box = document.getElementById('ev-hush'), pre = '';
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) { pre += 'audioSession 例外 '; }
+    var p; try { p = silentLoop(); } catch (e) { pre += '無音の再生 例外:' + e.message + ' '; }
+    var go = function (m) { speak('hush', 'Hola, buenos días'); EV.hush.unshift(pre + m); if (box) box.textContent = EV.hush.join(' → '); report(); };
+    if (p && p.then) p.then(function () { go('無音の再生OK'); }, function (e) { go('無音の再生NG:' + (e && e.name)); }); else go('無音の再生（返事なし）');
+  }
+
   var TESTS = [
     { id: 'beep', title: '1. 効果音（ピーという音）', note: 'これが聞こえないときは、本体の消音スイッチか音量です。', run: beep },
     { id: 'lang', title: '2. 声を指定しないで読む（Hola, buenos días）', run: function () { speak('lang', 'Hola, buenos días'); } },
     { id: 'app', title: '3. アプリと同じ声の選び方で読む', run: function () { var v = appVoice(); if (v) speak('app', 'Hola, buenos días', { voice: v, cancel: true }); else { EV.app = ['スペイン語の声が見つからない（声の数 ' + voices().length + '）']; document.getElementById('ev-app').textContent = EV.app[0]; report(); } } },
     { id: 'timer', title: '4. 押して2秒後に、自動で読む', note: '押したあと、何もさわらずに待ってください。', run: function () { var v = appVoice(); document.getElementById('ev-timer').textContent = '2秒待っています…'; setTimeout(function () { speak('timer', 'Uno, dos, tres', v ? { voice: v, cancel: true } : { cancel: true }); }, 2000); } },
     { id: 'timerlang', title: '5. 押して2秒後に、声を指定しないで読む', note: '押したあと、何もさわらずに待ってください。', run: function () { document.getElementById('ev-timerlang').textContent = '2秒待っています…'; setTimeout(function () { speak('timerlang', 'Uno, dos, tres'); }, 2000); } },
-    { id: 'ja', title: '6. 日本語を読む（こんにちは）', run: function () { speak('ja', 'こんにちは', { lang: 'ja-JP' }); } }
+    { id: 'ja', title: '6. 日本語を読む（こんにちは）', run: function () { speak('ja', 'こんにちは', { lang: 'ja-JP' }); } },
+    { id: 'hush', title: '7. 無音の音を流しながら読む（消音モード用の別の方法）', note: '消音モードのまま試してください。一度押すと、このページを閉じるまで無音の音が流れつづけます。', run: runHush }
   ];
 
   function hearBtns(id) {
@@ -137,6 +159,7 @@
     var L = [];
     L.push('読み上げの診断（' + (RAW ? '対策なし' : '対策あり') + '・fixed=' + !!(ss && ss.__fixed) + '）');
     L.push(navigator.userAgent);
+    L.push('audioSession=' + (navigator.audioSession ? navigator.audioSession.type : 'なし'));
     L.push('standalone=' + (navigator.standalone === true) + ' 声の数=' + voices().length + ' スペイン語=' + esVoices().length + ' ' + state());
     var av = appVoice(); L.push('アプリが選ぶ声：' + (av ? av.name + ' / ' + av.lang + ' / local=' + av.localService + ' / default=' + av.default : 'なし'));
     TESTS.forEach(function (t) { L.push('[' + t.id + '] 聞こえた=' + (R[t.id] || '未') + ' ｜ ' + (EV[t.id] || []).join(' → ')); });

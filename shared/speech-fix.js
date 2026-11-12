@@ -15,6 +15,7 @@
  *   2. speak の前に止まっていたら resume
  *   3. 何か読んでいるときだけ cancel し、その直後の speak は少し待ってから
  *   4. 読み終わるまで utterance をつかんでおく
+ *   5. 読んでいるあいだだけ audioSession を playback にする（iOS 27 から、消音スイッチで読み上げも消えるようになった）
  * ========================================================= */
 (function () {
   'use strict';
@@ -62,12 +63,35 @@
     } catch (e) { /* なし */ }
   };
 
+  /* 5. 消音モード（本体ヨコのスイッチ）でも読み上げは鳴らす。
+   *    読んでいるあいだだけ、音の種類を「再生」（消音スイッチに従わない）にして、終わったら戻す。
+   *    戻すのは、効果音まで消音モードで鳴りださないようにするため。対応していない端末では何もしない */
+  var AS = navigator.audioSession, asPrev = null, asTimer = 0;
+  function loud(u) {
+    if (!AS || !('type' in AS) || (u.volume === 0)) return;
+    try {
+      if (asPrev === null) asPrev = AS.type || 'auto';
+      AS.type = 'playback';
+      clearTimeout(asTimer);
+      var back = function () {
+        clearTimeout(asTimer);
+        asTimer = setTimeout(function () {
+          if (ss.speaking || ss.pending) { back(); return; }
+          try { if (asPrev !== null) AS.type = asPrev; } catch (e) { /* なし */ }
+          asPrev = null;
+        }, 400);
+      };
+      u.addEventListener('end', back); u.addEventListener('error', back);
+      asTimer = setTimeout(back, 20000);   /* 終わりの合図が来ない機種のため */
+    } catch (e) { /* なし */ }
+  }
+
   /* 2・3・4. 読む */
   ss.speak = function (u) {
     if (!u) return;
     hold(u);
     var go = function () {
-      try { if (ss.paused) ss.resume(); speak0(u); } catch (e) { /* 読み上げできない */ }
+      try { if (ss.paused) ss.resume(); loud(u); speak0(u); } catch (e) { /* 読み上げできない */ }
     };
     var since = Date.now() - cutAt;
     var inTap = navigator.userActivation && navigator.userActivation.isActive;   /* タップの中は待たない（待つとタップの外になる） */
