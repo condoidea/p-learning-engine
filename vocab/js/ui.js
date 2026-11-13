@@ -617,6 +617,21 @@
     $('.next', box).addEventListener('click', nx);
     if (auto) setTimeout(nx, auto);
   }
+  /* 短い待ちのあと進む。待たずに画面をタップしても進む（毎回見る演出を、待たずに飛ばせるように）。
+   *  🔊 と、問題の外のボタン（やめる など）のタップは数えない */
+  function soon(fn, ms) {
+    var gone = false, timer = 0;
+    function run() { if (gone) return; gone = true; clearTimeout(timer); document.removeEventListener('click', tap, true); fn(); }
+    function tap(e) {
+      var el = e.target;
+      if (!el || !el.closest || el.closest('[data-say]')) return;
+      var ctl = el.closest('button, a, input, label');
+      if (ctl && !ctl.closest('#stage')) return;
+      run();
+    }
+    timer = setTimeout(run, ms);
+    document.addEventListener('click', tap, true);
+  }
   /* 同じつづりで意味が別の語（planta＝植物／工場）。はずれの選択肢に入れず、カードに「意味がいくつかある語」と出す */
   var SPELL = {}; D.words.forEach(function (w) { var k = String(w.w).toLowerCase(); SPELL[k] = (SPELL[k] || 0) + 1; });
   function sameSpell(a, b) { return String(a.w).toLowerCase() === String(b.w).toLowerCase(); }
@@ -696,7 +711,7 @@
       function settle(ok, el) {
         if (answered) return; answered = true;
         $$('.ch, .dunno', s).forEach(function (x) { x.disabled = true; if (x.classList.contains('ch') && +x.dataset.i === ri) x.classList.add('right'); });
-        if (ok) { feedback(true, el, $('.q-card', s)); moveTrack(s, w, REL_C[0], 'happy', T.hi); captureFx(w, $('.q-card', s), true); setTimeout(one, 1300); }
+        if (ok) { feedback(true, el, $('.q-card', s)); moveTrack(s, w, REL_C[0], 'happy', T.hi); captureFx(w, $('.q-card', s), true); soon(one, 1300); }
         else {
           if (el.classList.contains('ch')) { el.classList.add('wrong'); feedback(false, el, $('.q-card', s)); } else ses.combo = 0;
           V.toMeet(w.id); moveTrack(s, w, 0.02, 'meh');
@@ -823,7 +838,7 @@
     stage('<div class="appear"><p>' + (retry ? 'さっき にげた' : exm ? '例文の中の' : care ? 'もうすぐしおれそうな' : wasWild ? '野生に戻りかけの' : 'しおれかけの') + '</p><div class="ap-bud' + (shiny ? ' shiny' : '') + '">' + cs(w, { mood: m0 }) + '</div><p>' + (retry ? 'を 追いかけよう' : exm ? 'を 使ってみよう' : care ? 'に 会いに行こう' : 'が 遠くに いる！') + '</p>' +
       (shiny ? '<p class="ap-shiny">✨ きらきらの子だ！ 思い出せたら 長持ち＋15%</p>' : '') + '</div>');
     if (window.Snd) Snd.appear();
-    setTimeout(function () {
+    soon(function () {
       var ty = exTypes && exTypes[w.id] || typesFor(w);
       ask(w, ty, { tag: tag, track: trackHtml(w, c0, m0) }, function (ok, s) {
         var r = V.answer(w.id, ok, ty);
@@ -1247,7 +1262,7 @@
     var c0 = nowClose(id), m0 = Chara.moodOf(V.state(id));
     stage('<div class="appear"><p>' + tBadge(t) + '</p><div class="ap-bud">' + cs(w, { mood: m0 }) + '</div><p>' + (retry ? 'さっき にげた ' + esc(w.w) + ' の' + TN[t].short + 'を 追いかけよう' : esc(w.w) + ' の' + TN[t].short + 'が 遠くに いる！') + '</p></div>');
     if (window.Snd) Snd.appear();
-    setTimeout(function () {
+    soon(function () {
       askConj({ w: w, t: t, p: p }, pick(['pick', 'cue', 'build', 'which']), { tag: '<span class="qtag">' + tagText + '</span>', track: trackHtml(w, c0, m0) }, function (ok, s) {
         var r = V.answer(id, ok);
         if (ok) {
@@ -1737,7 +1752,7 @@
     document.body.appendChild(el);
     if (window.Snd) { if (o.kind === 'back') Snd.back(); else if (o.kind === 'grad') Snd.levelUp(3); else Snd.capture(); }
     setTimeout(function () { Speech.say(o.say || V.head(w)); }, 500);
-    var bud = $('.bond-bud', el), canGo = false;
+    var bud = $('.bond-bud', el), canGo = false, tl = null, ff = false, closing = false;
     function wake() {
       bud.innerHTML = cs(w, { mood: 'happy', holo: o.kind === 'grad' }); bud.classList.add('joined'); FX.burst(bud, o.kind === 'meet' ? 'petal' : 'tile', 36);
       var h = document.createElement('span'); h.className = 'bond-heart'; h.textContent = o.kind === 'grad' ? '🎓' : o.kind === 'back' ? '💙' : '💛';
@@ -1745,7 +1760,7 @@
       if (G) G.fromTo(h, { y: 10, scale: 0.3, opacity: 0 }, { y: -30, scale: 1.2, opacity: 1, duration: 0.6, ease: 'back.out(3)' });
     }
     if (G) {
-      G.timeline()
+      tl = G.timeline()
         .fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.3 })
         .fromTo($('.bond-glow', el), { scale: 0.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8, ease: 'power2.out' }, 0)
         .fromTo(bud, { x: 150, scale: 0.45, filter: o.kind === 'back' ? 'grayscale(1)' : 'none' }, { x: 0, scale: 1, filter: 'grayscale(0)', duration: 1.1, ease: 'power2.out' }, 0.2)
@@ -1760,8 +1775,10 @@
     } else { wake(); canGo = true; }
     R2 = setTimeout(function () { canGo = true; }, 3400);   /* アニメーションが止まっていても進めるように */
     el.addEventListener('click', function () {
-      if (!canGo) return;
-      canGo = false;
+      /* 演出の途中のタップは、演出を最後まで早送りする（何度も見る演出を待たせない）。閉じるのは、その次のタップ */
+      if (closing) return;
+      if (!canGo) { if (tl && !ff) { ff = true; tl.progress(1); } return; }
+      canGo = false; closing = true;
       var end = function () { el.remove(); done && done(); };
       if (G) G.to(el, { opacity: 0, duration: 0.3, onComplete: end }); else end();
     });
