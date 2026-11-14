@@ -319,6 +319,7 @@ body.sandbox::after { content: 'sandbox'; position: fixed; right: 6px; bottom: 2
 .foe3 { display: inline-grid; place-items: center; width: 1.9em; height: 1.8em; vertical-align: middle; }
 .foe3:not(.on3d) { width: auto; height: auto; }
 .bossin .femo { font-size: 112px; }
+.bossin .foe3.on3d { width: min(320px, 86vw); height: 230px; }
 .foe .femo { font-size: 54px; }
 .foe.isboss .femo { font-size: 54px; }
 .why .nu { margin-left: 3px; font-size: .82em; color: var(--dim); }
