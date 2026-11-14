@@ -4,38 +4,46 @@
 <meta charset="UTF-8">
 <script src="shared/cloud.js?v=2"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>¡PEGA!｜スペイン語の語尾で単語をふやす</title>
-<meta name="theme-color" content="#161a2e">
+<title>¡PEGA!｜語尾タイルで単語をふやす</title>
+<meta name="theme-color" content="#14213d">
 <meta name="color-scheme" content="dark">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet">
 <script src="shared/speech-fix.js?v=2"></script>
-<link rel="stylesheet" href="pega/css/pega.css?v=1">
+<link rel="stylesheet" href="pega/css/pega.css?v=3">
 </head>
 <body>
+<canvas id="fx" aria-hidden="true"></canvas>
 <div id="app">
   <section id="home" class="screen"></section>
-  <section id="meet" class="screen" hidden></section>
 
   <section id="play" class="screen fix" hidden>
     <header class="pbar">
       <button class="x" id="pQuit" aria-label="やめる">✕</button>
       <div class="pmid"><span class="prog"><i id="pProg"></i></span></div>
-      <div class="combo" id="pCombo"></div>
+      <div class="pxp"><small>XP</small><b id="pXp">0</b></div>
     </header>
-    <main class="card" id="card" aria-live="polite"></main>
+    <p class="lead" id="lead" aria-live="polite"></p>
+    <main class="bench" id="bench"></main>
+    <div id="fb" aria-live="polite"></div>
+    <div class="hand" id="hand" hidden></div>
     <div class="tray" id="tray"></div>
   </section>
 
   <section id="done" class="screen" hidden></section>
 </div>
 
+<div id="combo" aria-hidden="true"></div>
+<div id="slam" aria-hidden="true"></div>
 <div id="modal" hidden><div class="mbox"><button class="mclose" aria-label="閉じる">✕</button><div id="mbody"></div></div></div>
+<div id="pop" hidden></div>
 
-<script src="pega/js/data.js?v=1"></script>
+<script src="shared/es-words.js?v=11"></script>
+<script src="pega/js/data.js?v=3"></script>
 <script src="engine/js/audio.js?v=10"></script>
-<script src="pega/js/app.js?v=1"></script>
+<script src="pega/js/fx.js?v=2"></script>
+<script src="pega/js/app.js?v=3"></script>
 <script src="news/news.js?v=4"></script>
 </body>
 </html>

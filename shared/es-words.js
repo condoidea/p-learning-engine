@@ -835,6 +835,13 @@
   F('uno', 'unos');
   F('pan', 'panes');
   F('tren', 'trenes');
+  /* ¡PEGA!（語尾）の文 */
+  W('imposible', '不可能な', 'adj', 4);
+  W('importante', '大切な・重要な', 'adj', 5);
+  W('lluvia', '雨', 'n', 4);
+  W('internacional', '国際的な', 'adj', 4);
+  W('sobre', '〜について・〜の上に', 'prep', 0);
+  W('premio', '賞', 'n', 4);
   /* わざとまちがえた形（ひっかけの選択肢。バルーン・復習には出ない） */
   W('（時制アプリのひっかけ）', '（実在しない形）', 'bad', 0, 'duermirás, duermiré, duermás, sabé, saberé, saberás, saberán, poderé, poderás, poderemos, poderéis, poderán, poderá, poderías, quererá, quereremos, haberá, tenerás, teneré, tenerán, tenerías, tenería, tenremos, teneremos, tenré, salré, saliré, saliremos, salirá, salirían, salremos, venirá, venirás, veniréis, venrás, venríamos, ponerán, ponrán, deciré, decirá, decirías, decería, dicé, hacerá, hacería, haceremos, hacido, volvido, vivado, vivando, deciendo, dicendo, dormiendo, pediendo, leiendo, leido, veído');
 
