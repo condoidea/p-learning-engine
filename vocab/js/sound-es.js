@@ -32,19 +32,17 @@
     cache[k] = buf;
     return buf;
   }
-  /* fade：dur の終わりに向けて音量を絞る（余韻を短く切りたいとき。切り口がプツッと鳴らないように） */
-  function pluck(t, freq, vol, dur, bright, fade) {
+  function pluck(t, freq, vol, dur, bright) {
     var ctx = R.ctx(), src = ctx.createBufferSource(), g = ctx.createGain();
     src.buffer = pluckBuf(ctx, freq, dur || 1.2, bright);
     g.gain.value = vol || 0.5;
-    if (fade) { g.gain.setValueAtTime(vol || 0.5, t); g.gain.exponentialRampToValueAtTime(0.0001, t + (dur || 1.2)); }
     src.connect(g); g.connect(R.out()); src.start(t);
   }
   /* 手拍子（パルマ）・カスタネット */
   function palma(t, vol) { R.noise(t, 0.06, vol || 0.35, 1800, 1200); R.noise(t + 0.012, 0.05, (vol || 0.35) * 0.6, 2400, 1500); }
   function castanet(t, vol) { R.tone(2600, t, 0.025, 'square', vol || 0.06); R.noise(t, 0.03, (vol || 0.06) * 3, 5000, 3000); }
   /* かき鳴らし（ラスゲアード） */
-  function strum(t, semis, gap, vol, dur) { semis.forEach(function (s, i) { pluck(t + i * (gap || 0.018), f(s), vol || 0.32, dur || 1.6, 0, !!dur); }); }
+  function strum(t, semis, gap, vol) { semis.forEach(function (s, i) { pluck(t + i * (gap || 0.018), f(s), vol || 0.32, 1.6); }); }
 
   var CH_E = [0, 7, 12, 16, 19, 24];   // ミのコード
   var CH_F = [1, 8, 13, 17, 20, 25];   // ファのコード（ミ→ファがスペインっぽい）
@@ -73,8 +71,8 @@
       R.buzz([30, 40, 30]);
       R.play(function (t) { pluck(t, f(-5), 0.5, 0.25, 0.9); pluck(t + 0.09, f(-6), 0.45, 0.3, 0.9); });
     },
-    /* 野生の単語が現れた。このあと約1.1秒で単語の読み上げが始まるので、余韻はそれまでに消す（1体ごとに鳴る音。発音にかぶせない） */
-    appear: function () { R.play(function (t) { strum(t, CH_F, 0.03, 0.22, 0.45); strum(t + 0.35, CH_E, 0.03, 0.22, 0.6); }); },
+    /* 野生の単語が現れた */
+    appear: function () { R.play(function (t) { strum(t, CH_F, 0.03, 0.22); strum(t + 0.35, CH_E, 0.03, 0.22); }); },
     /* 捕獲：3種類からランダム */
     capture: function () {
       R.buzz([15, 40, 15]);
