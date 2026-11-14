@@ -33,14 +33,14 @@
     shop: { icon: '🏠', name: '店', sub: '〜屋', spot: '<b>en la ___</b>・<b>a la ___</b> が「<b>どの店</b>」か' }
   };
   var GEMS = [
-    { id: 'mente', label: '-mente', fit: 'adj', att: 'adv', color: '#5fdc94', en: '-ly', note: '-o で終わる剣は <b>-a にしてから</b>（rápido → rápida<b>mente</b>）' },
-    { id: 'dad', label: '-dad', fit: 'adj', att: 'thing', color: '#6cb4ff', en: '-ty', note: 'できた語は<b>かならず la</b>。-tad の形もある（libre → libertad）' },
-    { id: 'cion', label: '-ción', fit: 'verb', att: 'thing', color: '#ff7a6b', en: '-tion', note: 'できた語は<b>かならず la</b>。-sión の形もある（decidir → decisión）' },
-    { id: 'dor', label: '-dor', fit: 'verb', att: 'person', color: '#ffae52', en: '-er', note: '道具にもなる（despertar → despertador 目覚まし時計）' },
-    { id: 'oso', label: '-oso', fit: 'noun', att: 'desc', color: '#ffd84d', en: '-ous', note: '女性の名詞を説明するときは -osa（una ciudad peligrosa）' },
-    { id: 'ista', label: '-ista', fit: 'noun', att: 'person', color: '#c9a0ff', en: '-ist', note: 'スポーツ・芸術・楽器・専門の仕事の人。<b>男女で同じ形</b>（el・la）', who: 'スポーツ・芸術・楽器・専門の仕事の人は -ista' },
-    { id: 'ero', label: '-ero', fit: 'noun', att: 'person', color: '#ff8fc7', en: '（英語にない）', note: 'パン・手紙・料理・靴など、<b>身近な物をあつかう人</b>。女性は -era', who: 'パン・手紙・料理・靴など、身近な物をあつかう人は -ero' },
-    { id: 'eria', label: '-ería', fit: 'noun', att: 'shop', color: '#ffc4e3', en: '（英語にない）', note: 'できた語は<b>かならず la</b>' }
+    { id: 'mente', label: '-mente', fit: 'adj', att: 'adv', color: '#5fdc94', en: '-ly', nu: '〜に・〜く', nu2: 'どんなふうにするか', note: '-o は <b>-a</b> にしてからつける（rápid<b>a</b>mente）' },
+    { id: 'dad', label: '-dad', fit: 'adj', att: 'thing', color: '#6cb4ff', en: '-ty', nu: '〜さ', nu2: '性質そのものに名前をつける', note: 'いつも <b>la</b>（la realidad）' },
+    { id: 'cion', label: '-ción', fit: 'verb', att: 'thing', color: '#ff7a6b', en: '-tion', nu: '〜すること', nu2: '動きに名前をつける。したあとの「もの」にも', note: 'いつも <b>la</b>（la organización）' },
+    { id: 'dor', label: '-dor', fit: 'verb', att: 'person', color: '#ffae52', en: '-er', nu: '〜する人', nu2: 'それをする人。それをする道具にも', note: '道具にもなる（despertador 目覚まし時計）' },
+    { id: 'oso', label: '-oso', fit: 'noun', att: 'desc', color: '#ffd84d', en: '-ous', nu: '〜だらけ', nu2: 'その物でいっぱいの（peligro 危険 → 危険だらけ＝危ない）', note: '女性の名詞には <b>-osa</b>（una ciudad peligros<b>a</b>）' },
+    { id: 'ista', label: '-ista', fit: 'noun', att: 'person', color: '#c9a0ff', en: '-ist', nu: 'その道の人', nu2: 'スポーツ・芸術・楽器など、その道の専門の人', note: '男女で同じ形（el / la artista）', who: 'スポーツ・芸術・楽器など、その道の人は -ista' },
+    { id: 'ero', label: '-ero', fit: 'noun', att: 'person', color: '#ff8fc7', en: '', nu: '物をあつかう人', nu2: 'パン・手紙・靴など、身近な物を作る人・売る人', note: '女性は <b>-era</b>（la panader<b>a</b>）', who: 'パン・手紙・靴など、身近な物を作る人・売る人は -ero' },
+    { id: 'eria', label: '-ería', fit: 'noun', att: 'shop', color: '#ffc4e3', en: '', nu: '〜の店', nu2: 'その物の店（-ero の人がいる店）', note: 'いつも <b>la</b>（la panadería）' }
   ];
 
   var WEAPONS = {}, FORMS = [], FOES = [];

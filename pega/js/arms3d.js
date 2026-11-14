@@ -255,6 +255,171 @@
     return g;
   }
 
+  /* =========================================================
+   * 敵（オリジナル）。ふつうの敵6種・ボス4種。戦いのあいだは止めておく（主役は文）
+   * ========================================================= */
+  function glowEye(r, c) { return std(0xffffff, 0, .3, { emissive: col(c), emissiveIntensity: 1.8, color: col(c) }); }
+  /* 白目＋黒目＋光。brow＝怒り眉（左右で向きを変える） */
+  function cuteEye(g, x, y, z, r, brow) {
+    var e = new T.Group(); e.position.set(x, y, z);
+    var w = mesh(new T.SphereGeometry(r, 18, 14), std(0xffffff, 0, .25)); w.scale.set(1, 1.25, .55); e.add(w);
+    e.add(mesh(new T.SphereGeometry(r * .5, 14, 10), std(0x111122, 0, .2), r * .1 * Math.sign(-x), -r * .1, r * .42));
+    e.add(mesh(new T.SphereGeometry(r * .17, 8, 6), std(0xffffff, 0, .1, { emissive: col(0xffffff) }), r * .05 * Math.sign(-x) + r * .15, r * .15, r * .62));
+    if (brow) { var b = mesh(new T.BoxGeometry(r * 1.6, r * .3, r * .3), std(0x1a1020, 0, .5), 0, r * 1.3, r * .3); b.rotation.z = x < 0 ? -.45 : .45; e.add(b); }
+    g.add(e);
+  }
+  function phys(c, o) { var m = new T.MeshPhysicalMaterial({ color: col(c), roughness: .2, metalness: 0, clearcoat: .8, clearcoatRoughness: .08, envMapIntensity: .6, emissive: col(c).multiplyScalar(.1) }); for (var k in (o || {})) m[k] = o[k]; return m; }
+  function lathe(pts, n, mat) { return new T.Mesh(new T.LatheGeometry(pts.map(function (p) { return new T.Vector2(p[0], p[1]); }), n || 32), mat); }
+
+  function slime(c) {
+    var g = new T.Group(), geo = new T.SphereGeometry(1, 44, 30), p = geo.attributes.position;
+    for (var i = 0; i < p.count; i++) {
+      var x = p.getX(i), y = p.getY(i), z = p.getZ(i), r = Math.sqrt(x * x + z * z);
+      if (y < -.35) y = -.35 + (y + .35) * .25; else if (y > 0) y = y * .78 + Math.max(0, .45 - r) * .9;
+      p.setY(i, y);
+    }
+    geo.computeVertexNormals();
+    g.add(new T.Mesh(geo, phys(c, { emissive: col(c).multiplyScalar(.22) })));
+    cuteEye(g, -.33, .12, .86, .17, true); cuteEye(g, .33, .12, .86, .17, true);
+    var m = mesh(new T.TorusGeometry(.13, .035, 8, 20, Math.PI), std(0x1a1020, 0, .5), 0, -.18, .93); m.rotation.z = Math.PI; g.add(m);
+    g.add(mesh(new T.SphereGeometry(.12, 12, 8), std(0xffffff, 0, .05, { emissive: col(0xffffff), transparent: true, opacity: .7 }), -.45, .62, .6));
+    return g;
+  }
+  function bat(c) {
+    var g = new T.Group(), fur = std(0x3b2a5a, 0, .65);
+    var b = mesh(new T.SphereGeometry(.5, 24, 18), fur); b.scale.set(1, 1.08, .9); g.add(b);
+    g.add(mesh(new T.SphereGeometry(.3, 18, 12), std(0x6a5590, 0, .7), 0, -.12, .3));
+    [-1, 1].forEach(function (k) {
+      var ear = mesh(new T.ConeGeometry(.14, .42, 10), fur, k * .24, .56, 0); ear.rotation.z = -k * .35; g.add(ear);
+      var ws = new T.Shape();
+      ws.moveTo(0, .1); ws.quadraticCurveTo(.6, .55, 1.35, .55); ws.quadraticCurveTo(1.25, .1, 1.2, -.25);
+      ws.quadraticCurveTo(1.0, -.05, .85, -.3); ws.quadraticCurveTo(.68, -.08, .5, -.32); ws.quadraticCurveTo(.3, -.1, 0, -.2); ws.closePath();
+      var wm = std(c, 0, .5, { side: T.DoubleSide, emissive: col(c).multiplyScalar(.12) });
+      var w = mesh(ext(ws, .02, 0), wm, k * .38, .08, -.05); w.scale.x = k; w.rotation.y = -k * .35; g.add(w);
+      g.add(mesh(new T.SphereGeometry(.085, 12, 8), glowEye(.085, 0xff3b4a), k * .17, .12, .42));
+      var f = mesh(new T.ConeGeometry(.035, .12, 6), std(0xffffff, 0, .3), k * .07, -.16, .44); f.rotation.x = Math.PI; g.add(f);
+    });
+    return g;
+  }
+  function golem(c, big) {
+    var g = new T.Group(), st = std(0x8f939c, 0, .9, { map: TX.stone, bumpMap: TX.stone, bumpScale: .015 });
+    var torso = mesh(new T.BoxGeometry(1.1, .95, .7), st, 0, 0, 0); torso.rotation.y = .05; g.add(torso);
+    g.add(mesh(new T.BoxGeometry(.62, .5, .52), st, 0, .74, .02));
+    g.add(mesh(new T.BoxGeometry(.44, .07, .05), glowEye(.1, c), 0, .78, .28));
+    [-1, 1].forEach(function (k) {
+      var arm = mesh(new T.BoxGeometry(.34, .8, .36), st, k * .78, -.18, 0); arm.rotation.z = k * .12; g.add(arm);
+      g.add(mesh(new T.BoxGeometry(.42, .36, .42), st, k * .86, -.66, .02));
+      g.add(mesh(new T.BoxGeometry(.36, .4, .4), st, k * .3, -.68, 0));
+    });
+    var rune = mesh(new T.TorusGeometry(.16, .03, 8, 6), glowEye(.1, c), 0, .05, .36); g.add(rune);
+    if (big) {   /* 王：金の冠と胸の核 */
+      var gold = std(0xffcf55, 1, .2);
+      g.add(mesh(new T.CylinderGeometry(.34, .32, .14, 6, 1, true), std(0xffcf55, 1, .2, { side: T.DoubleSide }), 0, 1.05, .02));
+      for (var i = 0; i < 6; i++) { var a = i / 6 * Math.PI * 2; g.add(mesh(new T.ConeGeometry(.06, .2, 6), gold, Math.sin(a) * .33, 1.2, .02 + Math.cos(a) * .33)); }
+      g.add(mesh(new T.OctahedronGeometry(.17), std(0xffffff, .1, .1, { color: col(c), emissive: col(c), emissiveIntensity: 1.2 }), 0, .05, .4));
+      [-1, 1].forEach(function (k) { var cr = mesh(new T.OctahedronGeometry(.2), phys(c, { emissive: col(c).multiplyScalar(.5) }), k * .78, .4, 0); cr.scale.y = 1.6; g.add(cr); });
+    }
+    return g;
+  }
+  function ghost(c) {
+    var g = new T.Group();
+    var geo = new T.LatheGeometry([[0, -.9], [.62, -.9], [.6, -.4], [.55, .1], [.45, .45], [.25, .68], [0, .74]].map(function (p) { return new T.Vector2(p[0], p[1]); }), 48);
+    var p = geo.attributes.position;
+    for (var i = 0; i < p.count; i++) { var y = p.getY(i); if (y < -.85) { var a = Math.atan2(p.getZ(i), p.getX(i)); p.setY(i, y + Math.sin(a * 7) * .1); } }
+    geo.computeVertexNormals();
+    g.add(new T.Mesh(geo, phys(0xeef3ff, { emissive: col(c).multiplyScalar(.35), transparent: true, opacity: .9, side: T.DoubleSide })));
+    [-1, 1].forEach(function (k) {
+      var e = mesh(new T.SphereGeometry(.12, 14, 10), std(0x0b0b1a, 0, .3), k * .2, .22, .5); e.scale.set(1, 1.4, .4); g.add(e);
+      g.add(mesh(new T.SphereGeometry(.04, 8, 6), glowEye(.04, c), k * .2, .2, .55));
+      var arm = mesh(new T.SphereGeometry(.16, 12, 8), phys(0xeef3ff, { emissive: col(c).multiplyScalar(.35), transparent: true, opacity: .9 }), k * .62, -.2, .1); arm.scale.set(1.6, .7, .7); arm.rotation.z = k * .5; g.add(arm);
+    });
+    var m = mesh(new T.SphereGeometry(.1, 12, 8), std(0x0b0b1a, 0, .3), 0, -.05, .55); m.scale.set(1.2, .9, .4); g.add(m);
+    return g;
+  }
+  function mush(c) {
+    var g = new T.Group();
+    g.add(lathe([[0, -.8], [.42, -.8], [.46, -.6], [.4, -.1], [.36, .2], [0, .2]], 28, std(0xf3e6c8, 0, .7)));
+    var cap = mesh(new T.SphereGeometry(.85, 36, 18, 0, Math.PI * 2, 0, Math.PI / 2), phys(c), 0, .1, 0); cap.scale.set(1.15, .85, 1.15); g.add(cap);
+    g.add(mesh(new T.CircleGeometry(.95, 32), std(0xd8c8a0, 0, .9, { side: T.DoubleSide }), 0, .1, 0)).children;
+    g.children[g.children.length - 1].rotation.x = Math.PI / 2;
+    [[.2, .5], [1.2, .7], [2.4, .45], [3.5, .75], [4.6, .5], [5.6, .8], [0, 1.2]].forEach(function (s) {
+      var th = s[1] * .9, x = Math.sin(th) * Math.cos(s[0]) * .85, z = Math.sin(th) * Math.sin(s[0]) * .85, y = Math.cos(th) * .85 * .85 + .11;
+      var d = mesh(new T.SphereGeometry(.13, 12, 8), std(0xffffff, 0, .4), x * 1.16, y, z * 1.16); d.scale.set(1, .45, 1); d.lookAt(x * 3, y + .8, z * 3); g.add(d);
+    });
+    cuteEye(g, -.15, -.28, .42, .1, true); cuteEye(g, .15, -.28, .42, .1, true);
+    return g;
+  }
+  function orb(c) {
+    var g = new T.Group();
+    g.add(mesh(new T.SphereGeometry(.68, 36, 24), std(0xf4f1ea, 0, .18)));
+    var ir = mesh(new T.SphereGeometry(.69, 32, 12, 0, Math.PI * 2, 0, .55), std(c, 0, .2, { emissive: col(c).multiplyScalar(.6) })); ir.rotation.x = Math.PI / 2; g.add(ir);
+    var pu = mesh(new T.SphereGeometry(.12, 12, 10), std(0x050508, 0, .2), 0, 0, .67); pu.scale.set(.45, 1.5, .4); g.add(pu);
+    g.add(mesh(new T.SphereGeometry(.06, 8, 6), std(0xffffff, 0, .1, { emissive: col(0xffffff) }), .14, .16, .68));
+    var sp = std(0x2d2240, .6, .35);
+    for (var i = 0; i < 8; i++) { var a = i / 8 * Math.PI * 2, s = mesh(new T.ConeGeometry(.09, .36, 8), sp, Math.cos(a) * .76, Math.sin(a) * .76, -.1); s.rotation.z = a - Math.PI / 2; g.add(s); }
+    return g;
+  }
+  function dragon(c) {
+    var g = new T.Group(), sk = std(c, .35, .42, { emissive: col(c).multiplyScalar(.08) }), ivory = std(0xf4ecd8, 0, .4), dark = std(0x1a1020, 0, .5);
+    var h = mesh(new T.SphereGeometry(.7, 32, 22), sk, 0, .3, 0); h.scale.set(1, .82, 1); g.add(h);
+    var sn = mesh(new T.SphereGeometry(.45, 28, 18), sk, 0, .12, .62); sn.scale.set(.95, .62, 1.25); g.add(sn);
+    var jaw = mesh(new T.SphereGeometry(.4, 24, 14), std(c, .2, .55), 0, -.14, .55); jaw.scale.set(.9, .38, 1.2); g.add(jaw);
+    for (var i = 0; i < 5; i++) { var t = mesh(new T.ConeGeometry(.04, .14, 6), ivory, (i - 2) * .12, -.04, .92 - Math.abs(i - 2) * .06); t.rotation.x = Math.PI; g.add(t); }
+    [-1, 1].forEach(function (k) {
+      var horn = new T.TubeGeometry(new T.QuadraticBezierCurve3(new T.Vector3(k * .35, .7, -.1), new T.Vector3(k * .6, 1.25, -.35), new T.Vector3(k * .45, 1.5, -.9)), 16, .07, 8, false);
+      g.add(new T.Mesh(horn, ivory));
+      g.add(mesh(new T.ConeGeometry(.07, .2, 8), ivory, k * .45, 1.52, -.92));
+      var e = mesh(new T.SphereGeometry(.11, 14, 10), glowEye(.1, 0xffd23a), k * .32, .48, .5); e.scale.set(1.3, .6, .6); e.rotation.z = k * .3; g.add(e);
+      var br = mesh(new T.BoxGeometry(.32, .07, .16), sk, k * .32, .6, .5); br.rotation.z = k * .4; g.add(br);
+      g.add(mesh(new T.SphereGeometry(.035, 8, 6), dark, k * .12, .22, 1.18));
+      var fr = mesh(new T.ConeGeometry(.12, .5, 4), std(c, .2, .5), k * .72, .2, -.2); fr.rotation.z = -k * 1.3; g.add(fr);
+    });
+    for (var j = 0; j < 4; j++) { var s = mesh(new T.ConeGeometry(.09, .3, 6), ivory, 0, .82 - j * .05, -.2 - j * .28); s.rotation.x = -.5; g.add(s); }
+    var neck = mesh(new T.CylinderGeometry(.42, .55, 1.0, 20), sk, 0, -.5, -.5); neck.rotation.x = .5; g.add(neck);
+    [-1, 1].forEach(function (k) {
+      var ws = new T.Shape();
+      ws.moveTo(0, 0); ws.quadraticCurveTo(.8, 1.0, 1.9, 1.2); ws.lineTo(1.75, .7); ws.quadraticCurveTo(1.5, .75, 1.35, .35); ws.quadraticCurveTo(1.1, .45, .95, .05); ws.quadraticCurveTo(.7, .15, .55, -.25); ws.closePath();
+      var w = mesh(ext(ws, .03, 0), std(c, .2, .55, { side: T.DoubleSide, emissive: col(c).multiplyScalar(.1) }), k * .35, -.2, -.9); w.scale.x = k; w.rotation.y = k * .5; g.add(w);
+    });
+    return g;
+  }
+  function knight(c) {
+    var g = new T.Group(), m = std(0x2a2d3a, 1, .3), gold = std(0xffcf55, 1, .22);
+    var hel = mesh(new T.SphereGeometry(.5, 30, 20, 0, Math.PI * 2, 0, Math.PI * .62), m, 0, .55, 0); g.add(hel);
+    g.add(mesh(new T.CylinderGeometry(.47, .44, .5, 30), m, 0, .3, 0));
+    g.add(mesh(new T.BoxGeometry(.5, .06, .1), glowEye(.1, 0xff3b4a), 0, .42, .44));
+    g.add(mesh(new T.BoxGeometry(.06, .5, .08), gold, 0, .35, .47));
+    g.add(mesh(new T.TorusGeometry(.47, .03, 8, 32), gold, 0, .55, 0)).children;
+    g.children[g.children.length - 1].rotation.x = Math.PI / 2;
+    for (var i = 0; i < 7; i++) { var p = mesh(new T.SphereGeometry(.1, 10, 8), std(c, 0, .6, { emissive: col(c).multiplyScalar(.15) }), 0, 1.0 + Math.sin(i / 6 * Math.PI) * .15, .2 - i * .14); p.scale.set(.6, 1.3, 1); g.add(p); }
+    var body = mesh(new T.CylinderGeometry(.5, .62, .7, 24), m, 0, -.38, 0); g.add(body);
+    g.add(mesh(new T.OctahedronGeometry(.12), std(c, .1, .15, { emissive: col(c), emissiveIntensity: .8 }), 0, -.3, .55));
+    [-1, 1].forEach(function (k) {
+      var pd = mesh(new T.SphereGeometry(.32, 20, 12, 0, Math.PI * 2, 0, Math.PI / 2), m, k * .68, -.05, 0); pd.scale.set(1.1, .8, 1); pd.rotation.z = -k * .35; g.add(pd);
+      var sp = mesh(new T.ConeGeometry(.06, .28, 8), gold, k * .82, .2, 0); sp.rotation.z = -k * .6; g.add(sp);
+    });
+    var cape = mesh(new T.CylinderGeometry(.7, .95, 1.2, 24, 1, true, Math.PI * .65, Math.PI * .7), std(c, 0, .7, { side: T.DoubleSide }), 0, -.45, -.05); g.add(cape);
+    return g;
+  }
+  function kraken(c) {
+    var g = new T.Group(), sk = phys(c, { emissive: col(c).multiplyScalar(.15), roughness: .3 });
+    var h = mesh(new T.SphereGeometry(.7, 32, 24), sk, 0, .45, 0); h.scale.set(1, 1.25, .95); g.add(h);
+    [-1, 1].forEach(function (k) {
+      var e = mesh(new T.SphereGeometry(.18, 16, 12), std(0xfff3b0, 0, .2, { emissive: col(0xffd23a), emissiveIntensity: .7 }), k * .3, .3, .6); e.scale.z = .6; g.add(e);
+      var pu = mesh(new T.BoxGeometry(.2, .05, .05), std(0x050508, 0, .3), k * .3, .3, .7); g.add(pu);
+    });
+    for (var t = 0; t < 7; t++) {
+      var a = (t / 6 - .5) * 2.6, pts = [];
+      for (var j = 0; j <= 18; j++) { var u = j / 18; pts.push([Math.sin(a) * (.45 + u * .9) + Math.sin(u * 5 + t) * .12, -.1 - u * 1.0 + Math.sin(u * 3.2) * .25 * (t % 2 ? 1 : -1) + u * u * .6, Math.cos(a) * .35 + .1]); }
+      pts.forEach(function (q, j) { g.add(mesh(new T.SphereGeometry(.17 * (1 - j / 21), 12, 8), sk, q[0], q[1], q[2])); });
+    }
+    [[-.35, .9], [.2, 1.05], [.45, .7], [-.1, .65]].forEach(function (s) { var d = mesh(new T.SphereGeometry(.07, 10, 8), std(0xffffff, 0, .4, { color: col(c).lerp(new T.Color(1, 1, 1), .5) }), s[0], s[1], .62); d.scale.z = .4; g.add(d); });
+    return g;
+  }
+  var FOES = { slime: slime, bat: bat, golem: function (c) { return golem(c, false); }, ghost: ghost, mush: mush, orb: orb,
+    dragon: dragon, king: function (c) { return golem(c, true); }, knight: knight, kraken: kraken };
+  A3.FOES = Object.keys(FOES);
+
   /* ---------- 1つの絵 ---------- */
   function View(el) {
     var a = (el.getAttribute('data-w3') || '').split('|');
@@ -262,8 +427,9 @@
     this.pos = a[0]; this.tier = +a[1] || 0;
     this.set = a[2] ? { color: a[2], cut: a[3] } : null;
     this.mode = RM ? 'still' : (a[4] || 'still');
-    this.tilt = a[5] === 'low' ? 1.13 : .78;   /* 縦からの傾き：low＝寝かせる（戦い）・high＝45° */
-    this.base = -.5; this.yaw = this.base; this.t0 = performance.now() + (+el.getAttribute('data-delay') || 0);
+    this.foe = this.pos.indexOf('foe:') === 0 ? this.pos.slice(4) : '';
+    this.tilt = this.foe ? 0 : a[5] === 'low' ? 1.13 : .78;   /* 縦からの傾き：low＝寝かせる（戦い）・high＝45° */
+    this.base = this.foe ? -.38 : -.5; this.yaw = this.base; this.t0 = performance.now() + (+el.getAttribute('data-delay') || 0);
     this.build();
     var c = this.cv = document.createElement('canvas');
     this.ctx = c.getContext('2d');
@@ -282,13 +448,17 @@
     var key = new T.DirectionalLight(0xffffff, 1.5); key.position.set(-2, 3, 4);
     var rim = new T.DirectionalLight(0x9fb8ff, 1.3); rim.position.set(3, 1.5, -3);
     sc.add(key, rim, new T.AmbientLight(0x3a4470, .5));
-    var w = this.w3 = (this.pos === 'verb' ? staff : this.pos === 'noun' ? axe : sword)(this.tier, this.set);
+    var w = this.w3 = this.foe ? (FOES[this.foe] || slime)(this.set ? this.set.color : '#6cb4ff') : (this.pos === 'verb' ? staff : this.pos === 'noun' ? axe : sword)(this.tier, this.set);
     /* 縦の中心をそろえる（回す軸＝武器の芯） */
     var box = meshBox(w); w.position.y = -(box.min.y + box.max.y) / 2;
     this.spin = new T.Group(); this.spin.add(w);
     this.root = new T.Group(); this.root.add(this.spin);
-    this.root.rotation.set(.16, 0, -this.tilt);
-    if (this.tier === 2) {   /* 英雄：後ろに金色の光 */
+    this.root.rotation.set(this.foe ? .12 : .16, 0, -this.tilt);
+    if (/^(dragon|king|knight|kraken)$/.test(this.foe)) {
+      var au = new T.Sprite(new T.SpriteMaterial({ map: TX.glow, color: 0xff5a4a, blending: T.AdditiveBlending, depthWrite: false, transparent: true }));
+      au.scale.set(3.4, 3.4, 1); au.position.z = -1.2; this.root.add(au);
+    }
+    if (this.tier === 2 && !this.foe) {   /* 英雄：後ろに金色の光 */
       var gl = this.glow = new T.Sprite(new T.SpriteMaterial({ map: TX.glow, blending: T.AdditiveBlending, depthWrite: false, transparent: true }));
       gl.scale.set(2.6, 2.6, 1); gl.position.z = -.6; this.root.add(gl);
     }

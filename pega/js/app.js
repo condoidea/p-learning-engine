@@ -34,7 +34,11 @@
       (sock ? ' data-sock="' + sock + '"' : '') + (more || '') + '>' + ART.weapon(pos, set, sock || '', tier) + '</div>';
   }
   var POLISH = [{ n: '原石', s: '' }, { n: '研磨', s: '★' }, { n: '輝き', s: '★★' }, { n: '伝説', s: '★★★' }];
-  var FOE_EMO = ['👾', '🦇', '🐍', '🦂', '🕷️', '🐺', '👻', '🧟', '🦖', '🐗', '🦑', '🐸'], BOSS_EMO = ['🐉', '👹', '🦁', '🐲', '🗿', '🦅', '🐙', '👑'];
+  /* 敵（arms3d.js が立体で描く。読めない端末では絵文字） */
+  var FOE_EMO = { slime: '👾', bat: '🦇', golem: '🗿', ghost: '👻', mush: '🍄', orb: '👁️', dragon: '🐉', king: '👹', knight: '🛡️', kraken: '🐙' };
+  var FOE_KIND = ['slime', 'bat', 'golem', 'ghost', 'mush', 'orb'], BOSS_KIND = ['dragon', 'king', 'knight', 'kraken'];
+  var FOE_COL = ['#5fdc94', '#6cb4ff', '#ff7a6b', '#c9a0ff', '#ffae52', '#ff8fc7', '#4fd6d0'];
+  function foeHTML(emo) { var k = emo.split('|'); return '<span class="w3 foe3" data-w3="foe:' + k[0] + '|0|' + k[1] + '||still|front">' + FOE_EMO[k[0]] + '</span>'; }
   var XP = { hit: 10, boss: 14, guess: 4, loot: 20 };
 
   function $(id) { return document.getElementById(id); }
@@ -114,7 +118,7 @@
   /* ジェムのボタン（絵＋語尾）。そのまま＝空のソケット */
   function gemBtn(g, cls, id) {
     if (!g) return '<button class="gem none' + (cls ? ' ' + cls : '') + '" data-g=""><span class="gi">' + ART.hole(30) + '</span><b>そのまま</b></button>';
-    return '<button class="gem' + (cls ? ' ' + cls : '') + '"' + (id ? ' id="' + id + '"' : '') + ' data-g="' + g.id + '" style="--c:' + g.color + '"><span class="gi">' + ART.gem(g.color, 30, { cut: g.att }) + '</span><b>' + esc(g.label) + '</b></button>';
+    return '<button class="gem' + (cls ? ' ' + cls : '') + '"' + (id ? ' id="' + id + '"' : '') + ' data-g="' + g.id + '" style="--c:' + g.color + '"><span class="gi">' + ART.gem(g.color, 30, { cut: g.att }) + '</span><span class="gt"><b>' + esc(g.label) + '</b><small>' + esc(g.nu) + '</small></span></button>';
   }
   /* ジェムの棚（RPG のメニューのウィンドウ） */
   function shelf(title, btns) { return '<div class="win slotwin"><p class="swt">' + title + '</p><div class="gems">' + btns + '</div></div>'; }
@@ -198,7 +202,7 @@
     if (weak.length) h += '<button class="rem" id="hRem">🩹 おさらい：' + esc(weak[0].k === 'asis' ? 'そのまま' : GB[weak[0].k].label) + '<small>まちがえた ' + weak[0].ids.length + ' 体にリベンジ</small></button>';
     if (reviewFirst) { h += '<button class="cta" id="hRev">' + bRev + '</button>'; if (nx) h += '<button class="sub" id="hCh">' + bCh + '</button>'; }
     else { if (nx) h += '<button class="cta" id="hCh">' + bCh + '</button>'; if (n) h += '<button class="sub" id="hRev">' + bRev + '</button>'; }
-    var line = !n ? 'わたしはルス、ジェムの目ききだよ。敵は空所のある文。武器に語尾のジェムをはめて、空所に合う形にして斬るんだ。1章は5分ほど'
+    var line = !n ? 'わたしはルス。武器に語尾のジェムをはめて、文の空所に合う形にして斬ろう'
       : weak.length ? 'はじかれた敵が待ってるよ。おさらいでリベンジしよう'
       : due.length ? 'もどってきた敵が ' + Math.min(due.length, 8) + ' 体いるよ。見回りに行こう'
       : nx ? 'つぎの宝箱が待ってるよ'
@@ -236,23 +240,24 @@
     function row(gem, f, a, isNew) {
       return '<div class="trow' + (isNew ? ' new' : '') + '"><span class="tk">' + (gem ? gemHTML(gem) : 'そのまま') + '</span>' +
         '<span class="tw">' + (f ? (f.base !== b ? '<small class="from">' + esc(f.base) + ' →</small>' : '') + wHTML(f) + '<small>' + esc(f.ja) + '</small>' : '') + '</span>' +
-        '<span class="ta">' + ATT[a].icon + ' ' + esc(ATT[a].name) + '<small>' + esc(ATT[a].sub) + '</small></span></div>';
+        '<span class="ta">' + ATT[a].icon + ' ' + esc(ATT[a].name) + '</span></div>';
     }
-    var h = '<div class="power"><p class="ptitle">' + fit.icon + ' <b>' + fit.wp + '（' + fit.name + '）</b>に はめると</p>' +
+    var h = '<div class="power"><p class="pnu">' + gemHTML(g) + ' ＝「<b>' + esc(g.nu) + '</b>」<small>' + esc(g.nu2) + '</small></p>' +
+      '<p class="ptitle">' + fit.icon + ' <b>' + fit.wp + '（' + fit.name + '）</b>に はめると</p>' +
       row(null, formOf(b, '') || { w: b, ja: WP[b].ja }, fit.asis, false);
     rows.forEach(function (x) {
       var f = formOf(b, x.id);
       if (!f) { var alt = FORMS.filter(function (y) { return y.gem === x.id && !y.x && !y.sfs[1]; }); f = alt.filter(function (y) { return known(y.id); })[0] || alt[0]; }
       h += row(x, f, x.att, x.id === g.id && rows.length > 1);
     });
-    return h + '<p class="pnote">💡 ' + g.note + (g.en && g.en.charAt(0) === '-' ? '<small class="en">英語の ' + esc(g.en) + ' に近い</small>' : '') + '</p></div>';
+    return h + '<p class="pnote">💡 ' + g.note + '</p></div>';
   }
   /* 弱点の見分け方。きまりの文ではなく、その章の敵の文を1つ見せて、手がかりを指す */
   function spotHTML(atts, ids) {
-    return '<div class="spot"><p class="slab">🔎 弱点の見分け方<small>空所に入る語の種類</small></p>' + atts.map(function (a) {
+    return '<div class="spot"><p class="slab">🔎 弱点の見分け方</p>' + atts.map(function (a) {
       var e = null;
       (ids || []).some(function (id) { var f = FB[id]; if (f && !f.x && attOf(f) === a && FOE[id]) { e = FOE[id][FOE[id].length - 1]; return true; } return false; });
-      return '<div class="sp"><p class="sph">' + ATT[a].icon + ' <b>' + esc(ATT[a].name) + '</b><small>' + esc(ATT[a].sub) + '</small></p>' +
+      return '<div class="sp"><p class="sph">' + ATT[a].icon + ' <b>' + esc(ATT[a].name) + '</b></p>' +
         (e ? '<p class="spe">' + sentHTML(e.s) + '</p><p class="spc">↑ ' + esc(e.clue) + '</p>' : '<p class="spc">' + ATT[a].spot + '</p>') + '</div>';
     }).join('') + '</div>';
   }
@@ -439,7 +444,7 @@
             mark('.opt', function (x) { return x.getAttribute('data-v') === f.ja; }, o);
             if (ok) { sfx('correct', 1); addXp(XP.guess, $('wpn')); } else sfx('tap');
             $('fb').innerHTML = (ok ? '' : '<p class="you">あなたの予想：' + esc(o.getAttribute('data-v')) + '</p>') +
-              '<p class="why">' + esc(f.base) + '（' + esc(w.ja) + '）＋ ' + gemHTML(g) + ' → <b>' + esc(plain(f.w)) + '</b>（' + esc(f.ja) + '）</p>' + (f.memo ? '<p class="memo">💡 ' + esc(f.memo) + '</p>' : '');
+              '<p class="why">' + esc(f.base) + '（' + esc(w.ja) + '）＋ ' + gemHTML(g) + '<small class="nu">' + esc(g.nu) + '</small> → <b>' + esc(plain(f.w)) + '</b>（' + esc(f.ja) + '）</p>' + (f.memo ? '<p class="memo">💡 ' + esc(f.memo) + '</p>' : '');
             $('tray').innerHTML = '';
             lead(ok ? 'そのとおり！ いい読みだね' : 'おしい。こうなるんだ');
             nextBtn('', function () { cur.k++; if (cur.k < 3) tryOn(); else power(); });
@@ -458,7 +463,7 @@
     var g = GB[cur.c.gem], atts = newAtts(cur.ci);
     clearBoard(); setProg(0.5);
     var wp = POS[g.fit].wp, c = cur.c;
-    lead('これが ' + gemHTML(g) + ' の力。' + (sameFit(g).length > 1 ? '同じ' + wp + 'でも、はめるジェムで弱点が変わる' : wp + 'にはめると、斬れる弱点が変わる'));
+    lead('ジェムの力を見ておこう。はめると、意味と弱点が変わる');
     $('bench').innerHTML = powerHTML(g, c.intro) + spotHTML(atts.length ? atts : [g.att], c.intro.concat(c.asis, c.fight));
     nextBtn('⚔ 戦いへ', function () { battles(); });
   }
@@ -488,10 +493,10 @@
   function startBoss() {
     cur.phase = 'boss'; cur.q = cur.bossQ; cur.i = 0;
     cur.hp = cur.q.length; cur.hp0 = cur.q.length;
-    cur.bossEmo = BOSS_EMO[cur.ci % BOSS_EMO.length];
+    cur.bossEmo = BOSS_KIND[(cur.ci || 0) % BOSS_KIND.length] + '|' + ['#c0392b', '#2e9b62', '#7a4fd0', '#1f78c8'][Math.floor((cur.ci || 0) / 4 + (cur.ci || 0)) % 4];
     clearBoard();
     lead('ボスだ！ ここからは<b>弱点が隠れる</b>。文を読んで見ぬくんだ');
-    $('bench').innerHTML = '<div class="bossin"><span class="femo boss pop">' + cur.bossEmo + '</span><p>HP ' + cur.hp + '</p>' + (cur.ci > 0 ? '<p class="chint">前の章のジェムの敵も、まざっている</p>' : '') + '<p class="chint">わからなければ 💡 で弱点を見られる（自力には数えない）</p></div>';
+    $('bench').innerHTML = '<div class="bossin"><span class="femo boss pop">' + foeHTML(cur.bossEmo) + '</span><p>HP ' + cur.hp + '</p>' + '<p class="chint">' + (cur.ci > 0 ? '前の章の敵もまざる。' : '') + '迷ったら 💡</p></div>';
     sfx('combo', 3); FX.flash('rgba(255,80,80,.25)'); FX.shake($('bench'), true);
     nextBtn('⚔ 戦う', ask);
   }
@@ -505,7 +510,7 @@
     cur.seen[q.id] = 1;
     clearBoard();
     setProg(cur.kind === 'chapter' ? 0.5 + 0.5 * (cur.kills / cur.total) : cur.kills / cur.total);
-    if (!q.emo) q.emo = boss ? cur.bossEmo : pick(FOE_EMO);
+    if (!q.emo) q.emo = boss ? cur.bossEmo : pick(FOE_KIND) + '|' + pick(FOE_COL);
     var cnt = q.again ? '<small>さっきの敵に、もう一度</small>' : '';   /* 何体目かは上の進み具合のバーで見せる */
     var firstCh = cur.kind === 'chapter' && !boss && cur.i === 0 && !q.again;
     lead((boss ? '👑 文の意味から、弱点を見ぬいて'
@@ -513,7 +518,7 @@
       : !reveal ? '弱点は隠れてる。文を読んで、合う形にして斬ろう'
       : '空所に合う形にして、斬ろう') + cnt);
     var hp = boss ? '<span class="hp">' + Array.apply(null, Array(cur.hp0)).map(function (_, k) { return '<i' + (k < cur.hp ? ' class="on"' : '') + '></i>'; }).join('') + '</span>' : '';
-    $('bench').innerHTML = '<div class="foe' + (boss ? ' isboss' : '') + '" id="foe"><span class="femo" id="femo">' + q.emo + '</span>' + hp +
+    $('bench').innerHTML = '<div class="foe' + (boss ? ' isboss' : '') + '" id="foe"><span class="femo" id="femo">' + foeHTML(q.emo) + '</span>' + hp +
       '<span class="weak" id="weak">' + weakHTML(q, reveal) + '</span></div>' +
       '<p class="sent" id="sent">' + sentHTML(e.s) + '</p><p class="sja" id="sja">' + jaHTML(e) + '</p>' +
       weaponHTML(f.base, esc(f.base), null) + '<p class="wmsg" id="wmsg"></p>';
@@ -569,7 +574,7 @@
     $('weak').innerHTML = weakHTML(q, true);
     var a = attOf(f), gA = f.gem ? GB[f.gem] : null;
     var right = '<p class="why">🔎 ' + esc(e.clue) + ' → 弱点 <b>' + attShort(a) + '</b></p>' +
-      '<p class="why">' + POS[w.pos].icon + ' ' + esc(f.base) + (gA ? ' ＋ ' + gemHTML(gA) + ' → <b>' + esc(plain(f.w)) + '</b>' : '（そのまま）') + '（' + esc(f.ja) + '）</p>' +
+      '<p class="why">' + POS[w.pos].icon + ' ' + esc(f.base) + (gA ? ' ＋ ' + gemHTML(gA) + '<small class="nu">' + esc(gA.nu) + '</small> → <b>' + esc(plain(f.w)) + '</b>' : '（そのまま）') + '（' + esc(f.ja) + '）</p>' +
       (f.memo ? '<p class="memo">💡 ' + esc(f.memo) + '</p>' : '');
     $('sent').innerHTML = sentHTML(e.s, plain(f.w));
     $('sja').innerHTML = jaHTML(e, f);
@@ -686,7 +691,7 @@
         if (n < todo.length) { lead('もう1つ、はまってる。その前のジェムは？', true); return; }
         var root = f.root || f.base, rja = f.rja || WP[f.base].ja;
         $('res').innerHTML = '<span class="plaque">' + esc(root) + '<small>' + esc(rja) + '</small></span>';
-        $('bits').innerHTML = f.sfs.map(function (id) { return '<span class="bit">＋ ' + gemHTML(GB[id]) + '<small>' + attShort(GB[id].att) + '（' + esc(ATT[GB[id].att].sub) + '）</small></span>'; }).join('');
+        $('bits').innerHTML = f.sfs.map(function (id) { return '<span class="bit">＋ ' + gemHTML(GB[id]) + '<small>「' + esc(GB[id].nu) + '」</small></span>'; }).join('');
         lead('知っている語が出てきた。ジェムの意味とあわせると、<b class="es">' + esc(plain(f.w)) + '</b> は？', true);
         var opts = [f.ja];
         function add(t) { if (t && opts.length < 4 && opts.indexOf(t) < 0) opts.push(t); }
@@ -778,7 +783,7 @@
     /* 動作確認用 */
     window.__pega = { S: function () { return S; }, save: save, home: home, cur: function () { return cur; },
       reset: function () { S = fresh(); save(); home(); },
-      chapter: function (i) { startChapter(i); }, loot: function (id) { newCur('patrol', {}); loot(FB[id]); },
+      chapter: function (i) { startChapter(i); }, power: function (i) { startChapter(i); power(); }, boss: function (i) { startChapter(i); cur.wave = []; battles(); }, loot: function (id) { newCur('patrol', {}); loot(FB[id]); },
       clearTo: function (n) { for (var i = 0; i < n; i++) { var c = CH[i]; S.gems[c.gem] = 1; S.lessons[c.gem] = { done: true }; c.intro.concat(c.fight, c.asis).forEach(function (id) { S.items[id] = S.items[id] || { box: 1, due: day(0) }; }); } S.ch = Math.max(S.ch, n); save(); home(); } };
   }
   home();
