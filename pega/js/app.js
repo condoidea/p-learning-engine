@@ -198,19 +198,42 @@
     each($('home'), '.bg[data-g]', function (b) { b.onclick = function () { sfx('tap'); book(b.getAttribute('data-g')); }; });
   }
 
-  /* ジェムの力（きまり）。見る順：例 → はまる武器 → 武器のまま／はめたあと → 注意 */
-  function powerHTML(g, exIds) {
-    var fit = POS[g.fit];
-    var h = (exIds && exIds.length ? '<ul class="exl">' + exIds.map(function (id) { var f = FB[id]; return '<li>' + esc(f.base) + ' <small>' + esc(WP[f.base].ja) + '</small> → ' + wHTML(f) + ' <small>' + esc(f.ja) + '</small></li>'; }).join('') + '</ul>' : '');
-    h += '<div class="power">' +
-      '<p>' + gemHTML(g) + ' は <b>' + fit.icon + ' ' + fit.wp + '（' + fit.name + '）</b>にはまる</p>' +
-      '<p class="pw2"><span>' + fit.wp + 'のまま</span> ＝ ' + attHTML(fit.asis) + '</p>' +
-      '<p class="pw2"><span>＋ ' + esc(g.label) + '</span> ＝ ' + attHTML(g.att) + (g.en && g.en.charAt(0) === '-' ? '<small class="en">英語の ' + esc(g.en) + '</small>' : '') + '</p>' +
-      '<p class="pnote">' + g.note + '</p>' + '</div>';
-    return h;
+  /* ジェムの力。同じ武器にはまる持っているジェムを、同じ元の語でならべて見せる（そのまま／＋ジェム → 弱点）。
+   * 見る順：武器 → 語の変わり方 → 弱点 → ひとこと注意。抽象のきまりより、1語の変わり方で見せる */
+  function sameFit(g) { return GEMS.filter(function (x) { return x.fit === g.fit && (x.id === g.id || owned(x.id)); }); }
+  function pickBase(g, prefer) {
+    var rows = sameFit(g), sc = {}, best = null, bs = -1;
+    FORMS.forEach(function (f) { if (f.gem === g.id && !f.x && !f.sfs[1]) sc[f.base] = (prefer || []).indexOf(f.id) >= 0 ? 0.5 : 0; });
+    Object.keys(sc).forEach(function (b) {
+      var v = sc[b] + rows.filter(function (x) { return formOf(b, x.id); }).length;
+      if (v > bs) { bs = v; best = b; }
+    });
+    return best;
   }
-  function spotHTML(atts) {
-    return '<div class="spot"><p class="slab">🔎 敵の見分け方</p>' + atts.map(function (a) { return '<p>' + ATT[a].icon + ' <b>' + esc(ATT[a].name) + '</b> の敵：' + ATT[a].spot + '</p>'; }).join('') + '</div>';
+  function powerHTML(g, prefer) {
+    var fit = POS[g.fit], b = pickBase(g, prefer), rows = sameFit(g);
+    function row(gem, f, a, isNew) {
+      return '<div class="trow' + (isNew ? ' new' : '') + '"><span class="tk">' + (gem ? gemHTML(gem) : 'そのまま') + '</span>' +
+        '<span class="tw">' + (f ? (f.base !== b ? '<small class="from">' + esc(f.base) + ' →</small>' : '') + wHTML(f) + '<small>' + esc(f.ja) + '</small>' : '') + '</span>' +
+        '<span class="ta">' + ATT[a].icon + ' ' + esc(ATT[a].name) + '<small>' + esc(ATT[a].sub) + '</small></span></div>';
+    }
+    var h = '<div class="power"><p class="ptitle">' + fit.icon + ' <b>' + fit.wp + '（' + fit.name + '）</b>に はめると</p>' +
+      row(null, formOf(b, '') || { w: b, ja: WP[b].ja }, fit.asis, false);
+    rows.forEach(function (x) {
+      var f = formOf(b, x.id);
+      if (!f) { var alt = FORMS.filter(function (y) { return y.gem === x.id && !y.x && !y.sfs[1]; }); f = alt.filter(function (y) { return known(y.id); })[0] || alt[0]; }
+      h += row(x, f, x.att, x.id === g.id && rows.length > 1);
+    });
+    return h + '<p class="pnote">💡 ' + g.note + (g.en && g.en.charAt(0) === '-' ? '<small class="en">英語の ' + esc(g.en) + ' に近い</small>' : '') + '</p></div>';
+  }
+  /* 弱点の見分け方。きまりの文ではなく、その章の敵の文を1つ見せて、手がかりを指す */
+  function spotHTML(atts, ids) {
+    return '<div class="spot"><p class="slab">🔎 弱点の見分け方<small>空所に入る語の種類</small></p>' + atts.map(function (a) {
+      var e = null;
+      (ids || []).some(function (id) { var f = FB[id]; if (f && !f.x && attOf(f) === a && FOE[id]) { e = FOE[id][FOE[id].length - 1]; return true; } return false; });
+      return '<div class="sp"><p class="sph">' + ATT[a].icon + ' <b>' + esc(ATT[a].name) + '</b><small>' + esc(ATT[a].sub) + '</small></p>' +
+        (e ? '<p class="spe">' + sentHTML(e.s) + '</p><p class="spc">↑ ' + esc(e.clue) + '</p>' : '<p class="spc">' + ATT[a].spot + '</p>') + '</div>';
+    }).join('') + '</div>';
   }
   function book(gid) {
     var g = GB[gid], p = polishOf(gid);
@@ -412,8 +435,9 @@
   function power() {
     var g = GB[cur.c.gem], atts = newAtts(cur.ci);
     clearBoard(); setProg(0.5);
-    lead('これが ' + gemHTML(g) + ' の力。上から順に見てごらん');
-    $('bench').innerHTML = powerHTML(g, cur.c.intro) + spotHTML(atts.length ? atts : [g.att]);
+    var wp = POS[g.fit].wp, c = cur.c;
+    lead('これが ' + gemHTML(g) + ' の力。' + (sameFit(g).length > 1 ? '同じ' + wp + 'でも、はめるジェムで弱点が変わる' : wp + 'にはめると、斬れる弱点が変わる'));
+    $('bench').innerHTML = powerHTML(g, c.intro) + spotHTML(atts.length ? atts : [g.att], c.intro.concat(c.asis, c.fight));
     nextBtn('⚔ 戦いへ', function () { battles(); });
   }
 
@@ -423,11 +447,11 @@
     if (k === 'asis') {
       lead('🩹 そのまま使うときの弱点を、もう一度見ておこう');
       $('bench').innerHTML = '<div class="power">' + ['adj', 'verb', 'noun'].map(function (p) { return '<p class="pw2"><span>' + POS[p].icon + ' ' + POS[p].wp + 'のまま</span> ＝ ' + attHTML(POS[p].asis) + '</p>'; }).join('') + '</div>' +
-        spotHTML(['desc', 'act', 'thing']);
+        spotHTML(['desc', 'act', 'thing'], Object.keys(S.weak.asis || {}).concat(FORMS.filter(function (f) { return !f.gem; }).map(function (f) { return f.id; })));
     } else {
       var g = GB[k], ex = FORMS.filter(function (f) { return f.gem === k && known(f.id) && !S.weak[k][f.id]; }).slice(0, 2).map(function (f) { return f.id; });
       lead('🩹 ' + gemHTML(g) + ' の力を、もう一度見ておこう');
-      $('bench').innerHTML = powerHTML(g, ex) + spotHTML([g.att]);
+      $('bench').innerHTML = powerHTML(g, ex) + spotHTML([g.att], Object.keys(S.weak[k]).concat(ex));
     }
     nextBtn('⚔ リベンジ ' + cur.wave.length + ' 体', battles);
   }
@@ -445,7 +469,7 @@
     cur.bossEmo = BOSS_EMO[cur.ci % BOSS_EMO.length];
     clearBoard();
     lead('ボスだ！ ここからは<b>弱点が隠れる</b>。文を読んで見ぬくんだ');
-    $('bench').innerHTML = '<div class="bossin"><span class="femo boss pop">' + cur.bossEmo + '</span><p>HP ' + cur.hp + '</p><p class="chint">わからなければ 💡 で弱点を見られる（自力には数えない）</p></div>';
+    $('bench').innerHTML = '<div class="bossin"><span class="femo boss pop">' + cur.bossEmo + '</span><p>HP ' + cur.hp + '</p>' + (cur.ci > 0 ? '<p class="chint">前の章のジェムの敵も、まざっている</p>' : '') + '<p class="chint">わからなければ 💡 で弱点を見られる（自力には数えない）</p></div>';
     sfx('combo', 3); FX.flash('rgba(255,80,80,.25)'); FX.shake($('bench'), true);
     nextBtn('⚔ 戦う', ask);
   }
@@ -555,8 +579,8 @@
       }, 120);
       $('fb').innerHTML = right;
       lead(pick(clean ? ['見事！', 'いい読みだ！', 'そのとおり！'] : ['通ったね。']) + ' 理由も見ておこう');
-      var last = boss && cur.hp <= 1;
-      timer = setTimeout(next, last ? 3000 : 2600);
+      if (boss && cur.hp <= 1) { lead('ボスをたおした！ とどめの理由も見ておこう'); bossDown(); return; }
+      timer = setTimeout(next, 2600);
       nextBtn('', next);
     } else {
       cur.combo = 0; cur.fever = false; FX.combo(0); $('play').classList.remove('fever');
@@ -586,20 +610,40 @@
     if (ok && foe) { var s = document.createElement('i'); s.className = 'slash'; foe.appendChild(s); setTimeout(function () { s.remove(); }, 420); }
   }
   function next() { clearTimeout(timer); cur.i++; ask(); }
+  /* ボスをたおした：理由を読んだら、ボスのいた所に落とし物（なぞの語）が落ちる → 拾って鑑定へ。自動では進めない */
+  function bossDown() {
+    var drop = cur.kind === 'chapter' ? lootPick() : null;
+    nextBtn('つぎへ ▶', function () {
+      clearBoard();
+      if (!drop) { finish(); return; }
+      cur.drop = drop;
+      FX.combo(0); $('play').classList.remove('fever');
+      lead('おや、ボスが何か落としていったよ');
+      $('bench').innerHTML = '<div class="dropin"><span class="scroll" id="scroll">📜</span><p class="chint">まだ習っていない語が書いてある</p></div>';
+      sfx('chestShake');
+      setTimeout(function () { if ($('scroll')) { var p = FX.at($('scroll')); FX.burst(p.x, p.y, { n: 12 }); } }, 520);
+      nextBtn('📜 拾って読む', function () { loot(drop); });
+    });
+  }
 
   /* ---------- 戦利品の鑑定：知らない語からジェムを外して読む ---------- */
+  function lootPick() {
+    var cand = FORMS.filter(function (f) { return f.x && !S.looted[f.id] && f.sfs.every(owned); });
+    if (!cand.length) return null;
+    var mine = cur.c ? cand.filter(function (f) { return f.sfs.indexOf(cur.c.gem) >= 0; }) : [];
+    return pick(mine.length ? mine : cand);
+  }
   function afterBattles() {
     if (cur.kind === 'remedy') { finish(); return; }
-    var cand = FORMS.filter(function (f) { return f.x && !S.looted[f.id] && f.sfs.every(owned) && (!f.root || known(f.base) || true); });
-    if (!cand.length) { finish(); return; }
-    var mine = cur.c ? cand.filter(function (f) { return f.sfs.indexOf(cur.c.gem) >= 0; }) : [];
-    loot((mine.length ? mine : cand)[Math.floor(Math.random() * (mine.length ? mine : cand).length)]);
+    var f = lootPick();
+    if (!f) { finish(); return; }
+    loot(f);
   }
   function loot(f) {
     var todo = f.sfs.slice().reverse(), n = 0;
     cur.phase = 'loot';
     clearBoard(); setProg(1);
-    lead('戦利品だ！ 知らない語でも、おしりのジェムを外せば読めるよ');
+    lead(cur.drop ? '習っていない語でも、おしりのジェムを外すと、知っている語が出てくるよ' : '落とし物だ！ 知らない語でも、おしりのジェムを外せば読めるよ');
     function draw() { $('bench').innerHTML = '<div class="res tall" id="res"><span class="plaque">' + wHTML(f, n === 0 ? null : f.sfs.length - n) + '</span></div><div id="bits" class="bits"></div>'; }
     function drawPeeled() {
       var p = f.w.split('|'), keep = p.slice(0, p.length - n), h = esc(keep[0]);
@@ -609,7 +653,8 @@
     draw();
     Speech.say(plain(f.w));
     var gems = GEMS.filter(function (g) { return owned(g.id); });
-    $('tray').innerHTML = '<p class="tlab">語のおしりに、どのジェムがはまっている？</p><div class="gems">' + gems.map(function (g) { return '<button class="gem" data-g="' + g.id + '" style="--c:' + g.color + '">' + esc(g.label) + '</button>'; }).join('') + '</div>';
+    var one = gems.length === 1;
+    $('tray').innerHTML = '<p class="tlab">' + (one ? 'ジェムをタップして、語から外そう' : '語のおしりに、どのジェムがはまっている？') + '</p><div class="gems">' + gems.map(function (g) { return '<button class="gem' + (one ? ' glow' : '') + '" data-g="' + g.id + '" style="--c:' + g.color + '">' + esc(g.label) + '</button>'; }).join('') + '</div>';
     each($('tray'), '.gem', function (b) {
       b.onclick = function () {
         var gid = b.getAttribute('data-g');
@@ -619,11 +664,15 @@
         if (n < todo.length) { lead('もう1つ、はまってる。その前のジェムは？', true); return; }
         var root = f.root || f.base, rja = f.rja || WP[f.base].ja;
         $('res').innerHTML = '<span class="plaque">' + esc(root) + '<small>' + esc(rja) + '</small></span>';
-        $('bits').innerHTML = f.sfs.map(function (id) { return '<span class="bit">＋ ' + gemHTML(GB[id]) + '<small>' + attShort(GB[id].att) + '</small></span>'; }).join('');
-        lead('元の語とジェムから考えて。<b class="es">' + esc(plain(f.w)) + '</b> の意味は？', true);
-        var pool = shuffle(FORMS.filter(function (x) { return x.id !== f.id && x.ja !== f.ja && x.gem; }));
-        var sib = pool.filter(function (x) { return x.base === f.base || x.base === root; }).slice(0, 1);
-        var opts = shuffle([f.ja].concat(sib.map(function (x) { return x.ja; }), pool.filter(function (x) { return sib.indexOf(x) < 0; }).slice(0, 3 - sib.length).map(function (x) { return x.ja; })));
+        $('bits').innerHTML = f.sfs.map(function (id) { return '<span class="bit">＋ ' + gemHTML(GB[id]) + '<small>' + attShort(GB[id].att) + '（' + esc(ATT[GB[id].att].sub) + '）</small></span>'; }).join('');
+        lead('知っている語が出てきた。ジェムの意味とあわせると、<b class="es">' + esc(plain(f.w)) + '</b> は？', true);
+        var opts = [f.ja];
+        function add(t) { if (t && opts.length < 4 && opts.indexOf(t) < 0) opts.push(t); }
+        add(rja);
+        shuffle(FORMS.filter(function (x) { return x.id !== f.id && (x.base === f.base || x.base === root || x.root === root); })).forEach(function (x) { add(x.ja); });
+        shuffle(FORMS.filter(function (x) { return x.id !== f.id && x.gem === f.sfs[f.sfs.length - 1] && !x.x; })).forEach(function (x) { add(x.ja); });
+        shuffle(FORMS.filter(function (x) { return x.id !== f.id && x.gem && !x.x; })).forEach(function (x) { add(x.ja); });
+        opts = shuffle(opts);
         $('tray').innerHTML = optsHTML(opts);
         each($('tray'), '.opt', function (o) {
           o.onclick = function () {

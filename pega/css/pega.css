@@ -170,19 +170,39 @@ small { font-weight: 500; }
 .bossin { margin-top: 24px; }
 .bossin p { margin: 8px 0 0; }
 
-.exl { list-style: none; margin: 0; padding: 0; width: 100%; display: flex; flex-direction: column; gap: 4px; }
-.exl li { padding: 5px 10px; border-radius: 10px; background: var(--panel); font: 800 19px/1.4 var(--f-es); }
-.exl small { font: 500 13.5px 'M PLUS Rounded 1c', sans-serif; color: var(--dim); }
-.power, .spot { width: 100%; padding: 8px 14px; border-radius: 14px; background: var(--panel2); text-align: left; font-size: 16px; }
+/* ボスの落とし物 */
+.dropin { margin-top: 40px; }
+.scroll { display: inline-block; font-size: 72px; line-height: 1; animation: drop .6s cubic-bezier(.3, 1.4, .5, 1) both; filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .4)); }
+@keyframes drop { from { transform: translateY(-120px) rotate(-25deg); opacity: 0; } 60% { opacity: 1; } to { transform: none; } }
+
+.power, .spot { width: 100%; padding: 8px 12px 10px; border-radius: 14px; background: var(--panel2); text-align: left; font-size: 16px; }
 .power p, .spot p { margin: 3px 0; }
 .power b { color: var(--gold); }
+.ptitle { font-weight: 700; }
 .pw2 span { display: inline-block; min-width: 6.5em; font-weight: 700; }
-.pnote { font-size: 15px; color: var(--dim); }
+/* ジェムの力の表：そのまま／＋ジェム → できた語 → 弱点 */
+.trow { display: grid; grid-template-columns: 76px 1fr auto; gap: 6px; align-items: center; margin-top: 5px; padding: 5px 8px; border-radius: 10px; background: var(--panel); }
+.trow.new { box-shadow: inset 0 0 0 2px var(--gold); }
+.tk { font-size: 14px; font-weight: 700; color: var(--dim); }
+.tk .chip { font-size: 16px; }
+.tw { font: 800 19px/1.25 var(--f-es); overflow-wrap: anywhere; min-width: 0; }
+.power .chip, .power .tl { color: var(--dark); }
+.tw .from { display: inline; margin-right: 4px; }
+.tw small { display: block; font: 500 13px/1.35 'M PLUS Rounded 1c', sans-serif; color: var(--dim); }
+.ta { font-size: 14.5px; font-weight: 700; text-align: right; white-space: nowrap; }
+.ta small { display: block; font-size: 12px; font-weight: 500; color: var(--dim); }
+.pnote { margin-top: 8px !important; font-size: 15px; color: var(--dim); }
 .pnote b { color: var(--ink); }
-.en { margin-left: 6px; font-size: 13px; color: var(--dim); }
-.spot { background: var(--panel); box-shadow: inset 0 0 0 2px var(--line); font-size: 15.5px; }
+.en { display: block; font-size: 13px; color: var(--dim); }
+.spot { margin-top: 8px; background: var(--panel); box-shadow: inset 0 0 0 2px var(--line); font-size: 15.5px; }
 .spot .slab { font-weight: 800; color: var(--gold); }
+.spot .slab small { margin-left: 6px; font-size: 13px; font-weight: 500; color: var(--dim); }
 .spot b { color: var(--ink); }
+.sp + .sp { margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--line); }
+.sph small { margin-left: 6px; font-size: 13px; color: var(--dim); }
+.spe { font: 700 19px/1.4 var(--f-es); }
+.spe .blank { display: inline-block; min-width: 2.6em; padding: 0 6px; border-radius: 6px; box-shadow: inset 0 0 0 2px var(--gold); color: var(--gold); font-size: .8em; text-align: center; }
+.spc { font-size: 14px; color: var(--dim); }
 
 #fb { flex: none; max-height: 38%; overflow-y: auto; text-align: center; font-size: 15.5px; }
 #fb p { margin: 3px 0; }
