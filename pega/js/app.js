@@ -28,6 +28,11 @@
   var TITLES = ['見習い剣士', 'ジェム使い', '一人前の剣士', '腕ききの剣士', 'ジェムの騎士', '語尾の勇者', '伝説の勇者', 'マエストロ'];
   var TIER = ['兵士', '騎士', '英雄'];   /* 武器は持ち主のレベルで育つ（Lv1〜2 兵士・3〜5 騎士・6〜 英雄） */
   function tierOf(lv) { return lv >= 6 ? 2 : lv >= 3 ? 1 : 0; }
+  /* 武器の絵：中身は SVG。arms3d.js が読めたら立体に置きかわる。mode＝still／wiggle／intro／spin、tilt＝low（戦い）／high（斜め） */
+  function arm3(pos, set, tier, mode, tilt, sock, more) {
+    return '<div class="w3 ' + (tilt || 'high') + '" data-w3="' + [pos, tier, set ? set.color : '', set ? set.cut : '', mode, tilt || 'high'].join('|') + '"' +
+      (sock ? ' data-sock="' + sock + '"' : '') + (more || '') + '>' + ART.weapon(pos, set, sock || '', tier) + '</div>';
+  }
   var POLISH = [{ n: '原石', s: '' }, { n: '研磨', s: '★' }, { n: '輝き', s: '★★' }, { n: '伝説', s: '★★★' }];
   var FOE_EMO = ['👾', '🦇', '🐍', '🦂', '🕷️', '🐺', '👻', '🧟', '🦖', '🐗', '🦑', '🐸'], BOSS_EMO = ['🐉', '👹', '🦁', '🐲', '🗿', '🦅', '🐙', '👑'];
   var XP = { hit: 10, boss: 14, guess: 4, loot: 20 };
@@ -178,9 +183,11 @@
       '<div class="lv"><b>Lv ' + lv + '</b><span>' + title(lv) + '</span><span class="lvbar"><i style="width:' + Math.round((S.xp - lo) / (need(lv) - lo) * 100) + '%"></i></span></div></header>' +
       '<h1 class="logo">¡PEGA!<small>語尾のジェムを武器にはめて戦う ・ 西検4級</small></h1>';
     var t = tierOf(lv);
-    h += '<div class="win belt"><p class="blab">武器<small>（' + TIER[t] + 'の武器' + (t < 2 ? '・Lv ' + (t ? 6 : 3) + ' で進化' : '') + '）</small></p><div class="bweps">' + ['adj', 'verb', 'noun'].map(function (k) {
-      return '<div class="bw">' + ART.weapon(k, null, '', t) + '<small>' + POS[k].wp + '＝' + POS[k].name + '<br>そのまま<br><b>' + ATT[POS[k].asis].icon + ' ' + ATT[POS[k].asis].name + '</b></small></div>';
-    }).join('') + '</div><p class="blab">ジェム<small>（タップで力と図鑑）</small></p><div class="bgems">' + GEMS.map(function (g) {
+    /* 武器は枠に入れず、斜めに立体で（登場で一回転・なぞると回る） */
+    h += '<div class="arms"><p class="blab">武器<small>（' + TIER[t] + 'の武器' + (t < 2 ? '・Lv ' + (t ? 6 : 3) + ' で進化' : '') + '・なぞると回る）</small></p><div class="bweps">' + ['adj', 'verb', 'noun'].map(function (k, i) {
+      return '<div class="bw">' + arm3(k, null, t, 'intro', 'high', '', ' data-drag data-delay="' + i * 140 + '"') + '<small>' + POS[k].wp + '＝' + POS[k].name + '<br>そのまま<br><b>' + ATT[POS[k].asis].icon + ' ' + ATT[POS[k].asis].name + '</b></small></div>';
+    }).join('') + '</div></div>';
+    h += '<div class="win belt"><p class="blab">ジェム<small>（タップで力と図鑑）</small></p><div class="bgems">' + GEMS.map(function (g) {
       if (!owned(g.id)) return '<span class="bg lock">' + ART.hole(34) + '<small>？</small></span>';
       var p = polishOf(g.id);
       return '<button class="bg p' + p + '" data-g="' + g.id + '" style="--c:' + g.color + '">' + ART.gem(g.color, 34, { dull: p === 0, sparkle: p >= 2, cut: g.att }) + '<b>' + esc(g.label) + '</b><small>' + POLISH[p].n + ' ' + POLISH[p].s + '</small></button>';
@@ -196,7 +203,7 @@
       : due.length ? 'もどってきた敵が ' + Math.min(due.length, 8) + ' 体いるよ。見回りに行こう'
       : nx ? 'つぎの宝箱が待ってるよ'
       : 'ジェムは8つぜんぶそろったね。見回りで、日をあけて戦い直してジェムを育てよう';
-    h = h.replace('<div class="win belt">', '<p class="talk">' + talkHTML(line) + '</p><div class="win belt">');
+    h = h.replace('<div class="arms">', '<p class="talk">' + talkHTML(line) + '</p><div class="arms">');
     h += '<div class="settings">' +
       '<label><input type="checkbox" id="tgSound"' + (S.settings.sound ? ' checked' : '') + '> 🔈 効果音</label>' +
       '<label><input type="checkbox" id="tgSpeak"' + (S.settings.speak ? ' checked' : '') + '> 🗣 単語を読み上げる</label>' +
@@ -345,7 +352,8 @@
   /* 武器のカード。f＝いまの形（ジェムなしなら元の語）。gem＝はめたジェム（ないなら空のソケット） */
   function weaponHTML(base, shown, gem) {
     var w = WP[base], p = POS[w.pos];
-    return '<div class="win weapon" id="wpn"><div class="wart" id="wart">' + ART.weapon(w.pos, gem ? { color: gem.color, cut: gem.att } : null, 'sock', tierOf(lvOf(S.xp))) + '</div>' +
+    /* 立体の武器（arms3d.js）。戦いの画面では止めておき、ジェムをはめた瞬間だけ少しひねる */
+    return '<div class="weapon" id="wpn"><div class="wart" id="wart">' + arm3(w.pos, gem ? { color: gem.color, cut: gem.att } : null, tierOf(lvOf(S.xp)), gem ? 'wiggle' : 'still', 'low', 'sock') + '</div>' +
       '<div class="wbody"><b class="wname" id="wname">' + shown + '</b><small>' + p.wp + '（' + p.name + '）・' + esc(w.ja) + '</small></div></div>';
   }
   function formOf(base, gid) { return FORMS.filter(function (f) { return f.base === base && f.gem === gid && !f.sfs[1]; })[0]; }
@@ -736,7 +744,7 @@
       '<div class="dxp"><b>+' + gained + ' XP</b><div class="lv"><b>Lv ' + lv + '</b><span>' + title(lv) + '</span><span class="lvbar"><i id="dBar" style="width:0"></i></span></div></div>';
     if (cleared) h += '<p class="dlab">💎 手に入れたジェム</p><div class="dgem">' + bigGem(GB[cur.c.gem]) + '</div>';
     var t0 = tierOf(cur.lv0), t1 = tierOf(lv);
-    if (t1 > t0) h += '<div class="win wevo"><p>⚔ 武器が <b>' + TIER[t1] + 'の武器</b> に進化した！</p><div class="bweps">' + ['adj', 'verb', 'noun'].map(function (k) { return '<div class="bw">' + ART.weapon(k, null, '', t1) + '</div>'; }).join('') + '</div></div>';
+    if (t1 > t0) h += '<div class="wevo"><p>⚔ 武器が <b>' + TIER[t1] + 'の武器</b> に進化した！</p><div class="bweps">' + ['adj', 'verb', 'noun'].map(function (k) { return '<div class="bw">' + arm3(k, null, t1, 'spin', 'high') + '</div>'; }).join('') + '</div></div>';
     evo.forEach(function (g) { var p = polishOf(g.id); h += '<p class="evo" style="--c:' + g.color + '">✨ ' + esc(g.label) + ' が <b>' + POLISH[p].n + ' ' + POLISH[p].s + '</b> に進化</p>'; });
     var list = ids.map(function (id) { return FB[id]; }).filter(function (f) { return f.gem; }).concat(cur.loot ? [cur.loot] : []);
     if (list.length) h += '<p class="dlab">⚔ この回の形</p><ul class="blist">' + list.map(function (f) { return liHTML(f, cur.miss[f.id] ? 'missed' : ''); }).join('') + '</ul>';
