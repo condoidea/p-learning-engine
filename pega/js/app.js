@@ -103,6 +103,15 @@
     });
     return '<span class="wd">' + h + '</span>';
   }
+  Object.keys(POS).forEach(function (k) { POS[k].icon = ART.icon(k); });
+  /* ジェムのボタン（絵＋語尾）。そのまま＝空のソケット */
+  function gemBtn(g, cls, id) {
+    if (!g) return '<button class="gem none' + (cls ? ' ' + cls : '') + '" data-g=""><span class="gi"><svg viewBox="-13 -13 26 26" width="30" height="30" aria-hidden="true">' + ART.socket(0, 0, null) + '</svg></span><b>そのまま</b></button>';
+    return '<button class="gem' + (cls ? ' ' + cls : '') + '"' + (id ? ' id="' + id + '"' : '') + ' data-g="' + g.id + '" style="--c:' + g.color + '"><span class="gi">' + ART.gem(g.color, 30) + '</span><b>' + esc(g.label) + '</b></button>';
+  }
+  /* ジェムの棚（RPG のメニューのウィンドウ） */
+  function shelf(title, btns) { return '<div class="win slotwin"><p class="swt">' + title + '</p><div class="gems">' + btns + '</div></div>'; }
+  function bigGem(g) { return '<span class="biggem" style="--c:' + g.color + '">' + ART.gem(g.color, 112, { sparkle: true }) + '<b>' + esc(g.label) + '</b></span>'; }
   function gemHTML(g) { return '<b class="chip" style="--c:' + g.color + '">' + esc(g.label) + '</b>'; }
   function attHTML(a) { var t = ATT[a]; return '<span class="att">' + t.icon + ' ' + esc(t.name) + '<small>（' + esc(t.sub) + '）</small></span>'; }
   function attShort(a) { return ATT[a].icon + ' ' + ATT[a].name; }
@@ -166,10 +175,10 @@
     var h = '<header class="top"><a class="back" href="index.html" aria-label="コース一覧へ">←</a>' +
       '<div class="lv"><b>Lv ' + lv + '</b><span>' + title(lv) + '</span><span class="lvbar"><i style="width:' + Math.round((S.xp - lo) / (need(lv) - lo) * 100) + '%"></i></span></div></header>' +
       '<h1 class="logo">¡PEGA!<small>語尾のジェムを武器にはめて戦う ・ 西検4級</small></h1>';
-    h += '<div class="belt"><p class="blab">ジェム<small>（タップで力と図鑑）</small></p><div class="bgems">' + GEMS.map(function (g) {
-      if (!owned(g.id)) return '<span class="bg lock">？</span>';
+    h += '<div class="win belt"><p class="blab">ジェム<small>（タップで力と図鑑）</small></p><div class="bgems">' + GEMS.map(function (g) {
+      if (!owned(g.id)) return '<span class="bg lock"><svg viewBox="-13 -13 26 26" width="34" height="34" aria-hidden="true">' + ART.socket(0, 0, null) + '</svg><small>？</small></span>';
       var p = polishOf(g.id);
-      return '<button class="bg p' + p + '" data-g="' + g.id + '" style="--c:' + g.color + '"><b>' + esc(g.label) + '</b><small>' + POLISH[p].n + ' ' + POLISH[p].s + '</small></button>';
+      return '<button class="bg p' + p + '" data-g="' + g.id + '" style="--c:' + g.color + '">' + ART.gem(g.color, 34, { dull: p === 0, sparkle: p >= 2 }) + '<b>' + esc(g.label) + '</b><small>' + POLISH[p].n + ' ' + POLISH[p].s + '</small></button>';
     }).join('') + '</div><p class="made">⚔ 使える形 <b>' + n + '</b>・章 <b>' + S.ch + '</b> / ' + CH.length + '</p></div>';
     var reviewFirst = n && (due.length >= 8 || !nx);
     var bCh = nx ? '▶ 第' + (S.ch + 1) + '章：宝箱をあける<small>あたらしいジェム ' + esc(GB[nx.gem].label) + '・ボスつき</small>' : '';
@@ -182,7 +191,7 @@
       : due.length ? 'もどってきた敵が ' + Math.min(due.length, 8) + ' 体いるよ。見回りに行こう'
       : nx ? 'つぎの宝箱が待ってるよ'
       : 'ジェムは8つぜんぶそろったね。見回りで、日をあけて戦い直してジェムを育てよう';
-    h = h.replace('<div class="belt">', '<p class="talk">' + talkHTML(line) + '</p><div class="belt">');
+    h = h.replace('<div class="win belt">', '<p class="talk">' + talkHTML(line) + '</p><div class="win belt">');
     h += '<div class="settings">' +
       '<label><input type="checkbox" id="tgSound"' + (S.settings.sound ? ' checked' : '') + '> 🔈 効果音</label>' +
       '<label><input type="checkbox" id="tgSpeak"' + (S.settings.speak ? ' checked' : '') + '> 🗣 単語を読み上げる</label>' +
@@ -306,7 +315,7 @@
     var b = el.querySelector('.bubble');
     if (chg && b.animate) b.animate([{ opacity: 0.25 }, { opacity: 1 }], { duration: 240, easing: 'ease-out' });
   }
-  function clearBoard() { clearTimeout(timer); $('fb').innerHTML = ''; $('tray').innerHTML = ''; $('pop').hidden = true; }
+  function clearBoard() { clearTimeout(timer); $('tray').classList.remove('done'); $('fb').innerHTML = ''; $('tray').innerHTML = ''; $('pop').hidden = true; }
   function setProg(r) { $('pProg').style.width = Math.round(Math.max(0, Math.min(1, r)) * 100) + '%'; }
   function addXp(n, el) {
     if (cur.fever) n *= 2;
@@ -331,15 +340,15 @@
   /* 武器のカード。f＝いまの形（ジェムなしなら元の語）。gem＝はめたジェム（ないなら空のソケット） */
   function weaponHTML(base, shown, gem) {
     var w = WP[base], p = POS[w.pos];
-    return '<div class="weapon" id="wpn"><span class="wicon">' + p.icon + '</span><div class="wbody"><b class="wname" id="wname">' + shown + '</b>' +
-      '<small>' + p.wp + '（' + p.name + '）・' + esc(w.ja) + '</small></div>' +
-      '<span class="socket' + (gem ? ' set' : '') + '" id="sock"' + (gem ? ' style="--c:' + gem.color + '"' : '') + '>' + (gem ? esc(gem.label) : '') + '</span></div>';
+    return '<div class="win weapon" id="wpn"><div class="wart" id="wart">' + ART.weapon(w.pos, gem ? gem.color : null, 'sock') + '</div>' +
+      '<div class="wbody"><b class="wname" id="wname">' + shown + '</b><small>' + p.wp + '（' + p.name + '）・' + esc(w.ja) + '</small></div></div>';
   }
   function formOf(base, gid) { return FORMS.filter(function (f) { return f.base === base && f.gem === gid && !f.sfs[1]; })[0]; }
   /* ジェムが棚から武器のソケットへ飛ぶ */
   function fly(from, to, done) {
     sfxGem();
     if (FX.RM || !from.animate) { done(); return; }
+    from = from.querySelector('.gsvg') || from;
     var a = from.getBoundingClientRect(), b = to.getBoundingClientRect(), c = from.cloneNode(true);
     c.style.cssText += ';position:fixed;left:' + a.left + 'px;top:' + a.top + 'px;width:' + a.width + 'px;height:' + a.height + 'px;margin:0;z-index:60;pointer-events:none';
     document.body.appendChild(c);
@@ -368,7 +377,7 @@
     var d = document.createElement('div');
     d.id = 'joinin'; d.style.setProperty('--c', g.color);
     d.innerHTML = '<div class="jn-lines"></div><div class="jn-band"></div><div class="jn-sub">第' + (cur.ci + 1) + '章<small>あたらしいジェム</small></div>' +
-      '<div class="jn-gem"><span class="biggem" style="--c:' + g.color + '">' + esc(g.label) + '</span></div><div class="jn-tag"><b>参戦！</b></div><div class="jn-flash"></div><div class="jn-tap">タップでつづける</div>';
+      '<div class="jn-gem">' + bigGem(g) + '</div><div class="jn-tag"><b>参戦！</b></div><div class="jn-flash"></div><div class="jn-tap">タップでつづける</div>';
     document.body.appendChild(d);
     var ready = false, ts = [];
     function at(ms, fn) { ts.push(setTimeout(fn, ms)); }
@@ -399,7 +408,7 @@
     clearBoard(); setProg(cur.k / 6);
     lead('このジェムを、知っている' + POS[w.pos].wp + 'にはめてごらん<small>' + (cur.k + 1) + ' / 3</small>');
     $('bench').innerHTML = weaponHTML(f.base, esc(f.base), null) + '<div class="res" id="res"></div>';
-    $('tray').innerHTML = '<div class="gems"><button class="gem glow" id="g1" style="--c:' + g.color + '">' + esc(g.label) + '</button></div>';
+    $('tray').innerHTML = shelf('ジェム', gemBtn(g, 'glow sel', 'g1'));
     $('g1').onclick = function () {
       $('g1').onclick = null; $('g1').classList.remove('glow');
       fly($('g1'), $('sock'), function () {
@@ -501,9 +510,8 @@
       $('weak').classList.add('chg');
     };
     var gems = GEMS.filter(function (g) { return owned(g.id); });
-    $('tray').innerHTML = '<div class="gems"><button class="gem none" data-g="">そのまま</button>' +
-      gems.map(function (g) { return '<button class="gem" data-g="' + g.id + '" style="--c:' + g.color + '">' + esc(g.label) + '</button>'; }).join('') +
-      '</div><button class="cut" id="cut" disabled>⚔ 斬る</button>';
+    $('tray').innerHTML = shelf('ジェムをセット', gemBtn(null) + gems.map(function (g) { return gemBtn(g); }).join('')) +
+      '<button class="cut" id="cut" disabled>⚔ 斬る</button>';
     each($('tray'), '.gem', function (b) { b.onclick = function () { chooseGem(q, b); }; });
     $('cut').onclick = function () { strike(q); };
   }
@@ -544,6 +552,7 @@
     q.done = true;
     var f = q.f, e = q.e, w = WP[f.base], ok = q.sel === f.gem, boss = cur.phase === 'boss';
     each($('tray'), 'button', function (b) { b.disabled = true; });
+    $('tray').classList.add('done');   /* 斬ったら棚はたたむ（文と理由に場所をゆずる） */
     $('weak').innerHTML = weakHTML(q, true);
     var a = attOf(f), gA = f.gem ? GB[f.gem] : null;
     var right = '<p class="why">🔎 ' + esc(e.clue) + ' → 弱点 <b>' + attShort(a) + '</b></p>' +
@@ -603,9 +612,9 @@
   }
   /* 武器が前に出て斬る（当たる）／はじかれて戻る */
   function lunge(ok) {
-    var el = $('wpn');
+    var el = $('wart');
     if (!el || FX.RM || !el.animate) return;
-    el.animate(ok ? [{ transform: 'none' }, { transform: 'translateY(-34px) rotate(-6deg)' }, { transform: 'none' }] : [{ transform: 'none' }, { transform: 'translateY(-26px)' }, { transform: 'translateY(8px) rotate(4deg)' }, { transform: 'none' }], { duration: ok ? 260 : 380, easing: 'ease-out' });
+    el.animate(ok ? [{ transform: 'none' }, { transform: 'translate(10px,-40px) rotate(-28deg) scale(1.1)' }, { transform: 'translate(4px,-10px) rotate(14deg)' }, { transform: 'none' }] : [{ transform: 'none' }, { transform: 'translate(6px,-28px) rotate(-18deg)' }, { transform: 'translate(-6px,6px) rotate(10deg)' }, { transform: 'none' }], { duration: ok ? 320 : 420, easing: 'ease-out' });
     var foe = $('foe');
     if (ok && foe) { var s = document.createElement('i'); s.className = 'slash'; foe.appendChild(s); setTimeout(function () { s.remove(); }, 420); }
   }
@@ -654,7 +663,7 @@
     Speech.say(plain(f.w));
     var gems = GEMS.filter(function (g) { return owned(g.id); });
     var one = gems.length === 1;
-    $('tray').innerHTML = '<p class="tlab">' + (one ? 'ジェムをタップして、語から外そう' : '語のおしりに、どのジェムがはまっている？') + '</p><div class="gems">' + gems.map(function (g) { return '<button class="gem' + (one ? ' glow' : '') + '" data-g="' + g.id + '" style="--c:' + g.color + '">' + esc(g.label) + '</button>'; }).join('') + '</div>';
+    $('tray').innerHTML = shelf(one ? 'ジェムをタップして、語から外そう' : '語のおしりに、どのジェムがはまっている？', gems.map(function (g) { return gemBtn(g, one ? 'glow' : ''); }).join(''));
     each($('tray'), '.gem', function (b) {
       b.onclick = function () {
         var gid = b.getAttribute('data-g');
@@ -720,7 +729,7 @@
     var h = '<div class="dn"><div class="dtitle">' + (cleared ? '¡Victoria!' : cur.kind === 'remedy' ? '¡Revancha!' : '¡Muy bien!') + '</div>' +
       '<p class="dsum">' + cur.kills + ' 体たおした' + (missN ? '・はじかれた ' + missN : '・ノーミス') + (cur.maxCombo >= 3 ? '・最大 ' + cur.maxCombo + ' コンボ' : '') + '</p>' +
       '<div class="dxp"><b>+' + gained + ' XP</b><div class="lv"><b>Lv ' + lv + '</b><span>' + title(lv) + '</span><span class="lvbar"><i id="dBar" style="width:0"></i></span></div></div>';
-    if (cleared) h += '<p class="dlab">💎 手に入れたジェム</p><div class="dgem"><span class="biggem" style="--c:' + GB[cur.c.gem].color + '">' + esc(GB[cur.c.gem].label) + '</span></div>';
+    if (cleared) h += '<p class="dlab">💎 手に入れたジェム</p><div class="dgem">' + bigGem(GB[cur.c.gem]) + '</div>';
     evo.forEach(function (g) { var p = polishOf(g.id); h += '<p class="evo" style="--c:' + g.color + '">✨ ' + esc(g.label) + ' が <b>' + POLISH[p].n + ' ' + POLISH[p].s + '</b> に進化</p>'; });
     var list = ids.map(function (id) { return FB[id]; }).filter(function (f) { return f.gem; }).concat(cur.loot ? [cur.loot] : []);
     if (list.length) h += '<p class="dlab">⚔ この回の形</p><ul class="blist">' + list.map(function (f) { return liHTML(f, cur.miss[f.id] ? 'missed' : ''); }).join('') + '</ul>';

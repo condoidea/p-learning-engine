@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet">
 <script src="shared/speech-fix.js?v=2"></script>
-<link rel="stylesheet" href="pega/css/pega.css?v=8">
+<link rel="stylesheet" href="pega/css/pega.css?v=10">
 </head>
 <body>
 <canvas id="fx" aria-hidden="true"></canvas>
@@ -22,6 +22,7 @@
     <header class="pbar">
       <button class="x" id="pQuit" aria-label="やめる">✕</button>
       <div class="pmid"><span class="prog"><i id="pProg"></i></span></div>
+      <div id="combo" aria-hidden="true"></div>
       <div class="pxp"><small>XP</small><b id="pXp">0</b></div>
     </header>
     <p class="lead" id="lead" aria-live="polite"></p>
@@ -33,7 +34,6 @@
   <section id="done" class="screen" hidden></section>
 </div>
 
-<div id="combo" aria-hidden="true"></div>
 <div id="slam" aria-hidden="true"></div>
 <div id="modal" hidden><div class="mbox"><button class="mclose" aria-label="閉じる">✕</button><div id="mbody"></div></div></div>
 <div id="pop" hidden></div>
@@ -42,7 +42,8 @@
 <script src="pega/js/data.js?v=5"></script>
 <script src="engine/js/audio.js?v=10"></script>
 <script src="pega/js/fx.js?v=2"></script>
-<script src="pega/js/app.js?v=8"></script>
+<script src="pega/js/art.js?v=2"></script>
+<script src="pega/js/app.js?v=10"></script>
 <script src="news/news.js?v=4"></script>
 </body>
 </html>
