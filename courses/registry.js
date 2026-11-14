@@ -70,12 +70,12 @@ window.LE_COURSES = [
     desc: '占い館の見習い予言者になって、お客の未来を言い当てる！ 未来・過去未来・現在完了・過去完了・未来完了・進行形を、日めくり・水晶玉・時間の地図で。西検4級。',
     color: '#e7c36b', color2: '#145a55', lessons: 12
   },
-  /* ¡PEGA!（pega/）：語尾タイルで単語をふやす。物語なしの独立アプリ。lessons[段階の最初の語尾].done＝その段階の語に全部出会った（4段階） */
+  /* ¡PEGA!（pega/）：語尾のジェムで戦う。物語なしの独立アプリ。lessons[ジェム].done＝その章をクリア（8章） */
   {
-    id: 'pega', entry: 'pega.html', storageKey: 'pega.v2',
-    title: 'スペイン語 語尾で単語をふやす', brand: '¡PEGA!', icon: '🧱',
-    desc: '語尾タイルを2枚ずつくらべて、なぜその語尾かを選んで貼る。-mente・-dad／-ción・-dor／-oso・-ista／-ero・-ería。1回2分ほど、まちがえた語は日をあけてもう一度。西検4級。',
-    color: '#5fdc94', color2: '#6cb4ff', lessons: 4
+    id: 'pega', entry: 'pega.html', storageKey: 'pega.v5',
+    title: 'スペイン語 語尾で単語をふやす', brand: '¡PEGA!', icon: '💎',
+    desc: '知っている語（武器）に語尾のジェムをはめて、空所のある文（敵）を斬る！ -mente・-dad・-ción・-dor・-oso・-ista・-ero・-ería を1章ずつ。ボス戦・戦利品の鑑定・ジェムの進化つき。西検4級。',
+    color: '#5fdc94', color2: '#c9a0ff', lessons: 8
   },
   /* ユーキ・クエスト（yuki/）：有機化学のRPG。独立アプリ。進み具合は lessons[id].done を数える（序章4＋1章4＋ボス2） */
   {

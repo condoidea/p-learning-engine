@@ -42,7 +42,7 @@
 | apps/protesto.md | 6 | ¡PROTESTO!（比較）の経緯 |
 | apps/quien.md | 5 | ¿QUIÉN FUE?（受身と se）の経緯 |
 | apps/futuro.md | 5 | ¿QUÉ SERÁ?（時制）の経緯 |
-| apps/pega.md | 1 | ¡PEGA!（語尾で単語をふやす）の作り・決めたこと |
+| apps/pega.md | 1 | ¡PEGA!（語尾のジェムで戦う）の作り・決めたこと・外れた理由 |
 | vocab/設計.md | 20 | 単語アプリのいまの仕様（頭に早見・根拠メモ） |
 | vocab/履歴.md | 13 | 単語アプリの v1〜v11 の経緯（頭に目次。細目は削った） |
 | vocab/単語データの作り方.md | 16 | 参考書連動版デッキの作り方 |
