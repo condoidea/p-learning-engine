@@ -70,6 +70,13 @@ window.LE_COURSES = [
     desc: '占い館の見習い予言者になって、お客の未来を言い当てる！ 未来・過去未来・現在完了・過去完了・未来完了・進行形を、日めくり・水晶玉・時間の地図で。西検4級。',
     color: '#e7c36b', color2: '#145a55', lessons: 12
   },
+  /* ¡PEGA!（pega/）：接尾辞（語尾）で単語をふやす。物語なしの独立アプリ。lessons[接尾辞].done＝その10語に全部出会った（7つの語尾） */
+  {
+    id: 'pega', entry: 'pega.html', storageKey: 'pega.v1',
+    title: 'スペイン語 語尾で単語をふやす', brand: '¡PEGA!', icon: '🧩',
+    desc: '元の語に語尾をくっつけて、単語をふやす。-ción・-dad・-mente・-oso・-ista・-ero／-ería・-dor の7つ、70語。1回1〜2分、5語を見てすぐ問題。el / la もいっしょに。西検4級。',
+    color: '#ff7a6b', color2: '#6cb4ff', lessons: 7
+  },
   /* ユーキ・クエスト（yuki/）：有機化学のRPG。独立アプリ。進み具合は lessons[id].done を数える（序章4＋1章4＋ボス2） */
   {
     id: 'yuki', entry: 'yuki.html', storageKey: 'yuki.v1',
