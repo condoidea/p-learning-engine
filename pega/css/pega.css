@@ -117,14 +117,21 @@ small { font-weight: 500; }
 #play.fever .prog i { background: linear-gradient(90deg, #ff8fc7, #ffd84d, #5fdc94); }
 .pxp { min-width: 54px; text-align: right; font: 800 18px var(--f-es); color: var(--gold); }
 .pxp small { font-size: 11px; color: var(--dim); margin-right: 4px; }
-.lead { flex: none; margin: 6px 0 4px; text-align: center; font-size: 16.5px; font-weight: 700; }
-.lead small { display: block; font-size: 13.5px; color: var(--dim); }
+/* 導き役ルスのせりふ（ルスは動かさない） */
+.lead, .talk { display: flex; align-items: flex-start; gap: 8px; text-align: left; }
+.lead { flex: none; margin: 6px 0 4px; min-height: 52px; }
+.talk { margin: 0 0 12px; }
+.mentor { flex: none; width: 40px; height: 40px; border-radius: 50%; background: var(--panel2); box-shadow: inset 0 0 0 2px var(--gold); display: grid; place-items: center; font-size: 24px; line-height: 1; }
+.bubble { position: relative; flex: 1; min-width: 0; padding: 6px 12px 7px; border-radius: 4px 14px 14px 14px; background: var(--panel); font-size: 15.5px; font-weight: 700; line-height: 1.5; }
+.bubble::before { content: ''; position: absolute; left: -7px; top: 10px; border: 7px solid transparent; border-right-color: var(--panel); border-left: 0; }
+.bubble small { display: block; font-size: 13.5px; color: var(--dim); }
+.bubble b { color: var(--gold); }
 .bench { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 2px 0; }
 .hintb { margin-left: 6px; width: 32px; height: 32px; border-radius: 50%; background: var(--panel2); font-size: 15px; vertical-align: middle; }
 
 .foe { position: relative; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; width: 100%; padding: 4px 0; }
-.femo { font-size: 50px; line-height: 1; display: inline-block; transition: transform .3s, opacity .3s; }
-.femo.boss, .isboss .femo { font-size: 64px; }
+.femo { font-size: 44px; line-height: 1; display: inline-block; transition: transform .3s, opacity .3s; }
+.femo.boss, .isboss .femo { font-size: 56px; }
 .femo.down { transform: scale(.2) rotate(30deg); opacity: 0; }
 .weak { padding: 3px 12px; border-radius: 99px; background: var(--panel); font-size: 15px; color: var(--dim); }
 .weak b { color: var(--ink); font-size: 16.5px; }
@@ -134,22 +141,22 @@ small { font-weight: 500; }
 .hp i.on { background: var(--ng); box-shadow: none; }
 .slash { position: absolute; left: 50%; top: 50%; width: 120px; height: 6px; margin: -3px 0 0 -60px; border-radius: 6px; background: linear-gradient(90deg, transparent, #fff, transparent); transform: rotate(-35deg); animation: slash .4s ease-out forwards; pointer-events: none; }
 @keyframes slash { from { transform: rotate(-35deg) scaleX(0); opacity: 1; } 60% { transform: rotate(-35deg) scaleX(1.2); opacity: 1; } to { transform: rotate(-35deg) scaleX(1.3); opacity: 0; } }
-.sent { margin: 2px 4px 0; font: 600 22px/1.45 var(--f-es); }
-.sent .blank { display: inline-block; min-width: 2.6em; padding: 0 8px; border-radius: 8px; background: var(--panel2); color: var(--gold); font-size: .8em; text-align: center; }
+.sent { margin: 4px 4px 0; font: 700 29px/1.4 var(--f-es); }
+.sent .blank { display: inline-block; min-width: 3em; padding: 0 10px; border-radius: 8px; background: var(--panel2); box-shadow: inset 0 0 0 2px var(--gold); color: var(--gold); font-size: .8em; text-align: center; }
 .sent .filled { padding: 0 6px; border-radius: 8px; background: var(--clay); color: var(--dark); }
-.sja { margin: 0; font-size: 15px; color: var(--dim); }
+.sja { margin: 0; font-size: 16.5px; color: var(--dim); }
 .sja b { color: var(--ink); }
 .sja .jb { color: var(--gold); }
 .gw { cursor: help; }
 .gw.dot { border-bottom: 2px dotted rgba(255, 216, 77, .8); }
 
-.weapon { display: flex; align-items: center; gap: 10px; margin-top: 6px; padding: 8px 12px; border-radius: 16px; background: var(--panel); box-shadow: inset 0 0 0 2px var(--line); min-width: 250px; max-width: 100%; }
-.wicon { font-size: 32px; line-height: 1; }
+.weapon { display: flex; align-items: center; gap: 8px; margin-top: 8px; padding: 5px 10px; border-radius: 16px; background: var(--panel); box-shadow: inset 0 0 0 2px var(--line); min-width: 250px; max-width: 100%; }
+.wicon { font-size: 22px; line-height: 1; }
 .wbody { flex: 1; display: flex; flex-direction: column; align-items: flex-start; text-align: left; min-width: 0; }
-.wname { font: 800 25px/1.2 var(--f-es); color: var(--clay); overflow-wrap: anywhere; }
+.wname { font: 800 19px/1.25 var(--f-es); color: var(--clay); overflow-wrap: anywhere; }
 .wname .tl { font-size: .95em; }
-.wbody small { font-size: 13px; color: var(--dim); }
-.socket { flex: none; min-width: 52px; height: 40px; padding: 0 6px; border-radius: 10px 10px 18px 18px; border: 2px dashed var(--line); display: flex; align-items: center; justify-content: center; font: 800 15px var(--f-es); }
+.wbody small { font-size: 12.5px; color: var(--dim); }
+.socket { flex: none; min-width: 48px; height: 34px; padding: 0 6px; border-radius: 10px 10px 18px 18px; border: 2px dashed var(--line); display: flex; align-items: center; justify-content: center; font: 800 15px var(--f-es); }
 .socket.set { border: 0; background: var(--c); color: var(--dark); box-shadow: inset 0 3px 0 rgba(255, 255, 255, .5), 0 0 12px 2px var(--c); }
 .wmsg { margin: 0; min-height: 1.4em; font-size: 14.5px; color: var(--gold); }
 .res { min-height: 54px; display: flex; align-items: center; justify-content: center; }

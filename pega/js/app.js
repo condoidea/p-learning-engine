@@ -177,8 +177,12 @@
     if (weak.length) h += '<button class="rem" id="hRem">🩹 おさらい：' + esc(weak[0].k === 'asis' ? 'そのまま' : GB[weak[0].k].label) + '<small>まちがえた ' + weak[0].ids.length + ' 体にリベンジ</small></button>';
     if (reviewFirst) { h += '<button class="cta" id="hRev">' + bRev + '</button>'; if (nx) h += '<button class="sub" id="hCh">' + bCh + '</button>'; }
     else { if (nx) h += '<button class="cta" id="hCh">' + bCh + '</button>'; if (n) h += '<button class="sub" id="hRev">' + bRev + '</button>'; }
-    if (!n) h += '<p class="note">1章は5分ほど。敵は空所のある文。空所に合う形にして斬る。</p>';
-    else if (!nx) h += '<p class="note">ジェムは8つぜんぶそろった。見回りで、日をあけて戦い直してジェムを育てよう。</p>';
+    var line = !n ? 'わたしはルス、ジェムの目ききだよ。敵は空所のある文。武器に語尾のジェムをはめて、空所に合う形にして斬るんだ。1章は5分ほど'
+      : weak.length ? 'はじかれた敵が待ってるよ。おさらいでリベンジしよう'
+      : due.length ? 'もどってきた敵が ' + Math.min(due.length, 8) + ' 体いるよ。見回りに行こう'
+      : nx ? 'つぎの宝箱が待ってるよ'
+      : 'ジェムは8つぜんぶそろったね。見回りで、日をあけて戦い直してジェムを育てよう';
+    h = h.replace('<div class="belt">', '<p class="talk">' + talkHTML(line) + '</p><div class="belt">');
     h += '<div class="settings">' +
       '<label><input type="checkbox" id="tgSound"' + (S.settings.sound ? ' checked' : '') + '> 🔈 効果音</label>' +
       '<label><input type="checkbox" id="tgSpeak"' + (S.settings.speak ? ' checked' : '') + '> 🗣 単語を読み上げる</label>' +
@@ -272,9 +276,12 @@
     remedyIntro(k);
   }
 
+  /* 導き役のルス（フクロウ。ジェムの目きき）。案内の文は、すべてルスのせりふとして出す。ルス自身は動かさない（目線は問題に） */
+  function talkHTML(html) { return '<span class="mentor" aria-hidden="true">🦉</span><span class="bubble">' + html + '</span>'; }
   function lead(html, chg) {
-    var el = $('lead'); el.innerHTML = html;
-    if (chg && el.animate) el.animate([{ transform: 'translateY(6px)', opacity: 0.2 }, { transform: 'none', opacity: 1 }], { duration: 260, easing: 'ease-out' });
+    var el = $('lead'); el.innerHTML = talkHTML(html);
+    var b = el.querySelector('.bubble');
+    if (chg && b.animate) b.animate([{ opacity: 0.25 }, { opacity: 1 }], { duration: 240, easing: 'ease-out' });
   }
   function clearBoard() { clearTimeout(timer); $('fb').innerHTML = ''; $('tray').innerHTML = ''; $('pop').hidden = true; }
   function setProg(r) { $('pProg').style.width = Math.round(Math.max(0, Math.min(1, r)) * 100) + '%'; }
@@ -321,8 +328,8 @@
   function chest() {
     var g = GB[cur.c.gem], taps = 0;
     clearBoard(); setProg(0);
-    lead('第' + (cur.ci + 1) + '章<small>宝箱を見つけた！</small>');
-    $('bench').innerHTML = '<button class="chest" id="chest" aria-label="宝箱をあける">🎁</button><p class="chint">3回タップであける</p>';
+    lead((cur.ci === 0 && !S.runs ? 'わたしはルス。ジェムの目ききだよ。<br>' : '') + '宝箱を見つけたね。3回たたいて、あけてごらん<small>第' + (cur.ci + 1) + '章</small>');
+    $('bench').innerHTML = '<button class="chest" id="chest" aria-label="宝箱をあける">🎁</button>';
     $('chest').onclick = function () {
       taps++;
       sfx('chestShake'); FX.shake($('chest'));
@@ -367,7 +374,7 @@
   function tryOn() {
     var c = cur.c, g = GB[c.gem], f = FB[c.intro[cur.k]], w = WP[f.base];
     clearBoard(); setProg(cur.k / 6);
-    lead('知っている' + POS[w.pos].wp + 'に、はめてみよう<small>' + (cur.k + 1) + ' / 3</small>');
+    lead('このジェムを、知っている' + POS[w.pos].wp + 'にはめてごらん<small>' + (cur.k + 1) + ' / 3</small>');
     $('bench').innerHTML = weaponHTML(f.base, esc(f.base), null) + '<div class="res" id="res"></div>';
     $('tray').innerHTML = '<div class="gems"><button class="gem glow" id="g1" style="--c:' + g.color + '">' + esc(g.label) + '</button></div>';
     $('g1').onclick = function () {
@@ -377,7 +384,7 @@
         FX.pop($('wpn')); var p = FX.at($('wpn')); FX.burst(p.x, p.y, { n: 14 });
         Speech.say(plain(f.w));
         $('tray').innerHTML = '';
-        lead('<b class="es">' + esc(plain(f.w)) + '</b> は、どういう意味になった？<small>予想でいい（採点しない）</small>', true);
+        lead('<b class="es">' + esc(plain(f.w)) + '</b> は、どういう意味になったと思う？<small>予想でいいよ。採点はしない</small>', true);
         var opts = [f.ja, w.ja];
         FORMS.forEach(function (x) { if (x.base === f.base && x.gem && x.gem !== f.gem && owned(x.gem) && opts.indexOf(x.ja) < 0 && !x.x) opts.push(x.ja); });
         $('tray').innerHTML = optsHTML(shuffle(opts));
@@ -386,9 +393,10 @@
             var ok = o.getAttribute('data-v') === f.ja;
             mark('.opt', function (x) { return x.getAttribute('data-v') === f.ja; }, o);
             if (ok) { sfx('correct', 1); addXp(XP.guess, $('wpn')); } else sfx('tap');
-            $('fb').innerHTML = (ok ? '<p class="right">✨ そのとおり</p>' : '<p class="you">あなたの予想：' + esc(o.getAttribute('data-v')) + '</p>') +
+            $('fb').innerHTML = (ok ? '' : '<p class="you">あなたの予想：' + esc(o.getAttribute('data-v')) + '</p>') +
               '<p class="why">' + esc(f.base) + '（' + esc(w.ja) + '）＋ ' + gemHTML(g) + ' → <b>' + esc(plain(f.w)) + '</b>（' + esc(f.ja) + '）</p>' + (f.memo ? '<p class="memo">💡 ' + esc(f.memo) + '</p>' : '');
             $('tray').innerHTML = '';
+            lead(ok ? 'そのとおり！ いい読みだね' : 'おしい。こうなるんだ');
             nextBtn('', function () { cur.k++; if (cur.k < 3) tryOn(); else power(); });
           };
         });
@@ -404,7 +412,7 @@
   function power() {
     var g = GB[cur.c.gem], atts = newAtts(cur.ci);
     clearBoard(); setProg(0.5);
-    lead('ジェムの力：' + gemHTML(g));
+    lead('これが ' + gemHTML(g) + ' の力。上から順に見てごらん');
     $('bench').innerHTML = powerHTML(g, cur.c.intro) + spotHTML(atts.length ? atts : [g.att]);
     nextBtn('⚔ 戦いへ', function () { battles(); });
   }
@@ -413,12 +421,12 @@
   function remedyIntro(k) {
     clearBoard(); setProg(0);
     if (k === 'asis') {
-      lead('🩹 おさらい：そのまま使う');
+      lead('🩹 そのまま使うときの弱点を、もう一度見ておこう');
       $('bench').innerHTML = '<div class="power">' + ['adj', 'verb', 'noun'].map(function (p) { return '<p class="pw2"><span>' + POS[p].icon + ' ' + POS[p].wp + 'のまま</span> ＝ ' + attHTML(POS[p].asis) + '</p>'; }).join('') + '</div>' +
         spotHTML(['desc', 'act', 'thing']);
     } else {
       var g = GB[k], ex = FORMS.filter(function (f) { return f.gem === k && known(f.id) && !S.weak[k][f.id]; }).slice(0, 2).map(function (f) { return f.id; });
-      lead('🩹 おさらい：' + gemHTML(g) + ' の力');
+      lead('🩹 ' + gemHTML(g) + ' の力を、もう一度見ておこう');
       $('bench').innerHTML = powerHTML(g, ex) + spotHTML([g.att]);
     }
     nextBtn('⚔ リベンジ ' + cur.wave.length + ' 体', battles);
@@ -436,8 +444,8 @@
     cur.hp = cur.q.length; cur.hp0 = cur.q.length;
     cur.bossEmo = BOSS_EMO[cur.ci % BOSS_EMO.length];
     clearBoard();
-    lead('👑 ボスがあらわれた！');
-    $('bench').innerHTML = '<div class="bossin"><span class="femo boss pop">' + cur.bossEmo + '</span><p>HP ' + cur.hp + '・<b>弱点は隠れている</b></p><p class="chint">文を読んで、弱点を見ぬこう（💡 で見られるが、自力には数えない）</p></div>';
+    lead('ボスだ！ ここからは<b>弱点が隠れる</b>。文を読んで見ぬくんだ');
+    $('bench').innerHTML = '<div class="bossin"><span class="femo boss pop">' + cur.bossEmo + '</span><p>HP ' + cur.hp + '</p><p class="chint">わからなければ 💡 で弱点を見られる（自力には数えない）</p></div>';
     sfx('combo', 3); FX.flash('rgba(255,80,80,.25)'); FX.shake($('bench'), true);
     nextBtn('⚔ 戦う', ask);
   }
@@ -452,7 +460,12 @@
     clearBoard();
     setProg(cur.kind === 'chapter' ? 0.5 + 0.5 * (cur.kills / cur.total) : cur.kills / cur.total);
     if (!q.emo) q.emo = boss ? cur.bossEmo : pick(FOE_EMO);
-    lead(boss ? '👑 ボス' + (q.again ? '<small>（もう一度）</small>' : '') : '空所に合う形にして、斬れ！' + (q.again ? '<small>（もう一度）</small>' : '<small>' + (cur.i + 1) + ' / ' + cur.q.length + '</small>'));
+    var cnt = q.again ? '<small>さっきの敵に、もう一度</small>' : '';   /* 何体目かは上の進み具合のバーで見せる */
+    var firstCh = cur.kind === 'chapter' && !boss && cur.i === 0 && !q.again;
+    lead((boss ? '👑 文の意味から、弱点を見ぬいて'
+      : firstCh ? '敵は空所のある文。空所に入るのはどんな語？ それに合う形にして斬るんだ'
+      : !reveal ? '弱点は隠れてる。文を読んで、合う形にして斬ろう'
+      : '空所に合う形にして、斬ろう') + cnt);
     var hp = boss ? '<span class="hp">' + Array.apply(null, Array(cur.hp0)).map(function (_, k) { return '<i' + (k < cur.hp ? ' class="on"' : '') + '></i>'; }).join('') + '</span>' : '';
     $('bench').innerHTML = '<div class="foe' + (boss ? ' isboss' : '') + '" id="foe"><span class="femo" id="femo">' + q.emo + '</span>' + hp +
       '<span class="weak" id="weak">' + weakHTML(q, reveal) + '</span></div>' +
@@ -541,6 +554,7 @@
         addXp(clean ? (boss ? XP.boss : XP.hit) : Math.ceil(XP.hit / 2), $('femo'));
       }, 120);
       $('fb').innerHTML = right;
+      lead(pick(clean ? ['見事！', 'いい読みだ！', 'そのとおり！'] : ['通ったね。']) + ' 理由も見ておこう');
       var last = boss && cur.hp <= 1;
       timer = setTimeout(next, last ? 3000 : 2600);
       nextBtn('', next);
@@ -559,6 +573,7 @@
       }
       cur.q.push({ id: q.id, f: q.f, e: q.e, emo: q.emo, again: true, show: q.show });   /* この回のうちに、もう一度 */
       $('fb').innerHTML = '<p class="you">✕ ' + you + '</p>' + right;
+      lead('はじかれた。どこがちがったか見てみよう');
       nextBtn('', next);
     }
   }
@@ -584,7 +599,7 @@
     var todo = f.sfs.slice().reverse(), n = 0;
     cur.phase = 'loot';
     clearBoard(); setProg(1);
-    lead('💰 戦利品：なぞの語が落ちた<small>ジェムを外して読もう</small>');
+    lead('戦利品だ！ 知らない語でも、おしりのジェムを外せば読めるよ');
     function draw() { $('bench').innerHTML = '<div class="res tall" id="res"><span class="plaque">' + wHTML(f, n === 0 ? null : f.sfs.length - n) + '</span></div><div id="bits" class="bits"></div>'; }
     function drawPeeled() {
       var p = f.w.split('|'), keep = p.slice(0, p.length - n), h = esc(keep[0]);
@@ -598,14 +613,14 @@
     each($('tray'), '.gem', function (b) {
       b.onclick = function () {
         var gid = b.getAttribute('data-g');
-        if (gid !== todo[n]) { FX.shake(b); sfx('tap'); lead('語の<b>いちばん後ろ</b>を見よう<small>色のついた所</small>', true); return; }
+        if (gid !== todo[n]) { FX.shake(b); sfx('tap'); lead('語の<b>いちばん後ろ</b>を見てごらん', true); return; }
         n++; sfxPeel(); b.classList.add('ok'); b.disabled = true;
         drawPeeled(); FX.pop($('res'));
-        if (n < todo.length) { lead('もう1つ、はまっている<small>その前のジェムは？</small>', true); return; }
+        if (n < todo.length) { lead('もう1つ、はまってる。その前のジェムは？', true); return; }
         var root = f.root || f.base, rja = f.rja || WP[f.base].ja;
         $('res').innerHTML = '<span class="plaque">' + esc(root) + '<small>' + esc(rja) + '</small></span>';
         $('bits').innerHTML = f.sfs.map(function (id) { return '<span class="bit">＋ ' + gemHTML(GB[id]) + '<small>' + attShort(GB[id].att) + '</small></span>'; }).join('');
-        lead('<b class="es">' + esc(plain(f.w)) + '</b> の意味は？', true);
+        lead('元の語とジェムから考えて。<b class="es">' + esc(plain(f.w)) + '</b> の意味は？', true);
         var pool = shuffle(FORMS.filter(function (x) { return x.id !== f.id && x.ja !== f.ja && x.gem; }));
         var sib = pool.filter(function (x) { return x.base === f.base || x.base === root; }).slice(0, 1);
         var opts = shuffle([f.ja].concat(sib.map(function (x) { return x.ja; }), pool.filter(function (x) { return sib.indexOf(x) < 0; }).slice(0, 3 - sib.length).map(function (x) { return x.ja; })));
@@ -617,8 +632,9 @@
             S.looted[f.id] = 1;
             $('res').innerHTML = '<span class="plaque">' + wHTML(f) + '<small>' + esc(f.ja) + '</small></span>';
             Speech.say(plain(f.w));
-            if (ok) { FX.slam('¡LEÍDO!', 'gold', '知らない語を、ジェムから読めた'); FX.confetti(70); sfx('crit'); addXp(XP.loot, $('res')); $('fb').innerHTML = '<p class="right">✨ 習っていない語を読めた</p>' + (f.memo ? '<p class="memo">💡 ' + esc(f.memo) + '</p>' : ''); }
+            if (ok) { FX.slam('¡LEÍDO!', 'gold', '知らない語を、ジェムから読めた'); FX.confetti(70); sfx('crit'); addXp(XP.loot, $('res')); $('fb').innerHTML = (f.memo ? '<p class="memo">💡 ' + esc(f.memo) + '</p>' : ''); }
             else { sfx('tap'); $('fb').innerHTML = '<p class="you">あなたの予想：' + esc(o.getAttribute('data-v')) + '</p><p class="right">こたえ：<b>' + esc(f.ja) + '</b></p>' + (f.memo ? '<p class="memo">💡 ' + esc(f.memo) + '</p>' : ''); }
+            lead(ok ? '見事！ 習っていない語を読めたね' : 'おしい。ジェムの意味から、もう一度たしかめよう');
             cur.loot = f;
             $('tray').innerHTML = '';
             nextBtn('', finish);
