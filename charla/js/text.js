@@ -176,7 +176,59 @@
     return out.join('\n');
   }
 
-  var api = { split: split, Dict: Dict, bare: bare, slug: slug, toVocab: toVocab, parseGuide: parseGuide, mdToHtml: mdToHtml };
+  /* ---------- 文法ノートを項目に分け、本文のセリフと結びつける ----------
+   *  文法ノートは「**見出し**」の行ごとに1項目（その下の表・文が中身）。
+   *  表の「本文の例」などの列（説明の列は除く）と、文中の **太字** のスペイン語を手がかりに、
+   *  そのスペイン語を含むセリフを探す。返り値の topics[k].rows は表の行（項目の中で上から 0,1,2…）ごとの手がかり */
+  var LAT = /[A-Za-zÁÉÍÓÚÜÑáéíóúüñ][A-Za-zÁÉÍÓÚÜÑáéíóúüñ' ]*[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/g;
+  var EXPL = /分解|ポイント|働き|意味|推量の対象|種類|時制|説明/;
+  function norm(s) { return ' ' + lower(s).replace(/[^a-záéíóúüñ]+/g, ' ').trim() + ' '; }
+  function fragsOf(cell) {
+    var out = [], c = String(cell).replace(/（[^）]*）|\([^)]*\)/g, ' ');
+    (c.replace(/\*\*/g, '').split(/[\/／|…«»]/)).forEach(function (seg) { (seg.match(LAT) || []).forEach(function (x) { out.push(x); }); });
+    (c.match(/\*\*([^*]+)\*\*/g) || []).forEach(function (b) { (b.replace(/\*\*/g, '').match(LAT) || []).forEach(function (x) { out.push(x); }); });
+    return out.map(norm).filter(function (x, i, a) { return x.trim().length >= 4 && a.indexOf(x) === i; });
+  }
+  function grammarTopics(ep) {
+    var topics = [];
+    (ep && ep.secs || []).forEach(function (sec) {
+      if (!/^文法/.test(sec.h)) return;
+      var cur = null, head = null;
+      sec.md.split('\n').forEach(function (ln) {
+        var m = /^\*\*([^*]+)\*\*\s*(?:[：:]\s*(.*))?$/.exec(ln.trim());
+        if (m) { cur = { h: m[1], md: m[2] ? m[2] + '\n' : '', rows: [], para: [] }; topics.push(cur); head = null; if (m[2]) cur.para = cur.para.concat(boldFrags(m[2])); return; }
+        if (!cur) return;
+        cur.md += ln + '\n';
+        if (/^\s*\|/.test(ln)) {
+          if (/^\s*\|[\s:|-]+\|?\s*$/.test(ln)) return;
+          var cells = ln.replace(/^\s*\|/, '').replace(/\|\s*$/, '').split('|');
+          if (!head) { head = cells.map(function (x) { return EXPL.test(x); }); return; }
+          var f = [];
+          cells.forEach(function (x, j) { if (!head[j]) f = f.concat(fragsOf(x)); });
+          cur.rows.push(f);
+        } else { head = null; cur.para = cur.para.concat(boldFrags(ln)); }
+      });
+    });
+    return topics;
+  }
+  function boldFrags(s) { var out = []; (String(s).match(/\*\*([^*]+)\*\*/g) || []).forEach(function (b) { out = out.concat(fragsOf(b)); }); return out; }
+  /* セリフ i → [{ t：項目の番号, rows：当たった表の行 }] */
+  function linkGrammar(topics, lines) {
+    var map = {};
+    lines.forEach(function (l, i) {
+      var t = norm(l.text), hits = [];
+      topics.forEach(function (tp, k) {
+        var rows = [];
+        tp.rows.forEach(function (f, r) { if (f.some(function (x) { return t.indexOf(x) >= 0; })) rows.push(r); });
+        var para = tp.para.some(function (x) { return t.indexOf(x) >= 0; });
+        if (rows.length || para) hits.push({ t: k, rows: rows });
+      });
+      if (hits.length) map[i] = hits;
+    });
+    return map;
+  }
+
+  var api = { split: split, Dict: Dict, bare: bare, slug: slug, toVocab: toVocab, parseGuide: parseGuide, mdToHtml: mdToHtml, grammarTopics: grammarTopics, linkGrammar: linkGrammar };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.CharlaText = api;
 })(typeof window !== 'undefined' ? window : this);

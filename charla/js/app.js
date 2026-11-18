@@ -39,7 +39,7 @@
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function mmss(ms) { var s = Math.max(0, Math.round(ms / 1000)); return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); }
-  function show(id) { $$('.screen').forEach(function (el) { el.hidden = el.id !== id; }); closeBalloon(); }
+  function show(id) { $$('.screen').forEach(function (el) { el.hidden = el.id !== id; }); closeBalloon(); var g = document.getElementById('gsheet'); if (g) g.hidden = true; }
   var POS_JA = { n: '名詞', v: '動詞', adj: '形容詞', adv: '副詞', phr: '言い回し', prep: '前置詞', pron: '代名詞', art: '冠詞', conj: '接続詞', num: '数', int: '疑問詞', det: '指示・所有', rel: '関係詞', interj: '間投詞' };
   var G_JA = { m: '男性', f: '女性', mf: '男女同形' };
 
@@ -88,7 +88,8 @@
           l.ja = g && g.ja || N.lines && N.lines[i] && N.lines[i].ja || '';
           l.star = !!(g && g.star);
         });
-        cache[id] = { D: D, N: N, dict: dict, base: base, d: d, ep: ep, pts: epPoints(ep) };
+        var topics = T.grammarTopics(ep);
+        cache[id] = { D: D, N: N, dict: dict, base: base, d: d, ep: ep, pts: epPoints(ep), topics: topics, gram: T.linkGrammar(topics, D.lines) };
         return cache[id];
       });
   }
@@ -144,7 +145,24 @@
         var ep = G.eps[no];
         if (!ep) { $('#gBody').innerHTML = '<p class="hint">この話の解説はありません</p>'; return; }
         html += '<div class="md">' + T.mdToHtml(ep.top) + '</div>';
-        html += ep.secs.map(function (x) { return '<details class="gsec"><summary>' + esc(x.h) + '</summary><div class="md">' + T.mdToHtml(x.md) + '</div></details>'; }).join('');
+        /* 文法ノートは項目ごとにたたむ（見出しの並びが目次になる）。慣用表現・語彙は1つずつ */
+        /* 項目の中に「本文：セリフ8・10…」（タップでそのセリフへ） */
+        var gk = 0, uses = {}, cur = C && C.d && C.d.no === no ? C : null, other = false;
+        if (cur) Object.keys(cur.gram).forEach(function (i) { cur.gram[i].forEach(function (h) { (uses[h.t] = uses[h.t] || []).push(+i); }); });
+        html += ep.secs.map(function (x) {
+          if (/^文法/.test(x.h)) {
+            var tps = T.grammarTopics({ secs: [x] });
+            if (tps.length) return '<h3 class="ghead">' + esc(x.h) + '<small>' + tps.length + '項目</small></h3>' +
+              tps.map(function (t) {
+                var u = uses[gk++] || [];
+                return '<details class="gsec gtopic"><summary>' + T.mdToHtml('**' + t.h + '**').replace(/^<p>|<\/p>$/g, '') + '</summary><div class="md">' + T.mdToHtml(t.md) +
+                  (u.length ? '<p class="guses">本文：' + u.map(function (i) { return '<button data-goline="' + i + '">セリフ' + (i + 1) + '</button>'; }).join('') + '</p>' : '') + '</div></details>';
+              }).join('');
+          }
+          var hd = other ? '' : '<h3 class="ghead">表現と語彙</h3>';
+          other = true;
+          return hd + '<details class="gsec"><summary>' + esc(x.h) + '</summary><div class="md">' + T.mdToHtml(x.md) + '</div></details>';
+        }).join('');
         html += '<p class="hint">訳は「訳 あり」でセリフの下に。★＝くり返し練習したいセリフ（書き取り・シャドーイングで「★だけ」にできます）。</p>';
       } else {
         html += '<div class="md">' + T.mdToHtml(G.intro.replace(/^# .*\n/, '')) + '</div>';
@@ -154,6 +172,15 @@
     });
   }
   $('#gBack').addEventListener('click', function () { if (gFrom === 'play' && C) show('play'); else home(); });
+  /* 解説の「本文：セリフ8」→ 台本のそのセリフへ。セリフをタップしたのと同じ（そのセリフをくり返して聞く） */
+  $('#gBody').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-goline]'); if (!b || !C) return;
+    var i = +b.dataset.goline;
+    show('play');
+    if (mode !== 'listen') setMode('listen');
+    lineTap(i);
+    var el = lineEl(i); if (el) el.scrollIntoView({ block: 'center' });
+  });
   $('#pGuide').addEventListener('click', function () { if (C && C.d) guideScreen(C.d.series, C.d.no, 'play'); });
   $('#hWords').addEventListener('click', function () { wordsScreen('home'); });
 
@@ -295,7 +322,8 @@
         '<div class="turn" hidden><i></i><span></span></div>' +
         '</div>' +
         '<div class="side">' + (textMode() !== 'show' ? '<button class="eye" data-act="eye" aria-label="このセリフの文字">' + (hid ? '👁' : '🙈') + '</button>' : '') +
-        (P.recs && P.recs[i] ? '<button class="mine" data-act="mine" aria-label="自分の声">▶<small>自分</small></button>' : '') + '</div>' +
+        (P.recs && P.recs[i] ? '<button class="mine" data-act="mine" aria-label="自分の声">▶<small>自分</small></button>' : '') +
+        (C.gram && C.gram[i] && !hid ? '<button class="gram" data-act="gram" aria-label="このセリフの文法">文法</button>' : '') + '</div>' +
         '</div>';
     }).join('') + '<div class="endpad"></div>';
     paint(true);
@@ -309,6 +337,27 @@
     return '<div class="pts' + (open ? '' : ' shut') + '"><button class="ptsh" data-act="pts">🎯 聞き取りポイント<span>' + (open ? 'たたむ' : '開く') + '</span></button>' +
       (open ? (p.plot ? '<p class="plot">' + esc(p.plot) + '</p>' : '') + '<ol>' + p.pts.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol>' : '') + '</div>';
   }
+  /* このセリフの文法：文法ノートのうち、このセリフを例に挙げている項目を下から出す（当たった表の行に色）。
+   *  再生は止めない（くり返し聞きながら読める） */
+  function gramSheet(i) {
+    closeBalloon();
+    var hits = C.gram && C.gram[i]; if (!hits) return;
+    var box = $('#gsBody');
+    box.innerHTML = '<p class="gsline" lang="es">' + esc(C.D.lines[i].text) + '</p>' + hits.map(function (h) {
+      var t = C.topics[h.t];
+      return '<section class="gtopic-open" data-rows="' + h.rows.join(',') + '"><h4>' + T.mdToHtml('**' + t.h + '**').replace(/^<p>|<\/p>$/g, '') + '</h4><div class="md">' + T.mdToHtml(t.md) + '</div></section>';
+    }).join('');
+    $$('.gtopic-open', box).forEach(function (sec) {
+      var rows = sec.dataset.rows ? sec.dataset.rows.split(',').map(Number) : [];
+      $$('tbody tr', sec).forEach(function (tr, k) { if (rows.indexOf(k) >= 0) tr.classList.add('hit'); });
+    });
+    $('#gsheet').hidden = false;
+    box.scrollTop = 0;
+  }
+  $('#gsheet').addEventListener('click', function (e) {
+    if (e.target.id === 'gsheet' || e.target.closest('#gsClose')) { $('#gsheet').hidden = true; return; }
+    if (e.target.closest('#gsAll')) { $('#gsheet').hidden = true; if (C && C.d) guideScreen(C.d.series, C.d.no, 'play'); }
+  });
   /* 話し手の表示：LUCIA → Lucia（大文字だけだと幅をとる） */
   function spName(id) { id = String(id || ''); return id.length > 2 && id === id.toUpperCase() ? id.charAt(0) + id.slice(1).toLowerCase() : id; }
   function lineEl(i) { return $('#script .ln[data-i="' + i + '"]'); }
@@ -322,6 +371,7 @@
       refreshLine(i); return;
     }
     if (act && act.dataset.act === 'mine') { playMine(i); return; }
+    if (act && act.dataset.act === 'gram') { gramSheet(i); return; }
     var w = e.target.closest('.w.has, .ph');
     /* 語：点線の語はいつでも、ほかの語は「いま聞いている（くり返している）セリフ」の中なら、意味を出す */
     if (w && !(act && act.dataset.act === 'line') && (w.classList.contains('key') || isActive(i))) { openBalloon(w, i); return; }
