@@ -87,6 +87,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .turn i { order: 2; flex: 1; height: 6px; border-radius: 3px; background: var(--c); width: 0; max-width: 100%; }
 .turn.my span { color: var(--tx); font-weight: 700; }
 .turn:not(.my) i { display: none; }
+.turn.fin span { color: var(--ok); }
 
 /* ---------- 操作盤 ---------- */
 .panel { border-top: 1px solid var(--line); background: var(--bg2); padding: 8px 12px; padding-bottom: max(10px, env(safe-area-inset-bottom)); }
@@ -115,45 +116,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .abchip button { padding: 4px 8px; border-radius: 999px; color: var(--tx2); }
 .abchip button:active { background: var(--bg3); }
 
-/* ---------- 書き取り ---------- */
-.dots { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 12px; }
-.dot { width: 34px; height: 34px; border-radius: 50%; background: var(--bg3); font-size: 13px; color: var(--tx2); }
-.dot.ok { background: var(--ok); color: var(--bg); }
-.dot.near { background: var(--acc); color: var(--bg); }
-.dot.try { box-shadow: inset 0 0 0 2px var(--miss); }
-.dot.cur { outline: 2px solid var(--tx); outline-offset: 2px; }
-.dcard2 { background: var(--bg2); border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
-.dhead { margin: 0 0 10px; color: var(--tx2); font-size: 14.5px; }
-.dhead b { font-family: var(--es); color: var(--tx); }
-.dctl { display: flex; align-items: center; gap: 10px; }
-.dplays { margin: 6px 0 10px; font-size: 13px; color: var(--tx3); }
-#dIn { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--tx); font-family: var(--es); font-size: 20px; line-height: 1.5; resize: vertical; }
-#dIn:focus { outline: 2px solid var(--tx2); outline-offset: 1px; }
-.keys { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
-.keys button { min-width: 40px; height: 40px; border-radius: 10px; background: var(--bg3); font-family: var(--es); font-size: 19px; }
-.dhint { font-family: var(--es); font-size: 18px; letter-spacing: .06em; color: var(--tx2); margin: 6px 0; }
-.dcard2 .row { margin-top: 10px; }
+/* ---------- ボタン（調べた単語の画面） ---------- */
 .ghost { flex: 1; padding: 12px; border-radius: 12px; background: var(--bg3); font-size: 15px; }
 .go { flex: 2; padding: 12px; border-radius: 12px; background: var(--tx); color: var(--bg); font-weight: 700; font-size: 15.5px; text-align: center; text-decoration: none; display: block; }
 .go:disabled { opacity: .4; }
-#dRes { margin-top: 12px; }
-.rhead { margin: 0 0 6px; font-weight: 700; }
-.rhead.ok { color: var(--ok); }
-.rhead.near { color: var(--acc); }
-.rwords { font-family: var(--es); font-size: 20px; line-height: 2; margin: 0; }
-.rwords span { padding: 0 2px; border-radius: 4px; }
-.rwords .ok { color: var(--ok); }
-.rwords .acc { color: var(--acc); background: rgba(233, 196, 106, .12); }
-.rwords .acc small { font-size: 12px; color: var(--tx3); margin-left: 3px; text-decoration: line-through; }
-.rwords .miss { color: var(--miss); text-decoration: underline; text-underline-offset: 4px; }
-.rextra { color: var(--tx2); font-size: 14px; margin: 4px 0; }
-.rextra s { font-family: var(--es); }
-.rleg { display: flex; gap: 12px; font-size: 12px; margin: 4px 0 10px; }
-.rleg .ok { color: var(--ok); } .rleg .acc { color: var(--acc); } .rleg .miss { color: var(--miss); }
-.rline { border-top: 1px solid var(--line); padding-top: 10px; }
-.rline .es { font-family: var(--es); font-size: 20px; margin: 0; line-height: 1.55; }
-.rline .w.has, .rline .ph { cursor: pointer; }
-.rline .ja { margin: 6px 0 0; font-size: 14.5px; color: var(--tx2); }
 
 /* ---------- バルーン ---------- */
 .balloon { position: fixed; z-index: 50; max-width: 320px; padding: 12px 14px; border-radius: 14px; background: #f3efe6; color: #1d1f25; box-shadow: 0 8px 28px rgba(0, 0, 0, .45); font-size: 15px; line-height: 1.55; }

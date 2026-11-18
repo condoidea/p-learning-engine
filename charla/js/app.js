@@ -4,14 +4,13 @@
  *  ダイアログ（charla/dialogs/<id>/ の dialog.json・audio.mp3・notes.json）を、
  *  台本と音声をそろえて聞く道具。ゲームの要素は入れない。
  *    🎧 聞く        台本を見ながら（隠して）聞く。セリフをタップ → そのセリフを AB 区間にしてくり返す
- *    ✍️ 書き取り    1セリフずつ聞いて書く → 語ごとに採点（アクセントだけのちがいは別の色）
+ *    ✍️ 書き取り    1セリフずつ「聞く → 書く時間」を回数ぶん → 答えを見る（書くのは紙。アプリは再生だけ）
  *    🗣 シャドーイング 1セリフずつ「聞く → 間（あなたの番）」を回数ぶん。役になる・録音して聞き比べる
  *    📒 調べた単語   バルーンで調べた語を記録 → チェックして単語アプリ（¡VAMOS!）のデッキ「charla」へ
  *
  *  保存（localStorage）：charla.v1（?sandbox は charla.sandbox.v1）
  *    lessons[id].done  最後まで聞いた（コース一覧の進み具合）
  *    looked[id][key]   調べた語（key＝'w:見出し語' か 'p:言い回し'）
- *    dict[id][i]       書き取りの結果 ok／near／try
  *    pos[id]           最後に聞いていたセリフ
  *    set               速さ・文字・訳・シャドーイングの設定
  * ========================================================= */
@@ -25,7 +24,7 @@
   var SPEEDS = [0.6, 0.75, 0.85, 1, 1.15];
 
   /* ---------- 保存 ---------- */
-  function fresh() { return { lessons: {}, looked: {}, dict: {}, pos: {}, set: { speed: 1, text: 'show', ja: false, rep: 2, gap: 1.5, role: '', stext: 'show', rec: false } }; }
+  function fresh() { return { lessons: {}, looked: {}, dict: {}, pos: {}, set: { speed: 1, text: 'show', ja: false, rep: 2, gap: 1.5, role: '', stext: 'show', rec: false, drep: 2, dgap: 3, dtext: 'after', dauto: false } }; }
   function load() {
     try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && s.set) { var f = fresh(); for (var k in f) if (!(k in s)) s[k] = f[k]; for (var j in f.set) if (!(j in s.set)) s.set[j] = f.set[j]; return s; } } catch (e) { /* 保存領域が使えない */ }
     return fresh();
@@ -65,9 +64,8 @@
     show('home');
     var list = window.CHARLA_DIALOGS || [];
     $('#dlist').innerHTML = list.map(function (d) {
-      var dn = S.dict[d.id] ? Object.keys(S.dict[d.id]).filter(function (k) { return S.dict[d.id][k] === 'ok'; }).length : 0;
       return '<li><button class="dcard" data-id="' + esc(d.id) + '"><b class="es">' + esc(d.title) + '</b><span>' + esc(d.titleJa || '') + '</span>' +
-        '<small id="dm-' + esc(d.id) + '">' + (S.lessons[d.id] && S.lessons[d.id].done ? '🎧 聞いた　' : '') + (dn ? '✍️ 書けた ' + dn + 'セリフ' : '') + '</small></button></li>';
+        '<small id="dm-' + esc(d.id) + '">' + (S.lessons[d.id] && S.lessons[d.id].done ? '🎧 最後まで聞いた' : '') + '</small></button></li>';
     }).join('') || '<li class="empty">ダイアログがまだありません</li>';
     list.forEach(function (d) {
       loadDialog(d.id).then(function (c) {
@@ -161,14 +159,12 @@
     stopAll();
     mode = m;
     $$('#tabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.m === m); });
-    $('#script').hidden = m === 'dict';
-    $('#dict').hidden = m !== 'dict';
-    $('#panel').hidden = m === 'dict';
     $('#optsListen').hidden = m !== 'listen';
     $('#optsShadow').hidden = m !== 'shadow';
+    $('#optsDict').hidden = m !== 'dict';
     $('#cLoop').hidden = m !== 'listen';
-    if (m === 'dict') dictOpen(S.pos[C.D.id] || 0);
-    else renderScript();
+    P.reveal = {}; P.heard = {};
+    renderScript();
     paintOpts();
     paint();
   }
@@ -189,7 +185,9 @@
     l.toks.forEach(function (t) { if (t.t === 'ph') flat = flat.concat(t.toks); else flat.push(t); });
     return flat.map(function (t) { return t.t === 'x' ? esc(t.s) : '<span class="bar-w" style="width:' + (t.s.length * 0.46) + 'em"></span>'; }).join('');
   }
-  function textMode() { return mode === 'shadow' ? S.set.stext : S.set.text; }
+  function textMode() { return mode === 'shadow' ? S.set.stext : mode === 'dict' ? S.set.dtext : S.set.text; }
+  /* 1セリフずつ進むモード（シャドーイング・書き取り） */
+  function stepMode() { return mode === 'shadow' || mode === 'dict'; }
   function lineHidden(i) {
     var m = textMode();
     if (P.reveal[i]) return false;
@@ -205,7 +203,7 @@
       return '<div class="ln sp' + (sp[l.speaker] || 0) + (hid ? ' hid' : '') + '" data-i="' + i + '">' +
         '<button class="who" data-act="line" aria-label="セリフ' + (i + 1) + 'から">' + esc(l.speaker) + '<small>' + (i + 1) + '</small></button>' +
         '<div class="body"><p class="es" lang="es">' + (hid ? hiddenHTML(l) : tokHTML(l.toks, i)) + '</p>' +
-        (S.set.ja && mode === 'listen' || (mode === 'shadow' && !hid && S.set.ja) ? '<p class="ja">' + esc(l.ja) + '</p>' : '') +
+        (S.set.ja && !hid ? '<p class="ja">' + esc(l.ja) + '</p>' : '') +
         '<div class="turn" hidden><i></i><span></span></div>' +
         '</div>' +
         '<div class="side">' + (textMode() !== 'show' ? '<button class="eye" data-act="eye" aria-label="このセリフの文字">' + (hid ? '👁' : '🙈') + '</button>' : '') +
@@ -230,7 +228,7 @@
     lineTap(i);
   });
   function isActive(i) {
-    if (mode === 'shadow') return P.sh ? P.sh.i === i : P.cur === i;
+    if (stepMode()) return P.sh ? P.sh.i === i : P.cur === i;
     if (P.ab) return i >= P.ab.i && i <= P.ab.j;
     return P.cur === i;
   }
@@ -246,7 +244,7 @@
   /* セリフをタップ：聞く → そのセリフを AB 区間にして頭から（くり返す）／シャドーイング → そのセリフから始める */
   function lineTap(i) {
     closeBalloon();
-    if (mode === 'shadow') { shStart(i); return; }
+    if (stepMode()) { shStart(i); return; }
     var s = seg(i);
     P.ab = { a: s.a, b: s.b, i: i, j: i };
     P.loop = 'ab';
@@ -264,12 +262,11 @@
       if (P.loop === 'ab' && P.ab && (t >= P.ab.b || t < P.ab.a - 400)) { seekMs(P.ab.a); t = P.ab.a; }
       else if (P.stopAt != null && t >= P.stopAt) { au.pause(); P.stopAt = null; }
     }
-    if (mode === 'shadow' && P.sh && P.sh.phase === 'play' || mode === 'shadow' && P.sh && P.sh.phase === 'model') {
+    if (stepMode() && P.sh && (P.sh.phase === 'play' || P.sh.phase === 'model')) {
       if (t >= seg(P.sh.i).b) shAfterPlay();
     }
-    if (mode === 'dict' && D.stopAt != null && t >= D.stopAt && !au.paused) { au.pause(); D.stopAt = null; dictPaintPlay(); }
     var k = lineAt(t);
-    if (mode !== 'dict' && k !== P.cur && !(P.sh && P.sh.phase !== 'play' && P.sh.phase !== 'model')) {
+    if (!(stepMode() && !P.sh) && k !== P.cur && !(P.sh && P.sh.phase !== 'play' && P.sh.phase !== 'model')) {
       if (!(P.loop === 'ab' && P.ab && (k < P.ab.i || k > P.ab.j))) { P.cur = k; if (k >= 0) { S.pos[C.D.id] = k; save(); } paint(true); }
     }
     paintTime(t);
@@ -286,7 +283,7 @@
       if (P.loop === 'all') { seekMs(0); play(); }
       else if (P.loop === 'ab' && P.ab) { seekMs(P.ab.a); play(); }
     }
-    if (mode === 'shadow' && P.sh) shAfterPlay();
+    if (stepMode() && P.sh) shAfterPlay();
     paintPlay();
   });
 
@@ -295,26 +292,26 @@
     if (!C) return;
     closeBalloon();
     var want = force != null ? force : (au.paused && !(P.sh && P.sh.timer));
-    if (mode === 'shadow') { if (want) shStart(P.sh ? P.sh.i : Math.max(0, P.cur)); else shPause(); return; }
+    if (stepMode()) { if (want) shStart(P.sh ? P.sh.i : Math.max(0, P.cur)); else shPause(); return; }
     if (want) { if (P.loop === 'ab' && P.ab && (nowMs() < P.ab.a || nowMs() >= P.ab.b)) seekMs(P.ab.a); play(); }
     else au.pause();
   }
   function back2() {
     if (!C) return;
+    if (stepMode()) { shBack2(); return; }
     var t = nowMs() - 2000 * Math.max(1, S.set.speed);
     if (P.loop === 'ab' && P.ab && t < P.ab.a) t = P.ab.a;
-    if (mode === 'shadow' && P.sh) t = Math.max(t, seg(P.sh.i).a);
     seekMs(t);
-    if (au.paused && mode !== 'shadow') play();
+    if (au.paused) play();
     paintTime(nowMs());
   }
   function stepLine(d) {
     if (!C) return;
-    var n = C.D.lines.length, base = mode === 'shadow' && P.sh ? P.sh.i : (P.ab && P.loop === 'ab' ? P.ab.i : P.cur);
+    var n = C.D.lines.length, base = stepMode() && P.sh ? P.sh.i : (P.ab && P.loop === 'ab' ? P.ab.i : P.cur);
     /* セリフの途中で ⏮ → そのセリフの頭へ（1秒より後なら） */
     if (d < 0 && mode === 'listen' && base >= 0 && nowMs() - seg(base).a > 1000 && !(P.loop === 'ab')) { seekMs(seg(base).a); play(); return; }
     var i = Math.max(0, Math.min(n - 1, (base < 0 ? 0 : base) + d));
-    if (mode === 'shadow') { shStart(i); return; }
+    if (stepMode()) { shStart(i); return; }
     if (P.loop === 'ab') { lineTap(i); return; }
     P.cur = i; seekMs(seg(i).a); play(); paint(true);
   }
@@ -355,9 +352,9 @@
     }).join('');
   }
   $('#seek').addEventListener('click', function (e) {
-    if (!C || mode === 'dict') return;
+    if (!C) return;
     var r = this.getBoundingClientRect(), ms = (e.clientX - r.left) / r.width * C.D.durationMs;
-    if (mode === 'shadow') { shStart(Math.max(0, lineAt(ms))); return; }
+    if (stepMode()) { shStart(Math.max(0, lineAt(ms))); return; }
     if (P.loop === 'ab') { P.loop = ''; }
     seekMs(ms); P.cur = lineAt(ms); paintOpts(); paint(true);
   });
@@ -369,13 +366,13 @@
     $('#needle').style.left = Math.min(100, t / C.D.durationMs * 100) + '%';
   }
   function paintPlay() {
-    var on = mode === 'shadow' ? !!(P.sh && (P.sh.timer || !au.paused)) : !au.paused;
+    var on = stepMode() ? !!(P.sh && (P.sh.timer || !au.paused)) : !au.paused;
     $('#cPlay').textContent = on ? '⏸' : '▶';
     $('#cPlay').setAttribute('aria-label', on ? '止める' : '再生');
   }
   function paint(scroll) {
-    if (!C || mode === 'dict') return;
-    var act = mode === 'shadow' && P.sh ? P.sh.i : P.cur;
+    if (!C) return;
+    var act = stepMode() && P.sh ? P.sh.i : P.cur;
     $$('#script .ln').forEach(function (el) {
       var i = +el.dataset.i;
       el.classList.toggle('now', i === act);
@@ -399,7 +396,7 @@
   }
   function paintOpts() {
     var sp = (S.set.speed === 1 ? '1.0' : String(S.set.speed));
-    $('#oSpeed b').textContent = sp; $('#sSpeed b').textContent = sp;
+    $('#oSpeed b').textContent = sp; $('#sSpeed b').textContent = sp; $('#dSpeed b').textContent = sp;
     $('#oText b').textContent = S.set.text === 'show' ? '見せる' : '隠す';
     $('#oJa b').textContent = S.set.ja ? 'あり' : 'なし';
     $('#cLoopT').textContent = { '': 'なし', all: '全体', ab: 'AB' }[P.loop];
@@ -412,19 +409,28 @@
     $('#sRole b').textContent = S.set.role ? S.set.role + ' になる' : 'なし';
     $('#sText b').textContent = { show: '見せる', hide: '隠す', after: '聞いたら' }[S.set.stext];
     $('#sRec b').textContent = S.set.rec ? '録音する' : '録音しない';
+    $('#dRep b').textContent = S.set.drep;
+    $('#dGap b').textContent = '×' + S.set.dgap;
+    $('#dText b').textContent = { show: '見せる', hide: '隠す', after: '書いたら' }[S.set.dtext];
+    $('#dAuto b').textContent = S.set.dauto ? '自動' : '止まる';
     $('#tState').textContent = '';
   }
 
   /* =========================================================
-   * 🗣 シャドーイング
-   *  1セリフずつ：聞く → 間（あなたの番：セリフの長さ×間）を「回数」くり返す → 次のセリフ
-   *  役：選んだ話し手のセリフは、先に間（あなたが言う）→ そのあとお手本を1回
-   *  録音：あなたの番のあいだ録音して、セリフの右の ▶自分 で聞ける
+   * 1セリフずつ進む（🗣 シャドーイング・✍️ 書き取り）
+   *  聞く → 間（セリフの長さ×間）を「回数」くり返す → 次のセリフ
+   *  シャドーイング：間＝あなたが言う番。役を選ぶと、そのセリフは先に言ってからお手本を1回。録音して ▶自分 で聞ける
+   *  書き取り：間＝紙に書く時間。回数ぶん聞いたら、そのセリフで止まる（⏭ で次へ。「次へ：自動」なら進む）。
+   *            文字「書いたら」＝回数ぶん聞き終えたセリフだけ答えが見える
    * ========================================================= */
+  function cfg() {
+    if (mode === 'dict') return { rep: S.set.drep, gap: S.set.dgap, role: '', rec: false, auto: S.set.dauto, turn: '✍️ 書く時間', done: '✔ ▶ もう一度・⏭ 次のセリフ' };
+    return { rep: S.set.rep, gap: S.set.gap, role: S.set.role, rec: S.set.rec, auto: true, turn: '🗣 あなたの番', done: '' };
+  }
   function shStart(i) {
     closeBalloon();
     if (P.sh && P.sh.timer) clearTimeout(P.sh.timer);
-    var role = S.set.role && C.D.lines[i].speaker === S.set.role;
+    var role = cfg().role && C.D.lines[i].speaker === cfg().role;
     P.sh = { i: i, n: 0, phase: role ? 'turn' : 'play', timer: 0 };
     P.cur = i; S.pos[C.D.id] = i; save();
     if (role) shTurn(); else shPlay();
@@ -434,33 +440,46 @@
     P.sh.phase = P.sh.phase === 'model' ? 'model' : 'play';
     seekMs(seg(P.sh.i).a);
     play();
-    shLabel(P.sh.phase === 'model' ? '🔊 お手本' : '🔊 聞く' + (S.set.rep > 1 ? '（' + (P.sh.n + 1) + '/' + S.set.rep + '）' : ''), 0);
+    var c = cfg();
+    shLabel(P.sh.phase === 'model' ? '🔊 お手本' : '🔊 聞く' + (c.rep > 1 ? '（' + Math.min(P.sh.n + 1, c.rep) + '/' + c.rep + '）' : ''), 0);
   }
   function shAfterPlay() {
     if (!P.sh) return;
     au.pause();
-    P.heard[P.sh.i] = true;
-    if (textMode() === 'after') refreshLine(P.sh.i);
-    if (P.sh.phase === 'model') return shNext();
+    if (mode === 'shadow' && !P.heard[P.sh.i]) { P.heard[P.sh.i] = true; if (textMode() === 'after') refreshLine(P.sh.i); }
+    if (P.sh.phase === 'model') return shDone();
     shTurn();
   }
   /* あなたの番：セリフの長さ×間（速さを落としているときは、その分長く） */
   function shTurn() {
     var l = C.D.lines[P.sh.i];
-    var ms = (l.endMs - l.startMs) * S.set.gap / Math.min(1, S.set.speed) + 300;
-    var role = S.set.role && l.speaker === S.set.role;
+    var c = cfg();
+    var ms = (l.endMs - l.startMs) * c.gap / Math.min(1, S.set.speed) + 300;
+    var role = c.role && l.speaker === c.role;
     P.sh.phase = 'turn';
-    shLabel(role ? '🗣 あなたのセリフ' : '🗣 あなたの番', ms);
-    if (S.set.rec) startRec(P.sh.i, ms);
+    shLabel(role ? '🗣 あなたのセリフ' : c.turn, ms);
+    if (c.rec) startRec(P.sh.i, ms);
     P.sh.timer = setTimeout(function () {
       P.sh.timer = 0;
       stopRec();
-      if (role && P.sh.n === 0) { P.sh.n = S.set.rep; P.sh.phase = 'model'; shPlay(); return; }   /* 役：言ったあとにお手本を1回 */
+      if (role && P.sh.n === 0) { P.sh.n = c.rep; P.sh.phase = 'model'; shPlay(); return; }   /* 役：言ったあとにお手本を1回 */
       P.sh.n++;
-      if (!role && P.sh.n < S.set.rep) { P.sh.phase = 'play'; shPlay(); return; }
-      shNext();
+      if (!role && P.sh.n < c.rep) { P.sh.phase = 'play'; shPlay(); return; }
+      shDone();
     }, ms);
     paintPlay();
+  }
+  /* そのセリフを回数ぶん終えた：書き取りは答えを見せ、「止まる」ならここで止まる */
+  function shDone() {
+    var c = cfg(), i = P.sh.i;
+    if (mode === 'dict' && !P.heard[i]) { P.heard[i] = true; if (textMode() === 'after') refreshLine(i); }
+    if (!c.auto) {
+      P.sh = null; P.cur = i;
+      shLabelAt(i, c.done, 0);
+      paint(); paintPlay();
+      return;
+    }
+    shNext();
   }
   function shNext() {
     var i = P.sh.i + 1;
@@ -476,15 +495,34 @@
     P.cur = P.sh.i; P.sh = null;
     paint();
   }
+  /* ⟲ 2秒：聞いている途中 → そのセリフの中で2秒戻す／間・止まっているとき → セリフの最後の2秒をもう一度（回数には数えない） */
+  function shBack2() {
+    var back = 2000 * Math.max(1, S.set.speed);
+    if (P.sh && (P.sh.phase === 'play' || P.sh.phase === 'model') && !au.paused) { seekMs(Math.max(seg(P.sh.i).a, nowMs() - back)); return; }
+    var i = P.sh ? P.sh.i : Math.max(0, P.cur), n = P.sh ? P.sh.n : cfg().rep - 1;
+    if (P.sh && P.sh.timer) { clearTimeout(P.sh.timer); P.sh.timer = 0; }
+    stopRec();
+    P.sh = { i: i, n: n, phase: 'play', timer: 0 };
+    var s = seg(i);
+    seekMs(Math.max(s.a, s.b - TAIL - back));
+    play();
+    shLabel('🔊 2秒もどして', 0);
+    paint();
+  }
   /* セリフの下の表示（いまの段階と、あなたの番の残り時間の棒） */
   function shLabel(text, ms) {
+    if (!P.sh) { $$('#script .turn').forEach(function (t) { t.hidden = true; }); return; }
+    shLabelAt(P.sh.i, text, ms);
+  }
+  function shLabelAt(i, text, ms) {
     $$('#script .turn').forEach(function (t) { t.hidden = true; });
-    if (!text || !P.sh) return;
-    var el = lineEl(P.sh.i); if (!el) return;
+    if (!text) return;
+    var el = lineEl(i); if (!el) return;
     var box = $('.turn', el), bar = $('i', box);
     box.hidden = false;
     $('span', box).textContent = text;
     box.classList.toggle('my', ms > 0);
+    box.classList.toggle('fin', /^✔/.test(text));
     bar.style.transition = 'none'; bar.style.width = ms ? '100%' : '0';
     if (ms) { void bar.offsetWidth; bar.style.transition = 'width ' + ms + 'ms linear'; bar.style.width = '0'; }
   }
@@ -492,6 +530,11 @@
   $('#sGap').addEventListener('click', function () { S.set.gap = cycle([1, 1.5, 2], S.set.gap); save(); paintOpts(); });
   $('#sRole').addEventListener('click', function () { var ids = [''].concat((C.D.speakers || []).map(function (s) { return s.id; })); S.set.role = cycle(ids, S.set.role); save(); paintOpts(); });
   $('#sText').addEventListener('click', function () { S.set.stext = cycle(['show', 'after', 'hide'], S.set.stext); P.reveal = {}; save(); renderScript(); paintOpts(); });
+  $('#dRep').addEventListener('click', function () { S.set.drep = cycle([1, 2, 3], S.set.drep); save(); paintOpts(); });
+  $('#dGap').addEventListener('click', function () { S.set.dgap = cycle([2, 3, 4], S.set.dgap); save(); paintOpts(); });
+  $('#dText').addEventListener('click', function () { S.set.dtext = cycle(['after', 'hide', 'show'], S.set.dtext); P.reveal = {}; save(); renderScript(); paintOpts(); });
+  $('#dAuto').addEventListener('click', function () { S.set.dauto = !S.set.dauto; save(); paintOpts(); });
+  $('#dSpeed').addEventListener('click', setSpeed);
   $('#sRec').addEventListener('click', function () {
     S.set.rec = !S.set.rec; save(); paintOpts();
     if (S.set.rec) getMic().catch(function () { S.set.rec = false; save(); paintOpts(); alert('マイクを使えませんでした（ブラウザの設定でマイクを許可してください）'); });
@@ -531,90 +574,6 @@
     if (!P.recs || !P.recs[i]) return;
     shPause(); au.pause();
     mine.src = P.recs[i]; mine.play().catch(function () { /* */ });
-  }
-
-  /* =========================================================
-   * ✍️ 書き取り
-   * ========================================================= */
-  var D = { i: 0, plays: 0, stopAt: null, done: false };
-  function dictOpen(i) {
-    au.pause();
-    D = { i: Math.max(0, Math.min(C.D.lines.length - 1, i)), plays: 0, stopAt: null, done: false };
-    var l = C.D.lines[D.i], st = (S.dict[C.D.id] || {});
-    $('#dict').innerHTML =
-      '<div class="dots">' + C.D.lines.map(function (x, k) { return '<button class="dot ' + (st[k] || '') + (k === D.i ? ' cur' : '') + '" data-go="' + k + '" aria-label="セリフ' + (k + 1) + '">' + (k + 1) + '</button>'; }).join('') + '</div>' +
-      '<div class="dcard2">' +
-        '<p class="dhead">セリフ ' + (D.i + 1) + ' / ' + C.D.lines.length + '　<b>' + esc(l.speaker) + '</b></p>' +
-        '<div class="dctl"><button class="ctl" id="dBack2" aria-label="2秒戻す">⟲<small>2秒</small></button><button class="ctl big" id="dPlay" aria-label="このセリフを聞く">▶</button><button class="chip" id="dSpeed">速さ <b>' + (S.set.speed === 1 ? '1.0' : S.set.speed) + '</b></button></div>' +
-        '<p class="dplays" id="dPlays">▶ で、このセリフだけが流れます</p>' +
-        '<textarea id="dIn" rows="3" lang="es" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" placeholder="聞こえたとおりに書く"></textarea>' +
-        '<div class="keys">' + ['á', 'é', 'í', 'ó', 'ú', 'ñ', 'ü', '¿', '¡'].map(function (c) { return '<button data-key="' + c + '">' + c + '</button>'; }).join('') + '</div>' +
-        '<p class="dhint" id="dHint" hidden></p>' +
-        '<div class="row"><button class="ghost" id="dHintB">ヒント</button><button class="go" id="dCheck">答え合わせ</button></div>' +
-        '<div id="dRes"></div>' +
-      '</div>';
-    seekWhenReady(seg(D.i).a);
-    S.pos[C.D.id] = D.i; save();
-  }
-  function dictPlay(from) {
-    var s = seg(D.i);
-    seekMs(from != null ? from : s.a);
-    D.stopAt = s.b;
-    au.playbackRate = S.set.speed;
-    play();
-    D.plays++;
-    $('#dPlays').textContent = '聞いた回数 ' + D.plays;
-    dictPaintPlay();
-  }
-  function dictPaintPlay() { var b = $('#dPlay'); if (b) b.textContent = au.paused ? '▶' : '⏸'; }
-  au.addEventListener('pause', function () { if (mode === 'dict') dictPaintPlay(); });
-  au.addEventListener('play', function () { if (mode === 'dict') dictPaintPlay(); });
-  $('#dict').addEventListener('click', function (e) {
-    var b = e.target.closest('button');
-    if (!b) {
-      var w = e.target.closest('.w.has, .ph');
-      if (w) openBalloon(w, D.i);
-      return;
-    }
-    if (b.dataset.go != null) { dictOpen(+b.dataset.go); return; }
-    if (b.dataset.key) { insertAtCaret($('#dIn'), b.dataset.key); return; }
-    switch (b.id) {
-      case 'dPlay': if (!au.paused) au.pause(); else dictPlay(); break;
-      case 'dBack2': var s = seg(D.i); dictPlay(Math.max(s.a, (au.paused && D.plays ? s.b : nowMs()) - 2000 * Math.max(1, S.set.speed))); break;
-      case 'dSpeed': S.set.speed = cycle(SPEEDS, S.set.speed); save(); au.playbackRate = S.set.speed; $('#dSpeed b').textContent = S.set.speed === 1 ? '1.0' : S.set.speed; break;
-      case 'dHintB': var h = $('#dHint'); h.hidden = false; h.textContent = T.hint(C.D.lines[D.i].text); break;
-      case 'dCheck': dictCheck(); break;
-      case 'dAgain': $('#dRes').innerHTML = ''; $('#dIn').value = ''; $('#dIn').focus(); break;
-      case 'dNext': dictOpen(Math.min(C.D.lines.length - 1, D.i + 1)); break;
-    }
-  });
-  function insertAtCaret(ta, s) {
-    var a = ta.selectionStart || ta.value.length, b = ta.selectionEnd || a;
-    ta.value = ta.value.slice(0, a) + s + ta.value.slice(b);
-    ta.focus();
-    try { ta.setSelectionRange(a + s.length, a + s.length); } catch (e) { /* */ }
-  }
-  function dictCheck() {
-    var l = C.D.lines[D.i], typed = $('#dIn').value;
-    if (!typed.trim()) { $('#dIn').focus(); return; }
-    var r = T.grade(l.text, typed);
-    var st = S.dict[C.D.id] = S.dict[C.D.id] || {};
-    var rank = { ok: 3, near: 2, try: 1 };
-    if (!st[D.i] || rank[r.level] > rank[st[D.i]]) st[D.i] = r.level;
-    save();
-    var dot = $('#dict .dot[data-go="' + D.i + '"]'); if (dot) dot.className = 'dot ' + st[D.i] + ' cur';
-    var head = r.level === 'ok' ? '✔ 全部あっています' : r.level === 'near' ? '△ アクセント記号だけちがう語があります' : '語 ' + r.total + ' のうち ' + (r.ok + r.acc) + ' 語';
-    $('#dRes').innerHTML =
-      '<p class="rhead ' + r.level + '">' + head + '</p>' +
-      '<p class="rwords" lang="es">' + r.words.map(function (x) {
-        return '<span class="' + x.st + '">' + esc(x.w) + (x.st === 'acc' ? '<small>' + esc(x.typed) + '</small>' : '') + '</span>';
-      }).join(' ') + '</p>' +
-      (r.extra.length ? '<p class="rextra">よけいな語：<s>' + r.extra.map(esc).join(' ') + '</s></p>' : '') +
-      '<p class="rleg"><span class="ok">あっている</span><span class="acc">アクセントだけ</span><span class="miss">書けていない</span></p>' +
-      '<div class="rline"><p class="es" lang="es">' + tokHTML(l.toks, D.i) + '</p><p class="ja">' + esc(l.ja) + '</p></div>' +
-      '<div class="row"><button class="ghost" id="dAgain">書き直す</button>' + (D.i < C.D.lines.length - 1 ? '<button class="go" id="dNext">次のセリフ ▶</button>' : '') + '</div>';
-    $('#dIn').blur();
-    $('#dRes').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   /* =========================================================

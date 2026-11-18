@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
 <script src="shared/smooth-fonts.js?v=1"></script>
 <script src="shared/speech-fix.js?v=2"></script>
-<link rel="stylesheet" href="charla/css/charla.css?v=1">
+<link rel="stylesheet" href="charla/css/charla.css?v=2">
 </head>
 <body>
 <div id="app">
@@ -26,7 +26,7 @@
     <div class="scroll">
       <ul class="dlist" id="dlist"></ul>
       <button class="wide" id="hWords">📒 調べた単語<span id="hWordsN"></span></button>
-      <p class="hint">セリフをタップ → そこから再生して、そのセリフをくり返します。<br>点線の語・いま聞いているセリフの語をタップ → 意味（調べた語は記録され、単語アプリに送れます）。</p>
+      <p class="hint">セリフをタップ → そこから再生して、そのセリフをくり返します。<br>書き取り・シャドーイングは紙と声で。アプリは1セリフずつ「聞く → 書く・言う時間」をくり返します。<br>点線の語・いま聞いているセリフの語をタップ → 意味（調べた語は記録され、単語アプリに送れます）。</p>
     </div>
   </section>
 
@@ -43,11 +43,8 @@
       <button data-m="shadow">🗣 シャドーイング</button>
     </nav>
 
-    <!-- 台本（聞く・シャドーイング） -->
+    <!-- 台本 -->
     <div class="scroll" id="script"></div>
-
-    <!-- 書き取り -->
-    <div class="scroll" id="dict" hidden></div>
 
     <!-- 操作盤 -->
     <div class="panel" id="panel">
@@ -74,6 +71,13 @@
         <button class="chip" id="sText">文字 <b>見せる</b></button>
         <button class="chip" id="sRec">🎙 <b>録音しない</b></button>
       </div>
+      <div class="row opts" id="optsDict" hidden>
+        <button class="chip" id="dSpeed">速さ <b>1.0</b></button>
+        <button class="chip" id="dRep">回数 <b>2</b></button>
+        <button class="chip" id="dGap">書く時間 <b>×3</b></button>
+        <button class="chip" id="dText">答え <b>書いたら</b></button>
+        <button class="chip" id="dAuto">次へ <b>止まる</b></button>
+      </div>
     </div>
   </section>
 
@@ -98,7 +102,7 @@
 <script src="vocab/js/deck-check.js?v=37"></script>
 <script src="vocab/js/decks.js?v=37"></script>
 <script src="charla/dialogs/list.js?v=1"></script>
-<script src="charla/js/text.js?v=1"></script>
-<script src="charla/js/app.js?v=1"></script>
+<script src="charla/js/text.js?v=2"></script>
+<script src="charla/js/app.js?v=2"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 /* =========================================================
- * charla/js/text.js — 文の切り分け・語の意味・書き取りの採点・単語アプリへの変換
+ * charla/js/text.js — 文の切り分け・語の意味・単語アプリへの変換
  *  画面に関係しない部分。ブラウザと node（tests/check-charla.js）の両方で使う。
  * ========================================================= */
 (function (root) {
@@ -7,7 +7,7 @@
   var WORD = /[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+/g;
 
   function lower(s) { return String(s).toLowerCase(); }
-  /* アクセント記号・ñ の波を外した形（書き取りで「アクセントだけちがう」を見分ける） */
+  /* アクセント記号・ñ の波を外した形 */
   function bare(s) { return lower(s).normalize('NFD').replace(/[̀-ͯ]/g, ''); }
   /* 単語アプリの id（アクセントと ñ を外す・空白は _） */
   function slug(s) { return bare(s).replace(/\s+/g, '_').replace(/[^a-z0-9_-]/g, ''); }
@@ -78,34 +78,6 @@
     return out;
   };
 
-  /* ---------- 書き取りの採点 ----------
-   *  記号・大文字小文字は見ない。語の並びを、アクセントを外した形で最長一致（LCS）で合わせる。
-   *  合った語：つづりも同じ → ok／アクセントだけちがう → acc。合わなかった正解の語 → miss、よけいに書いた語 → extra */
-  function words(s) { return (String(s).match(WORD) || []); }
-  function grade(answer, typed) {
-    var A = words(answer), T = words(typed), n = A.length, m = T.length, i, j;
-    var L = [];
-    for (i = 0; i <= n; i++) { L.push(new Array(m + 1).fill(0)); }
-    for (i = n - 1; i >= 0; i--) for (j = m - 1; j >= 0; j--)
-      L[i][j] = bare(A[i]) === bare(T[j]) ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
-    var res = A.map(function (w) { return { w: w, st: 'miss' }; }), extra = [];
-    i = 0; j = 0;
-    while (i < n && j < m) {
-      if (bare(A[i]) === bare(T[j])) { res[i].st = lower(A[i]) === lower(T[j]) ? 'ok' : 'acc'; if (res[i].st === 'acc') res[i].typed = T[j]; i++; j++; }
-      else if (L[i + 1][j] >= L[i][j + 1]) i++;
-      else { extra.push(T[j]); j++; }
-    }
-    while (j < m) extra.push(T[j++]);
-    var ok = res.filter(function (r) { return r.st === 'ok'; }).length;
-    var acc = res.filter(function (r) { return r.st === 'acc'; }).length;
-    return { words: res, extra: extra, ok: ok, acc: acc, total: n,
-      level: (ok === n && !extra.length) ? 'ok' : (ok + acc === n && !extra.length) ? 'near' : 'try' };
-  }
-  /* ヒント：各語の最初の1文字と、残りの文字数ぶんの「_」 */
-  function hint(answer) {
-    return String(answer).replace(WORD, function (w) { return w.charAt(0) + w.slice(1).replace(/./g, '_'); });
-  }
-
   /* ---------- 単語アプリ（¡VAMOS!）のデッキの1語にする ----------
    *  rec：調べた記録 { kind:'w'|'p', w, pos, g, ja, surf, line, note, form, clue, cj }
    *  dlg：dialog.json、notes：notes.json。返り値 { word } または { why：送れない理由 } */
@@ -128,7 +100,7 @@
     return { word: w };
   }
 
-  var api = { split: split, Dict: Dict, grade: grade, hint: hint, bare: bare, slug: slug, toVocab: toVocab };
+  var api = { split: split, Dict: Dict, bare: bare, slug: slug, toVocab: toVocab };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.CharlaText = api;
 })(typeof window !== 'undefined' ? window : this);
