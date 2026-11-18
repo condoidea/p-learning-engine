@@ -1,0 +1,336 @@
+{
+  "format": 1,
+  "id": "20261118-165132-88b2",
+  "title": "02 Madame Rosa lo sabe todo",
+  "scene": "Viernes por la tarde en una cafetería de Madrid. Lucía, muy emocionada, le cuenta a Diego su visita a una adivina. Diego no cree en esas cosas. Conversación natural, con humor.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-18T08:01:05.239Z",
+  "audio": "audio.mp3",
+  "durationMs": 242343,
+  "speakers": [
+    {
+      "id": "LUCIA",
+      "gender": "female",
+      "persona": "Lucía, unos 30 años, madrileña, segura de sí misma, irónica pero cariñosa"
+    },
+    {
+      "id": "DIEGO",
+      "gender": "male",
+      "persona": "Diego, unos 30 años, muy buena persona, un poco despistado, se pone nervioso con facilidad"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "LUCIA",
+      "text": "Diego, ¿a que no sabes dónde estuve ayer por la tarde?",
+      "direction": "emocionada",
+      "startMs": 400,
+      "endMs": 4660
+    },
+    {
+      "index": 1,
+      "speaker": "DIEGO",
+      "text": "¿En el gimnasio? Me dijiste que irías después del trabajo.",
+      "direction": "",
+      "startMs": 5686,
+      "endMs": 10514
+    },
+    {
+      "index": 2,
+      "speaker": "LUCIA",
+      "text": "Bueno… iba a ir. Pero en el camino vi una tienda muy pequeña con un cartel en la puerta: «Madame Rosa. Conozco tu futuro».",
+      "direction": "",
+      "startMs": 11355,
+      "endMs": 23817
+    },
+    {
+      "index": 3,
+      "speaker": "DIEGO",
+      "text": "No me digas que entraste.",
+      "direction": "",
+      "startMs": 24758,
+      "endMs": 26558
+    },
+    {
+      "index": 4,
+      "speaker": "LUCIA",
+      "text": "Pues sí, entré. ¡Y fue increíble! Me dijo cosas que nadie sabía.",
+      "direction": "",
+      "startMs": 27266,
+      "endMs": 33656
+    },
+    {
+      "index": 5,
+      "speaker": "DIEGO",
+      "text": "A ver, ¿qué te dijo?",
+      "direction": "",
+      "startMs": 34593,
+      "endMs": 35845
+    },
+    {
+      "index": 6,
+      "speaker": "LUCIA",
+      "text": "Me dijo que este año viajaría a un país muy lejano, que encontraría un trabajo nuevo y que mi vida cambiaría completamente.",
+      "direction": "",
+      "startMs": 36911,
+      "endMs": 48221
+    },
+    {
+      "index": 7,
+      "speaker": "DIEGO",
+      "text": "Ya. ¿Y cuánto te cobró por todo eso?",
+      "direction": "escéptico",
+      "startMs": 49265,
+      "endMs": 53045
+    },
+    {
+      "index": 8,
+      "speaker": "LUCIA",
+      "text": "Cincuenta euros.",
+      "direction": "",
+      "startMs": 54116,
+      "endMs": 55226
+    },
+    {
+      "index": 9,
+      "speaker": "DIEGO",
+      "text": "¡Cincuenta euros! Pues ella sí que viajará a un país lejano… con tu dinero.",
+      "direction": "",
+      "startMs": 55946,
+      "endMs": 62416
+    },
+    {
+      "index": 10,
+      "speaker": "LUCIA",
+      "text": "No seas así. Además, ella sabía que tú dirías eso.",
+      "direction": "",
+      "startMs": 63393,
+      "endMs": 67650
+    },
+    {
+      "index": 11,
+      "speaker": "DIEGO",
+      "text": "¿Yo? ¿Te habló de mí?",
+      "direction": "",
+      "startMs": 68431,
+      "endMs": 70465
+    },
+    {
+      "index": 12,
+      "speaker": "LUCIA",
+      "text": "Sí. Le enseñé una foto tuya en el móvil y la miró durante mucho tiempo. Luego dijo: «Este chico es muy buena persona, pero el sábado perderá algo importante».",
+      "direction": "",
+      "startMs": 71468,
+      "endMs": 85394
+    },
+    {
+      "index": 13,
+      "speaker": "DIEGO",
+      "text": "¿El sábado? ¿Este sábado? ¿Y qué perderé?",
+      "direction": "",
+      "startMs": 86377,
+      "endMs": 90313
+    },
+    {
+      "index": 14,
+      "speaker": "LUCIA",
+      "text": "No me lo quiso decir.",
+      "direction": "",
+      "startMs": 91395,
+      "endMs": 92929
+    },
+    {
+      "index": 15,
+      "speaker": "DIEGO",
+      "text": "¿No quiso decírtelo? Qué raro… Bah, son tonterías. Yo no creo en esas cosas.",
+      "direction": "",
+      "startMs": 93681,
+      "endMs": 100191
+    },
+    {
+      "index": 16,
+      "speaker": "LUCIA",
+      "text": "¿Ah, no? Entonces, ¿por qué te has puesto tan nervioso?",
+      "direction": "divertida",
+      "startMs": 101124,
+      "endMs": 105254
+    },
+    {
+      "index": 17,
+      "speaker": "DIEGO",
+      "text": "No estoy nervioso. Solo tengo curiosidad. Oye, ¿cómo era esa señora?",
+      "direction": "",
+      "startMs": 106318,
+      "endMs": 112448
+    },
+    {
+      "index": 18,
+      "speaker": "LUCIA",
+      "text": "Pues era mayor. Tendría unos setenta y cinco años. Tenía el pelo blanco, llevaba unas gafas enormes y hablaba con acento andaluz.",
+      "direction": "",
+      "startMs": 113697,
+      "endMs": 124537
+    },
+    {
+      "index": 19,
+      "speaker": "DIEGO",
+      "text": "Hmm… ¿Y llevaba un anillo verde en la mano?",
+      "direction": "pensativo",
+      "startMs": 125512,
+      "endMs": 129332
+    },
+    {
+      "index": 20,
+      "speaker": "LUCIA",
+      "text": "¡Sí! Un anillo verde muy grande. ¿Cómo lo sabes?",
+      "direction": "",
+      "startMs": 130385,
+      "endMs": 134615
+    },
+    {
+      "index": 21,
+      "speaker": "DIEGO",
+      "text": "¿Y tenía un gato negro y gordo encima de la mesa?",
+      "direction": "",
+      "startMs": 135638,
+      "endMs": 140428
+    },
+    {
+      "index": 22,
+      "speaker": "LUCIA",
+      "text": "Sí… se llamaba Felipe. Diego, me estás dando miedo. ¿Tú también eres adivino?",
+      "direction": "",
+      "startMs": 141602,
+      "endMs": 147562
+    },
+    {
+      "index": 23,
+      "speaker": "DIEGO",
+      "text": "No, Lucía. Esa señora no es Madame Rosa. Es mi abuela Rosario.",
+      "direction": "",
+      "startMs": 148741,
+      "endMs": 155531
+    },
+    {
+      "index": 24,
+      "speaker": "LUCIA",
+      "text": "¡¿Tu abuela?! ¿En serio?",
+      "direction": "",
+      "startMs": 156550,
+      "endMs": 158570
+    },
+    {
+      "index": 25,
+      "speaker": "DIEGO",
+      "text": "Totalmente en serio. Desde que se jubiló, se aburre muchísimo. Seguro que te reconoció enseguida. Le he enseñado mil fotos tuyas.",
+      "direction": "",
+      "startMs": 159569,
+      "endMs": 169164
+    },
+    {
+      "index": 26,
+      "speaker": "LUCIA",
+      "text": "¡Qué vergüenza! Le conté toda mi vida… ¡Y le hablé de ti!",
+      "direction": "",
+      "startMs": 170137,
+      "endMs": 174766
+    },
+    {
+      "index": 27,
+      "speaker": "DIEGO",
+      "text": "¿Ah, sí? ¿Y qué le dijiste de mí?",
+      "direction": "",
+      "startMs": 175672,
+      "endMs": 178052
+    },
+    {
+      "index": 28,
+      "speaker": "LUCIA",
+      "text": "Eso no te lo voy a decir. Pero entonces, ¿qué vas a perder el sábado?",
+      "direction": "",
+      "startMs": 179082,
+      "endMs": 185927
+    },
+    {
+      "index": 29,
+      "speaker": "DIEGO",
+      "text": "Ah, ya lo sé. Todos los sábados juego a las cartas con ella. Y siempre pierdo. Siempre.",
+      "direction": "",
+      "startMs": 187207,
+      "endMs": 193667
+    },
+    {
+      "index": 30,
+      "speaker": "LUCIA",
+      "text": "¿Y apostáis algo?",
+      "direction": "",
+      "startMs": 194666,
+      "endMs": 196146
+    },
+    {
+      "index": 31,
+      "speaker": "DIEGO",
+      "text": "Sí. El que pierda paga la cena del domingo.",
+      "direction": "",
+      "startMs": 197206,
+      "endMs": 200608
+    },
+    {
+      "index": 32,
+      "speaker": "LUCIA",
+      "text": "O sea, que tu abuela sí conoce el futuro.",
+      "direction": "riéndose",
+      "startMs": 201511,
+      "endMs": 205207
+    },
+    {
+      "index": 33,
+      "speaker": "DIEGO",
+      "text": "Conoce mi futuro, eso seguro. Por cierto, ¿qué hora es? ¿Dónde estará ahora?",
+      "direction": "",
+      "startMs": 206000,
+      "endMs": 213025
+    },
+    {
+      "index": 34,
+      "speaker": "LUCIA",
+      "text": "Serán las seis. Estará en su tienda, esperando a otra clienta.",
+      "direction": "",
+      "startMs": 214238,
+      "endMs": 220038
+    },
+    {
+      "index": 35,
+      "speaker": "DIEGO",
+      "text": "Pues vamos a verla. Quiero que te devuelva los cincuenta euros.",
+      "direction": "",
+      "startMs": 221058,
+      "endMs": 225521
+    },
+    {
+      "index": 36,
+      "speaker": "LUCIA",
+      "text": "¿Crees que me los devolverá?",
+      "direction": "",
+      "startMs": 226402,
+      "endMs": 228162
+    },
+    {
+      "index": 37,
+      "speaker": "DIEGO",
+      "text": "Lo dudo. Pero a lo mejor este domingo, con tus cincuenta euros, paga ella la cena. Por fin.",
+      "direction": "",
+      "startMs": 229260,
+      "endMs": 237755
+    },
+    {
+      "index": 38,
+      "speaker": "LUCIA",
+      "text": "Entonces la que pierde soy yo.",
+      "direction": "",
+      "startMs": 238763,
+      "endMs": 241343
+    }
+  ]
+}

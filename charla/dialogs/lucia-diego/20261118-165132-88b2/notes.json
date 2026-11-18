@@ -1,0 +1,644 @@
+{
+  "format": 1,
+  "sceneJa": "☕ 金曜の夕方、マドリードのカフェ",
+  "phrases": [
+    {
+      "t": "a que no sabes",
+      "ja": "〜って知らないでしょ？",
+      "key": true
+    },
+    {
+      "t": "no seas así",
+      "ja": "そんなこと言わないで",
+      "key": true
+    },
+    {
+      "t": "sí que",
+      "ja": "本当に〜だ（強調）",
+      "key": true,
+      "note": "ella sí que viajará = 彼女こそ旅行するだろうね"
+    },
+    {
+      "t": "tengo curiosidad",
+      "ja": "気になる・興味がある",
+      "key": true
+    },
+    {
+      "t": "dando miedo",
+      "ja": "怖がらせている",
+      "key": true,
+      "note": "dar miedo（怖がらせる）。me estás dando miedo = 君、怖いよ"
+    },
+    {
+      "t": "qué vergüenza",
+      "ja": "恥ずかしい！",
+      "key": true
+    },
+    {
+      "t": "en serio",
+      "ja": "本気で・まじめに",
+      "key": true
+    },
+    {
+      "t": "a lo mejor",
+      "ja": "もしかしたら",
+      "key": true
+    },
+    {
+      "t": "por cierto",
+      "ja": "ところで",
+      "key": true
+    },
+    {
+      "t": "a ver",
+      "ja": "さあ・どれどれ",
+      "note": "話を促すときの言い方"
+    },
+    {
+      "t": "o sea",
+      "ja": "つまり"
+    },
+    {
+      "t": "por fin",
+      "ja": "ついに・やっと"
+    }
+  ],
+  "words": {
+    "sabes": {
+      "w": "saber",
+      "pos": "v",
+      "ja": "知っている",
+      "form": "saber の「君は」（現在）"
+    },
+    "sabía": {
+      "w": "saber",
+      "pos": "v",
+      "ja": "知っている",
+      "form": "saber の「彼女は」（線過去）"
+    },
+    "gimnasio": {
+      "w": "gimnasio",
+      "pos": "n",
+      "g": "m",
+      "ja": "ジム・体育館"
+    },
+    "dijiste": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う",
+      "form": "decir の「君は」（点過去）"
+    },
+    "dijo": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う",
+      "form": "decir の「彼・彼女は」（点過去）"
+    },
+    "dirías": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う",
+      "form": "decir の「君は」（過去未来）。不規則：diría"
+    },
+    "irías": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "行く",
+      "form": "ir の「君は」（過去未来）。「行くだろう」と過去から見た未来"
+    },
+    "iba": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "行く",
+      "form": "ir の「私は」（線過去）。iba a ir = 行くつもりだった"
+    },
+    "después": {
+      "w": "después",
+      "pos": "adv",
+      "ja": "あとで・〜のあと",
+      "note": "después del trabajo = 仕事のあと"
+    },
+    "madame": {
+      "w": "madame",
+      "pos": "n",
+      "g": "f",
+      "ja": "マダム（フランス語の敬称）"
+    },
+    "entraste": {
+      "w": "entrar",
+      "pos": "v",
+      "ja": "入る",
+      "form": "entrar の「君は」（点過去）"
+    },
+    "entré": {
+      "w": "entrar",
+      "pos": "v",
+      "ja": "入る",
+      "form": "entrar の「私は」（点過去）"
+    },
+    "pues": {
+      "w": "pues",
+      "pos": "conj",
+      "ja": "それじゃ・だって・まあ",
+      "note": "文頭で間をつなぐ言葉"
+    },
+    "increíble": {
+      "w": "increíble",
+      "pos": "adj",
+      "ja": "信じられない・すごい"
+    },
+    "viajaría": {
+      "w": "viajar",
+      "pos": "v",
+      "ja": "旅行する",
+      "form": "viajar の「彼女は」（過去未来）。「旅行するだろう」と過去から見た未来"
+    },
+    "viajará": {
+      "w": "viajar",
+      "pos": "v",
+      "ja": "旅行する",
+      "form": "viajar の「彼女は」（未来）"
+    },
+    "país": {
+      "w": "país",
+      "pos": "n",
+      "g": "m",
+      "ja": "国"
+    },
+    "lejano": {
+      "w": "lejano",
+      "pos": "adj",
+      "ja": "遠い"
+    },
+    "encontraría": {
+      "w": "encontrar",
+      "pos": "v",
+      "ja": "見つける",
+      "form": "encontrar の「彼女は」（過去未来）。「見つけるだろう」と過去から見た未来"
+    },
+    "vida": {
+      "w": "vida",
+      "pos": "n",
+      "g": "f",
+      "ja": "人生・生活・命"
+    },
+    "cambiaría": {
+      "w": "cambiar",
+      "pos": "v",
+      "ja": "変わる・変える",
+      "form": "cambiar の「それは」（過去未来）。「変わるだろう」と過去から見た未来"
+    },
+    "completamente": {
+      "w": "completamente",
+      "pos": "adv",
+      "ja": "完全に・すっかり"
+    },
+    "cuánto": {
+      "w": "cuánto",
+      "pos": "adv",
+      "ja": "いくら・どれくらい"
+    },
+    "cobró": {
+      "w": "cobrar",
+      "pos": "v",
+      "ja": "（料金を）取る・請求する",
+      "key": true,
+      "form": "cobrar の「彼女は」（点過去）",
+      "clue": {
+        "t": "ctx",
+        "text": "🧾 店で会計のときに、お店の人がすること"
+      }
+    },
+    "cincuenta": {
+      "w": "cincuenta",
+      "pos": "num",
+      "ja": "50"
+    },
+    "así": {
+      "w": "así",
+      "pos": "adv",
+      "ja": "そのように・こんなふうに"
+    },
+    "además": {
+      "w": "además",
+      "pos": "adv",
+      "ja": "そのうえ・それに"
+    },
+    "enseñé": {
+      "w": "enseñar",
+      "pos": "v",
+      "ja": "見せる・教える",
+      "form": "enseñar の「私は」（点過去）"
+    },
+    "enseñado": {
+      "w": "enseñar",
+      "pos": "v",
+      "ja": "見せる・教える",
+      "form": "enseñar の過去分詞。le he enseñado = 彼女に見せた（現在完了）"
+    },
+    "móvil": {
+      "w": "móvil",
+      "pos": "n",
+      "g": "m",
+      "ja": "携帯電話・スマホ",
+      "note": "スペインでの言い方（中南米は celular）"
+    },
+    "miró": {
+      "w": "mirar",
+      "pos": "v",
+      "ja": "見る",
+      "form": "mirar の「彼女は」（点過去）"
+    },
+    "durante": {
+      "w": "durante",
+      "pos": "prep",
+      "ja": "〜のあいだ"
+    },
+    "perderá": {
+      "w": "perder",
+      "pos": "v",
+      "ja": "なくす・負ける",
+      "form": "perder の「彼は」（未来）"
+    },
+    "perderé": {
+      "w": "perder",
+      "pos": "v",
+      "ja": "なくす・負ける",
+      "form": "perder の「私は」（未来）"
+    },
+    "pierdo": {
+      "w": "perder",
+      "pos": "v",
+      "ja": "なくす・負ける",
+      "form": "perder の「私は」（現在）"
+    },
+    "pierda": {
+      "w": "perder",
+      "pos": "v",
+      "ja": "なくす・負ける",
+      "form": "perder の「彼は」（接続法現在）。el que pierda = 負けたほう"
+    },
+    "pierde": {
+      "w": "perder",
+      "pos": "v",
+      "ja": "なくす・負ける",
+      "form": "perder の「彼女は」（現在）"
+    },
+    "perder": {
+      "w": "perder",
+      "pos": "v",
+      "ja": "なくす・負ける"
+    },
+    "decírtelo": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う",
+      "form": "decir（言う）＋ te（君に）＋ lo（それを）。「君にそれを言う」"
+    },
+    "raro": {
+      "w": "raro",
+      "pos": "adj",
+      "ja": "変な・めずらしい"
+    },
+    "bah": {
+      "w": "bah",
+      "pos": "interj",
+      "ja": "ふん・ちぇっ"
+    },
+    "tonterías": {
+      "w": "tontería",
+      "pos": "n",
+      "g": "f",
+      "ja": "くだらないこと",
+      "form": "tontería の複数形"
+    },
+    "esas": {
+      "w": "ese",
+      "pos": "det",
+      "ja": "その",
+      "form": "ese の女性複数形"
+    },
+    "curiosidad": {
+      "w": "curiosidad",
+      "pos": "n",
+      "g": "f",
+      "ja": "好奇心"
+    },
+    "llevaba": {
+      "w": "llevar",
+      "pos": "v",
+      "ja": "身につけている・持っていく",
+      "form": "llevar の「彼女は」（線過去）"
+    },
+    "unas": {
+      "w": "uno",
+      "pos": "det",
+      "ja": "いくつかの・およそ",
+      "form": "unos の女性形。unas gafas = 眼鏡（ひとそろい）、unos setenta = 約70"
+    },
+    "unos": {
+      "w": "uno",
+      "pos": "det",
+      "ja": "いくつかの・およそ",
+      "form": "uno の男性複数形。unos setenta y cinco años = 約75歳"
+    },
+    "tendría": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持っている",
+      "form": "tener の「彼女は」（過去未来）。不規則：tendría",
+      "note": "過去の推量。「（あのとき）〜歳くらいだったろう」"
+    },
+    "acento": {
+      "w": "acento",
+      "pos": "n",
+      "g": "m",
+      "ja": "なまり・アクセント",
+      "key": true,
+      "clue": {
+        "t": "cog",
+        "text": "英語の accent と同じ祖先"
+      }
+    },
+    "andaluz": {
+      "w": "andaluz",
+      "pos": "adj",
+      "ja": "アンダルシアの",
+      "note": "スペイン南部アンダルシア地方の"
+    },
+    "hmm": {
+      "w": "hmm",
+      "pos": "interj",
+      "ja": "うーん"
+    },
+    "anillo": {
+      "w": "anillo",
+      "pos": "n",
+      "g": "m",
+      "ja": "指輪",
+      "key": true,
+      "clue": {
+        "t": "ctx",
+        "text": "💍 手の指に…"
+      }
+    },
+    "gordo": {
+      "w": "gordo",
+      "pos": "adj",
+      "ja": "太った"
+    },
+    "encima": {
+      "w": "encima",
+      "pos": "adv",
+      "ja": "上に",
+      "note": "encima de la mesa = テーブルの上に"
+    },
+    "llamaba": {
+      "w": "llamarse",
+      "pos": "v",
+      "ja": "〜という名前である",
+      "form": "llamarse の「それは」（線過去）。se llamaba Felipe = フェリペという名前だった"
+    },
+    "dando": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "与える",
+      "form": "dar の現在分詞。me estás dando miedo = 君は私を怖がらせている"
+    },
+    "adivino": {
+      "w": "adivino",
+      "pos": "n",
+      "g": "mf",
+      "ja": "占い師",
+      "key": true,
+      "clue": {
+        "t": "ctx",
+        "text": "🔮 水晶玉をのぞいて未来を言い当てる人"
+      }
+    },
+    "serio": {
+      "w": "serio",
+      "pos": "adj",
+      "ja": "まじめな・本気の"
+    },
+    "totalmente": {
+      "w": "totalmente",
+      "pos": "adv",
+      "ja": "まったく・完全に"
+    },
+    "jubiló": {
+      "w": "jubilarse",
+      "pos": "v",
+      "ja": "定年退職する",
+      "key": true,
+      "form": "jubilarse の「彼女は」（点過去）。se jubiló = 退職した",
+      "clue": {
+        "t": "ctx",
+        "text": "🏢 長年働いた人が会社を去る日"
+      }
+    },
+    "aburre": {
+      "w": "aburrirse",
+      "pos": "v",
+      "ja": "退屈する",
+      "key": true,
+      "form": "aburrirse の「彼女は」（現在）。se aburre = 退屈している",
+      "clue": {
+        "t": "ctx",
+        "text": "🥱 することがなくて、あくびが出る"
+      }
+    },
+    "muchísimo": {
+      "w": "muchísimo",
+      "pos": "adv",
+      "ja": "とてもたくさん",
+      "form": "mucho（たくさん）を強めた形"
+    },
+    "reconoció": {
+      "w": "reconocer",
+      "pos": "v",
+      "ja": "見分ける・それと分かる",
+      "key": true,
+      "form": "reconocer の「彼女は」（点過去）",
+      "clue": {
+        "t": "parts",
+        "text": "re-（もう一度）＋ conocer（知る）"
+      }
+    },
+    "enseguida": {
+      "w": "enseguida",
+      "pos": "adv",
+      "ja": "すぐに"
+    },
+    "tuyas": {
+      "w": "tuyo",
+      "pos": "pron",
+      "ja": "君の（もの）",
+      "form": "tuyo の女性複数形。mil fotos tuyas = 君の写真たくさん"
+    },
+    "tuya": {
+      "w": "tuyo",
+      "pos": "pron",
+      "ja": "君の（もの）",
+      "form": "tuyo の女性形。una foto tuya = 君の写真"
+    },
+    "tuyo": {
+      "w": "tuyo",
+      "pos": "pron",
+      "ja": "君の（もの）"
+    },
+    "vergüenza": {
+      "w": "vergüenza",
+      "pos": "n",
+      "g": "f",
+      "ja": "恥ずかしさ"
+    },
+    "conté": {
+      "w": "contar",
+      "pos": "v",
+      "ja": "話す・数える",
+      "form": "contar の「私は」（点過去）。le conté mi vida = 彼女に人生を話した"
+    },
+    "cartel": {
+      "w": "cartel",
+      "pos": "n",
+      "g": "m",
+      "ja": "看板・ポスター",
+      "key": true,
+      "clue": {
+        "t": "ctx",
+        "text": "🪧 店の入口に出ている"
+      }
+    },
+    "conozco": {
+      "w": "conocer",
+      "pos": "v",
+      "ja": "知っている",
+      "form": "conocer の「私は」（現在）"
+    },
+    "futuro": {
+      "w": "futuro",
+      "pos": "n",
+      "g": "m",
+      "ja": "未来"
+    },
+    "apostáis": {
+      "w": "apostar",
+      "pos": "v",
+      "ja": "賭ける",
+      "key": true,
+      "form": "apostar の「君たちは」（現在）",
+      "clue": {
+        "t": "ctx",
+        "text": "🃏 カードゲームで、勝ったら何かをもらう約束"
+      }
+    },
+    "estará": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "いる・ある",
+      "form": "estar の「彼女は」（未来）",
+      "note": "推量の未来。「（今ごろ）いるだろう」"
+    },
+    "serán": {
+      "w": "ser",
+      "pos": "v",
+      "ja": "〜である",
+      "form": "ser の「それらは」（未来）",
+      "note": "推量の未来。serán las seis =「6時ごろだろう」"
+    },
+    "devuelva": {
+      "w": "devolver",
+      "pos": "v",
+      "ja": "返す",
+      "form": "devolver の「彼女は」（接続法現在）。quiero que te devuelva = 君に返してほしい",
+      "cj": {
+        "stem": "ue"
+      }
+    },
+    "devolverá": {
+      "w": "devolver",
+      "pos": "v",
+      "ja": "返す",
+      "form": "devolver の「彼女は」（未来）",
+      "cj": {
+        "stem": "ue"
+      }
+    },
+    "dudo": {
+      "w": "dudar",
+      "pos": "v",
+      "ja": "疑う",
+      "form": "dudar の「私は」（現在）。lo dudo = それは疑わしい"
+    },
+    "quiso": {
+      "w": "querer",
+      "pos": "v",
+      "ja": "〜したい",
+      "form": "querer の「彼女は」（点過去）。no quiso decir = どうしても言おうとしなかった"
+    },
+    "ti": {
+      "w": "ti",
+      "pos": "pron",
+      "ja": "君（前置詞のあと）",
+      "form": "tú の前置詞のあとの形。de ti = 君のこと"
+    },
+    "sábados": {
+      "w": "sábado",
+      "pos": "n",
+      "g": "m",
+      "ja": "土曜日",
+      "form": "sábado の複数形。todos los sábados = 毎週土曜日"
+    },
+    "sábado": {
+      "w": "sábado",
+      "pos": "n",
+      "g": "m",
+      "ja": "土曜日"
+    },
+    "cierto": {
+      "w": "cierto",
+      "pos": "adj",
+      "ja": "確かな・ある",
+      "note": "por cierto = ところで"
+    },
+    "esperando": {
+      "w": "esperar",
+      "pos": "v",
+      "ja": "待つ・期待する",
+      "form": "esperar の現在分詞。「待っていて」"
+    },
+    "clienta": {
+      "w": "cliente",
+      "pos": "n",
+      "g": "f",
+      "ja": "（女性の）お客さん",
+      "form": "cliente の女性形"
+    },
+    "verla": {
+      "w": "ver",
+      "pos": "v",
+      "ja": "見る・会う",
+      "form": "ver（見る）＋ la（彼女を）。「彼女に会う」"
+    },
+    "crees": {
+      "w": "creer",
+      "pos": "v",
+      "ja": "思う・信じる",
+      "form": "creer の「君は」（現在）"
+    },
+    "tus": {
+      "w": "tu",
+      "pos": "det",
+      "ja": "君の",
+      "form": "tu の複数形"
+    },
+    "fin": {
+      "w": "fin",
+      "pos": "n",
+      "g": "m",
+      "ja": "終わり",
+      "note": "por fin = ついに"
+    }
+  }
+}

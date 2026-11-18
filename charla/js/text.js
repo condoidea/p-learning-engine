@@ -83,7 +83,7 @@
    *  dlg：dialog.json、notes：notes.json。返り値 { word } または { why：送れない理由 } */
   var POS_OK = { n: 'n', v: 'v', adj: 'adj', adv: 'adv', phr: 'phr' };
   function toVocab(rec, dlg, notes) {
-    var line = dlg.lines[rec.line], lineJa = notes.lines && notes.lines[rec.line] && notes.lines[rec.line].ja;
+    var line = dlg.lines[rec.line], lineJa = line && line.ja || notes.lines && notes.lines[rec.line] && notes.lines[rec.line].ja;
     if (!line) return { why: 'セリフが見つからない' };
     var pos = rec.kind === 'p' ? 'phr' : (POS_OK[rec.pos] || 'phr');
     if (pos === 'n' && !rec.g) return { why: '名詞の性が分からない' };
@@ -100,7 +100,83 @@
     return { word: w };
   }
 
-  var api = { split: split, Dict: Dict, bare: bare, slug: slug, toVocab: toVocab };
+  /* ---------- 学習用の解説（guide.md）を読む ----------
+   *  「## 第N話 …」ごとに分け、その中を「### 見出し」ごとに分ける。
+   *  ### 本文 の表（| # | 話者 | Español | 日本語 |）はセリフの行に：# が空の行は「（少し間）」などのト書き。
+   *  Español の頭の ★ は「くり返し練習したいセリフ」。
+   *  返り値 { intro：最初の「## 第」より前（シリーズの説明）, eps：{ N：{ head, title, top：### より前, secs：[{ h, md }], rows } }, extra：[{ h, md }]（付録など） } */
+  function parseGuide(md) {
+    md = String(md).replace(/\r\n?/g, '\n');
+    var parts = md.split(/\n(?=## )/), G = { intro: '', eps: {}, extra: [] };
+    parts.forEach(function (p, k) {
+      var m = /^## +第(\d+)話[ 　]*(.*)/.exec(p);
+      if (!m) {
+        /* 最初の「第N話」より前はシリーズの説明（intro）、あとは付録など（extra） */
+        if (!Object.keys(G.eps).length) G.intro += (G.intro ? '\n' : '') + p.replace(/\n---\s*$/, '');
+        else G.extra.push({ h: p.split('\n')[0].replace(/^## +/, ''), md: p.split('\n').slice(1).join('\n').replace(/\n---\s*$/, '') });
+        return;
+      }
+      var body = p.split('\n').slice(1).join('\n').replace(/\n---\s*$/, '');
+      var subs = body.split(/\n(?=### )/), ep = { head: m[2], top: '', secs: [], rows: [] };
+      subs.forEach(function (s, j) {
+        if (j === 0 && !/^### /.test(s)) { ep.top = s; return; }
+        var h = s.split('\n')[0].replace(/^### +/, ''), b = s.split('\n').slice(1).join('\n').replace(/\n---\s*$/, '');
+        if (/^本文/.test(h)) { ep.rows = tableRows(b); return; }
+        ep.secs.push({ h: h, md: b });
+      });
+      G.eps[+m[1]] = ep;
+    });
+    return G;
+  }
+  /* 本文の表の行 → { no（1から。ト書きは null）, sp, es, ja, star } */
+  function tableRows(b) {
+    var out = [];
+    b.split('\n').forEach(function (ln) {
+      if (!/^\s*\|/.test(ln) || /^\s*\|\s*-/.test(ln)) return;
+      var c = ln.replace(/^\s*\|/, '').replace(/\|\s*$/, '').split('|').map(function (x) { return x.trim(); });
+      if (c[0] === '#') return;
+      var es = c[2] || '', star = /^★/.test(es);
+      out.push({ no: c[0] ? +c[0] : null, sp: c[1] || '', es: es.replace(/^★\s*/, ''), ja: c[3] || '', star: star });
+    });
+    return out;
+  }
+
+  /* ---------- 小さな Markdown（解説の表示用）：見出し・表・箇条書き・太字・コード・区切り線・段落 ---------- */
+  function escH(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function inline(s) {
+    return escH(s).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<code>$1</code>').replace(/★/g, '<span class="star">★</span>');
+  }
+  function mdToHtml(md) {
+    var L = String(md || '').replace(/\r\n?/g, '\n').split('\n'), out = [], i = 0;
+    while (i < L.length) {
+      var ln = L[i];
+      if (!ln.trim()) { i++; continue; }
+      var h = /^(#{1,6}) +(.*)/.exec(ln);
+      if (h) { var lv = Math.min(6, h[1].length + 1); out.push('<h' + lv + '>' + inline(h[2]) + '</h' + lv + '>'); i++; continue; }
+      if (/^---+\s*$/.test(ln)) { out.push('<hr>'); i++; continue; }
+      if (/^\s*\|/.test(ln)) {
+        var rows = [];
+        while (i < L.length && /^\s*\|/.test(L[i])) { rows.push(L[i]); i++; }
+        var cells = rows.filter(function (r) { return !/^\s*\|[\s:|-]+\|?\s*$/.test(r); }).map(function (r) { return r.replace(/^\s*\|/, '').replace(/\|\s*$/, '').split('|').map(function (x) { return x.trim(); }); });
+        var head = rows.length > 1 && /^\s*\|[\s:|-]+\|?\s*$/.test(rows[1]) ? cells.shift() : null;
+        out.push('<div class="tbl"><table>' + (head ? '<thead><tr>' + head.map(function (c) { return '<th>' + inline(c) + '</th>'; }).join('') + '</tr></thead>' : '') +
+          '<tbody>' + cells.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + inline(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>');
+        continue;
+      }
+      if (/^\s*([-*]|\d+\.) +/.test(ln)) {
+        var ol = /^\s*\d+\./.test(ln), items = [];
+        while (i < L.length && /^\s*([-*]|\d+\.) +/.test(L[i])) { items.push(L[i].replace(/^\s*([-*]|\d+\.) +/, '')); i++; }
+        out.push((ol ? '<ol>' : '<ul>') + items.map(function (t) { return '<li>' + inline(t) + '</li>'; }).join('') + (ol ? '</ol>' : '</ul>'));
+        continue;
+      }
+      var para = [];
+      while (i < L.length && L[i].trim() && !/^(#{1,6} |---+\s*$|\s*\||\s*([-*]|\d+\.) +)/.test(L[i])) { para.push(L[i]); i++; }
+      out.push('<p>' + para.map(inline).join('<br>') + '</p>');
+    }
+    return out.join('\n');
+  }
+
+  var api = { split: split, Dict: Dict, bare: bare, slug: slug, toVocab: toVocab, parseGuide: parseGuide, mdToHtml: mdToHtml };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.CharlaText = api;
 })(typeof window !== 'undefined' ? window : this);

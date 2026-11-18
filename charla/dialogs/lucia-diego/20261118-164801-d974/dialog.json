@@ -1,0 +1,304 @@
+{
+  "format": 1,
+  "id": "20261118-164801-d974",
+  "title": "01 La paella desaparecida",
+  "scene": "Domingo a mediodía en el piso de Diego, en Madrid. Los padres de Lucía vienen a comer y Diego tiene un problema. Conversación natural de una pareja joven, con humor.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-18T07:51:29.876Z",
+  "audio": "audio.mp3",
+  "durationMs": 250088,
+  "speakers": [
+    {
+      "id": "LUCIA",
+      "gender": "female",
+      "persona": "Lucía, unos 30 años, madrileña, segura de sí misma, irónica pero cariñosa"
+    },
+    {
+      "id": "DIEGO",
+      "gender": "male",
+      "persona": "Diego, unos 30 años, muy buena persona, un poco despistado, se pone nervioso con facilidad"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "LUCIA",
+      "text": "¡Hola, Diego! ¿Qué te pasa? Tienes una cara muy rara.",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 4750
+    },
+    {
+      "index": 1,
+      "speaker": "DIEGO",
+      "text": "Lucía… tengo que contarte algo. Pero prométeme que no te vas a enfadar.",
+      "direction": "preocupado",
+      "startMs": 5530,
+      "endMs": 12020
+    },
+    {
+      "index": 2,
+      "speaker": "LUCIA",
+      "text": "Uy, eso nunca es buena señal. A ver, ¿qué ha pasado?",
+      "direction": "con sospecha",
+      "startMs": 12927,
+      "endMs": 17537
+    },
+    {
+      "index": 3,
+      "speaker": "DIEGO",
+      "text": "Esta mañana me levanté a las siete e hice la paella para tus padres. Tardé tres horas en prepararla.",
+      "direction": "",
+      "startMs": 18612,
+      "endMs": 27362
+    },
+    {
+      "index": 4,
+      "speaker": "LUCIA",
+      "text": "¡Qué bien! Huele muy bien la casa. ¿Y dónde está? No la veo.",
+      "direction": "",
+      "startMs": 28298,
+      "endMs": 33718
+    },
+    {
+      "index": 5,
+      "speaker": "DIEGO",
+      "text": "Ese es el problema. Como hacía mucho calor en la cocina, la dejé en la mesa de la terraza.",
+      "direction": "",
+      "startMs": 34616,
+      "endMs": 41654
+    },
+    {
+      "index": 6,
+      "speaker": "LUCIA",
+      "text": "Vale. ¿Y qué?",
+      "direction": "",
+      "startMs": 42701,
+      "endMs": 44661
+    },
+    {
+      "index": 7,
+      "speaker": "DIEGO",
+      "text": "Mientras me duchaba, sonó el teléfono. Era mi madre. Ya sabes cómo es: estuvimos hablando casi una hora.",
+      "direction": "",
+      "startMs": 45733,
+      "endMs": 54561
+    },
+    {
+      "index": 8,
+      "speaker": "LUCIA",
+      "text": "Ya, tu madre habla por los codos.",
+      "direction": "riéndose un poco",
+      "startMs": 55530,
+      "endMs": 58630
+    },
+    {
+      "index": 9,
+      "speaker": "DIEGO",
+      "text": "Cuando volví a la terraza, la paellera estaba vacía. Completamente vacía.",
+      "direction": "",
+      "startMs": 59429,
+      "endMs": 67154
+    },
+    {
+      "index": 10,
+      "speaker": "LUCIA",
+      "text": "¿Vacía? ¿Alguien entró en tu casa?",
+      "direction": "",
+      "startMs": 68172,
+      "endMs": 71356
+    },
+    {
+      "index": 11,
+      "speaker": "DIEGO",
+      "text": "Eso pensé yo al principio. Pero luego vi que había arroz por todo el suelo… y unas huellas pequeñas. Entonces me di cuenta de quién se la había comido.",
+      "direction": "",
+      "startMs": 72344,
+      "endMs": 83955
+    },
+    {
+      "index": 12,
+      "speaker": "LUCIA",
+      "text": "¿Huellas? ¡No me digas que fue Tomate!",
+      "direction": "",
+      "startMs": 84927,
+      "endMs": 87848
+    },
+    {
+      "index": 13,
+      "speaker": "DIEGO",
+      "text": "Pues sí. Lo encontré debajo del sofá. Dormía como un angelito, tenía la barriga enorme y… una gamba en la oreja.",
+      "direction": "",
+      "startMs": 88647,
+      "endMs": 99898
+    },
+    {
+      "index": 14,
+      "speaker": "LUCIA",
+      "text": "¡Pobrecito! ¿Y le dijiste algo?",
+      "direction": "riéndose",
+      "startMs": 100872,
+      "endMs": 103488
+    },
+    {
+      "index": 15,
+      "speaker": "DIEGO",
+      "text": "Claro que se lo dije. Le pregunté: «Tomate, ¿te la has comido tú?». Y él me miró con cara de inocente, como siempre.",
+      "direction": "",
+      "startMs": 104533,
+      "endMs": 113168
+    },
+    {
+      "index": 16,
+      "speaker": "LUCIA",
+      "text": "Típico de Tomate. Bueno, tranquilo, no pasa nada. Mis padres llegan a las dos, y ahora son las doce y media.",
+      "direction": "",
+      "startMs": 114140,
+      "endMs": 122560
+    },
+    {
+      "index": 17,
+      "speaker": "DIEGO",
+      "text": "¿Y qué hacemos? No me queda arroz, ni gambas, ni nada. Ya no tengo tiempo de hacer otra.",
+      "direction": "",
+      "startMs": 123509,
+      "endMs": 129909
+    },
+    {
+      "index": 18,
+      "speaker": "LUCIA",
+      "text": "No te preocupes. Esta mañana, por si acaso, compré una tortilla enorme en la panadería de mi calle. La tengo aquí, en la bolsa.",
+      "direction": "",
+      "startMs": 130919,
+      "endMs": 141260
+    },
+    {
+      "index": 19,
+      "speaker": "DIEGO",
+      "text": "¿Por si acaso? Espera, espera… ¿Tú ya sabías que algo iba a salir mal?",
+      "direction": "",
+      "startMs": 142235,
+      "endMs": 148344
+    },
+    {
+      "index": 20,
+      "speaker": "LUCIA",
+      "text": "No lo sabía. Pero lo imaginaba.",
+      "direction": "",
+      "startMs": 149488,
+      "endMs": 152742
+    },
+    {
+      "index": 21,
+      "speaker": "DIEGO",
+      "text": "¡Vaya! ¿No confiabas en mí?",
+      "direction": "ofendido",
+      "startMs": 153476,
+      "endMs": 155696
+    },
+    {
+      "index": 22,
+      "speaker": "LUCIA",
+      "text": "En ti, sí. En Tomate, no. Además, tengo que contarte un secreto.",
+      "direction": "",
+      "startMs": 156767,
+      "endMs": 163457
+    },
+    {
+      "index": 23,
+      "speaker": "DIEGO",
+      "text": "¿Otro secreto? Hoy es el día de los secretos.",
+      "direction": "",
+      "startMs": 164415,
+      "endMs": 168505
+    },
+    {
+      "index": 24,
+      "speaker": "LUCIA",
+      "text": "¿Te acuerdas de la primera vez que hiciste paella para mis padres? Mi madre te dijo que era la mejor de Madrid.",
+      "direction": "",
+      "startMs": 169416,
+      "endMs": 177731
+    },
+    {
+      "index": 25,
+      "speaker": "DIEGO",
+      "text": "Sí, claro. Fue el día más feliz de mi vida.",
+      "direction": "",
+      "startMs": 178699,
+      "endMs": 182169
+    },
+    {
+      "index": 26,
+      "speaker": "LUCIA",
+      "text": "Pues cuando tú fuiste a la cocina, mi madre me dio su plato a mí… y yo se lo di a Tomate.",
+      "direction": "",
+      "startMs": 182981,
+      "endMs": 190871
+    },
+    {
+      "index": 27,
+      "speaker": "DIEGO",
+      "text": "¡¿Qué?! ¿Por qué?",
+      "direction": "sorprendido",
+      "startMs": 191892,
+      "endMs": 193582
+    },
+    {
+      "index": 28,
+      "speaker": "LUCIA",
+      "text": "Porque estaba un poco salada. Bueno, bastante salada. Y desde ese día, a Tomate le encanta tu paella. Cada vez que la haces, la busca por toda la casa.",
+      "direction": "",
+      "startMs": 194584,
+      "endMs": 208383
+    },
+    {
+      "index": 29,
+      "speaker": "DIEGO",
+      "text": "O sea, que la culpa no es del perro. ¡La culpa es tuya!",
+      "direction": "",
+      "startMs": 209439,
+      "endMs": 214426
+    },
+    {
+      "index": 30,
+      "speaker": "LUCIA",
+      "text": "Bueno, digamos que la culpa es de los dos. Pero mira el lado positivo: tienes un fan muy fiel.",
+      "direction": "",
+      "startMs": 215366,
+      "endMs": 223096
+    },
+    {
+      "index": 31,
+      "speaker": "DIEGO",
+      "text": "Un fan de cuatro patas… Vale. ¿Y qué les decimos a tus padres?",
+      "direction": "",
+      "startMs": 224147,
+      "endMs": 230027
+    },
+    {
+      "index": 32,
+      "speaker": "LUCIA",
+      "text": "La verdad: que el cocinero era muy bueno, pero el perro tenía más hambre.",
+      "direction": "",
+      "startMs": 231279,
+      "endMs": 237429
+    },
+    {
+      "index": 33,
+      "speaker": "DIEGO",
+      "text": "Muy graciosa. La próxima vez, haré la paella en tu casa.",
+      "direction": "con ironía",
+      "startMs": 238320,
+      "endMs": 243200
+    },
+    {
+      "index": 34,
+      "speaker": "LUCIA",
+      "text": "Ni hablar. En mi casa vive mi gato, y él tampoco es tonto.",
+      "direction": "",
+      "startMs": 244077,
+      "endMs": 249088
+    }
+  ]
+}

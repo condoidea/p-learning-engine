@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
 <script src="shared/smooth-fonts.js?v=1"></script>
 <script src="shared/speech-fix.js?v=2"></script>
-<link rel="stylesheet" href="charla/css/charla.css?v=2">
+<link rel="stylesheet" href="charla/css/charla.css?v=3">
 </head>
 <body>
 <div id="app">
@@ -35,6 +35,7 @@
     <header class="bar">
       <button class="back" id="pBack" aria-label="一覧へ">←</button>
       <div class="ttl"><b id="pTitle"></b><small id="pSub"></small></div>
+      <button class="icon" id="pGuide" aria-label="この話の解説" hidden>📘</button>
       <button class="icon" id="pWords" aria-label="調べた単語">📒</button>
     </header>
     <nav class="tabs" id="tabs">
@@ -68,6 +69,7 @@
         <button class="chip" id="sRep">回数 <b>2</b></button>
         <button class="chip" id="sGap">間 <b>×1.5</b></button>
         <button class="chip" id="sRole">役 <b>なし</b></button>
+        <button class="chip" id="sOnly" hidden>セリフ <b>全部</b></button>
         <button class="chip" id="sText">文字 <b>見せる</b></button>
         <button class="chip" id="sRec">🎙 <b>録音しない</b></button>
       </div>
@@ -75,10 +77,20 @@
         <button class="chip" id="dSpeed">速さ <b>1.0</b></button>
         <button class="chip" id="dRep">回数 <b>2</b></button>
         <button class="chip" id="dGap">書く時間 <b>×3</b></button>
+        <button class="chip" id="dOnly" hidden>セリフ <b>全部</b></button>
         <button class="chip" id="dText">答え <b>書いたら</b></button>
         <button class="chip" id="dAuto">次へ <b>止まる</b></button>
       </div>
     </div>
+  </section>
+
+  <!-- ============ 📘 解説（guide.md） ============ -->
+  <section id="guide" class="screen" hidden>
+    <header class="bar">
+      <button class="back" id="gBack" aria-label="もどる">←</button>
+      <div class="ttl"><b id="gTitle"></b><small id="gSub"></small></div>
+    </header>
+    <div class="scroll guide" id="gBody"></div>
   </section>
 
   <!-- ============ 調べた単語 → 単語アプリへ ============ -->
@@ -101,8 +113,8 @@
 <script src="vocab/js/conj-es.js?v=37"></script>
 <script src="vocab/js/deck-check.js?v=37"></script>
 <script src="vocab/js/decks.js?v=37"></script>
-<script src="charla/dialogs/list.js?v=1"></script>
-<script src="charla/js/text.js?v=2"></script>
-<script src="charla/js/app.js?v=2"></script>
+<script src="charla/dialogs/list.js?v=2"></script>
+<script src="charla/js/text.js?v=3"></script>
+<script src="charla/js/app.js?v=3"></script>
 </body>
 </html>

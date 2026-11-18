@@ -23,23 +23,32 @@ function E(where, m) { errs++; console.log('  ✖ ' + where + '：' + m); }
 function Wn(where, m) { warns++; console.log('  ⚠ ' + where + '：' + m); }
 
 var deck = { id: 'charla-check', title: 'チェック', brand: 'CHECK', lang: 'es', sections: [], words: [] };
-var listIds = W.CHARLA_DIALOGS.map(function (d) { return d.id; });
-fs.readdirSync(path.join(root, 'charla/dialogs')).forEach(function (id) {
-  if (!fs.statSync(path.join(root, 'charla/dialogs', id)).isDirectory()) return;
-  if (listIds.indexOf(id) < 0) { errs++; console.log('✖ charla/dialogs/' + id + ' が list.js にない'); }
+var listIds = W.CHARLA_DIALOGS.map(function (d) { return d.series + '/' + d.id; }), guides = {};
+fs.readdirSync(path.join(root, 'charla/dialogs')).forEach(function (sid) {
+  var sd = path.join(root, 'charla/dialogs', sid);
+  if (!fs.statSync(sd).isDirectory() || sid.charAt(0) === '_') return;   /* _受け取り などは見ない */
+  var S = W.CHARLA_SERIES.filter(function (x) { return x.id === sid; })[0];
+  if (!S) { errs++; console.log('✖ charla/dialogs/' + sid + ' のシリーズが list.js にない'); return; }
+  fs.readdirSync(sd).forEach(function (id) {
+    if (fs.statSync(path.join(sd, id)).isDirectory() && listIds.indexOf(sid + '/' + id) < 0) { errs++; console.log('✖ charla/dialogs/' + sid + '/' + id + ' が list.js にない'); }
+  });
+  if (S.guide) {
+    try { guides[sid] = T.parseGuide(fs.readFileSync(path.join(sd, S.guide), 'utf8')); } catch (e) { errs++; console.log('✖ ' + sid + '/' + S.guide + ' が読めない'); }
+  }
 });
 
 W.CHARLA_DIALOGS.forEach(function (it) {
   if (only && it.id !== only) return;
-  var dir = path.join(root, 'charla/dialogs', it.id);
-  console.log('■ ' + it.id + '（' + it.title + '）');
+  var dir = path.join(root, it.base);
+  console.log('■ ' + it.series + '/' + it.id + '（第' + it.no + '話 ' + it.title + '）');
   var D, N;
   try { D = JSON.parse(fs.readFileSync(path.join(dir, 'dialog.json'), 'utf8')); } catch (e) { return E('dialog.json', '読めない ' + e.message); }
   try { N = JSON.parse(fs.readFileSync(path.join(dir, 'notes.json'), 'utf8')); } catch (e) { return E('notes.json', '読めない ' + e.message); }
+  N.names = (N.names || []).concat(W.CHARLA_SERIES.filter(function (x) { return x.id === it.series; })[0].names || []);
   if (!fs.existsSync(path.join(dir, D.audio || 'audio.mp3'))) E('audio', (D.audio || 'audio.mp3') + ' がない');
   if (D.format !== 1) E('dialog.json', 'format が 1 ではない（仕様が変わった？）');
   if (D.id !== it.id) E('dialog.json', 'id「' + D.id + '」がフォルダ名とちがう');
-  if (D.title !== it.title) Wn('list.js', '題が dialog.json（' + D.title + '）とちがう');
+  if (D.title.replace(/^\d+\s+/, '') !== it.title) Wn('list.js', '題が dialog.json（' + D.title + '）とちがう');
   var prevEnd = 0;
   D.lines.forEach(function (l, i) {
     var at = 'セリフ' + (i + 1);
@@ -51,9 +60,21 @@ W.CHARLA_DIALOGS.forEach(function (it) {
   });
   if (prevEnd > D.durationMs) E('dialog.json', '最後の endMs が durationMs を越える');
 
-  /* notes */
-  if (!N.lines || N.lines.length !== D.lines.length) E('notes.json', 'lines（訳）の数がセリフの数（' + D.lines.length + '）とちがう');
-  (N.lines || []).forEach(function (l, i) { if (!l || !l.ja) E('notes.json', 'セリフ' + (i + 1) + ' の訳がない'); });
+  /* 訳：guide.md の本文の表（あれば）→ notes.json の lines */
+  var G = guides[it.series], ep = G && G.eps[it.no];
+  if (G && !ep) E('guide.md', '「## 第' + it.no + '話」がない');
+  if (ep) {
+    var rows = ep.rows.filter(function (r) { return r.no; });
+    if (rows.length !== D.lines.length) E('guide.md', '第' + it.no + '話の本文の行（' + rows.length + '）がセリフの数（' + D.lines.length + '）とちがう');
+    rows.forEach(function (r, i) {
+      if (r.no !== i + 1) E('guide.md', '本文の # が ' + r.no + '（' + (i + 1) + ' のはず）');
+      var l = D.lines[i]; if (!l) return;
+      if (r.es !== l.text) E('guide.md', 'セリフ' + (i + 1) + ' のスペイン語が音声の台本とちがう：「' + r.es + '」／「' + l.text + '」');
+      if (!r.ja) E('guide.md', 'セリフ' + (i + 1) + ' の訳がない');
+      l.ja = r.ja;
+    });
+  }
+  D.lines.forEach(function (l, i) { if (!l.ja && N.lines && N.lines[i]) l.ja = N.lines[i].ja; if (!l.ja) E('訳', 'セリフ' + (i + 1) + ' の訳がない（guide.md の本文か notes.json の lines に）'); });
   if (!N.sceneJa) Wn('notes.json', 'sceneJa（場面の説明）がない。単語アプリの手がかりに使う');
   var dict = new T.Dict(N, W.ES_WORDS), unknown = {}, usedPh = {};
   var section = { id: D.id, name: D.title };

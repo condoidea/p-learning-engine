@@ -1,0 +1,328 @@
+{
+  "format": 1,
+  "id": "20261118-170108-b559",
+  "title": "03 El piso equivocado",
+  "scene": "Sábado por la mañana en Madrid. Lucía ayuda a Diego con la mudanza a un piso sin ascensor. Llevan dos horas subiendo cajas y están muy cansados. Conversación natural, con humor.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-18T08:05:12.192Z",
+  "audio": "audio.mp3",
+  "durationMs": 265874,
+  "speakers": [
+    {
+      "id": "LUCIA",
+      "gender": "female",
+      "persona": "Lucía, unos 30 años, madrileña, segura de sí misma, irónica pero cariñosa"
+    },
+    {
+      "id": "DIEGO",
+      "gender": "male",
+      "persona": "Diego, unos 30 años, muy buena persona, un poco despistado, se pone nervioso con facilidad"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "LUCIA",
+      "text": "¡Uf! Estoy hecha polvo. ¿Cuántas cajas hemos subido ya?",
+      "direction": "cansada",
+      "startMs": 400,
+      "endMs": 4930
+    },
+    {
+      "index": 1,
+      "speaker": "DIEGO",
+      "text": "Hemos subido veinte, creo. Solo faltan cinco.",
+      "direction": "",
+      "startMs": 5967,
+      "endMs": 10307
+    },
+    {
+      "index": 2,
+      "speaker": "LUCIA",
+      "text": "¿Cinco más? Diego, ¿por qué no has alquilado un piso con ascensor?",
+      "direction": "",
+      "startMs": 11128,
+      "endMs": 16878
+    },
+    {
+      "index": 3,
+      "speaker": "DIEGO",
+      "text": "Porque este era mucho más barato. Y además, subir escaleras es bueno para la salud.",
+      "direction": "",
+      "startMs": 17999,
+      "endMs": 25469
+    },
+    {
+      "index": 4,
+      "speaker": "LUCIA",
+      "text": "Para tu salud, quizás. Para la mía, no. Oye, hasta ahora lo hemos dejado todo en la entrada. ¿Dónde pongo esta caja? Pesa muchísimo.",
+      "direction": "",
+      "startMs": 26404,
+      "endMs": 40666
+    },
+    {
+      "index": 5,
+      "speaker": "DIEGO",
+      "text": "¿Cuál? ¿La de los libros? Ponla en el dormitorio, al fondo del pasillo. Pero no la pongas junto a la ventana, que entra mucho sol.",
+      "direction": "",
+      "startMs": 41647,
+      "endMs": 52564
+    },
+    {
+      "index": 6,
+      "speaker": "LUCIA",
+      "text": "Vale. ¿Y la lámpara? ¿Dónde la has dejado?",
+      "direction": "",
+      "startMs": 53630,
+      "endMs": 57030
+    },
+    {
+      "index": 7,
+      "speaker": "DIEGO",
+      "text": "No la he visto. ¿No la has subido tú?",
+      "direction": "",
+      "startMs": 58160,
+      "endMs": 61360
+    },
+    {
+      "index": 8,
+      "speaker": "LUCIA",
+      "text": "Ah, sí, perdona. Te la he dejado en la entrada, detrás de la puerta.",
+      "direction": "",
+      "startMs": 62407,
+      "endMs": 67393
+    },
+    {
+      "index": 9,
+      "speaker": "DIEGO",
+      "text": "Gracias. Ahora pásame esa caja pequeña, por favor.",
+      "direction": "",
+      "startMs": 68268,
+      "endMs": 72148
+    },
+    {
+      "index": 10,
+      "speaker": "LUCIA",
+      "text": "¿Esta? Toma.",
+      "direction": "",
+      "startMs": 73021,
+      "endMs": 74744
+    },
+    {
+      "index": 11,
+      "speaker": "DIEGO",
+      "text": "No, esa no. No me la des, que es la de los platos. La otra, la azul. Dámela.",
+      "direction": "",
+      "startMs": 75424,
+      "endMs": 80874
+    },
+    {
+      "index": 12,
+      "speaker": "LUCIA",
+      "text": "Aquí la tienes. Bueno, voy a llevar la de los libros al dormitorio.",
+      "direction": "",
+      "startMs": 81764,
+      "endMs": 86891
+    },
+    {
+      "index": 13,
+      "speaker": "LUCIA",
+      "text": "¡Diego! ¡El dormitorio es precioso! Me encantan las cortinas. ¿Las has comprado tú?",
+      "direction": "desde el dormitorio, sorprendida",
+      "startMs": 88874,
+      "endMs": 96544
+    },
+    {
+      "index": 14,
+      "speaker": "DIEGO",
+      "text": "¿Cortinas? No… Cuando vine a verlo la semana pasada, no había cortinas.",
+      "direction": "",
+      "startMs": 97768,
+      "endMs": 103538
+    },
+    {
+      "index": 15,
+      "speaker": "LUCIA",
+      "text": "Pues alguien las ha puesto. Y mira, aquí hay una cama y una planta muy grande.",
+      "direction": "",
+      "startMs": 104459,
+      "endMs": 112489
+    },
+    {
+      "index": 16,
+      "speaker": "DIEGO",
+      "text": "¿Una cama? Qué raro. El dueño me había dicho que el piso estaría completamente vacío.",
+      "direction": "acercándose",
+      "startMs": 113461,
+      "endMs": 121547
+    },
+    {
+      "index": 17,
+      "speaker": "LUCIA",
+      "text": "¿Y esa foto en la pared? Es un señor mayor… con un loro en el hombro.",
+      "direction": "",
+      "startMs": 122496,
+      "endMs": 130376
+    },
+    {
+      "index": 18,
+      "speaker": "DIEGO",
+      "text": "¿Una foto? ¿Y ese sofá? ¿Y esa tele? Espera… Lucía, ¿qué pone en la puerta?",
+      "direction": "",
+      "startMs": 131430,
+      "endMs": 140190
+    },
+    {
+      "index": 19,
+      "speaker": "LUCIA",
+      "text": "A ver… Tercero B.",
+      "direction": "",
+      "startMs": 141415,
+      "endMs": 145285
+    },
+    {
+      "index": 20,
+      "speaker": "DIEGO",
+      "text": "Mi piso es el tercero D.",
+      "direction": "en voz baja",
+      "startMs": 146090,
+      "endMs": 148520
+    },
+    {
+      "index": 21,
+      "speaker": "LUCIA",
+      "text": "¡¿Qué?! ¿Me estás tomando el pelo?",
+      "direction": "",
+      "startMs": 149221,
+      "endMs": 151917
+    },
+    {
+      "index": 22,
+      "speaker": "DIEGO",
+      "text": "Ojalá. Te lo juro, es el tercero D. Está al otro lado del pasillo.",
+      "direction": "",
+      "startMs": 153007,
+      "endMs": 159137
+    },
+    {
+      "index": 23,
+      "speaker": "LUCIA",
+      "text": "Pero ¿cómo hemos entrado? ¡Tú abriste la puerta con tu llave!",
+      "direction": "",
+      "startMs": 160073,
+      "endMs": 164817
+    },
+    {
+      "index": 24,
+      "speaker": "DIEGO",
+      "text": "No, no la abrí. Ya estaba abierta. Pensé que el dueño la había dejado abierta para mí.",
+      "direction": "",
+      "startMs": 165754,
+      "endMs": 172714
+    },
+    {
+      "index": 25,
+      "speaker": "LUCIA",
+      "text": "O sea, que llevamos dos horas metiendo tus cosas en la casa de otra persona.",
+      "direction": "",
+      "startMs": 173660,
+      "endMs": 182300
+    },
+    {
+      "index": 26,
+      "speaker": "DIEGO",
+      "text": "Más o menos… sí. Con tantas cajas, no he mirado nada.",
+      "direction": "",
+      "startMs": 183273,
+      "endMs": 188033
+    },
+    {
+      "index": 27,
+      "speaker": "LUCIA",
+      "text": "¡Qué vergüenza! Venga, rápido, hay que sacarlo todo antes de que vuelva el señor del loro.",
+      "direction": "",
+      "startMs": 188945,
+      "endMs": 195383
+    },
+    {
+      "index": 28,
+      "speaker": "DIEGO",
+      "text": "Tienes razón. Coge tú las cajas pequeñas y yo cojo las grandes.",
+      "direction": "",
+      "startMs": 196325,
+      "endMs": 201205
+    },
+    {
+      "index": 29,
+      "speaker": "LUCIA",
+      "text": "¡Shh! ¡Silencio! Alguien está subiendo la escalera… y está silbando.",
+      "direction": "susurrando",
+      "startMs": 202157,
+      "endMs": 209054
+    },
+    {
+      "index": 30,
+      "speaker": "DIEGO",
+      "text": "Ay, no. Ya ha llegado. Es él. Es el señor de la foto. ¡Y trae el loro!",
+      "direction": "asustado",
+      "startMs": 210070,
+      "endMs": 217140
+    },
+    {
+      "index": 31,
+      "speaker": "LUCIA",
+      "text": "Bueno, díselo tú. Es tu vecino.",
+      "direction": "",
+      "startMs": 218174,
+      "endMs": 221047
+    },
+    {
+      "index": 32,
+      "speaker": "DIEGO",
+      "text": "¿Yo? ¡Ni hablar! Yo me escondo detrás de las cajas. Díselo tú, que a ti se te dan bien estas cosas.",
+      "direction": "",
+      "startMs": 221929,
+      "endMs": 229369
+    },
+    {
+      "index": 33,
+      "speaker": "LUCIA",
+      "text": "Diego, ya puedes salir. No está enfadado. Se está riendo.",
+      "direction": "aliviada",
+      "startMs": 232314,
+      "endMs": 237355
+    },
+    {
+      "index": 34,
+      "speaker": "DIEGO",
+      "text": "¿Se está riendo? ¿Qué dice?",
+      "direction": "",
+      "startMs": 238239,
+      "endMs": 240939
+    },
+    {
+      "index": 35,
+      "speaker": "LUCIA",
+      "text": "Dice que se llama don Ramón, que no pasa nada… y que si le subimos también su sofá nuevo, nos invita a cenar esta noche.",
+      "direction": "",
+      "startMs": 242085,
+      "endMs": 251800
+    },
+    {
+      "index": 36,
+      "speaker": "DIEGO",
+      "text": "¿Más escaleras? Bueno, vale. Pero esta vez, antes de entrar, miramos bien la letra de la puerta.",
+      "direction": "suspirando",
+      "startMs": 252803,
+      "endMs": 260133
+    },
+    {
+      "index": 37,
+      "speaker": "LUCIA",
+      "text": "La miras tú. Yo ya no me fío de ti.",
+      "direction": "",
+      "startMs": 261204,
+      "endMs": 264874
+    }
+  ]
+}

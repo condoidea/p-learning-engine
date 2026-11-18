@@ -33,7 +33,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .logo { margin: 0; font-family: var(--es); font-weight: 600; font-size: 24px; letter-spacing: .12em; line-height: 1.1; }
 .logo small { display: block; font-family: var(--ja); font-weight: 400; font-size: 12.5px; letter-spacing: .05em; color: var(--tx2); }
 .ttl { flex: 1; min-width: 0; line-height: 1.25; }
-.ttl b { display: block; font-family: var(--es); font-size: 19px; font-weight: 600; }
+.ttl b { display: block; font-family: var(--es); font-size: 19px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ttl small { display: block; color: var(--tx2); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* ---------- ホーム ---------- */
@@ -55,8 +55,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* ---------- 台本 ---------- */
 #script { padding-top: 4px; }
-.ln { display: grid; grid-template-columns: 40px 1fr auto; gap: 8px; padding: 10px 6px 10px 0; border-radius: 12px; border-left: 3px solid transparent; margin: 2px 0; }
-.ln .who { align-self: start; width: 40px; padding: 4px 0; display: grid; justify-items: center; line-height: 1.1; font-family: var(--es); font-weight: 600; font-size: 17px; color: var(--c); }
+.ln { display: grid; grid-template-columns: 50px 1fr auto; gap: 8px; padding: 10px 6px 10px 0; border-radius: 12px; border-left: 3px solid transparent; margin: 2px 0; }
+.ln .who { align-self: start; width: 50px; padding: 4px 0; display: grid; justify-items: center; line-height: 1.1; font-family: var(--es); font-weight: 600; font-size: 15px; color: var(--c); }
 .ln .who small { font-family: var(--ja); font-weight: 400; font-size: 11px; color: var(--tx3); }
 .ln.sp0 { --c: var(--a0); }
 .ln.sp1 { --c: var(--a1); }
@@ -158,3 +158,41 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 @media (min-width: 560px) {
   .ln .es { font-size: 21px; }
 }
+
+/* ---------- シリーズ・★・聞き取りポイント・📘 解説 ---------- */
+.series { margin-top: 6px; }
+.shead { display: flex; align-items: center; gap: 10px; padding: 4px 2px; }
+.shead > div { flex: 1; min-width: 0; }
+.shead b { display: block; font-size: 16px; }
+.shead small { display: block; color: var(--tx3); font-size: 12.5px; }
+.gbtn { flex: none; padding: 7px 10px; border-radius: 10px; background: var(--bg2); border: 1px solid var(--line); color: var(--tx2); font-size: 13.5px; }
+.dcard .es i { font-style: normal; font-family: var(--ja); font-size: 13px; font-weight: 700; color: var(--tx3); margin-right: 8px; }
+
+.ln .who .star { color: #e9cf7a; font-weight: 400; margin-right: 1px; }
+.ln.off { opacity: .38; }
+
+.pts { margin: 6px 0 10px; padding: 10px 12px 12px; border-radius: 12px; background: var(--bg2); border: 1px solid var(--line); }
+.pts.shut { padding: 6px 12px; background: none; border-style: dashed; }
+.pts.shut .ptsh { font-size: 13.5px; font-weight: 400; color: var(--tx3); }
+.ptsh { width: 100%; display: flex; justify-content: space-between; align-items: center; font-size: 15px; font-weight: 700; color: var(--tx); text-align: left; }
+.ptsh span { font-size: 12.5px; font-weight: 400; color: var(--tx3); }
+.pts .plot { margin: 8px 0 4px; color: var(--tx2); font-size: 14.5px; line-height: 1.7; }
+.pts ol { margin: 6px 0 0; padding-left: 1.4em; font-size: 15.5px; line-height: 1.7; color: var(--tx); }
+
+.guide { padding: 6px 16px 40px; }
+.guide .md { font-size: 15.5px; line-height: 1.8; color: var(--tx); }
+.guide .md h2, .guide .md h3, .guide .md h4 { font-size: 16.5px; margin: 20px 0 6px; }
+.guide .md p { margin: 8px 0; }
+.guide .md ul, .guide .md ol { padding-left: 1.3em; margin: 6px 0; }
+.guide .md code { font-family: var(--es); font-size: 1.05em; color: #e9cf7a; }
+.guide .md b { color: #fff; }
+.guide .md .star { color: #e9cf7a; }
+.guide .md hr { border: 0; border-top: 1px solid var(--line); margin: 16px 0; }
+.guide .tbl { overflow-x: auto; margin: 8px 0; }
+.guide table { border-collapse: collapse; font-size: 14px; line-height: 1.6; min-width: 100%; }
+.guide th, .guide td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+.guide th { background: var(--bg2); white-space: nowrap; }
+.gsec { margin: 10px 0; border: 1px solid var(--line); border-radius: 12px; background: var(--bg2); }
+.gsec summary { padding: 12px 14px; font-weight: 700; font-size: 15.5px; cursor: pointer; }
+.gsec summary small { font-weight: 400; color: var(--tx3); margin-left: 6px; }
+.gsec .md { padding: 0 14px 10px; }

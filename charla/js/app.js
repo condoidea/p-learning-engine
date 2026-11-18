@@ -1,11 +1,13 @@
 /* =========================================================
  * charla/js/app.js — CHARLA（会話を 聞く・書く・まねる）
  *
- *  ダイアログ（charla/dialogs/<id>/ の dialog.json・audio.mp3・notes.json）を、
+ *  ダイアログ（charla/dialogs/<シリーズ>/<id>/ の dialog.json・audio.mp3・notes.json）を、
+ *  シリーズの解説（charla/dialogs/<シリーズ>/guide.md）の訳・★・聞き取りポイントと合わせて、
  *  台本と音声をそろえて聞く道具。ゲームの要素は入れない。
  *    🎧 聞く        台本を見ながら（隠して）聞く。セリフをタップ → そのセリフを AB 区間にしてくり返す
  *    ✍️ 書き取り    1セリフずつ「聞く → 書く時間」を回数ぶん → 答えを見る（書くのは紙。アプリは再生だけ）
  *    🗣 シャドーイング 1セリフずつ「聞く → 間（あなたの番）」を回数ぶん。役になる・録音して聞き比べる
+ *    📘 解説        guide.md から：聞き取りポイントは台本の頭に（聞く前に読む）。文法ノートなどはたたんで
  *    📒 調べた単語   バルーンで調べた語を記録 → チェックして単語アプリ（¡VAMOS!）のデッキ「charla」へ
  *
  *  保存（localStorage）：charla.v1（?sandbox は charla.sandbox.v1）
@@ -24,7 +26,7 @@
   var SPEEDS = [0.6, 0.75, 0.85, 1, 1.15];
 
   /* ---------- 保存 ---------- */
-  function fresh() { return { lessons: {}, looked: {}, dict: {}, pos: {}, set: { speed: 1, text: 'show', ja: false, rep: 2, gap: 1.5, role: '', stext: 'show', rec: false, drep: 2, dgap: 3, dtext: 'after', dauto: false } }; }
+  function fresh() { return { lessons: {}, looked: {}, dict: {}, pos: {}, set: { speed: 1, text: 'show', ja: false, rep: 2, gap: 1.5, role: '', stext: 'show', rec: false, drep: 2, dgap: 3, dtext: 'after', dauto: false, only: '' }, pts: {} }; }
   function load() {
     try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && s.set) { var f = fresh(); for (var k in f) if (!(k in s)) s[k] = f[k]; for (var j in f.set) if (!(j in s.set)) s.set[j] = f.set[j]; return s; } } catch (e) { /* 保存領域が使えない */ }
     return fresh();
@@ -42,16 +44,51 @@
   var G_JA = { m: '男性', f: '女性', mf: '男女同形' };
 
   /* ---------- 読み込み ---------- */
-  var cache = {};
+  var cache = {}, guides = {};
   function getJSON(url) { return fetch(url, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(r.status + ' ' + url); return r.json(); }); }
+  function series(id) { return (window.CHARLA_SERIES || []).filter(function (s) { return s.id === id; })[0] || null; }
+  function entry(id) { return (window.CHARLA_DIALOGS || []).filter(function (d) { return d.id === id; })[0] || null; }
+  /* シリーズの解説（guide.md）。なければ null */
+  function loadGuide(sid) {
+    var s = series(sid);
+    if (!s || !s.guide) return Promise.resolve(null);
+    if (!guides[sid]) guides[sid] = fetch('charla/dialogs/' + sid + '/' + s.guide, { cache: 'no-cache' })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+      .then(T.parseGuide).catch(function () { delete guides[sid]; return null; });
+    return guides[sid];
+  }
+  /* 話の頭（### より前）から「あらすじ」と「聞き取りポイント」（箇条書き）を取り出す */
+  function epPoints(ep) {
+    var out = { plot: '', pts: [] }, inPts = false;
+    String(ep && ep.top || '').split('\n').forEach(function (ln) {
+      var m = /^\*\*あらすじ\*\*[：:]\s*(.*)/.exec(ln);
+      if (m) { out.plot = m[1]; inPts = false; return; }
+      if (/^\*\*聞き取りポイント\*\*/.test(ln)) { inPts = true; return; }
+      if (inPts && /^\s*[-*] +/.test(ln)) out.pts.push(ln.replace(/^\s*[-*] +/, ''));
+      else if (inPts && ln.trim()) inPts = false;
+    });
+    return out;
+  }
   function loadDialog(id) {
     if (cache[id]) return Promise.resolve(cache[id]);
-    var base = 'charla/dialogs/' + id + '/';
-    return Promise.all([getJSON(base + 'dialog.json'), getJSON(base + 'notes.json').catch(function () { return { lines: [], words: {}, phrases: [] }; })])
+    var d = entry(id);
+    if (!d) return Promise.reject(new Error('一覧にないダイアログ ' + id));
+    var base = d.base, s = series(d.series);
+    return Promise.all([getJSON(base + 'dialog.json'), getJSON(base + 'notes.json').catch(function () { return { words: {}, phrases: [] }; }), loadGuide(d.series)])
       .then(function (r) {
-        var D = r[0], N = r[1], dict = new T.Dict(N, window.ES_WORDS);
-        D.lines.forEach(function (l, i) { l.toks = dict.line(l.text); l.ja = N.lines && N.lines[i] && N.lines[i].ja || ''; });
-        cache[id] = { D: D, N: N, dict: dict, base: base };
+        var D = r[0], N = r[1], G = r[2], ep = G && G.eps[d.no] || null;
+        N.names = (N.names || []).concat(s && s.names || []);
+        var dict = new T.Dict(N, window.ES_WORDS);
+        /* 訳と ★ は解説の本文の表から（# の番号でそろえる。ト書きの行は飛ばす） */
+        var rows = {};
+        (ep && ep.rows || []).forEach(function (x) { if (x.no) rows[x.no] = x; });
+        D.lines.forEach(function (l, i) {
+          var g = rows[i + 1];
+          l.toks = dict.line(l.text);
+          l.ja = g && g.ja || N.lines && N.lines[i] && N.lines[i].ja || '';
+          l.star = !!(g && g.star);
+        });
+        cache[id] = { D: D, N: N, dict: dict, base: base, d: d, ep: ep, pts: epPoints(ep) };
         return cache[id];
       });
   }
@@ -63,9 +100,13 @@
     stopAll();
     show('home');
     var list = window.CHARLA_DIALOGS || [];
-    $('#dlist').innerHTML = list.map(function (d) {
-      return '<li><button class="dcard" data-id="' + esc(d.id) + '"><b class="es">' + esc(d.title) + '</b><span>' + esc(d.titleJa || '') + '</span>' +
-        '<small id="dm-' + esc(d.id) + '">' + (S.lessons[d.id] && S.lessons[d.id].done ? '🎧 最後まで聞いた' : '') + '</small></button></li>';
+    $('#dlist').innerHTML = (window.CHARLA_SERIES || []).map(function (s) {
+      return '<li class="series"><div class="shead"><div><b>' + esc(s.title) + '</b><small>' + esc(s.sub || '') + '</small></div>' +
+        (s.guide ? '<button class="gbtn" data-series="' + esc(s.id) + '">📘 教材について</button>' : '') + '</div></li>' +
+        s.dialogs.map(function (d) {
+          return '<li><button class="dcard" data-id="' + esc(d.id) + '"><b class="es">' + (d.no ? '<i>' + d.no + '</i>' : '') + esc(d.title) + '</b><span>' + esc(d.titleJa || '') + '</span>' +
+            '<small id="dm-' + esc(d.id) + '">' + (S.lessons[d.id] && S.lessons[d.id].done ? '🎧 最後まで聞いた' : '') + '</small></button></li>';
+        }).join('');
     }).join('') || '<li class="empty">ダイアログがまだありません</li>';
     list.forEach(function (d) {
       loadDialog(d.id).then(function (c) {
@@ -76,7 +117,44 @@
     var n = lookedList().filter(function (r) { return !r.sent; }).length;
     $('#hWordsN').textContent = n ? '（まだ送っていない語 ' + n + '）' : '';
   }
-  $('#dlist').addEventListener('click', function (e) { var b = e.target.closest('[data-id]'); if (b) openDialog(b.dataset.id); });
+  $('#dlist').addEventListener('click', function (e) {
+    var g = e.target.closest('[data-series]'); if (g) { guideScreen(g.dataset.series, null, 'home'); return; }
+    var b = e.target.closest('[data-id]'); if (b) openDialog(b.dataset.id);
+  });
+
+  /* =========================================================
+   * 📘 解説（guide.md）。全部を読ませる画面ではなく、必要なときに引く
+   *  話から：あらすじ・聞き取りポイント → 文法ノート・慣用表現・語彙（たたんでおく）
+   *  一覧から：シリーズの説明と、付録（ネタバレがあるので閉じておく）
+   * ========================================================= */
+  var gFrom = 'home';
+  function guideScreen(sid, no, from) {
+    gFrom = from;
+    stopAll();
+    var s = series(sid);
+    $('#gTitle').textContent = no ? '📘 第' + no + '話の解説' : '📘 ' + (s ? s.title : '解説');
+    $('#gSub').textContent = no ? (C && C.d && C.d.titleJa || '') : (s && s.sub || '');
+    $('#gBody').innerHTML = '<p class="hint">読み込み中…</p>';
+    show('guide');
+    $('#gBody').scrollTop = 0;
+    loadGuide(sid).then(function (G) {
+      if (!G) { $('#gBody').innerHTML = '<p class="hint">解説を読み込めませんでした</p>'; return; }
+      var html = '';
+      if (no) {
+        var ep = G.eps[no];
+        if (!ep) { $('#gBody').innerHTML = '<p class="hint">この話の解説はありません</p>'; return; }
+        html += '<div class="md">' + T.mdToHtml(ep.top) + '</div>';
+        html += ep.secs.map(function (x) { return '<details class="gsec"><summary>' + esc(x.h) + '</summary><div class="md">' + T.mdToHtml(x.md) + '</div></details>'; }).join('');
+        html += '<p class="hint">訳は「訳 あり」でセリフの下に。★＝くり返し練習したいセリフ（書き取り・シャドーイングで「★だけ」にできます）。</p>';
+      } else {
+        html += '<div class="md">' + T.mdToHtml(G.intro.replace(/^# .*\n/, '')) + '</div>';
+        html += G.extra.map(function (x) { return '<details class="gsec"><summary>' + esc(x.h) + '<small>（ネタバレあり）</small></summary><div class="md">' + T.mdToHtml(x.md) + '</div></details>'; }).join('');
+      }
+      $('#gBody').innerHTML = html;
+    });
+  }
+  $('#gBack').addEventListener('click', function () { if (gFrom === 'play' && C) show('play'); else home(); });
+  $('#pGuide').addEventListener('click', function () { if (C && C.d) guideScreen(C.d.series, C.d.no, 'play'); });
   $('#hWords').addEventListener('click', function () { wordsScreen('home'); });
 
   /* =========================================================
@@ -119,12 +197,15 @@
   function openDialog(id) {
     loadDialog(id).then(function (c) {
       C = c;
-      P = { loop: '', ab: null, cur: -1, sh: null, stopAt: null, raf: 0, reveal: {}, heard: {} };
+      P = { loop: '', ab: null, cur: -1, sh: null, stopAt: null, raf: 0, reveal: {}, heard: {}, ptsOpen: !S.pts[id] };
+      S.pts[id] = 1; save();   /* 聞き取りポイントは初めての1回だけ開いて出す */
       au.src = c.base + (c.D.audio || 'audio.mp3');
       au.load();
       au.playbackRate = S.set.speed;
-      $('#pTitle').textContent = c.D.title;
-      $('#pSub').textContent = (c.N.titleJa ? c.N.titleJa + '　' : '') + (c.N.sceneJa || '');
+      $('#pTitle').textContent = c.d.title;
+      $('#pSub').textContent = (c.d.titleJa ? c.d.titleJa + '　' : '') + (c.N.sceneJa || '');
+      $('#pGuide').hidden = !c.ep;
+      $('#sOnly').hidden = $('#dOnly').hidden = !c.D.lines.some(function (l) { return l.star; });
       $('#tAll').textContent = mmss(c.D.durationMs);
       drawSegs();
       setMode('listen');
@@ -134,7 +215,7 @@
       paint();
       if ('mediaSession' in navigator) {
         try {
-          navigator.mediaSession.metadata = new MediaMetadata({ title: c.D.title, artist: 'CHARLA', album: c.N.titleJa || '' });
+          navigator.mediaSession.metadata = new MediaMetadata({ title: c.d.title, artist: 'CHARLA', album: c.d.titleJa || '' });
           navigator.mediaSession.setActionHandler('play', function () { togglePlay(true); });
           navigator.mediaSession.setActionHandler('pause', function () { togglePlay(false); });
           navigator.mediaSession.setActionHandler('seekbackward', function () { back2(); });
@@ -188,6 +269,13 @@
   function textMode() { return mode === 'shadow' ? S.set.stext : mode === 'dict' ? S.set.dtext : S.set.text; }
   /* 1セリフずつ進むモード（シャドーイング・書き取り） */
   function stepMode() { return mode === 'shadow' || mode === 'dict'; }
+  /* 「セリフ：★だけ」：1セリフずつ進むとき、★のセリフだけを回る */
+  function onlyStar() { return S.set.only === 'star' && !!C && C.D.lines.some(function (l) { return l.star; }); }
+  function stepTo(i, d) {
+    var L = C.D.lines;
+    for (; i >= 0 && i < L.length; i += d) if (!onlyStar() || L[i].star) return i;
+    return -1;
+  }
   function lineHidden(i) {
     var m = textMode();
     if (P.reveal[i]) return false;
@@ -198,10 +286,10 @@
   function renderScript() {
     var L = C.D.lines, sp = {};
     (C.D.speakers || []).forEach(function (s, k) { sp[s.id] = k; });
-    $('#script').innerHTML = L.map(function (l, i) {
-      var hid = lineHidden(i);
-      return '<div class="ln sp' + (sp[l.speaker] || 0) + (hid ? ' hid' : '') + '" data-i="' + i + '">' +
-        '<button class="who" data-act="line" aria-label="セリフ' + (i + 1) + 'から">' + esc(l.speaker) + '<small>' + (i + 1) + '</small></button>' +
+    $('#script').innerHTML = ptsHTML() + L.map(function (l, i) {
+      var hid = lineHidden(i), off = stepMode() && onlyStar() && !l.star;
+      return '<div class="ln sp' + (sp[l.speaker] || 0) + (hid ? ' hid' : '') + (off ? ' off' : '') + '" data-i="' + i + '">' +
+        '<button class="who" data-act="line" aria-label="セリフ' + (i + 1) + 'から">' + esc(spName(l.speaker)) + '<small>' + (l.star ? '<b class="star">★</b>' : '') + (i + 1) + '</small></button>' +
         '<div class="body"><p class="es" lang="es">' + (hid ? hiddenHTML(l) : tokHTML(l.toks, i)) + '</p>' +
         (S.set.ja && !hid ? '<p class="ja">' + esc(l.ja) + '</p>' : '') +
         '<div class="turn" hidden><i></i><span></span></div>' +
@@ -212,9 +300,21 @@
     }).join('') + '<div class="endpad"></div>';
     paint(true);
   }
+  /* 聞き取りポイント：聞く前に「何を聞き取るか」を決めておく（🎧 聞くのときだけ）
+   *  一度見ればよい情報なので、開いて出すのはそのダイアログを初めて開いたときだけ。2回目からは細い1行（タップで開く） */
+  function ptsHTML() {
+    var p = C.pts;
+    if (mode !== 'listen' || !p || !p.pts.length) return '';
+    var open = !!P.ptsOpen;
+    return '<div class="pts' + (open ? '' : ' shut') + '"><button class="ptsh" data-act="pts">🎯 聞き取りポイント<span>' + (open ? 'たたむ' : '開く') + '</span></button>' +
+      (open ? (p.plot ? '<p class="plot">' + esc(p.plot) + '</p>' : '') + '<ol>' + p.pts.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol>' : '') + '</div>';
+  }
+  /* 話し手の表示：LUCIA → Lucia（大文字だけだと幅をとる） */
+  function spName(id) { id = String(id || ''); return id.length > 2 && id === id.toUpperCase() ? id.charAt(0) + id.slice(1).toLowerCase() : id; }
   function lineEl(i) { return $('#script .ln[data-i="' + i + '"]'); }
 
   $('#script').addEventListener('click', function (e) {
+    if (e.target.closest('[data-act="pts"]')) { P.ptsOpen = !P.ptsOpen; refreshLine(); return; }
     var ln = e.target.closest('.ln'); if (!ln) return;
     var i = +ln.dataset.i, act = e.target.closest('[data-act]');
     if (act && act.dataset.act === 'eye') {
@@ -292,7 +392,7 @@
     if (!C) return;
     closeBalloon();
     var want = force != null ? force : (au.paused && !(P.sh && P.sh.timer));
-    if (stepMode()) { if (want) shStart(P.sh ? P.sh.i : Math.max(0, P.cur)); else shPause(); return; }
+    if (stepMode()) { if (want) shStart(P.sh ? P.sh.i : stepTo(Math.max(0, P.cur), 1) < 0 ? stepTo(0, 1) : stepTo(Math.max(0, P.cur), 1)); else shPause(); return; }
     if (want) { if (P.loop === 'ab' && P.ab && (nowMs() < P.ab.a || nowMs() >= P.ab.b)) seekMs(P.ab.a); play(); }
     else au.pause();
   }
@@ -311,7 +411,7 @@
     /* セリフの途中で ⏮ → そのセリフの頭へ（1秒より後なら） */
     if (d < 0 && mode === 'listen' && base >= 0 && nowMs() - seg(base).a > 1000 && !(P.loop === 'ab')) { seekMs(seg(base).a); play(); return; }
     var i = Math.max(0, Math.min(n - 1, (base < 0 ? 0 : base) + d));
-    if (stepMode()) { shStart(i); return; }
+    if (stepMode()) { var k = stepTo(base < 0 ? 0 : base + d, d < 0 ? -1 : 1); if (k < 0) k = stepTo(Math.max(0, base), d < 0 ? 1 : -1); if (k >= 0) shStart(k); return; }
     if (P.loop === 'ab') { lineTap(i); return; }
     P.cur = i; seekMs(seg(i).a); play(); paint(true);
   }
@@ -406,13 +506,14 @@
     if (P.ab) $('#abT').textContent = 'AB：セリフ' + (P.ab.i + 1) + (P.ab.j > P.ab.i ? '〜' + (P.ab.j + 1) : '') + (P.loop === 'ab' ? '' : '（止めている）');
     $('#sRep b').textContent = S.set.rep;
     $('#sGap b').textContent = '×' + S.set.gap;
-    $('#sRole b').textContent = S.set.role ? S.set.role + ' になる' : 'なし';
+    $('#sRole b').textContent = S.set.role ? spName(S.set.role) + ' になる' : 'なし';
     $('#sText b').textContent = { show: '見せる', hide: '隠す', after: '聞いたら' }[S.set.stext];
     $('#sRec b').textContent = S.set.rec ? '録音する' : '録音しない';
     $('#dRep b').textContent = S.set.drep;
     $('#dGap b').textContent = '×' + S.set.dgap;
     $('#dText b').textContent = { show: '見せる', hide: '隠す', after: '書いたら' }[S.set.dtext];
     $('#dAuto b').textContent = S.set.dauto ? '自動' : '止まる';
+    $('#sOnly b').textContent = $('#dOnly b').textContent = S.set.only === 'star' ? '★だけ' : '全部';
     $('#tState').textContent = '';
   }
 
@@ -482,9 +583,9 @@
     shNext();
   }
   function shNext() {
-    var i = P.sh.i + 1;
+    var i = stepTo(P.sh.i + 1, 1);
     shLabel('', 0);
-    if (i >= C.D.lines.length) { P.sh = null; S.lessons[C.D.id] = { done: true }; save(); paint(); $('#tState').textContent = '✔ 最後まで'; return; }
+    if (i < 0) { P.sh = null; S.lessons[C.D.id] = { done: true }; save(); paint(); $('#tState').textContent = '✔ 最後まで'; return; }
     shStart(i);
   }
   function shPause() {
@@ -533,6 +634,9 @@
   $('#dRep').addEventListener('click', function () { S.set.drep = cycle([1, 2, 3], S.set.drep); save(); paintOpts(); });
   $('#dGap').addEventListener('click', function () { S.set.dgap = cycle([2, 3, 4], S.set.dgap); save(); paintOpts(); });
   $('#dText').addEventListener('click', function () { S.set.dtext = cycle(['after', 'hide', 'show'], S.set.dtext); P.reveal = {}; save(); renderScript(); paintOpts(); });
+  $('#sOnly').addEventListener('click', toggleOnly);
+  $('#dOnly').addEventListener('click', toggleOnly);
+  function toggleOnly() { S.set.only = S.set.only === 'star' ? '' : 'star'; save(); stopAll(); shLabel('', 0); renderScript(); paintOpts(); paintPlay(); }
   $('#dAuto').addEventListener('click', function () { S.set.dauto = !S.set.dauto; save(); paintOpts(); });
   $('#dSpeed').addEventListener('click', setSpeed);
   $('#sRec').addEventListener('click', function () {
@@ -740,7 +844,7 @@
       var conv = T.toVocab(Object.assign({}, r), c.D, c.N);
       if (!conv.word) { skipped.push(r.w + '（' + conv.why + '）'); return; }
       var w = conv.word;
-      if (!deck.sections.some(function (s) { return s.id === c.D.id; })) deck.sections.push({ id: c.D.id, name: c.D.title + (c.N.titleJa ? '（' + c.N.titleJa + '）' : '') });
+      if (!deck.sections.some(function (s) { return s.id === c.D.id; })) deck.sections.push({ id: c.D.id, name: (c.d.no ? c.d.no + ' ' : '') + c.d.title + (c.d.titleJa ? '（' + c.d.titleJa + '）' : '') });
       var same = deck.words.filter(function (x) { return x.w.toLowerCase() === w.w.toLowerCase(); })[0];
       if (same) { r.sent = true; skipped.push(w.w + '（もうデッキにある：' + (same.ref || '') + '）'); return; }
       var base = w.id, k = 2;
