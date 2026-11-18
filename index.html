@@ -40,6 +40,14 @@
   .soon:hover { transform: none; box-shadow: none; }
   .soon b { font-size: 15px; color: var(--text); }
   .course .del { position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); background: rgba(0,0,0,.3); color: var(--muted); font-size: 13px; cursor: pointer; }
+  /* お気に入り（☆）。カードでは右上、✕ があればその左 */
+  .course .fav { position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; padding: 0; border-radius: 50%; border: 1px solid var(--line); background: rgba(0,0,0,.3); color: var(--muted); font-size: 16px; line-height: 1; cursor: pointer; }
+  .course .del ~ .fav { right: 48px; }
+  .course .fav[aria-pressed="true"] { color: #ffd34d; border-color: rgba(255,211,77,.5); }
+  .course.unfav { opacity: .45; }
+  .grid.fav-only .course:not(.is-fav):not(.unfav) { display: none; }
+  .fav-empty { display: none; margin: 8px 0 20px; padding: 18px; border-radius: 12px; border: 1px dashed var(--line); color: var(--muted); font-size: 14px; line-height: 1.7; text-align: center; }
+  .fav-empty.show { display: block; }
   .course .body { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
   .course .pct { display: none; }
 
@@ -85,6 +93,13 @@
   .v-list .pct { display: block; flex: none; min-width: 3em; text-align: right; font-family: var(--f-latin); font-weight: 700; font-size: 14px; color: var(--c1); }
   .v-list .del, .v-banner .del { position: static; flex: none; width: 26px; height: 26px; font-size: 11px; }
   .v-banner .del { order: 1; }
+  .v-list .fav, .v-banner .fav { position: static; flex: none; width: 30px; height: 30px; }
+  .v-banner .fav { order: 1; }
+  @media (max-width: 420px) { #viewLabel { display: none; } .views button { padding: 7px 8px; } }
+  .toolbar .left { display: flex; align-items: center; gap: 10px; }
+  .toolbar .count { white-space: nowrap; }
+  .fav-filter { white-space: nowrap; padding: 7px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--glass); color: var(--muted); font-size: 13px; cursor: pointer; }
+  .fav-filter[aria-pressed="true"] { color: #ffd34d; border-color: rgba(255,211,77,.5); background: rgba(255,211,77,.1); }
 
   /* クラウド保存（設定は cloud.html） */
   .cloud-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 28px; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--glass); color: var(--muted); font-size: 13px; text-decoration: none; }
@@ -106,7 +121,10 @@
     </div>
   </header>
   <div class="toolbar">
-    <span class="count" id="count"></span>
+    <div class="left">
+      <button type="button" class="fav-filter" id="favFilter" aria-pressed="false">★ お気に入り</button>
+      <span class="count" id="count"></span>
+    </div>
     <div class="view-pick"><span id="viewLabel">表示</span>
       <div class="views" id="views" role="group" aria-labelledby="viewLabel">
         <button type="button" data-view="card" aria-pressed="false" aria-label="カード" title="カード"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg></button>
@@ -115,6 +133,7 @@
       </div>
     </div>
   </div>
+  <p class="fav-empty" id="favEmpty">お気に入りはまだありません。各コースの ☆ を押すと、ここに並びます。</p>
   <div class="grid" id="grid"></div>
   <a class="cloud-link" href="cloud.html"><i id="cloudDot"></i>クラウド保存：<span id="cloudSt">オフ</span></a>
   <a class="cloud-link" href="speech-test.html">🔊 読み上げの診断</a>
@@ -135,6 +154,10 @@
   document.getElementById('pfStreak').textContent = (P.streak && P.streak.count) || 0;
 
   var grid = document.getElementById('grid');
+  /* お気に入り（コースの id の並び）。クラウド保存にも乗る */
+  var FAV_KEY = 'le.hub.fav', FAV_ONLY_KEY = 'le.hub.favOnly';
+  var favs = read(FAV_KEY);
+  if (!Array.isArray(favs)) favs = [];
   /* 端末に読み込んだ単語デッキ（参考書連動版など）も並べる */
   var imported = (window.VocabDecks ? VocabDecks.list() : []).map(function (d) {
     return { id: d.id, kind: 'vocab', imported: true, entry: 'vocab.html?deck=' + encodeURIComponent(d.id), storageKey: 'vocab.' + d.id + '.v1',
@@ -150,7 +173,9 @@
     var last = vocab ? Object.keys(S.cards || {}).reduce(function (m, k) { return Math.max(m, S.cards[k].last || 0); }, 0)
                      : P.courses && P.courses[c.id] && P.courses[c.id].last;
     var a = document.createElement('a');
-    a.className = 'course';
+    var isFav = favs.indexOf(c.id) >= 0;
+    a.className = 'course' + (isFav ? ' is-fav' : '');
+    a.dataset.id = c.id;
     a.href = c.entry;
     a.style.setProperty('--c1', c.color || '#38e8ff');
     a.style.setProperty('--c2', c.color2 || '#7a5cff');
@@ -161,10 +186,25 @@
       '<div class="meta"><span>' + (vocab ? '図鑑 ' : 'レッスン ') + done + ' / ' + (all || '?') + '</span><span>' + (last ? '最終学習 ' + new Date(last).toLocaleDateString('ja-JP') : '未開始') + '</span></div></div>' +
       '<span class="pct">' + pct + '%</span>' +
       '<span class="go">' + (done ? 'つづける ▶' : 'はじめる ▶') + '</span>' +
-      (c.imported ? '<button class="del" data-del="' + esc(c.id) + '" aria-label="端末から消す">✕</button>' : '');
+      (c.imported ? '<button class="del" data-del="' + esc(c.id) + '" aria-label="端末から消す">✕</button>' : '') +
+      '<button type="button" class="fav" data-fav aria-pressed="' + isFav + '" aria-label="お気に入り">' + (isFav ? '★' : '☆') + '</button>';
     grid.appendChild(a);
   });
   grid.addEventListener('click', function (e) {
+    var f = e.target.closest('[data-fav]');
+    if (f) {
+      e.preventDefault();
+      var card = f.closest('.course'), id = card.dataset.id, on = favs.indexOf(id) < 0;
+      if (on) favs.push(id); else favs = favs.filter(function (x) { return x !== id; });
+      try { localStorage.setItem(FAV_KEY, JSON.stringify(favs)); } catch (er) {}
+      card.classList.toggle('is-fav', on);
+      /* しぼりこみ中に外したものは、すぐ消さずに薄くして残す（押しまちがいを戻せるように）。次に切りかえたときに消える */
+      card.classList.toggle('unfav', !on && grid.classList.contains('fav-only'));
+      f.setAttribute('aria-pressed', on);
+      f.textContent = on ? '★' : '☆';
+      updateCount();
+      return;
+    }
     var b = e.target.closest('[data-del]'); if (!b) return;
     e.preventDefault();
     var id = b.dataset.del;
@@ -173,14 +213,32 @@
     VocabDecks.remove(id, withP);
     location.reload();
   });
-  document.getElementById('count').textContent = grid.children.length + ' コース';
+  var total = grid.children.length;
+  var favFilter = document.getElementById('favFilter'), favEmpty = document.getElementById('favEmpty');
+  var favOnly = false;
+  try { favOnly = localStorage.getItem(FAV_ONLY_KEY) === '1'; } catch (e) {}
+  function updateCount() {
+    var n = grid.querySelectorAll('.course.is-fav').length;
+    document.getElementById('count').textContent = favOnly ? n + ' / ' + total + ' コース' : total + ' コース';
+    favEmpty.classList.toggle('show', favOnly && n === 0 && !grid.querySelector('.unfav'));
+  }
+  function setFavOnly(on, animate) {
+    favOnly = on;
+    grid.querySelectorAll('.unfav').forEach(function (c) { c.classList.remove('unfav'); });
+    grid.classList.toggle('fav-only', on);
+    favFilter.setAttribute('aria-pressed', on);
+    try { localStorage.setItem(FAV_ONLY_KEY, on ? '1' : '0'); } catch (e) {}
+    updateCount();
+    if (animate && window.gsap) gsap.fromTo('.course', { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, stagger: 0.03, ease: 'power2.out', clearProps: 'transform,opacity' });
+  }
+  favFilter.addEventListener('click', function () { setFavOnly(!favOnly, true); });
 
   /* 表示の切りかえ。選んだものは端末に覚えておく */
   var VIEW_KEY = 'le.hub.view';
   var views = document.getElementById('views');
   function setView(v, animate) {
     if (['card', 'banner', 'list'].indexOf(v) < 0) v = 'card';
-    grid.className = 'grid v-' + v;
+    grid.className = 'grid v-' + v + (favOnly ? ' fav-only' : '');
     views.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.view === v ? 'true' : 'false'); });
     try { localStorage.setItem(VIEW_KEY, v); } catch (e) {}
     if (animate && window.gsap) gsap.fromTo('.course', { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, stagger: 0.03, ease: 'power2.out', clearProps: 'transform,opacity' });
@@ -188,6 +246,7 @@
   var saved = null;
   try { saved = localStorage.getItem(VIEW_KEY); } catch (e) {}
   setView(saved, false);
+  setFavOnly(favOnly, false);
   views.addEventListener('click', function (e) {
     var b = e.target.closest('[data-view]');
     if (b && b.getAttribute('aria-pressed') !== 'true') setView(b.dataset.view, true);
