@@ -283,9 +283,16 @@
     return toks.map(function (t) {
       if (t.t === 'x') return esc(t.s);
       if (t.t === 'ph') return '<span class="ph' + (t.ph.key ? ' key' : '') + '" data-ph="' + esc(t.ph.t) + '" data-li="' + li + '">' + esc(t.s) + '</span>';
-      var g = t.g, cls = 'w' + (g && g.key ? ' key' : '') + (g && !g.name ? ' has' : '');
+      var g = t.g, cls = 'w' + (g && g.key ? ' key' : '') + (g && !g.name ? ' has' : '') + (worth(g) ? ' lk' : '');
       return '<span class="' + cls + '" data-k="' + esc(t.k) + '" data-li="' + li + '">' + esc(t.s) + '</span>';
     }).join('');
+  }
+  /* 調べる価値のある語：このダイアログ用に意味を書いた語（冠詞・前置詞・接続詞は除く）と、共通単語帳の 4級・3級の語。
+   *  5級の語（lv 5）と機能語（lv 0）は除く（西検5級は持っている）。いま聞いているセリフの中で薄い点線になる */
+  function worth(g) {
+    if (!g || g.name || g.key) return false;
+    if (g.src === 'notes') return ['art', 'prep', 'conj'].indexOf(g.pos) < 0;
+    return g.src === 'es-words' && (g.lv === 3 || g.lv === 4);
   }
   /* 隠すとき：語の長さだけの棒（何語・どのくらいの長さかは見える＝聞き取りの手がかり） */
   function hiddenHTML(l) {

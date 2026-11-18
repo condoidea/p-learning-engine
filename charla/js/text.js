@@ -46,7 +46,7 @@
     if (g) return { w: g.w, pos: g.pos, g: g.g, ja: g.ja, form: g.form, note: g.note, key: !!g.key, clue: g.clue, cj: g.cj, src: 'notes' };
     if (this.names[k]) return { name: true };
     var e = this.es[k];
-    if (e) return { w: e.w, pos: e.pos, ja: e.ja, form: lower(e.w) !== k ? e.w + ' の変化した形' : '', key: false, src: 'es-words' };
+    if (e) return { w: e.w, pos: e.pos, ja: e.ja, form: lower(e.w) !== k ? e.w + ' の変化した形' : '', key: false, src: 'es-words', lv: e.lv };
     return null;
   };
   /* 1つのセリフを、語・言い回し（phrases）・記号の並びにする
