@@ -288,7 +288,7 @@
     }).join('');
   }
   /* 調べる価値のある語：このダイアログ用に意味を書いた語（冠詞・前置詞・接続詞は除く）と、共通単語帳の 4級・3級の語。
-   *  5級の語（lv 5）と機能語（lv 0）は除く（西検5級は持っている）。いま聞いているセリフの中で薄い点線になる */
+   *  5級の語（lv 5）と機能語（lv 0）は除く（西検5級は持っている）。どのセリフでも薄い点線（タップで意味だけ） */
   function worth(g) {
     if (!g || g.name || g.key) return false;
     if (g.src === 'notes') return ['art', 'prep', 'conj'].indexOf(g.pos) < 0;
@@ -380,8 +380,9 @@
     if (act && act.dataset.act === 'mine') { playMine(i); return; }
     if (act && act.dataset.act === 'gram') { gramSheet(i); return; }
     var w = e.target.closest('.w.has, .ph');
-    /* 語：点線の語はいつでも、ほかの語は「いま聞いている（くり返している）セリフ」の中なら、意味を出す */
-    if (w && !(act && act.dataset.act === 'line') && (w.classList.contains('key') || isActive(i))) { openBalloon(w, i); return; }
+    /* 語：点線の語（覚えたい語・調べる価値のある語・言い回し）はどのセリフでも意味だけ出す（再生には触らない）。
+     *  点線のない語も、いま聞いている（くり返している）セリフの中なら意味。それ以外のタップ（話し手・番号・点線のない語）はそのセリフを再生 */
+    if (w && !(act && act.dataset.act === 'line') && (w.classList.contains('key') || w.classList.contains('lk') || w.classList.contains('ph') || isActive(i))) { openBalloon(w, i); return; }
     lineTap(i);
   });
   function isActive(i) {

@@ -81,8 +81,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .w.key, .ph.key { cursor: pointer; }
 .ln.now .w.key, .ln.now .ph.key { text-decoration-color: rgba(233, 207, 122, .85); }
 .ph:not(.key) { text-decoration: none; }
-/* いま聞いている（くり返している）セリフでは、調べる価値のある語・言い回しにも薄い点線（ほかのセリフは静かなまま） */
-.ln.now .w.lk, .ln.now .ph:not(.key), .ln.inab .w.lk, .ln.inab .ph:not(.key) { text-decoration: underline dotted rgba(236, 232, 223, .32); text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+/* 調べる価値のある語・言い回しにも薄い点線（どのセリフでも。タップで意味だけ・再生には触らない） */
+.w.lk, .ph:not(.key) { text-decoration: underline dotted rgba(236, 232, 223, .3); text-decoration-thickness: 1.5px; text-underline-offset: 4px; cursor: pointer; }
+.ln.now .w.lk, .ln.now .ph:not(.key) { text-decoration-color: rgba(236, 232, 223, .45); }
 
 /* シャドーイング：いまの段階と、あなたの番の残りの棒 */
 .turn { margin-top: 8px; display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--tx2); }
