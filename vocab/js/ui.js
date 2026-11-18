@@ -1662,7 +1662,7 @@
     };
     box.innerHTML = '<p class="u-title">📚 デッキ</p>' +
       builtin.map(function (b) { return item(b.id, b.brand + '　' + b.title, 'アプリに入っている単語（' + b.sub + '・' + b.words + '語）', 'vocab.html?deck=' + b.id); }).join('') +
-      list.map(function (d) { return item(d.id, d.brand + '　' + d.title, (d.book ? '📗 ' + d.book + '・' : '') + d.words + '語（この端末に読み込んだデッキ）', 'vocab.html?deck=' + encodeURIComponent(d.id)); }).join('') +
+      list.map(function (d) { return item(d.id, d.brand + '　' + d.title, /^charla/.test(d.id) ? '💬 会話アプリ CHARLA で調べた語・' + d.words + '語（ダイアログごとの区間）' : (d.book ? '📗 ' + d.book + '・' : '') + d.words + '語（この端末に読み込んだデッキ）', 'vocab.html?deck=' + encodeURIComponent(d.id)); }).join('') +
       '<div class="deck-imp"><p class="u-cap"><b>＋ 参考書のデッキを読み込む</b></p>' +
       '<p class="note">参考書に合わせて作った単語のファイル（.json）を、この端末に読み込みます。端末の中だけに保存され、公開されません。数百語でも大丈夫です。<br>同じデッキに、課ごとのファイルを足していくこともできます。</p>' +
       '<button class="next" id="dkFile">📂 ファイルをえらぶ</button>' +
