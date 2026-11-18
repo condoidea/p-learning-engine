@@ -77,6 +77,13 @@ window.LE_COURSES = [
     desc: '知っている語（武器）に語尾のジェムをはめて、空所のある文（敵）を斬る！ -mente・-dad・-ción・-dor・-oso・-ista・-ero・-ería を1章ずつ。ボス戦・戦利品の鑑定・ジェムの進化つき。西検4級。',
     color: '#5fdc94', color2: '#c9a0ff', lessons: 8
   },
+  /* CHARLA（charla/）：会話の音声と台本のプレーヤー（道具）。lessons[ダイアログ].done＝最後まで聞いた。lessons はダイアログの数（charla/dialogs/list.js と合わせる） */
+  {
+    id: 'charla', entry: 'charla.html', storageKey: 'charla.v1',
+    title: 'スペイン語 会話を聞く', brand: 'CHARLA', icon: '🎧',
+    desc: '会話の音声を台本と一緒に。セリフをタップしてくり返し（AB区間）・速さ・2秒戻し・文字を隠す。書き取り・シャドーイング。調べた語は単語アプリへ。',
+    color: '#8cc8f5', color2: '#f4b48a', lessons: 1
+  },
   /* ユーキ・クエスト（yuki/）：有機化学のRPG。独立アプリ。進み具合は lessons[id].done を数える（序章4＋1章4＋ボス2） */
   {
     id: 'yuki', entry: 'yuki.html', storageKey: 'yuki.v1',

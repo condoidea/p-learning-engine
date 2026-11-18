@@ -1,0 +1,88 @@
+{
+  "format": 1,
+  "id": "20261118-134152-faf9",
+  "title": "En el hotel",
+  "scene": "Recepción de un hotel pequeño en Madrid, por la tarde. Ambiente tranquilo.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-18T06:06:40.979Z",
+  "audio": "audio.mp3",
+  "durationMs": 72744,
+  "speakers": [
+    {
+      "id": "A",
+      "gender": "male",
+      "persona": "cliente educado, un poco cansado después del viaje"
+    },
+    {
+      "id": "B",
+      "gender": "female",
+      "persona": "recepcionista amable y profesional"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "A",
+      "text": "Buenas tardes. Tengo una reserva a nombre de Torres, una habitación doble para dos noches. Si es posible, me gustaría una con vistas a la plaza.",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 12830
+    },
+    {
+      "index": 1,
+      "speaker": "B",
+      "text": "Bienvenido, señor Torres. Un momento, que lo compruebo... Lo siento, las habitaciones con vistas están todas ocupadas esta noche.",
+      "direction": "amable; al final, con pena",
+      "startMs": 13736,
+      "endMs": 27646
+    },
+    {
+      "index": 2,
+      "speaker": "A",
+      "text": "Ah, qué pena. ¿No hay otra con vistas?",
+      "direction": "decepcionado",
+      "startMs": 28594,
+      "endMs": 34224
+    },
+    {
+      "index": 3,
+      "speaker": "B",
+      "text": "No. Solo me queda una interior, pero es más tranquila y más barata. ¿Le parece bien?",
+      "direction": "",
+      "startMs": 35340,
+      "endMs": 44430
+    },
+    {
+      "index": 4,
+      "speaker": "A",
+      "text": "Bueno, no pasa nada. La tranquila me va bien. ¿En qué planta está?",
+      "direction": "",
+      "startMs": 45616,
+      "endMs": 51876
+    },
+    {
+      "index": 5,
+      "speaker": "B",
+      "text": "En la tercera. Aquí tiene la llave. El ascensor está a la izquierda.",
+      "direction": "",
+      "startMs": 53058,
+      "endMs": 60208
+    },
+    {
+      "index": 6,
+      "speaker": "A",
+      "text": "Gracias. ¿A qué hora se sirve el desayuno?",
+      "direction": "",
+      "startMs": 61260,
+      "endMs": 65510
+    },
+    {
+      "index": 7,
+      "speaker": "B",
+      "text": "De siete a diez, en el comedor de la planta baja.",
+      "direction": "",
+      "startMs": 66674,
+      "endMs": 71744
+    }
+  ]
+}

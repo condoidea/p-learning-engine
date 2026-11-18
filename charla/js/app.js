@@ -1,0 +1,812 @@
+/* =========================================================
+ * charla/js/app.js — CHARLA（会話を 聞く・書く・まねる）
+ *
+ *  ダイアログ（charla/dialogs/<id>/ の dialog.json・audio.mp3・notes.json）を、
+ *  台本と音声をそろえて聞く道具。ゲームの要素は入れない。
+ *    🎧 聞く        台本を見ながら（隠して）聞く。セリフをタップ → そのセリフを AB 区間にしてくり返す
+ *    ✍️ 書き取り    1セリフずつ聞いて書く → 語ごとに採点（アクセントだけのちがいは別の色）
+ *    🗣 シャドーイング 1セリフずつ「聞く → 間（あなたの番）」を回数ぶん。役になる・録音して聞き比べる
+ *    📒 調べた単語   バルーンで調べた語を記録 → チェックして単語アプリ（¡VAMOS!）のデッキ「charla」へ
+ *
+ *  保存（localStorage）：charla.v1（?sandbox は charla.sandbox.v1）
+ *    lessons[id].done  最後まで聞いた（コース一覧の進み具合）
+ *    looked[id][key]   調べた語（key＝'w:見出し語' か 'p:言い回し'）
+ *    dict[id][i]       書き取りの結果 ok／near／try
+ *    pos[id]           最後に聞いていたセリフ
+ *    set               速さ・文字・訳・シャドーイングの設定
+ * ========================================================= */
+(function () {
+  'use strict';
+  var T = window.CharlaText;
+  var SANDBOX = /[?&]sandbox/.test(location.search);
+  var KEY = SANDBOX ? 'charla.sandbox.v1' : 'charla.v1';
+  var DECK_ID = SANDBOX ? 'charla-sandbox' : 'charla';
+  var PRE = 120, TAIL = 250;                 /* セリフの前後の余白（ms）。書き出しの時刻は声の約30ms前〜約60ms後 */
+  var SPEEDS = [0.6, 0.75, 0.85, 1, 1.15];
+
+  /* ---------- 保存 ---------- */
+  function fresh() { return { lessons: {}, looked: {}, dict: {}, pos: {}, set: { speed: 1, text: 'show', ja: false, rep: 2, gap: 1.5, role: '', stext: 'show', rec: false } }; }
+  function load() {
+    try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && s.set) { var f = fresh(); for (var k in f) if (!(k in s)) s[k] = f[k]; for (var j in f.set) if (!(j in s.set)) s.set[j] = f.set[j]; return s; } } catch (e) { /* 保存領域が使えない */ }
+    return fresh();
+  }
+  var S = load();
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* 保存できなくても使える */ } }
+
+  /* ---------- 小道具 ---------- */
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function mmss(ms) { var s = Math.max(0, Math.round(ms / 1000)); return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); }
+  function show(id) { $$('.screen').forEach(function (el) { el.hidden = el.id !== id; }); closeBalloon(); }
+  var POS_JA = { n: '名詞', v: '動詞', adj: '形容詞', adv: '副詞', phr: '言い回し', prep: '前置詞', pron: '代名詞', art: '冠詞', conj: '接続詞', num: '数', int: '疑問詞', det: '指示・所有', rel: '関係詞', interj: '間投詞' };
+  var G_JA = { m: '男性', f: '女性', mf: '男女同形' };
+
+  /* ---------- 読み込み ---------- */
+  var cache = {};
+  function getJSON(url) { return fetch(url, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(r.status + ' ' + url); return r.json(); }); }
+  function loadDialog(id) {
+    if (cache[id]) return Promise.resolve(cache[id]);
+    var base = 'charla/dialogs/' + id + '/';
+    return Promise.all([getJSON(base + 'dialog.json'), getJSON(base + 'notes.json').catch(function () { return { lines: [], words: {}, phrases: [] }; })])
+      .then(function (r) {
+        var D = r[0], N = r[1], dict = new T.Dict(N, window.ES_WORDS);
+        D.lines.forEach(function (l, i) { l.toks = dict.line(l.text); l.ja = N.lines && N.lines[i] && N.lines[i].ja || ''; });
+        cache[id] = { D: D, N: N, dict: dict, base: base };
+        return cache[id];
+      });
+  }
+
+  /* =========================================================
+   * ホーム
+   * ========================================================= */
+  function home() {
+    stopAll();
+    show('home');
+    var list = window.CHARLA_DIALOGS || [];
+    $('#dlist').innerHTML = list.map(function (d) {
+      var dn = S.dict[d.id] ? Object.keys(S.dict[d.id]).filter(function (k) { return S.dict[d.id][k] === 'ok'; }).length : 0;
+      return '<li><button class="dcard" data-id="' + esc(d.id) + '"><b class="es">' + esc(d.title) + '</b><span>' + esc(d.titleJa || '') + '</span>' +
+        '<small id="dm-' + esc(d.id) + '">' + (S.lessons[d.id] && S.lessons[d.id].done ? '🎧 聞いた　' : '') + (dn ? '✍️ 書けた ' + dn + 'セリフ' : '') + '</small></button></li>';
+    }).join('') || '<li class="empty">ダイアログがまだありません</li>';
+    list.forEach(function (d) {
+      loadDialog(d.id).then(function (c) {
+        var el = document.getElementById('dm-' + d.id); if (!el) return;
+        el.textContent = c.D.lines.length + 'セリフ・' + mmss(c.D.durationMs) + (el.textContent ? '　' + el.textContent : '');
+      }).catch(function () { /* 一覧は出したまま */ });
+    });
+    var n = lookedList().filter(function (r) { return !r.sent; }).length;
+    $('#hWordsN').textContent = n ? '（まだ送っていない語 ' + n + '）' : '';
+  }
+  $('#dlist').addEventListener('click', function (e) { var b = e.target.closest('[data-id]'); if (b) openDialog(b.dataset.id); });
+  $('#hWords').addEventListener('click', function () { wordsScreen('home'); });
+
+  /* =========================================================
+   * プレーヤー
+   * ========================================================= */
+  var C = null;                 /* いまのダイアログ { D, N, dict, base } */
+  var mode = 'listen';
+  var au = new Audio();
+  au.preload = 'auto';
+  try { au.preservesPitch = true; au.webkitPreservesPitch = true; au.mozPreservesPitch = true; } catch (e) { /* */ }
+
+  /* 再生の状態
+   *  loop：'' なし／'all' 全体／'ab' AB区間
+   *  ab：{ a, b, i, j }（ms と、セリフ i〜j）
+   *  sh：シャドーイングの進行 { i：セリフ, n：何回目, phase：'play'|'gap'|'turn'|'model', timer } */
+  var P = { loop: '', ab: null, cur: -1, sh: null, stopAt: null, raf: 0, reveal: {}, heard: {} };
+
+  function seg(i) {
+    var L = C.D.lines, l = L[i], nx = L[i + 1];
+    return { a: Math.max(0, l.startMs - PRE), b: Math.min(l.endMs + TAIL, nx ? nx.startMs - 20 : C.D.durationMs) };
+  }
+  function lineAt(ms) {
+    var L = C.D.lines, k = -1;
+    for (var i = 0; i < L.length; i++) { if (ms >= L[i].startMs - PRE) k = i; else break; }
+    return k;
+  }
+  function nowMs() { return nowMsSafe(); }
+  /* 音声の長さが分かる前の位置合わせは、分かったときに行う（iPhone は再生の直前まで読み込まないことがある） */
+  var pendingSeek = null;
+  function seekMs(ms) {
+    ms = Math.max(0, ms);
+    if (au.readyState < 1) { pendingSeek = ms; return; }
+    pendingSeek = null;
+    try { au.currentTime = ms / 1000; } catch (e) { pendingSeek = ms; }
+  }
+  au.addEventListener('loadedmetadata', function () { if (pendingSeek != null) { var m = pendingSeek; pendingSeek = null; try { au.currentTime = m / 1000; } catch (e) { /* */ } } });
+  function nowMsSafe() { return pendingSeek != null ? pendingSeek : au.currentTime * 1000; }
+  function play() { var p = au.play(); if (p && p.catch) p.catch(function () { /* 自動再生の制限（タップで再開） */ }); }
+
+  function openDialog(id) {
+    loadDialog(id).then(function (c) {
+      C = c;
+      P = { loop: '', ab: null, cur: -1, sh: null, stopAt: null, raf: 0, reveal: {}, heard: {} };
+      au.src = c.base + (c.D.audio || 'audio.mp3');
+      au.load();
+      au.playbackRate = S.set.speed;
+      $('#pTitle').textContent = c.D.title;
+      $('#pSub').textContent = (c.N.titleJa ? c.N.titleJa + '　' : '') + (c.N.sceneJa || '');
+      $('#tAll').textContent = mmss(c.D.durationMs);
+      drawSegs();
+      setMode('listen');
+      show('play');
+      var last = S.pos[id];
+      if (last != null && c.D.lines[last]) { P.cur = last; seekWhenReady(seg(last).a); }
+      paint();
+      if ('mediaSession' in navigator) {
+        try {
+          navigator.mediaSession.metadata = new MediaMetadata({ title: c.D.title, artist: 'CHARLA', album: c.N.titleJa || '' });
+          navigator.mediaSession.setActionHandler('play', function () { togglePlay(true); });
+          navigator.mediaSession.setActionHandler('pause', function () { togglePlay(false); });
+          navigator.mediaSession.setActionHandler('seekbackward', function () { back2(); });
+          navigator.mediaSession.setActionHandler('previoustrack', function () { stepLine(-1); });
+          navigator.mediaSession.setActionHandler('nexttrack', function () { stepLine(1); });
+        } catch (e) { /* 対応していない操作 */ }
+      }
+    }).catch(function (e) { alert('ダイアログを読み込めませんでした：' + e.message); });
+  }
+  function seekWhenReady(ms) { seekMs(ms); }
+  function stopAll() {
+    au.pause();
+    if (P.sh && P.sh.timer) clearTimeout(P.sh.timer);
+    P.sh = null; P.stopAt = null;
+    stopRec();
+  }
+  $('#pBack').addEventListener('click', home);
+  $('#pWords').addEventListener('click', function () { au.pause(); shPause(); wordsScreen('play'); });
+
+  /* ---------- モード ---------- */
+  function setMode(m) {
+    stopAll();
+    mode = m;
+    $$('#tabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.m === m); });
+    $('#script').hidden = m === 'dict';
+    $('#dict').hidden = m !== 'dict';
+    $('#panel').hidden = m === 'dict';
+    $('#optsListen').hidden = m !== 'listen';
+    $('#optsShadow').hidden = m !== 'shadow';
+    $('#cLoop').hidden = m !== 'listen';
+    if (m === 'dict') dictOpen(S.pos[C.D.id] || 0);
+    else renderScript();
+    paintOpts();
+    paint();
+  }
+  $('#tabs').addEventListener('click', function (e) { var b = e.target.closest('[data-m]'); if (b && b.dataset.m !== mode) setMode(b.dataset.m); });
+
+  /* ---------- 台本 ---------- */
+  function tokHTML(toks, li) {
+    return toks.map(function (t) {
+      if (t.t === 'x') return esc(t.s);
+      if (t.t === 'ph') return '<span class="ph' + (t.ph.key ? ' key' : '') + '" data-ph="' + esc(t.ph.t) + '" data-li="' + li + '">' + esc(t.s) + '</span>';
+      var g = t.g, cls = 'w' + (g && g.key ? ' key' : '') + (g && !g.name ? ' has' : '');
+      return '<span class="' + cls + '" data-k="' + esc(t.k) + '" data-li="' + li + '">' + esc(t.s) + '</span>';
+    }).join('');
+  }
+  /* 隠すとき：語の長さだけの棒（何語・どのくらいの長さかは見える＝聞き取りの手がかり） */
+  function hiddenHTML(l) {
+    var flat = [];
+    l.toks.forEach(function (t) { if (t.t === 'ph') flat = flat.concat(t.toks); else flat.push(t); });
+    return flat.map(function (t) { return t.t === 'x' ? esc(t.s) : '<span class="bar-w" style="width:' + (t.s.length * 0.46) + 'em"></span>'; }).join('');
+  }
+  function textMode() { return mode === 'shadow' ? S.set.stext : S.set.text; }
+  function lineHidden(i) {
+    var m = textMode();
+    if (P.reveal[i]) return false;
+    if (m === 'hide') return true;
+    if (m === 'after') return !P.heard[i];
+    return false;
+  }
+  function renderScript() {
+    var L = C.D.lines, sp = {};
+    (C.D.speakers || []).forEach(function (s, k) { sp[s.id] = k; });
+    $('#script').innerHTML = L.map(function (l, i) {
+      var hid = lineHidden(i);
+      return '<div class="ln sp' + (sp[l.speaker] || 0) + (hid ? ' hid' : '') + '" data-i="' + i + '">' +
+        '<button class="who" data-act="line" aria-label="セリフ' + (i + 1) + 'から">' + esc(l.speaker) + '<small>' + (i + 1) + '</small></button>' +
+        '<div class="body"><p class="es" lang="es">' + (hid ? hiddenHTML(l) : tokHTML(l.toks, i)) + '</p>' +
+        (S.set.ja && mode === 'listen' || (mode === 'shadow' && !hid && S.set.ja) ? '<p class="ja">' + esc(l.ja) + '</p>' : '') +
+        '<div class="turn" hidden><i></i><span></span></div>' +
+        '</div>' +
+        '<div class="side">' + (textMode() !== 'show' ? '<button class="eye" data-act="eye" aria-label="このセリフの文字">' + (hid ? '👁' : '🙈') + '</button>' : '') +
+        (P.recs && P.recs[i] ? '<button class="mine" data-act="mine" aria-label="自分の声">▶<small>自分</small></button>' : '') + '</div>' +
+        '</div>';
+    }).join('') + '<div class="endpad"></div>';
+    paint(true);
+  }
+  function lineEl(i) { return $('#script .ln[data-i="' + i + '"]'); }
+
+  $('#script').addEventListener('click', function (e) {
+    var ln = e.target.closest('.ln'); if (!ln) return;
+    var i = +ln.dataset.i, act = e.target.closest('[data-act]');
+    if (act && act.dataset.act === 'eye') {
+      if (lineHidden(i)) P.reveal[i] = true; else { P.reveal[i] = false; P.heard[i] = false; }
+      refreshLine(i); return;
+    }
+    if (act && act.dataset.act === 'mine') { playMine(i); return; }
+    var w = e.target.closest('.w.has, .ph');
+    /* 語：点線の語はいつでも、ほかの語は「いま聞いている（くり返している）セリフ」の中なら、意味を出す */
+    if (w && !(act && act.dataset.act === 'line') && (w.classList.contains('key') || isActive(i))) { openBalloon(w, i); return; }
+    lineTap(i);
+  });
+  function isActive(i) {
+    if (mode === 'shadow') return P.sh ? P.sh.i === i : P.cur === i;
+    if (P.ab) return i >= P.ab.i && i <= P.ab.j;
+    return P.cur === i;
+  }
+  /* 1セリフの表示を変えたとき（全体を描き直し、スクロールの位置は保つ） */
+  function refreshLine() {
+    var keep = $('#script').scrollTop, lab = P.sh && $('#script .turn:not([hidden])');
+    var labText = lab ? $('span', lab).textContent : '';
+    renderScript();
+    $('#script').scrollTop = keep;
+    if (labText && P.sh && P.sh.phase !== 'turn') shLabel(labText, 0);
+  }
+
+  /* セリフをタップ：聞く → そのセリフを AB 区間にして頭から（くり返す）／シャドーイング → そのセリフから始める */
+  function lineTap(i) {
+    closeBalloon();
+    if (mode === 'shadow') { shStart(i); return; }
+    var s = seg(i);
+    P.ab = { a: s.a, b: s.b, i: i, j: i };
+    P.loop = 'ab';
+    P.cur = i;
+    seekMs(s.a);
+    play();
+    paintOpts(); paint(true);
+  }
+
+  /* ---------- 時間の進行（再生中は毎フレーム、画面が消えているあいだは timeupdate） ---------- */
+  function tick() {
+    if (!C) return;
+    var t = nowMs();
+    if (mode === 'listen' && !au.paused) {
+      if (P.loop === 'ab' && P.ab && (t >= P.ab.b || t < P.ab.a - 400)) { seekMs(P.ab.a); t = P.ab.a; }
+      else if (P.stopAt != null && t >= P.stopAt) { au.pause(); P.stopAt = null; }
+    }
+    if (mode === 'shadow' && P.sh && P.sh.phase === 'play' || mode === 'shadow' && P.sh && P.sh.phase === 'model') {
+      if (t >= seg(P.sh.i).b) shAfterPlay();
+    }
+    if (mode === 'dict' && D.stopAt != null && t >= D.stopAt && !au.paused) { au.pause(); D.stopAt = null; dictPaintPlay(); }
+    var k = lineAt(t);
+    if (mode !== 'dict' && k !== P.cur && !(P.sh && P.sh.phase !== 'play' && P.sh.phase !== 'model')) {
+      if (!(P.loop === 'ab' && P.ab && (k < P.ab.i || k > P.ab.j))) { P.cur = k; if (k >= 0) { S.pos[C.D.id] = k; save(); } paint(true); }
+    }
+    paintTime(t);
+  }
+  function loopRaf() { tick(); if (!au.paused) P.raf = requestAnimationFrame(loopRaf); }
+  au.addEventListener('play', function () { cancelAnimationFrame(P.raf); P.raf = requestAnimationFrame(loopRaf); paintPlay(); });
+  au.addEventListener('pause', function () { paintPlay(); });
+  /* 毎フレームの更新が止まる場面（画面が消えている・裏のタブ）でも、くり返しの区切りを守る */
+  au.addEventListener('timeupdate', tick);
+  au.addEventListener('ended', function () {
+    if (!C) return;
+    if (mode === 'listen') {
+      S.lessons[C.D.id] = { done: true }; save();
+      if (P.loop === 'all') { seekMs(0); play(); }
+      else if (P.loop === 'ab' && P.ab) { seekMs(P.ab.a); play(); }
+    }
+    if (mode === 'shadow' && P.sh) shAfterPlay();
+    paintPlay();
+  });
+
+  /* ---------- 操作盤 ---------- */
+  function togglePlay(force) {
+    if (!C) return;
+    closeBalloon();
+    var want = force != null ? force : (au.paused && !(P.sh && P.sh.timer));
+    if (mode === 'shadow') { if (want) shStart(P.sh ? P.sh.i : Math.max(0, P.cur)); else shPause(); return; }
+    if (want) { if (P.loop === 'ab' && P.ab && (nowMs() < P.ab.a || nowMs() >= P.ab.b)) seekMs(P.ab.a); play(); }
+    else au.pause();
+  }
+  function back2() {
+    if (!C) return;
+    var t = nowMs() - 2000 * Math.max(1, S.set.speed);
+    if (P.loop === 'ab' && P.ab && t < P.ab.a) t = P.ab.a;
+    if (mode === 'shadow' && P.sh) t = Math.max(t, seg(P.sh.i).a);
+    seekMs(t);
+    if (au.paused && mode !== 'shadow') play();
+    paintTime(nowMs());
+  }
+  function stepLine(d) {
+    if (!C) return;
+    var n = C.D.lines.length, base = mode === 'shadow' && P.sh ? P.sh.i : (P.ab && P.loop === 'ab' ? P.ab.i : P.cur);
+    /* セリフの途中で ⏮ → そのセリフの頭へ（1秒より後なら） */
+    if (d < 0 && mode === 'listen' && base >= 0 && nowMs() - seg(base).a > 1000 && !(P.loop === 'ab')) { seekMs(seg(base).a); play(); return; }
+    var i = Math.max(0, Math.min(n - 1, (base < 0 ? 0 : base) + d));
+    if (mode === 'shadow') { shStart(i); return; }
+    if (P.loop === 'ab') { lineTap(i); return; }
+    P.cur = i; seekMs(seg(i).a); play(); paint(true);
+  }
+  $('#cPlay').addEventListener('click', function () { togglePlay(); });
+  $('#cBack2').addEventListener('click', back2);
+  $('#cPrev').addEventListener('click', function () { stepLine(-1); });
+  $('#cNext').addEventListener('click', function () { stepLine(1); });
+  $('#cLoop').addEventListener('click', function () {
+    /* なし → 全体 → （AB区間があれば）AB → なし */
+    var order = P.ab ? ['', 'all', 'ab'] : ['', 'all'];
+    P.loop = order[(order.indexOf(P.loop) + 1) % order.length];
+    paintOpts(); paint();
+  });
+  function cycle(arr, v) { var k = arr.indexOf(v); return arr[(k + 1) % arr.length]; }
+  function setSpeed() {
+    S.set.speed = cycle(SPEEDS, S.set.speed); save();
+    au.playbackRate = S.set.speed;
+    paintOpts();
+  }
+  $('#oSpeed').addEventListener('click', setSpeed);
+  $('#sSpeed').addEventListener('click', setSpeed);
+  $('#oText').addEventListener('click', function () { S.set.text = S.set.text === 'show' ? 'hide' : 'show'; P.reveal = {}; save(); renderScript(); paintOpts(); });
+  $('#oJa').addEventListener('click', function () { S.set.ja = !S.set.ja; save(); renderScript(); paintOpts(); });
+  $('#abMore').addEventListener('click', function () {
+    if (!P.ab) return;
+    var j = Math.min(C.D.lines.length - 1, P.ab.j + 1);
+    P.ab.j = j; P.ab.b = seg(j).b;
+    paintOpts(); paint(true);
+  });
+  $('#abClear').addEventListener('click', function () { P.ab = null; if (P.loop === 'ab') P.loop = ''; paintOpts(); paint(true); });
+
+  /* 進みのバー：セリフごとの区切り（話し手の色）・AB区間・いまの位置。タップでその位置へ */
+  function drawSegs() {
+    var dur = C.D.durationMs, sp = {};
+    (C.D.speakers || []).forEach(function (s, k) { sp[s.id] = k; });
+    $('#segs').innerHTML = C.D.lines.map(function (l) {
+      return '<i class="sp' + (sp[l.speaker] || 0) + '" style="left:' + (l.startMs / dur * 100) + '%;width:' + ((l.endMs - l.startMs) / dur * 100) + '%"></i>';
+    }).join('');
+  }
+  $('#seek').addEventListener('click', function (e) {
+    if (!C || mode === 'dict') return;
+    var r = this.getBoundingClientRect(), ms = (e.clientX - r.left) / r.width * C.D.durationMs;
+    if (mode === 'shadow') { shStart(Math.max(0, lineAt(ms))); return; }
+    if (P.loop === 'ab') { P.loop = ''; }
+    seekMs(ms); P.cur = lineAt(ms); paintOpts(); paint(true);
+  });
+
+  /* ---------- 画面の更新 ---------- */
+  function paintTime(t) {
+    if (!C) return;
+    $('#tNow').textContent = mmss(t);
+    $('#needle').style.left = Math.min(100, t / C.D.durationMs * 100) + '%';
+  }
+  function paintPlay() {
+    var on = mode === 'shadow' ? !!(P.sh && (P.sh.timer || !au.paused)) : !au.paused;
+    $('#cPlay').textContent = on ? '⏸' : '▶';
+    $('#cPlay').setAttribute('aria-label', on ? '止める' : '再生');
+  }
+  function paint(scroll) {
+    if (!C || mode === 'dict') return;
+    var act = mode === 'shadow' && P.sh ? P.sh.i : P.cur;
+    $$('#script .ln').forEach(function (el) {
+      var i = +el.dataset.i;
+      el.classList.toggle('now', i === act);
+      el.classList.toggle('inab', mode === 'listen' && !!P.ab && P.loop === 'ab' && i >= P.ab.i && i <= P.ab.j);
+    });
+    var sh = $('#abShade');
+    if (mode === 'listen' && P.ab) {
+      sh.hidden = false;
+      sh.style.left = (P.ab.a / C.D.durationMs * 100) + '%';
+      sh.style.width = ((P.ab.b - P.ab.a) / C.D.durationMs * 100) + '%';
+      sh.classList.toggle('off', P.loop !== 'ab');
+    } else sh.hidden = true;
+    if (scroll && act >= 0) {
+      var el = lineEl(act), box = $('#script');
+      if (el) {
+        var top = el.offsetTop - box.offsetTop, h = el.offsetHeight;
+        if (top < box.scrollTop + 8 || top + h > box.scrollTop + box.clientHeight - 8) box.scrollTo({ top: Math.max(0, top - box.clientHeight * 0.3), behavior: 'smooth' });
+      }
+    }
+    paintPlay();
+  }
+  function paintOpts() {
+    var sp = (S.set.speed === 1 ? '1.0' : String(S.set.speed));
+    $('#oSpeed b').textContent = sp; $('#sSpeed b').textContent = sp;
+    $('#oText b').textContent = S.set.text === 'show' ? '見せる' : '隠す';
+    $('#oJa b').textContent = S.set.ja ? 'あり' : 'なし';
+    $('#cLoopT').textContent = { '': 'なし', all: '全体', ab: 'AB' }[P.loop];
+    $('#cLoop').classList.toggle('on', !!P.loop);
+    var chip = $('#abChip');
+    chip.hidden = !(mode === 'listen' && P.ab);
+    if (P.ab) $('#abT').textContent = 'AB：セリフ' + (P.ab.i + 1) + (P.ab.j > P.ab.i ? '〜' + (P.ab.j + 1) : '') + (P.loop === 'ab' ? '' : '（止めている）');
+    $('#sRep b').textContent = S.set.rep;
+    $('#sGap b').textContent = '×' + S.set.gap;
+    $('#sRole b').textContent = S.set.role ? S.set.role + ' になる' : 'なし';
+    $('#sText b').textContent = { show: '見せる', hide: '隠す', after: '聞いたら' }[S.set.stext];
+    $('#sRec b').textContent = S.set.rec ? '録音する' : '録音しない';
+    $('#tState').textContent = '';
+  }
+
+  /* =========================================================
+   * 🗣 シャドーイング
+   *  1セリフずつ：聞く → 間（あなたの番：セリフの長さ×間）を「回数」くり返す → 次のセリフ
+   *  役：選んだ話し手のセリフは、先に間（あなたが言う）→ そのあとお手本を1回
+   *  録音：あなたの番のあいだ録音して、セリフの右の ▶自分 で聞ける
+   * ========================================================= */
+  function shStart(i) {
+    closeBalloon();
+    if (P.sh && P.sh.timer) clearTimeout(P.sh.timer);
+    var role = S.set.role && C.D.lines[i].speaker === S.set.role;
+    P.sh = { i: i, n: 0, phase: role ? 'turn' : 'play', timer: 0 };
+    P.cur = i; S.pos[C.D.id] = i; save();
+    if (role) shTurn(); else shPlay();
+    paint(true);
+  }
+  function shPlay() {
+    P.sh.phase = P.sh.phase === 'model' ? 'model' : 'play';
+    seekMs(seg(P.sh.i).a);
+    play();
+    shLabel(P.sh.phase === 'model' ? '🔊 お手本' : '🔊 聞く' + (S.set.rep > 1 ? '（' + (P.sh.n + 1) + '/' + S.set.rep + '）' : ''), 0);
+  }
+  function shAfterPlay() {
+    if (!P.sh) return;
+    au.pause();
+    P.heard[P.sh.i] = true;
+    if (textMode() === 'after') refreshLine(P.sh.i);
+    if (P.sh.phase === 'model') return shNext();
+    shTurn();
+  }
+  /* あなたの番：セリフの長さ×間（速さを落としているときは、その分長く） */
+  function shTurn() {
+    var l = C.D.lines[P.sh.i];
+    var ms = (l.endMs - l.startMs) * S.set.gap / Math.min(1, S.set.speed) + 300;
+    var role = S.set.role && l.speaker === S.set.role;
+    P.sh.phase = 'turn';
+    shLabel(role ? '🗣 あなたのセリフ' : '🗣 あなたの番', ms);
+    if (S.set.rec) startRec(P.sh.i, ms);
+    P.sh.timer = setTimeout(function () {
+      P.sh.timer = 0;
+      stopRec();
+      if (role && P.sh.n === 0) { P.sh.n = S.set.rep; P.sh.phase = 'model'; shPlay(); return; }   /* 役：言ったあとにお手本を1回 */
+      P.sh.n++;
+      if (!role && P.sh.n < S.set.rep) { P.sh.phase = 'play'; shPlay(); return; }
+      shNext();
+    }, ms);
+    paintPlay();
+  }
+  function shNext() {
+    var i = P.sh.i + 1;
+    shLabel('', 0);
+    if (i >= C.D.lines.length) { P.sh = null; S.lessons[C.D.id] = { done: true }; save(); paint(); $('#tState').textContent = '✔ 最後まで'; return; }
+    shStart(i);
+  }
+  function shPause() {
+    if (!P.sh) return;
+    if (P.sh.timer) { clearTimeout(P.sh.timer); P.sh.timer = 0; }
+    au.pause(); stopRec();
+    shLabel('', 0);
+    P.cur = P.sh.i; P.sh = null;
+    paint();
+  }
+  /* セリフの下の表示（いまの段階と、あなたの番の残り時間の棒） */
+  function shLabel(text, ms) {
+    $$('#script .turn').forEach(function (t) { t.hidden = true; });
+    if (!text || !P.sh) return;
+    var el = lineEl(P.sh.i); if (!el) return;
+    var box = $('.turn', el), bar = $('i', box);
+    box.hidden = false;
+    $('span', box).textContent = text;
+    box.classList.toggle('my', ms > 0);
+    bar.style.transition = 'none'; bar.style.width = ms ? '100%' : '0';
+    if (ms) { void bar.offsetWidth; bar.style.transition = 'width ' + ms + 'ms linear'; bar.style.width = '0'; }
+  }
+  $('#sRep').addEventListener('click', function () { S.set.rep = cycle([1, 2, 3], S.set.rep); save(); paintOpts(); });
+  $('#sGap').addEventListener('click', function () { S.set.gap = cycle([1, 1.5, 2], S.set.gap); save(); paintOpts(); });
+  $('#sRole').addEventListener('click', function () { var ids = [''].concat((C.D.speakers || []).map(function (s) { return s.id; })); S.set.role = cycle(ids, S.set.role); save(); paintOpts(); });
+  $('#sText').addEventListener('click', function () { S.set.stext = cycle(['show', 'after', 'hide'], S.set.stext); P.reveal = {}; save(); renderScript(); paintOpts(); });
+  $('#sRec').addEventListener('click', function () {
+    S.set.rec = !S.set.rec; save(); paintOpts();
+    if (S.set.rec) getMic().catch(function () { S.set.rec = false; save(); paintOpts(); alert('マイクを使えませんでした（ブラウザの設定でマイクを許可してください）'); });
+    else dropMic();
+  });
+
+  /* ---------- 録音（MediaRecorder）。iPhone ではイヤホンを使うと、お手本と自分の声が混ざらない ---------- */
+  var mic = null, rec = null;
+  P.recs = {};
+  function getMic() {
+    if (mic) return Promise.resolve(mic);
+    if (!navigator.mediaDevices || !window.MediaRecorder) return Promise.reject(new Error('no'));
+    return navigator.mediaDevices.getUserMedia({ audio: true }).then(function (s) { mic = s; return s; });
+  }
+  function dropMic() { stopRec(); if (mic) { mic.getTracks().forEach(function (t) { t.stop(); }); mic = null; } }
+  function startRec(i, ms) {
+    getMic().then(function (s) {
+      if (!P.sh || P.sh.phase !== 'turn') return;
+      var chunks = [];
+      try { rec = new MediaRecorder(s); } catch (e) { return; }
+      rec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+      rec.onstop = function () {
+        if (!chunks.length) return;
+        if (!P.recs) P.recs = {};
+        if (P.recs[i]) URL.revokeObjectURL(P.recs[i]);
+        P.recs[i] = URL.createObjectURL(new Blob(chunks, { type: chunks[0].type || 'audio/mp4' }));
+        var el = lineEl(i);
+        if (el && !$('.mine', el)) $('.side', el).insertAdjacentHTML('beforeend', '<button class="mine" data-act="mine" aria-label="自分の声">▶<small>自分</small></button>');
+      };
+      rec.start();
+      void ms;
+    }).catch(function () { /* マイクなし */ });
+  }
+  function stopRec() { if (rec && rec.state !== 'inactive') { try { rec.stop(); } catch (e) { /* */ } } rec = null; }
+  var mine = new Audio();
+  function playMine(i) {
+    if (!P.recs || !P.recs[i]) return;
+    shPause(); au.pause();
+    mine.src = P.recs[i]; mine.play().catch(function () { /* */ });
+  }
+
+  /* =========================================================
+   * ✍️ 書き取り
+   * ========================================================= */
+  var D = { i: 0, plays: 0, stopAt: null, done: false };
+  function dictOpen(i) {
+    au.pause();
+    D = { i: Math.max(0, Math.min(C.D.lines.length - 1, i)), plays: 0, stopAt: null, done: false };
+    var l = C.D.lines[D.i], st = (S.dict[C.D.id] || {});
+    $('#dict').innerHTML =
+      '<div class="dots">' + C.D.lines.map(function (x, k) { return '<button class="dot ' + (st[k] || '') + (k === D.i ? ' cur' : '') + '" data-go="' + k + '" aria-label="セリフ' + (k + 1) + '">' + (k + 1) + '</button>'; }).join('') + '</div>' +
+      '<div class="dcard2">' +
+        '<p class="dhead">セリフ ' + (D.i + 1) + ' / ' + C.D.lines.length + '　<b>' + esc(l.speaker) + '</b></p>' +
+        '<div class="dctl"><button class="ctl" id="dBack2" aria-label="2秒戻す">⟲<small>2秒</small></button><button class="ctl big" id="dPlay" aria-label="このセリフを聞く">▶</button><button class="chip" id="dSpeed">速さ <b>' + (S.set.speed === 1 ? '1.0' : S.set.speed) + '</b></button></div>' +
+        '<p class="dplays" id="dPlays">▶ で、このセリフだけが流れます</p>' +
+        '<textarea id="dIn" rows="3" lang="es" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" placeholder="聞こえたとおりに書く"></textarea>' +
+        '<div class="keys">' + ['á', 'é', 'í', 'ó', 'ú', 'ñ', 'ü', '¿', '¡'].map(function (c) { return '<button data-key="' + c + '">' + c + '</button>'; }).join('') + '</div>' +
+        '<p class="dhint" id="dHint" hidden></p>' +
+        '<div class="row"><button class="ghost" id="dHintB">ヒント</button><button class="go" id="dCheck">答え合わせ</button></div>' +
+        '<div id="dRes"></div>' +
+      '</div>';
+    seekWhenReady(seg(D.i).a);
+    S.pos[C.D.id] = D.i; save();
+  }
+  function dictPlay(from) {
+    var s = seg(D.i);
+    seekMs(from != null ? from : s.a);
+    D.stopAt = s.b;
+    au.playbackRate = S.set.speed;
+    play();
+    D.plays++;
+    $('#dPlays').textContent = '聞いた回数 ' + D.plays;
+    dictPaintPlay();
+  }
+  function dictPaintPlay() { var b = $('#dPlay'); if (b) b.textContent = au.paused ? '▶' : '⏸'; }
+  au.addEventListener('pause', function () { if (mode === 'dict') dictPaintPlay(); });
+  au.addEventListener('play', function () { if (mode === 'dict') dictPaintPlay(); });
+  $('#dict').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) {
+      var w = e.target.closest('.w.has, .ph');
+      if (w) openBalloon(w, D.i);
+      return;
+    }
+    if (b.dataset.go != null) { dictOpen(+b.dataset.go); return; }
+    if (b.dataset.key) { insertAtCaret($('#dIn'), b.dataset.key); return; }
+    switch (b.id) {
+      case 'dPlay': if (!au.paused) au.pause(); else dictPlay(); break;
+      case 'dBack2': var s = seg(D.i); dictPlay(Math.max(s.a, (au.paused && D.plays ? s.b : nowMs()) - 2000 * Math.max(1, S.set.speed))); break;
+      case 'dSpeed': S.set.speed = cycle(SPEEDS, S.set.speed); save(); au.playbackRate = S.set.speed; $('#dSpeed b').textContent = S.set.speed === 1 ? '1.0' : S.set.speed; break;
+      case 'dHintB': var h = $('#dHint'); h.hidden = false; h.textContent = T.hint(C.D.lines[D.i].text); break;
+      case 'dCheck': dictCheck(); break;
+      case 'dAgain': $('#dRes').innerHTML = ''; $('#dIn').value = ''; $('#dIn').focus(); break;
+      case 'dNext': dictOpen(Math.min(C.D.lines.length - 1, D.i + 1)); break;
+    }
+  });
+  function insertAtCaret(ta, s) {
+    var a = ta.selectionStart || ta.value.length, b = ta.selectionEnd || a;
+    ta.value = ta.value.slice(0, a) + s + ta.value.slice(b);
+    ta.focus();
+    try { ta.setSelectionRange(a + s.length, a + s.length); } catch (e) { /* */ }
+  }
+  function dictCheck() {
+    var l = C.D.lines[D.i], typed = $('#dIn').value;
+    if (!typed.trim()) { $('#dIn').focus(); return; }
+    var r = T.grade(l.text, typed);
+    var st = S.dict[C.D.id] = S.dict[C.D.id] || {};
+    var rank = { ok: 3, near: 2, try: 1 };
+    if (!st[D.i] || rank[r.level] > rank[st[D.i]]) st[D.i] = r.level;
+    save();
+    var dot = $('#dict .dot[data-go="' + D.i + '"]'); if (dot) dot.className = 'dot ' + st[D.i] + ' cur';
+    var head = r.level === 'ok' ? '✔ 全部あっています' : r.level === 'near' ? '△ アクセント記号だけちがう語があります' : '語 ' + r.total + ' のうち ' + (r.ok + r.acc) + ' 語';
+    $('#dRes').innerHTML =
+      '<p class="rhead ' + r.level + '">' + head + '</p>' +
+      '<p class="rwords" lang="es">' + r.words.map(function (x) {
+        return '<span class="' + x.st + '">' + esc(x.w) + (x.st === 'acc' ? '<small>' + esc(x.typed) + '</small>' : '') + '</span>';
+      }).join(' ') + '</p>' +
+      (r.extra.length ? '<p class="rextra">よけいな語：<s>' + r.extra.map(esc).join(' ') + '</s></p>' : '') +
+      '<p class="rleg"><span class="ok">あっている</span><span class="acc">アクセントだけ</span><span class="miss">書けていない</span></p>' +
+      '<div class="rline"><p class="es" lang="es">' + tokHTML(l.toks, D.i) + '</p><p class="ja">' + esc(l.ja) + '</p></div>' +
+      '<div class="row"><button class="ghost" id="dAgain">書き直す</button>' + (D.i < C.D.lines.length - 1 ? '<button class="go" id="dNext">次のセリフ ▶</button>' : '') + '</div>';
+    $('#dIn').blur();
+    $('#dRes').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* =========================================================
+   * バルーン（語の意味）と、調べた語の記録
+   * ========================================================= */
+  var B = $('#balloon');
+  function closeBalloon() { B.hidden = true; }
+  function openBalloon(el, li) {
+    var l = C.D.lines[li], rec = null, html;
+    if (el.classList.contains('ph')) {
+      var tok = l.toks.filter(function (t) { return t.t === 'ph' && t.ph.t === el.dataset.ph; })[0];
+      if (!tok) return;
+      var ph = tok.ph;
+      var parts = tok.toks.filter(function (t) { return t.t === 'w' && t.g && !t.g.name && t.g.pos !== 'art' && t.g.pos !== 'prep'; });
+      html = '<p class="bw"><b lang="es">' + esc(tok.s) + '</b><small>言い回し</small><button class="say" data-say="' + esc(tok.s) + '" aria-label="読み上げ">🔊</button></p>' +
+        '<p class="bja">' + esc(ph.ja) + '</p>' + (ph.note ? '<p class="bnote">' + esc(ph.note) + '</p>' : '') +
+        (parts.length ? '<p class="bparts">' + parts.map(function (t) { return '<span lang="es">' + esc(t.s) + '</span>＝' + esc(t.g.ja); }).join('　') + '</p>' : '');
+      rec = { kind: 'p', w: ph.t, pos: 'phr', ja: ph.ja, surf: tok.s, line: li, note: ph.note || '', clue: ph.clue || null };
+    } else {
+      var g = C.dict.word(el.dataset.k);
+      if (!g || g.name) return;
+      var surf = el.textContent;
+      html = '<p class="bw"><b lang="es">' + esc(g.w) + '</b><small>' + esc(POS_JA[g.pos] || '') + (g.g ? '・' + G_JA[g.g] : '') + '</small><button class="say" data-say="' + esc(g.w) + '" aria-label="読み上げ">🔊</button></p>' +
+        '<p class="bja">' + esc(g.ja) + '</p>' +
+        (g.form ? '<p class="bform"><span lang="es">' + esc(surf) + '</span>：' + esc(g.form) + '</p>' : '') +
+        (g.note ? '<p class="bnote">' + esc(g.note) + '</p>' : '');
+      if (g.pos !== 'art' && g.pos !== 'prep' && g.pos !== 'bad') rec = { kind: 'w', w: g.w, pos: g.pos, g: g.g || null, ja: g.ja, surf: surf, line: li, form: g.form || '', note: g.note || '', clue: g.clue || null, cj: g.cj || null };
+    }
+    if (rec) { record(rec); html += '<p class="bfoot">📒 調べた単語に記録しました</p>'; }
+    B.innerHTML = html;
+    B.hidden = false;
+    /* 語の下（下に入らなければ上）に出す */
+    var r = el.getBoundingClientRect(), vw = document.documentElement.clientWidth, vh = window.innerHeight;
+    B.style.maxWidth = Math.min(320, vw - 24) + 'px';
+    var bw = B.offsetWidth, bh = B.offsetHeight;
+    var x = Math.max(12, Math.min(vw - bw - 12, r.left + r.width / 2 - bw / 2));
+    var y = r.bottom + 8;
+    if (y + bh > vh - 12) y = Math.max(12, r.top - bh - 8);
+    B.style.left = x + 'px'; B.style.top = y + 'px';
+  }
+  B.addEventListener('click', function (e) {
+    var s = e.target.closest('[data-say]');
+    if (s) { e.stopPropagation(); say(s.dataset.say); }
+  });
+  document.addEventListener('click', function (e) {
+    if (B.hidden || B.contains(e.target) || e.target.closest('.w.has, .ph')) return;
+    closeBalloon();
+  }, true);
+  $$('.scroll').forEach(function (s) { s.addEventListener('scroll', closeBalloon, { passive: true }); });
+  /* 語の読み上げ（語は読み上げでも十分。文はダイアログの音声で聞く） */
+  function say(text) {
+    if (!window.speechSynthesis) return;
+    au.pause(); if (P.sh) shPause();
+    try {
+      speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = 'es-ES'; u.rate = 0.9;
+      var v = speechSynthesis.getVoices().filter(function (x) { return /^es(-|_)ES/i.test(x.lang); })[0] || speechSynthesis.getVoices().filter(function (x) { return /^es/i.test(x.lang); })[0];
+      if (v) u.voice = v;
+      speechSynthesis.speak(u);
+    } catch (e) { /* 読み上げなし */ }
+  }
+
+  function record(r) {
+    var id = C.D.id, box = S.looked[id] = S.looked[id] || {}, key = r.kind + ':' + r.w.toLowerCase();
+    var old = box[key];
+    r.n = (old ? old.n : 0) + 1;
+    r.at = Date.now();
+    r.sent = old ? old.sent : false;
+    if (old && old.sent) { r.surf = old.surf; r.line = old.line; }     /* 送った語は、送ったときの例文のまま */
+    box[key] = r;
+    save();
+  }
+  function lookedList() {
+    var out = [];
+    Object.keys(S.looked).forEach(function (did) {
+      Object.keys(S.looked[did]).forEach(function (k) { var r = S.looked[did][k]; out.push(Object.assign({ did: did, key: k }, r)); });
+    });
+    return out;
+  }
+
+  /* =========================================================
+   * 📒 調べた単語 → 単語アプリ（¡VAMOS!）のデッキ「charla」
+   *  1ダイアログ＝デッキの1区間（区間名＝ダイアログの題）。参考書のデッキとは別のデッキ。
+   *  例文＝そのセリフ（語を { } で囲む）、訳＝セリフの訳、ページの所＝「セリフ3」
+   * ========================================================= */
+  var wFrom = 'home', chosen = {};
+  function otherDecksHave() {
+    var have = {};
+    try {
+      (window.VocabDecks ? VocabDecks.list() : []).forEach(function (d) {
+        if (d.id === DECK_ID) return;
+        var D2 = VocabDecks.get(d.id);
+        (D2 && D2.words || []).forEach(function (w) { have[String(w.w).toLowerCase()] = d.brand || d.title; });
+      });
+    } catch (e) { /* */ }
+    return have;
+  }
+  function wordsScreen(from) {
+    wFrom = from;
+    show('words');
+    $('#wMsg').innerHTML = '';
+    var list = (window.CHARLA_DIALOGS || []);
+    Promise.all(list.map(function (d) { return loadDialog(d.id).catch(function () { return null; }); })).then(function () {
+      var other = otherDecksHave(), all = lookedList(), html = '';
+      chosen = {};
+      list.forEach(function (d) {
+        var rs = all.filter(function (r) { return r.did === d.id; }).sort(function (a, b) { return a.line - b.line || a.at - b.at; });
+        if (!rs.length) return;
+        var c = cache[d.id];
+        html += '<h3><span lang="es">' + esc(d.title) + '</span><small>' + esc(d.titleJa || '') + '</small></h3><ul class="wl">' + rs.map(function (r) {
+          var id = r.did + '|' + r.key, conv = c ? T.toVocab(r, c.D, c.N) : { why: '読み込めない' };
+          var also = other[r.w.toLowerCase()];
+          var can = !!conv.word && !r.sent;
+          if (can && !also) chosen[id] = true;
+          return '<li class="' + (r.sent ? 'sent' : '') + '"><label><input type="checkbox" data-id="' + esc(id) + '"' + (chosen[id] ? ' checked' : '') + (can ? '' : ' disabled') + '>' +
+            '<span class="wt"><b lang="es">' + esc(r.w) + '</b>　' + esc(r.ja) +
+            '<small>セリフ' + (r.line + 1) + '「<span lang="es">' + esc(snippet(c, r)) + '</span>」' + (r.n > 1 ? '・' + r.n + '回調べた' : '') + '</small>' +
+            (r.sent ? '<em>✔ 送った</em>' : '') + (also ? '<em class="also">📗 ' + esc(also) + ' にもある</em>' : '') + (conv.why ? '<em class="why">送れない：' + esc(conv.why) + '</em>' : '') +
+            '</span></label><button class="del" data-del="' + esc(id) + '" aria-label="記録から消す">✕</button></li>';
+        }).join('') + '</ul>';
+      });
+      $('#wBody').innerHTML = html || '<p class="empty">まだありません。<br>台本の語をタップして意味を見ると、ここに記録されます。</p>';
+      paintSend();
+    });
+  }
+  function snippet(c, r) {
+    if (!c) return r.surf;
+    var t = c.D.lines[r.line] ? c.D.lines[r.line].text : '', at = t.toLowerCase().indexOf(String(r.surf).toLowerCase());
+    if (at < 0) return r.surf;
+    var a = Math.max(0, at - 18), b = Math.min(t.length, at + r.surf.length + 18);
+    /* 語の途中で切らない */
+    if (a > 0) { var sp = t.indexOf(' ', a); a = sp >= 0 && sp < at ? sp + 1 : a; }
+    if (b < t.length) { var sp2 = t.lastIndexOf(' ', b); b = sp2 > at + r.surf.length ? sp2 : b; }
+    return (a > 0 ? '…' : '') + t.slice(a, b) + (b < t.length ? '…' : '');
+  }
+  function paintSend() {
+    var n = Object.keys(chosen).filter(function (k) { return chosen[k]; }).length;
+    $('#wSend').textContent = '単語アプリへ送る（' + n + '語）';
+    $('#wSend').disabled = !n;
+  }
+  $('#wBody').addEventListener('change', function (e) { var c = e.target.closest('input[data-id]'); if (c) { chosen[c.dataset.id] = c.checked; paintSend(); } });
+  $('#wBody').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-del]'); if (!b) return;
+    var p = b.dataset.del.split('|');
+    if (S.looked[p[0]]) { delete S.looked[p[0]][p[1]]; save(); }
+    delete chosen[b.dataset.del];
+    b.closest('li').remove();
+    paintSend();
+  });
+  $('#wAll').addEventListener('click', function () { $$('#wBody input[data-id]:not(:disabled)').forEach(function (c) { c.checked = true; chosen[c.dataset.id] = true; }); paintSend(); });
+  $('#wNone').addEventListener('click', function () { $$('#wBody input[data-id]').forEach(function (c) { c.checked = false; chosen[c.dataset.id] = false; }); paintSend(); });
+  $('#wBack').addEventListener('click', function () { if (wFrom === 'play' && C) { show('play'); } else home(); });
+  $('#wSend').addEventListener('click', sendToVocab);
+
+  function sendToVocab() {
+    if (!window.VocabDecks) return;
+    var ids = Object.keys(chosen).filter(function (k) { return chosen[k]; });
+    var deck = VocabDecks.get(DECK_ID) || { id: DECK_ID, title: '会話で出会った単語', brand: '💬 CHARLA', sub: '会話で調べた語（ダイアログごとに区間）', book: '会話アプリ CHARLA', lang: 'es', skin: 'espana', sections: [], words: [] };
+    var added = [], skipped = [];
+    ids.forEach(function (id) {
+      var p = id.split('|'), r = S.looked[p[0]] && S.looked[p[0]][p[1]], c = cache[p[0]];
+      if (!r || !c) return;
+      var conv = T.toVocab(Object.assign({}, r), c.D, c.N);
+      if (!conv.word) { skipped.push(r.w + '（' + conv.why + '）'); return; }
+      var w = conv.word;
+      if (!deck.sections.some(function (s) { return s.id === c.D.id; })) deck.sections.push({ id: c.D.id, name: c.D.title + (c.N.titleJa ? '（' + c.N.titleJa + '）' : '') });
+      var same = deck.words.filter(function (x) { return x.w.toLowerCase() === w.w.toLowerCase(); })[0];
+      if (same) { r.sent = true; skipped.push(w.w + '（もうデッキにある：' + (same.ref || '') + '）'); return; }
+      var base = w.id, k = 2;
+      while (deck.words.some(function (x) { return x.id === w.id; })) w.id = base + '_' + (k++);
+      if (w.pos === 'v' && w.cj && window.Conj && !Conj.checkIrr(w.cj).length) Conj.addIrr(w.w, w.cj);
+      deck.words.push(w);
+      added.push({ w: w, r: r });
+    });
+    if (!added.length) { $('#wMsg').innerHTML = '<p>送る語がありませんでした。' + (skipped.length ? '<br><small>' + esc(skipped.join('、')) + '</small>' : '') + '</p>'; save(); wordsScreen(wFrom); return; }
+    var chk = window.DeckCheck ? DeckCheck.check(deck, window.Conj) : { errors: [] };
+    if (chk.errors.length) { $('#wMsg').innerHTML = '<p class="bad">✖ 単語アプリの形に合いませんでした（' + chk.errors.length + '件）</p><ul>' + chk.errors.slice(0, 4).map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') + '</ul>'; return; }
+    /* ?sandbox はデッキの一覧（vocab.decks.v1）に載せない。vocab.html?deck=charla-sandbox では開ける */
+    try { if (SANDBOX) localStorage.setItem('vocab.deck.' + DECK_ID, JSON.stringify(deck)); else VocabDecks.save(deck); } catch (e) { $('#wMsg').innerHTML = '<p class="bad">✖ 保存できませんでした（端末の保存領域がいっぱい、またはプライベートブラウズ）</p>'; return; }
+    added.forEach(function (x) { x.r.sent = true; });
+    save();
+    var msg = '<p>✔ ' + added.length + '語を、単語アプリのデッキ「' + esc(deck.brand + ' ' + deck.title) + '」に足しました（全 ' + deck.words.length + '語）。' +
+      (skipped.length ? '<br><small>送らなかった語：' + esc(skipped.join('、')) + '</small>' : '') + '</p>' +
+      '<a class="go" href="vocab.html?deck=' + encodeURIComponent(DECK_ID) + '">単語アプリで開く ›</a>';
+    wordsScreen(wFrom);
+    setTimeout(function () { $('#wMsg').innerHTML = msg; }, 0);
+  }
+
+  /* ---------- はじめ ---------- */
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && !au.paused) { cancelAnimationFrame(P.raf); P.raf = requestAnimationFrame(loopRaf); } });
+  var q = /[?&]d=([A-Za-z0-9-]+)/.exec(location.search);
+  if (q) openDialog(q[1]); else home();
+  window.CHARLA_DEBUG = { S: S, P: function () { return P; }, au: au };
+})();
