@@ -637,7 +637,9 @@
   function refHtml(w) {
     if (!D.book) return '';
     var sec = V.SEC[w.s];
-    return '<small class="ref">📗 ' + esc(sec ? sec.name : w.s) + (w.ref ? '・' + esc(w.ref) : '') + '</small>';
+    /* CHARLA から足した語（区間 id が charla-）は、区間名が「💬 …」なので 📗 をつけない */
+    var talk = String(w.s).indexOf('charla-') === 0;
+    return '<small class="ref">' + (talk ? '' : '📗 ') + esc(sec ? sec.name : w.s) + (w.ref ? '・' + esc(w.ref) : '') + '</small>';
   }
   function memoHtml(w, edit, wordSay) {   /* wordSay：例文の 🔊 を、その語だけにする（文の読み上げは精度が低いので、文で使う練習では全文を読まない） */
     return '<div class="exp-box"><div class="ex">' + exHtml(w.ex[0]) + ' ' + sayBtn(wordSay && hasCloze(w) ? formOf(w) : w.ex[0]) + '</div><small>' + esc(w.ex[1]) + '</small>' + noteHtml(w, edit) +
@@ -1684,6 +1686,16 @@
     (add.words || []).forEach(function (x) { if (x.id in wi) out.words[wi[x.id]] = x; else { wi[x.id] = out.words.length; out.words.push(x); } });
     return out;
   }
+  /* 全部入れかえても、会話アプリ CHARLA から足した語（区間 id が charla-）は残す */
+  function keepTalk(old, N) {
+    var secs = (old.sections || []).filter(function (s) { return String(s.id).indexOf('charla-') === 0; });
+    if (!secs.length) return N;
+    var out = JSON.parse(JSON.stringify(N)), has = {};
+    (out.words || []).forEach(function (w) { has[w.id] = 1; });
+    out.sections = (out.sections || []).filter(function (s) { return String(s.id).indexOf('charla-') !== 0; }).concat(secs);
+    out.words = (out.words || []).concat(old.words.filter(function (w) { return String(w.s).indexOf('charla-') === 0 && !has[w.id]; }));
+    return out;
+  }
   function importDeck(text) {
     var N;
     try { N = JSON.parse(text.charCodeAt(0) === 0xFEFF ? text.slice(1) : text); } catch (e) { return dkMsg('✖ JSON として読めません：' + esc(e.message)); }
@@ -1696,7 +1708,7 @@
       '<button class="ghost" id="dkRep">全部入れかえる（' + (N.words || []).length + '語に）</button><button class="ghost" id="dkNo">やめる</button>' +
       '<p class="note">どちらでも、育てたカードはそのまま引き継ぎます</p>');
     $('#dkAdd').addEventListener('click', function () { finishImport(mergeDeck(old, N), addN + '語を足しました'); });
-    $('#dkRep').addEventListener('click', function () { finishImport(N, '入れかえました'); });
+    $('#dkRep').addEventListener('click', function () { finishImport(keepTalk(old, N), '入れかえました'); });
     $('#dkNo').addEventListener('click', function () { dkMsg(''); });
   }
   function finishImport(N, done, force) {

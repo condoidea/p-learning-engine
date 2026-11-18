@@ -148,6 +148,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .wl em.why { color: var(--miss); }
 .wl li.sent .wt b { color: var(--tx2); }
 .wl .del { width: 36px; height: 36px; border-radius: 10px; color: var(--tx3); flex: none; }
+.wl .undo { flex: none; padding: 7px 10px; border-radius: 10px; background: var(--bg3); color: var(--tx2); font-size: 13px; white-space: nowrap; }
+.dest { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--tx2); margin-bottom: 8px; }
+.dest select { flex: 1; min-width: 0; padding: 8px; border-radius: 10px; background: var(--bg2); color: var(--tx); border: 1px solid var(--line); font-size: 14px; }
 .wpanel .row { gap: 8px; }
 .wmsg p { margin: 0 0 8px; font-size: 14.5px; }
 .wmsg .bad { color: var(--miss); }

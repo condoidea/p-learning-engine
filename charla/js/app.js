@@ -26,7 +26,7 @@
   var SPEEDS = [0.6, 0.75, 0.85, 1, 1.15];
 
   /* ---------- 保存 ---------- */
-  function fresh() { return { lessons: {}, looked: {}, dict: {}, pos: {}, set: { speed: 1, text: 'show', ja: false, rep: 2, gap: 1.5, role: '', stext: 'show', rec: false, drep: 2, dgap: 3, dtext: 'after', dauto: false, only: '' }, pts: {} }; }
+  function fresh() { return { lessons: {}, looked: {}, dict: {}, pos: {}, set: { speed: 1, text: 'show', ja: false, rep: 2, gap: 1.5, role: '', stext: 'show', rec: false, drep: 2, dgap: 3, dtext: 'after', dauto: false, only: '' }, pts: {}, dest: '' }; }
   function load() {
     try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && s.set) { var f = fresh(); for (var k in f) if (!(k in s)) s[k] = f[k]; for (var j in f.set) if (!(j in s.set)) s.set[j] = f.set[j]; return s; } } catch (e) { /* 保存領域が使えない */ }
     return fresh();
@@ -760,44 +760,67 @@
   }
 
   /* =========================================================
-   * 📒 調べた単語 → 単語アプリ（¡VAMOS!）のデッキ「charla」
-   *  1ダイアログ＝デッキの1区間（区間名＝ダイアログの題）。参考書のデッキとは別のデッキ。
-   *  例文＝そのセリフ（語を { } で囲む）、訳＝セリフの訳、ページの所＝「セリフ3」
+   * 📒 調べた単語 → 単語アプリの「端末に読み込んだ参考書のデッキ」に足す
+   *  アプリを切りかえずに参考書の語と一緒に出題されるよう、送り先は参考書のデッキ（えらべる・覚える）。
+   *  区別：1ダイアログ＝デッキの1区間（id「charla-<ダイアログ>」、名前「💬 1 La paella…」）、語の id は「charla-…」。
+   *  例文＝そのセリフ（語を { } で囲む）、訳＝セリフの訳、ref＝「セリフ3」
+   *  まちがえて送った語は「取り消す」でデッキから外せる（その語の育ち具合も消す）。
+   *  参考書のデッキがないときは、CHARLA だけのデッキ「charla」に入れる。?sandbox は「charla-sandbox」だけ
    * ========================================================= */
   var wFrom = 'home', chosen = {};
-  function otherDecksHave() {
-    var have = {};
-    try {
-      (window.VocabDecks ? VocabDecks.list() : []).forEach(function (d) {
-        if (d.id === DECK_ID) return;
-        var D2 = VocabDecks.get(d.id);
-        (D2 && D2.words || []).forEach(function (w) { have[String(w.w).toLowerCase()] = d.brand || d.title; });
-      });
-    } catch (e) { /* */ }
+  var SEC_PRE = 'charla-';
+  function destDecks() {
+    if (SANDBOX) return [{ id: DECK_ID, title: 'お試し（sandbox）', brand: '💬' }];
+    var l = (window.VocabDecks ? VocabDecks.list() : []).filter(function (d) { return (d.lang || 'es') === 'es' && !/^charla/.test(d.id); });
+    l.push({ id: DECK_ID, title: '会話で出会った単語（CHARLA だけのデッキ）', brand: '💬 CHARLA' });
+    return l;
+  }
+  function destId() {
+    var l = destDecks();
+    return l.some(function (d) { return d.id === S.set.dest; }) ? S.set.dest : l[0].id;
+  }
+  function deckLabel(id) { var d = destDecks().filter(function (x) { return x.id === id; })[0]; return d ? (d.brand ? d.brand + ' ' : '') + d.title : id; }
+  function getDeck(id) {
+    try { var D2 = SANDBOX || id === DECK_ID ? JSON.parse(localStorage.getItem('vocab.deck.' + id)) : VocabDecks.get(id); if (D2) return D2; } catch (e) { /* */ }
+    if (id === DECK_ID) return { id: DECK_ID, title: '会話で出会った単語', brand: '💬 CHARLA', sub: '会話で調べた語（ダイアログごとに区間）', book: '会話アプリ CHARLA', lang: 'es', skin: 'espana', sections: [], words: [] };
+    return null;
+  }
+  function putDeck(D2) {
+    /* ?sandbox はデッキの一覧（vocab.decks.v1）に載せない。vocab.html?deck=charla-sandbox では開ける */
+    if (SANDBOX) localStorage.setItem('vocab.deck.' + D2.id, JSON.stringify(D2)); else VocabDecks.save(D2);
+  }
+  /* 送り先のデッキにもうある語（CHARLA から送った語は除く）＝ { 小文字の見出し語: true } */
+  function destHas() {
+    var have = {}, D2 = getDeck(destId());
+    (D2 && D2.words || []).forEach(function (w) { if (String(w.id).indexOf(SEC_PRE) !== 0) have[String(w.w).toLowerCase()] = true; });
     return have;
   }
+  /* 送ったかどうか：r.sent は { deck, wid }（前の版の true は「charla」へ送った扱い） */
+  function sentTo(r) { return !r.sent ? null : r.sent === true ? { deck: 'charla', wid: '' } : r.sent; }
   function wordsScreen(from) {
     wFrom = from;
     show('words');
     $('#wMsg').innerHTML = '';
     var list = (window.CHARLA_DIALOGS || []);
     Promise.all(list.map(function (d) { return loadDialog(d.id).catch(function () { return null; }); })).then(function () {
-      var other = otherDecksHave(), all = lookedList(), html = '';
+      var other = destHas(), all = lookedList(), html = '', dl = destDecks(), cur = destId();
       chosen = {};
+      $('#wDest').innerHTML = dl.map(function (d) { return '<option value="' + esc(d.id) + '"' + (d.id === cur ? ' selected' : '') + '>' + esc((d.brand ? d.brand + ' ' : '') + d.title) + '</option>'; }).join('');
       list.forEach(function (d) {
         var rs = all.filter(function (r) { return r.did === d.id; }).sort(function (a, b) { return a.line - b.line || a.at - b.at; });
         if (!rs.length) return;
         var c = cache[d.id];
         html += '<h3><span lang="es">' + esc(d.title) + '</span><small>' + esc(d.titleJa || '') + '</small></h3><ul class="wl">' + rs.map(function (r) {
           var id = r.did + '|' + r.key, conv = c ? T.toVocab(r, c.D, c.N) : { why: '読み込めない' };
-          var also = other[r.w.toLowerCase()];
-          var can = !!conv.word && !r.sent;
-          if (can && !also) chosen[id] = true;
-          return '<li class="' + (r.sent ? 'sent' : '') + '"><label><input type="checkbox" data-id="' + esc(id) + '"' + (chosen[id] ? ' checked' : '') + (can ? '' : ' disabled') + '>' +
+          var st = sentTo(r);
+          var also = !st && other[r.w.toLowerCase()];
+          var can = !!conv.word && !st && !also;
+          if (can) chosen[id] = true;
+          return '<li class="' + (st ? 'sent' : '') + '"><label><input type="checkbox" data-id="' + esc(id) + '"' + (chosen[id] ? ' checked' : '') + (can ? '' : ' disabled') + '>' +
             '<span class="wt"><b lang="es">' + esc(r.w) + '</b>　' + esc(r.ja) +
             '<small>セリフ' + (r.line + 1) + '「<span lang="es">' + esc(snippet(c, r)) + '</span>」' + (r.n > 1 ? '・' + r.n + '回調べた' : '') + '</small>' +
-            (r.sent ? '<em>✔ 送った</em>' : '') + (also ? '<em class="also">📗 ' + esc(also) + ' にもある</em>' : '') + (conv.why ? '<em class="why">送れない：' + esc(conv.why) + '</em>' : '') +
-            '</span></label><button class="del" data-del="' + esc(id) + '" aria-label="記録から消す">✕</button></li>';
+            (st ? '<em>✔ ' + esc(deckLabel(st.deck)) + ' に送った</em>' : '') + (also ? '<em class="also">📗 送り先のデッキにもうある</em>' : '') + (conv.why && !st ? '<em class="why">送れない：' + esc(conv.why) + '</em>' : '') +
+            '</span></label>' + (st ? '<button class="undo" data-undo="' + esc(id) + '">取り消す</button>' : '<button class="del" data-del="' + esc(id) + '" aria-label="記録から消す">✕</button>') + '</li>';
         }).join('') + '</ul>';
       });
       $('#wBody').innerHTML = html || '<p class="empty">まだありません。<br>台本の語をタップして意味を見ると、ここに記録されます。</p>';
@@ -820,7 +843,9 @@
     $('#wSend').disabled = !n;
   }
   $('#wBody').addEventListener('change', function (e) { var c = e.target.closest('input[data-id]'); if (c) { chosen[c.dataset.id] = c.checked; paintSend(); } });
+  $('#wDest').addEventListener('change', function () { S.set.dest = this.value; save(); wordsScreen(wFrom); });
   $('#wBody').addEventListener('click', function (e) {
+    var u = e.target.closest('[data-undo]'); if (u) { undoSend(u.dataset.undo); return; }
     var b = e.target.closest('[data-del]'); if (!b) return;
     var p = b.dataset.del.split('|');
     if (S.looked[p[0]]) { delete S.looked[p[0]][p[1]]; save(); }
@@ -833,20 +858,47 @@
   $('#wBack').addEventListener('click', function () { if (wFrom === 'play' && C) { show('play'); } else home(); });
   $('#wSend').addEventListener('click', sendToVocab);
 
+  /* まちがえて送った語をデッキから外す（区間が空になれば区間も。その語の育ち具合も消す） */
+  function undoSend(id) {
+    var p = id.split('|'), r = S.looked[p[0]] && S.looked[p[0]][p[1]], st = r && sentTo(r);
+    if (!st) return;
+    var D2 = getDeck(st.deck), w = D2 && D2.words.filter(function (x) { return st.wid ? x.id === st.wid : String(x.w).toLowerCase() === String(r.w).toLowerCase() && String(x.s).indexOf(SEC_PRE) === 0; })[0];
+    if (!w) { r.sent = false; save(); wordsScreen(wFrom); $('#wMsg').innerHTML = '<p>デッキにもうなかったので、送る前に戻しました。</p>'; return; }
+    var pk = 'vocab.' + D2.id + '.v1', prog = null;
+    try { prog = JSON.parse(localStorage.getItem(pk)); } catch (e) { /* */ }
+    var grown = prog && prog.cards && prog.cards[w.id];
+    if (grown && !confirm('「' + w.w + '」を「' + deckLabel(D2.id) + '」から外します。この語の育ち具合も消えます。')) return;
+    D2.words = D2.words.filter(function (x) { return x !== w; });
+    D2.sections = D2.sections.filter(function (s) { return String(s.id).indexOf(SEC_PRE) !== 0 || D2.words.some(function (x) { return x.s === s.id; }); });
+    try {
+      putDeck(D2);
+      if (prog) {
+        if (prog.cards) delete prog.cards[w.id];
+        if (Array.isArray(prog.meet)) prog.meet = prog.meet.filter(function (x) { return (x && x.id || x) !== w.id; });
+        localStorage.setItem(pk, JSON.stringify(prog));
+      }
+    } catch (e) { $('#wMsg').innerHTML = '<p class="bad">✖ 保存できませんでした</p>'; return; }
+    r.sent = false; save();
+    wordsScreen(wFrom);
+    setTimeout(function () { $('#wMsg').innerHTML = '<p>「<span lang="es">' + esc(w.w) + '</span>」を ' + esc(deckLabel(D2.id)) + ' から外しました。</p>'; }, 0);
+  }
   function sendToVocab() {
     if (!window.VocabDecks) return;
     var ids = Object.keys(chosen).filter(function (k) { return chosen[k]; });
-    var deck = VocabDecks.get(DECK_ID) || { id: DECK_ID, title: '会話で出会った単語', brand: '💬 CHARLA', sub: '会話で調べた語（ダイアログごとに区間）', book: '会話アプリ CHARLA', lang: 'es', skin: 'espana', sections: [], words: [] };
+    var deck = getDeck(destId());
+    if (!deck) { $('#wMsg').innerHTML = '<p class="bad">✖ 送り先のデッキが見つかりません</p>'; return; }
     var added = [], skipped = [];
     ids.forEach(function (id) {
       var p = id.split('|'), r = S.looked[p[0]] && S.looked[p[0]][p[1]], c = cache[p[0]];
       if (!r || !c) return;
       var conv = T.toVocab(Object.assign({}, r), c.D, c.N);
       if (!conv.word) { skipped.push(r.w + '（' + conv.why + '）'); return; }
-      var w = conv.word;
-      if (!deck.sections.some(function (s) { return s.id === c.D.id; })) deck.sections.push({ id: c.D.id, name: (c.d.no ? c.d.no + ' ' : '') + c.d.title + (c.d.titleJa ? '（' + c.d.titleJa + '）' : '') });
+      var w = conv.word, sid = SEC_PRE + c.D.id;
+      w.s = sid;
+      w.id = SEC_PRE + w.id;
+      if (!deck.sections.some(function (s) { return s.id === sid; })) deck.sections.push({ id: sid, name: '💬 ' + (c.d.no ? c.d.no + ' ' : '') + c.d.title + (c.d.titleJa ? '（' + c.d.titleJa + '）' : ''), ref: 'CHARLA' });
       var same = deck.words.filter(function (x) { return x.w.toLowerCase() === w.w.toLowerCase(); })[0];
-      if (same) { r.sent = true; skipped.push(w.w + '（もうデッキにある：' + (same.ref || '') + '）'); return; }
+      if (same) { skipped.push(w.w + '（もうデッキにある' + (same.ref ? '：' + same.ref : '') + '）'); return; }
       var base = w.id, k = 2;
       while (deck.words.some(function (x) { return x.id === w.id; })) w.id = base + '_' + (k++);
       if (w.pos === 'v' && w.cj && window.Conj && !Conj.checkIrr(w.cj).length) Conj.addIrr(w.w, w.cj);
@@ -856,13 +908,12 @@
     if (!added.length) { $('#wMsg').innerHTML = '<p>送る語がありませんでした。' + (skipped.length ? '<br><small>' + esc(skipped.join('、')) + '</small>' : '') + '</p>'; save(); wordsScreen(wFrom); return; }
     var chk = window.DeckCheck ? DeckCheck.check(deck, window.Conj) : { errors: [] };
     if (chk.errors.length) { $('#wMsg').innerHTML = '<p class="bad">✖ 単語アプリの形に合いませんでした（' + chk.errors.length + '件）</p><ul>' + chk.errors.slice(0, 4).map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') + '</ul>'; return; }
-    /* ?sandbox はデッキの一覧（vocab.decks.v1）に載せない。vocab.html?deck=charla-sandbox では開ける */
-    try { if (SANDBOX) localStorage.setItem('vocab.deck.' + DECK_ID, JSON.stringify(deck)); else VocabDecks.save(deck); } catch (e) { $('#wMsg').innerHTML = '<p class="bad">✖ 保存できませんでした（端末の保存領域がいっぱい、またはプライベートブラウズ）</p>'; return; }
-    added.forEach(function (x) { x.r.sent = true; });
+    try { putDeck(deck); } catch (e) { $('#wMsg').innerHTML = '<p class="bad">✖ 保存できませんでした（端末の保存領域がいっぱい、またはプライベートブラウズ）</p>'; return; }
+    added.forEach(function (x) { x.r.sent = { deck: deck.id, wid: x.w.id }; });
     save();
     var msg = '<p>✔ ' + added.length + '語を、単語アプリのデッキ「' + esc(deck.brand + ' ' + deck.title) + '」に足しました（全 ' + deck.words.length + '語）。' +
       (skipped.length ? '<br><small>送らなかった語：' + esc(skipped.join('、')) + '</small>' : '') + '</p>' +
-      '<a class="go" href="vocab.html?deck=' + encodeURIComponent(DECK_ID) + '">単語アプリで開く ›</a>';
+      '<a class="go" href="vocab.html?deck=' + encodeURIComponent(deck.id) + '">単語アプリで開く ›</a>';
     wordsScreen(wFrom);
     setTimeout(function () { $('#wMsg').innerHTML = msg; }, 0);
   }
