@@ -167,8 +167,16 @@
   (window.LE_COURSES || []).concat(imported).forEach(function (c) {
     var S = read(c.storageKey) || {};
     var vocab = c.kind === 'vocab';
-    var done = vocab ? Object.keys(S.cards || {}).length : Object.keys(S.lessons || {}).filter(function (k) { return S.lessons[k] && S.lessons[k].done; }).length;
+    /* 図鑑の数は単語アプリ（core.js の caughtCount）と同じ：いまのデッキにある語のカードだけ。
+     *  活用のカード（cj:…）や、デッキから外れた語のカードは数えない。語が増えたら % は下がってよい */
+    var done;
+    if (vocab) {
+      var inDeck = null;
+      if (c.imported) { var D = VocabDecks.get(c.id); if (D && Array.isArray(D.words)) { inDeck = {}; D.words.forEach(function (w) { if (w && w.id) inDeck[w.id] = 1; }); } }
+      done = Object.keys(S.cards || {}).filter(function (id) { return id.indexOf('cj:') !== 0 && (!inDeck || inDeck[id]); }).length;
+    } else done = Object.keys(S.lessons || {}).filter(function (k) { return S.lessons[k] && S.lessons[k].done; }).length;
     var all = vocab ? c.words : c.lessons;
+    if (all) done = Math.min(done, all);
     var pct = all ? Math.round(done / all * 100) : 0;
     var last = vocab ? Object.keys(S.cards || {}).reduce(function (m, k) { return Math.max(m, S.cards[k].last || 0); }, 0)
                      : P.courses && P.courses[c.id] && P.courses[c.id].last;
