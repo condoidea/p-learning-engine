@@ -1,0 +1,707 @@
+{
+  "format": 1,
+  "sceneJa": "✉️ 結婚式の数か月前、ルシアの実家。昔の思い出が見つかる",
+  "phrases": [
+    {
+      "t": "me da un poco de vergüenza",
+      "ja": "ちょっと恥ずかしい（dar vergüenza）",
+      "key": true
+    },
+    {
+      "t": "me daba mucha vergüenza",
+      "ja": "とても恥ずかしかった（dar vergüenza）",
+      "key": true
+    },
+    {
+      "t": "con vistas a",
+      "ja": "〜が見える（景色が見える部屋）",
+      "key": true
+    },
+    {
+      "t": "qué te parece",
+      "ja": "〜はどう思う？（¿Qué te parece…?）",
+      "key": true
+    },
+    {
+      "t": "tener razón",
+      "ja": "正しい・当たっている",
+      "key": true
+    },
+    {
+      "t": "al final",
+      "ja": "結局・終わりに",
+      "key": true
+    },
+    {
+      "t": "en voz alta",
+      "ja": "声に出して",
+      "key": true
+    },
+    {
+      "t": "viaje de novios",
+      "ja": "新婚旅行",
+      "key": true
+    },
+    {
+      "t": "dentro de quince años",
+      "ja": "（今から）15年後に（dentro de ＋ 期間）",
+      "key": true
+    },
+    {
+      "t": "hace quince años",
+      "ja": "15年前に（hace ＋ 期間）",
+      "key": true
+    },
+    {
+      "t": "todavía queda tiempo",
+      "ja": "まだ時間がある",
+      "key": true
+    },
+    {
+      "t": "por cierto",
+      "ja": "ところで"
+    },
+    {
+      "t": "por favor",
+      "ja": "お願いします・どうぞ"
+    },
+    {
+      "t": "de pequeña",
+      "ja": "小さいころ（女性が言う場合）"
+    },
+    {
+      "t": "ya me acuerdo",
+      "ja": "思い出した"
+    },
+    {
+      "t": "te acuerdas de",
+      "ja": "〜を覚えている"
+    }
+  ],
+  "words": {
+    "encontrado": {
+      "w": "encontrar",
+      "pos": "v",
+      "ja": "見つける・出会う",
+      "form": "encontrar の過去分詞（he encontrado＝現在完了）"
+    },
+    "tuyas": {
+      "w": "tuyo",
+      "pos": "pron",
+      "ja": "君のもの・君の",
+      "form": "tuyo の女性複数形（fotos tuyas＝君の写真）"
+    },
+    "cuadernos": {
+      "w": "cuaderno",
+      "pos": "n",
+      "g": "m",
+      "ja": "ノート",
+      "form": "複数形"
+    },
+    "quince": {
+      "w": "quince",
+      "pos": "num",
+      "ja": "15"
+    },
+    "ti": {
+      "w": "ti",
+      "pos": "pron",
+      "ja": "君（前置詞のあと）",
+      "form": "前置詞のあとの tú（detrás de ti＝君の後ろに）"
+    },
+    "misma": {
+      "w": "mismo",
+      "pos": "adj",
+      "ja": "自分自身の・同じ",
+      "form": "mismo の女性形（para ti misma＝君自身に）"
+    },
+    "acuerdo": {
+      "w": "acordarse",
+      "pos": "v",
+      "ja": "思い出す・覚えている",
+      "form": "acordarse の一人称単数・現在（me acuerdo＝私は思い出す）",
+      "cj": {
+        "stem": "ue"
+      }
+    },
+    "acuerdas": {
+      "w": "acordarse",
+      "pos": "v",
+      "ja": "思い出す・覚えている",
+      "form": "acordarse の二人称単数・現在（¿te acuerdas?＝覚えてる？）",
+      "cj": {
+        "stem": "ue"
+      }
+    },
+    "acordarás": {
+      "w": "acordarse",
+      "pos": "v",
+      "ja": "思い出す・覚えている",
+      "form": "acordarse の未来・二人称単数（no te acordarás de mí＝僕のことは覚えていないでしょう）",
+      "cj": {
+        "stem": "ue"
+      }
+    },
+    "instituto": {
+      "w": "instituto",
+      "pos": "n",
+      "g": "m",
+      "ja": "高校（スペインの中等学校）"
+    },
+    "lengua": {
+      "w": "lengua",
+      "pos": "n",
+      "g": "f",
+      "ja": "言語・国語・舌"
+    },
+    "ejercicio": {
+      "w": "ejercicio",
+      "pos": "n",
+      "g": "m",
+      "ja": "課題・練習問題・運動"
+    },
+    "olvidado": {
+      "w": "olvidarse",
+      "pos": "v",
+      "ja": "忘れる",
+      "form": "olvidarse の過去分詞（me había olvidado＝過去完了。すっかり忘れていた）"
+    },
+    "completamente": {
+      "w": "completamente",
+      "pos": "adv",
+      "ja": "完全に・すっかり",
+      "form": "completa（女性形）＋ -mente"
+    },
+    "léemela": {
+      "w": "leer",
+      "pos": "v",
+      "ja": "読む",
+      "form": "leer の tú への命令 lee ＋ me（私に）＋ la（それを）。肯定命令は代名詞を後ろにつなげる"
+    },
+    "vergüenza": {
+      "w": "vergüenza",
+      "pos": "n",
+      "g": "f",
+      "ja": "恥ずかしさ・恥",
+      "key": true,
+      "note": "me da vergüenza＝恥ずかしい"
+    },
+    "vale": {
+      "w": "vale",
+      "pos": "interj",
+      "ja": "了解・いいよ",
+      "note": "valer の活用形だが、会話では「OK」の決まり文句"
+    },
+    "querida": {
+      "w": "querido",
+      "pos": "adj",
+      "ja": "親愛なる・愛しい",
+      "form": "querido の女性形（手紙の書き出し Querida Lucía＝親愛なるルシアへ）"
+    },
+    "leas": {
+      "w": "leer",
+      "pos": "v",
+      "ja": "読む",
+      "form": "leer の接続法現在・二人称単数（cuando leas＝まだ先のことを言う cuando のあと）"
+    },
+    "seguramente": {
+      "w": "seguramente",
+      "pos": "adv",
+      "ja": "きっと・おそらく",
+      "form": "segura（女性形）＋ -mente"
+    },
+    "serás": {
+      "w": "ser",
+      "pos": "v",
+      "ja": "〜である・〜になる",
+      "form": "ser の未来・二人称単数（serás una actriz＝あなたは女優になっているでしょう）"
+    },
+    "actriz": {
+      "w": "actriz",
+      "pos": "n",
+      "g": "f",
+      "ja": "女優",
+      "note": "男性は actor"
+    },
+    "famosa": {
+      "w": "famoso",
+      "pos": "adj",
+      "ja": "有名な",
+      "form": "famoso の女性形"
+    },
+    "actuaba": {
+      "w": "actuar",
+      "pos": "v",
+      "ja": "演じる・行動する",
+      "form": "actuar の線過去・三人称単数（または一人称）。ここでは「演技していた」",
+      "key": true,
+      "clue": {
+        "t": "cog",
+        "text": "英語の act と同じ祖先"
+      }
+    },
+    "sigo": {
+      "w": "seguir",
+      "pos": "v",
+      "ja": "続ける・続く",
+      "form": "seguir の一人称単数・現在（sigo＝続けるね）",
+      "cj": {
+        "pres": [
+          "sigo",
+          "sigues",
+          "sigue",
+          "seguimos",
+          "seguís",
+          "siguen"
+        ],
+        "pret": [
+          "seguí",
+          "seguiste",
+          "siguió",
+          "seguimos",
+          "seguisteis",
+          "siguieron"
+        ],
+        "subj": [
+          "siga",
+          "sigas",
+          "siga",
+          "sigamos",
+          "sigáis",
+          "sigan"
+        ]
+      }
+    },
+    "vistas": {
+      "w": "vista",
+      "pos": "n",
+      "g": "f",
+      "ja": "眺め・景色",
+      "key": true,
+      "form": "複数形（con vistas a＝〜が見える）",
+      "note": "con vistas a ＝ 〜が見える（景色の良い部屋）"
+    },
+    "llamará": {
+      "w": "llamarse",
+      "pos": "v",
+      "ja": "〜という名前である",
+      "form": "llamarse の未来・三人称単数（se llamará Napoleón＝ナポレオンという名前になる）"
+    },
+    "casi": {
+      "w": "casi",
+      "pos": "adv",
+      "ja": "ほとんど・惜しい"
+    },
+    "calla": {
+      "w": "callarse",
+      "pos": "v",
+      "ja": "黙る",
+      "form": "callarse の tú への命令（calla＝黙って）"
+    },
+    "cases": {
+      "w": "casarse",
+      "pos": "v",
+      "ja": "結婚する",
+      "form": "casarse の接続法現在・二人称単数（espero que no te cases＝結婚していないといいな。esperar que のあとは接続法）"
+    },
+    "aburrido": {
+      "w": "aburrido",
+      "pos": "adj",
+      "ja": "退屈な・つまらない",
+      "note": "ser aburrido＝退屈な人、estar aburrido＝退屈している"
+    },
+    "ojalá": {
+      "w": "ojalá",
+      "pos": "interj",
+      "ja": "〜でありますように・〜だといいのに",
+      "key": true,
+      "note": "あとに接続法が続く（ojalá no trabajes＝どうか働いていませんように）"
+    },
+    "trabajes": {
+      "w": "trabajar",
+      "pos": "v",
+      "ja": "働く",
+      "form": "trabajar の接続法現在・二人称単数（ojalá のあと）"
+    },
+    "uy": {
+      "w": "uy",
+      "pos": "interj",
+      "ja": "あらら・うわ"
+    },
+    "trabajas": {
+      "w": "trabajar",
+      "pos": "v",
+      "ja": "働く",
+      "form": "trabajar の二人称単数・現在"
+    },
+    "casar": {
+      "w": "casarse",
+      "pos": "v",
+      "ja": "結婚する",
+      "form": "casarse の不定詞（te vas a casar＝君は結婚する予定だ。ir a ＋ 不定詞）"
+    },
+    "decepcionada": {
+      "w": "decepcionado",
+      "pos": "adj",
+      "ja": "がっかりした・失望した",
+      "key": true,
+      "form": "decepcionado の女性形（estaría decepcionada＝がっかりするだろう）"
+    },
+    "practica": {
+      "w": "practicar",
+      "pos": "v",
+      "ja": "練習する",
+      "form": "practicar の三人称単数・現在"
+    },
+    "declaraciones": {
+      "w": "declaración",
+      "pos": "n",
+      "g": "f",
+      "ja": "告白・宣言・声明",
+      "key": true,
+      "form": "複数形（practicar declaraciones＝告白の練習をする）",
+      "clue": {
+        "t": "cog",
+        "text": "英語の declaration と同じ祖先"
+      }
+    },
+    "d": {
+      "w": "d",
+      "pos": "n",
+      "g": "f",
+      "ja": "D（アルファベット。名前の頭文字）"
+    },
+    "clase": {
+      "w": "clase",
+      "pos": "n",
+      "g": "f",
+      "ja": "授業・クラス・教室"
+    },
+    "sino": {
+      "w": "sino",
+      "pos": "conj",
+      "ja": "〜ではなくて…",
+      "note": "no A sino B＝AではなくB"
+    },
+    "final": {
+      "w": "final",
+      "pos": "n",
+      "g": "m",
+      "ja": "終わり・最後",
+      "note": "al final ＝ 結局／〜の終わりに"
+    },
+    "curso": {
+      "w": "curso",
+      "pos": "n",
+      "g": "m",
+      "ja": "学年・課程・講座",
+      "key": true,
+      "clue": {
+        "t": "cog",
+        "text": "英語の course と同じ祖先"
+      }
+    },
+    "devolvió": {
+      "w": "devolver",
+      "pos": "v",
+      "ja": "返す",
+      "form": "devolver の点過去・三人称単数（la profesora nos devolvió las cartas＝先生が手紙を返した）",
+      "key": true,
+      "clue": {
+        "t": "parts",
+        "text": "de-（元へ）＋ volver（回る・戻る）"
+      }
+    },
+    "sin": {
+      "w": "sin",
+      "pos": "prep",
+      "ja": "〜なしで"
+    },
+    "abrirlas": {
+      "w": "abrir",
+      "pos": "v",
+      "ja": "開ける",
+      "form": "abrir ＋ las（それらを）。不定詞のあとに代名詞をつなげる（sin abrirlas＝それらを開けずに）"
+    },
+    "mías": {
+      "w": "mío",
+      "pos": "pron",
+      "ja": "私のもの",
+      "form": "mío の女性複数形（eran mías＝私のものだった）"
+    },
+    "pensé": {
+      "w": "pensar",
+      "pos": "v",
+      "ja": "思う・考える",
+      "form": "pensar の点過去・一人称単数"
+    },
+    "dijiste": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う",
+      "form": "decir の点過去・二人称単数（nunca me lo dijiste＝一度も言ってくれなかった）"
+    },
+    "daba": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "与える・渡す",
+      "form": "dar の線過去・三人称単数（me daba vergüenza＝恥ずかしかった）"
+    },
+    "creía": {
+      "w": "creer",
+      "pos": "v",
+      "ja": "思う・信じる",
+      "form": "creer の線過去・一人称単数（creía que＝〜と思っていた）"
+    },
+    "abrirías": {
+      "w": "abrir",
+      "pos": "v",
+      "ja": "開ける",
+      "form": "abrir の過去未来・二人称単数（creía que la abrirías＝君はそれを開けるだろうと思っていた）"
+    },
+    "enseguida": {
+      "w": "enseguida",
+      "pos": "adv",
+      "ja": "すぐに"
+    },
+    "reirías": {
+      "w": "reírse",
+      "pos": "v",
+      "ja": "笑う",
+      "form": "reírse の過去未来・二人称単数（te reirías de mí＝僕のことを笑うだろう）"
+    },
+    "entendí": {
+      "w": "entender",
+      "pos": "v",
+      "ja": "理解する・分かる",
+      "form": "entender の点過去・一人称単数"
+    },
+    "intenté": {
+      "w": "intentar",
+      "pos": "v",
+      "ja": "試みる・〜しようとする",
+      "form": "intentar の点過去・一人称単数（intenté olvidarme＝忘れようとした）"
+    },
+    "olvidarme": {
+      "w": "olvidarse",
+      "pos": "v",
+      "ja": "忘れる",
+      "form": "olvidarse ＋ me。不定詞に代名詞をつなげた形（intenté olvidarme de ella＝それを忘れようとした）"
+    },
+    "puedo": {
+      "w": "poder",
+      "pos": "v",
+      "ja": "できる・〜してもよい",
+      "form": "poder の一人称単数・現在（¿puedo abrirla?＝開けてもいい？）"
+    },
+    "abrirla": {
+      "w": "abrir",
+      "pos": "v",
+      "ja": "開ける",
+      "form": "abrir ＋ la（それを）"
+    },
+    "detrás": {
+      "w": "detrás",
+      "pos": "adv",
+      "ja": "後ろに",
+      "note": "detrás de ＋ 名詞＝〜の後ろに"
+    },
+    "matemáticas": {
+      "w": "matemáticas",
+      "pos": "n",
+      "g": "f",
+      "ja": "数学",
+      "form": "複数形で使う"
+    },
+    "gustas": {
+      "w": "gustar",
+      "pos": "v",
+      "ja": "好まれる・気に入られる",
+      "form": "gustar の二人称単数・現在（me gustas＝私は君が好き。直訳は「君は私に気に入られている」）"
+    },
+    "demasiado": {
+      "w": "demasiado",
+      "pos": "adv",
+      "ja": "〜すぎる",
+      "form": "形容詞の前では語尾が変わらない（demasiado guay）"
+    },
+    "guay": {
+      "w": "guay",
+      "pos": "adj",
+      "ja": "かっこいい・すてきな",
+      "key": true,
+      "note": "スペインの口語。性数で変化しない"
+    },
+    "voz": {
+      "w": "voz",
+      "pos": "n",
+      "g": "f",
+      "ja": "声",
+      "note": "en voz alta＝声に出して"
+    },
+    "invitaré": {
+      "w": "invitar",
+      "pos": "v",
+      "ja": "招く・ごちそうする",
+      "form": "invitar の未来・一人称単数（te invitaré a una paella＝パエリアをごちそうしよう）"
+    },
+    "paella": {
+      "w": "paella",
+      "pos": "n",
+      "g": "f",
+      "ja": "パエリア"
+    },
+    "paellas": {
+      "w": "paella",
+      "pos": "n",
+      "g": "f",
+      "ja": "パエリア",
+      "form": "複数形"
+    },
+    "buenísima": {
+      "w": "bueno",
+      "pos": "adj",
+      "ja": "すごくおいしい・とてもよい",
+      "form": "bueno の絶対最上級（-ísimo）の女性形"
+    },
+    "ni": {
+      "w": "ni",
+      "pos": "conj",
+      "ja": "〜も…ない",
+      "note": "ni entonces ni ahora＝当時も今も〜ない"
+    },
+    "llamado": {
+      "w": "llamar",
+      "pos": "v",
+      "ja": "呼ぶ・名づける",
+      "form": "llamar の過去分詞（un perro llamado Napoleón＝ナポレオンという名前の犬）"
+    },
+    "sientas": {
+      "w": "sentir",
+      "pos": "v",
+      "ja": "感じる・残念に思う",
+      "form": "sentir の否定命令（接続法現在・二人称）。no lo sientas＝謝らないで／lo siento＝ごめん"
+    },
+    "sabe": {
+      "w": "saber",
+      "pos": "v",
+      "ja": "知っている・〜できる",
+      "form": "saber の三人称単数・現在（no sabe hacer paella＝パエリアの作り方を知らない）"
+    },
+    "cierto": {
+      "w": "cierto",
+      "pos": "adj",
+      "ja": "確かな・本当の",
+      "note": "por cierto＝ところで"
+    },
+    "viajaría": {
+      "w": "viajar",
+      "pos": "v",
+      "ja": "旅行する",
+      "form": "viajar の過去未来・三人称単数／一人称（que viajaría a un país＝ある国に旅するだろう）"
+    },
+    "país": {
+      "w": "país",
+      "pos": "n",
+      "g": "m",
+      "ja": "国"
+    },
+    "lejano": {
+      "w": "lejano",
+      "pos": "adj",
+      "ja": "遠い"
+    },
+    "estado": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "〜である・いる",
+      "form": "estar の過去分詞（he estado pensando＝ずっと考えていた）"
+    },
+    "pensando": {
+      "w": "pensar",
+      "pos": "v",
+      "ja": "思う・考える",
+      "form": "pensar の現在分詞（he estado pensando en＝〜のことを考えていた）"
+    },
+    "novios": {
+      "w": "novio",
+      "pos": "n",
+      "g": "m",
+      "ja": "恋人・婚約者・新郎",
+      "form": "複数形（男女ふたりを指す。viaje de novios＝新婚旅行）"
+    },
+    "parece": {
+      "w": "parecer",
+      "pos": "v",
+      "ja": "〜に思える・〜のようだ",
+      "form": "parecer の三人称単数・現在（me parece perfecto＝完璧だと思う。¿qué te parece?＝どう思う？）"
+    },
+    "perfecto": {
+      "w": "perfecto",
+      "pos": "adj",
+      "ja": "完璧な・最高の"
+    },
+    "madame": {
+      "w": "madame",
+      "pos": "n",
+      "g": "f",
+      "ja": "マダム（フランス語の敬称）"
+    },
+    "encontraría": {
+      "w": "encontrar",
+      "pos": "v",
+      "ja": "見つける",
+      "form": "encontrar の過去未来・三人称単数（dijo que encontraría un trabajo＝仕事が見つかるだろうと言った）"
+    },
+    "queda": {
+      "w": "quedar",
+      "pos": "v",
+      "ja": "残っている・〜になる",
+      "form": "quedar の三人称単数・現在（queda tiempo＝時間が残っている）"
+    },
+    "gracioso": {
+      "w": "gracioso",
+      "pos": "adj",
+      "ja": "面白い・おかしな"
+    },
+    "guarda": {
+      "w": "guardar",
+      "pos": "v",
+      "ja": "しまう・保管する",
+      "form": "guardar の tú への命令（guarda las cartas＝手紙をしまって）"
+    },
+    "leeremos": {
+      "w": "leer",
+      "pos": "v",
+      "ja": "読む",
+      "form": "leer の未来・一人称複数（las leeremos＝私たちはそれを読むだろう）"
+    },
+    "próxima": {
+      "w": "próximo",
+      "pos": "adj",
+      "ja": "次の",
+      "form": "próximo の女性形（la próxima carta＝次の手紙）"
+    },
+    "lejos": {
+      "w": "lejos",
+      "pos": "adv",
+      "ja": "遠くに",
+      "note": "lejos de ＋ 名詞＝〜から遠くに"
+    },
+    "sobre": {
+      "w": "sobre",
+      "pos": "n",
+      "g": "m",
+      "ja": "封筒",
+      "key": true,
+      "note": "前置詞の sobre「〜の上に・〜について」もある"
+    },
+    "armario": {
+      "w": "armario",
+      "pos": "n",
+      "g": "m",
+      "ja": "クローゼット・たんす",
+      "key": true
+    }
+  }
+}

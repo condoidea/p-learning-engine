@@ -1,0 +1,782 @@
+{
+  "format": 1,
+  "sceneJa": "🦜 旅行に出た人の部屋で、留守を預かる日",
+  "phrases": [
+    {
+      "t": "demos de comer",
+      "ja": "エサ（食事）をあげる（dar de comer a 〜）",
+      "key": true,
+      "note": "demos は dar の接続法。que le demos de comer＝エサをあげてほしい"
+    },
+    {
+      "t": "hace daño",
+      "ja": "体に悪い・傷つける（hacer daño）",
+      "key": true
+    },
+    {
+      "t": "nada de",
+      "ja": "〜はなし・〜は禁止",
+      "key": true,
+      "note": "nada de chocolate＝チョコは禁止"
+    },
+    {
+      "t": "te has puesto pálido",
+      "ja": "青ざめた（ponerse pálido）",
+      "key": true,
+      "note": "現在完了。ponerse ＋ 形容詞＝〜になる"
+    },
+    {
+      "t": "dar un paseo",
+      "ja": "散歩する",
+      "key": true
+    },
+    {
+      "t": "acabamos de llegar",
+      "ja": "着いたばかりだ（acabar de ＋ 不定詞）",
+      "key": true
+    },
+    {
+      "t": "acaba de decir",
+      "ja": "言ったばかりだ（acabar de ＋ 不定詞）",
+      "key": true
+    },
+    {
+      "t": "no es lo que piensas",
+      "ja": "君が思っているようなことじゃない",
+      "key": true
+    },
+    {
+      "t": "madre mía",
+      "ja": "ああ、なんてこった",
+      "key": true,
+      "note": "ay, madre mía＝驚き・困惑の決まり文句"
+    },
+    {
+      "t": "ahora mismo",
+      "ja": "今すぐ",
+      "key": true
+    },
+    {
+      "t": "es broma",
+      "ja": "冗談だよ",
+      "key": true
+    },
+    {
+      "t": "cómo que",
+      "ja": "〜ってどういうこと？",
+      "key": true,
+      "note": "¿Cómo que te lo pensarás?＝考えておくって、どういうこと？"
+    },
+    {
+      "t": "claro que sí",
+      "ja": "もちろん・いいに決まってる"
+    },
+    {
+      "t": "claro que hay",
+      "ja": "もちろんある"
+    },
+    {
+      "t": "a ver",
+      "ja": "えっと・どれどれ"
+    },
+    {
+      "t": "por favor",
+      "ja": "お願いします・どうぞ"
+    },
+    {
+      "t": "por nada",
+      "ja": "なんでもない"
+    },
+    {
+      "t": "qué majo",
+      "ja": "いい人だね"
+    },
+    {
+      "t": "me lo pensaré",
+      "ja": "よく考えておく（pensarse algo）",
+      "note": "pensarse ＝ じっくり考える。未来形"
+    },
+    {
+      "t": "no me lo recuerdes",
+      "ja": "思い出させないで",
+      "note": "否定命令は接続法と同じ形"
+    }
+  ],
+  "words": {
+    "léemela": {
+      "w": "leer",
+      "pos": "v",
+      "ja": "読む",
+      "form": "leer の tú への命令 lee ＋ me（私に）＋ la（それを）"
+    },
+    "queridos": {
+      "w": "querido",
+      "pos": "adj",
+      "ja": "親愛なる・大切な",
+      "form": "男性複数形（queridos vecinos＝ご近所のみなさんへ）"
+    },
+    "vecinos": {
+      "w": "vecino",
+      "pos": "n",
+      "g": "m",
+      "ja": "隣人・近所の人",
+      "form": "複数形"
+    },
+    "majo": {
+      "w": "majo",
+      "pos": "adj",
+      "ja": "感じのいい・いい人",
+      "note": "スペインの口語。女性は maja",
+      "key": true,
+      "clue": {
+        "t": "ctx",
+        "text": "😊 お礼のメモを書いてくれた、気さくで親切な人"
+      }
+    },
+    "semillas": {
+      "w": "semilla",
+      "pos": "n",
+      "g": "f",
+      "ja": "種",
+      "form": "複数形",
+      "key": true,
+      "clue": {
+        "t": "ctx",
+        "text": "🌻 鳥のエサ。ひまわりなどの小さな粒"
+      }
+    },
+    "jaula": {
+      "w": "jaula",
+      "pos": "n",
+      "g": "f",
+      "ja": "鳥かご・檻",
+      "key": true,
+      "clue": {
+        "t": "ctx",
+        "text": "🦜 鳥が中で暮らしている、格子のある入れもの"
+      }
+    },
+    "brilla": {
+      "w": "brillar",
+      "pos": "v",
+      "ja": "光る・輝く",
+      "form": "brillar の三人称単数・現在",
+      "key": true,
+      "clue": {
+        "t": "ctx",
+        "text": "💍 かごの底で、きらっと目に入るもの"
+      }
+    },
+    "alas": {
+      "w": "ala",
+      "pos": "n",
+      "g": "f",
+      "ja": "羽・翼",
+      "form": "複数形",
+      "key": true,
+      "clue": {
+        "t": "ctx",
+        "text": "🦜 鳥が動かして飛ぶところ"
+      }
+    },
+    "bolsillo": {
+      "w": "bolsillo",
+      "pos": "n",
+      "g": "m",
+      "ja": "ポケット",
+      "key": true,
+      "clue": {
+        "t": "ctx",
+        "text": "👖 ズボンや上着についた、小さなものを入れる所"
+      }
+    },
+    "supongo": {
+      "w": "suponer",
+      "pos": "v",
+      "ja": "推測する・〜だろうと思う",
+      "form": "suponer の一人称単数・現在（不規則：supongo）",
+      "key": true,
+      "cj": {
+        "yo": "supongo"
+      }
+    },
+    "quito": {
+      "w": "quitar",
+      "pos": "v",
+      "ja": "取り除く・取り上げる",
+      "form": "quitar の一人称単数・現在（se lo quito＝（彼から）それを取る）",
+      "key": true
+    },
+    "guardado": {
+      "w": "guardar",
+      "pos": "v",
+      "ja": "しまう・保管する",
+      "form": "guardar の過去分詞（lo había guardado＝過去完了）",
+      "key": true
+    },
+    "nota": {
+      "w": "nota",
+      "pos": "n",
+      "g": "f",
+      "ja": "メモ・注意書き"
+    },
+    "larguísima": {
+      "w": "largo",
+      "pos": "adj",
+      "ja": "とても長い",
+      "form": "largo の -ísimo 形（女性形）。nota larguísima＝すごく長いメモ"
+    },
+    "larguísimo": {
+      "w": "largo",
+      "pos": "adj",
+      "ja": "とても長い",
+      "form": "largo の -ísimo 形"
+    },
+    "instrucciones": {
+      "w": "instrucción",
+      "pos": "n",
+      "g": "f",
+      "ja": "指示・説明",
+      "form": "複数形"
+    },
+    "cuidar": {
+      "w": "cuidar",
+      "pos": "v",
+      "ja": "世話をする・大事にする",
+      "note": "cuidar a 〜＝〜の世話をする"
+    },
+    "loro": {
+      "w": "loro",
+      "pos": "n",
+      "g": "m",
+      "ja": "オウム"
+    },
+    "demos": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "与える・渡す",
+      "form": "dar の接続法・現在・一人称複数（que le demos＝私たちがあげるように）"
+    },
+    "fruta": {
+      "w": "fruta",
+      "pos": "n",
+      "g": "f",
+      "ja": "果物"
+    },
+    "chocolate": {
+      "w": "chocolate",
+      "pos": "n",
+      "g": "m",
+      "ja": "チョコレート"
+    },
+    "fresca": {
+      "w": "fresco",
+      "pos": "adj",
+      "ja": "新鮮な・冷たい",
+      "form": "fresco の女性形（agua fresca＝冷たい新しい水）"
+    },
+    "tenga": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持つ・ある",
+      "form": "tener の接続法・現在・三人称単数（es importante que tenga＝〜があることが大事）"
+    },
+    "prefiere": {
+      "w": "preferir",
+      "pos": "v",
+      "ja": "〜のほうを好む・〜してほしい",
+      "form": "preferir の三人称単数・現在",
+      "cj": {
+        "stem": "ie",
+        "ir": "i"
+      }
+    },
+    "pongamos": {
+      "w": "poner",
+      "pos": "v",
+      "ja": "置く・つける",
+      "form": "poner の接続法・現在・一人称複数（que no pongamos＝かけないでほしい）"
+    },
+    "canciones": {
+      "w": "canción",
+      "pos": "n",
+      "g": "f",
+      "ja": "歌",
+      "form": "複数形"
+    },
+    "canta": {
+      "w": "cantar",
+      "pos": "v",
+      "ja": "歌う",
+      "form": "cantar の三人称単数・現在"
+    },
+    "listo": {
+      "w": "listo",
+      "pos": "adj",
+      "ja": "賢い・準備できた",
+      "note": "ser listo＝賢い／estar listo＝準備ができている"
+    },
+    "cuidado": {
+      "w": "cuidado",
+      "pos": "n",
+      "g": "m",
+      "ja": "注意",
+      "note": "¡Cuidado!＝気をつけて"
+    },
+    "repite": {
+      "w": "repetir",
+      "pos": "v",
+      "ja": "繰り返す",
+      "form": "repetir の三人称単数・現在",
+      "cj": {
+        "stem": "i",
+        "ir": "i"
+      }
+    },
+    "repita": {
+      "w": "repetir",
+      "pos": "v",
+      "ja": "繰り返す",
+      "form": "repetir の接続法・現在・三人称単数（que lo repita＝繰り返させておけ）",
+      "cj": {
+        "stem": "i",
+        "ir": "i"
+      }
+    },
+    "recomiendo": {
+      "w": "recomendar",
+      "pos": "v",
+      "ja": "勧める",
+      "form": "recomendar の一人称単数・現在（e → ie）",
+      "cj": {
+        "yo": "recomiendo"
+      }
+    },
+    "habléis": {
+      "w": "hablar",
+      "pos": "v",
+      "ja": "話す",
+      "form": "hablar の接続法・現在・二人称複数 vosotros（no habléis＝話さないで）"
+    },
+    "secretas": {
+      "w": "secreto",
+      "pos": "adj",
+      "ja": "秘密の",
+      "form": "secreto の女性複数形"
+    },
+    "pálido": {
+      "w": "pálido",
+      "pos": "adj",
+      "ja": "青白い・青ざめた",
+      "note": "ponerse pálido＝青ざめる"
+    },
+    "llave": {
+      "w": "llave",
+      "pos": "n",
+      "g": "f",
+      "ja": "鍵"
+    },
+    "paseo": {
+      "w": "paseo",
+      "pos": "n",
+      "g": "m",
+      "ja": "散歩",
+      "note": "dar un paseo＝散歩する"
+    },
+    "plátano": {
+      "w": "plátano",
+      "pos": "n",
+      "g": "m",
+      "ja": "バナナ"
+    },
+    "pásame": {
+      "w": "pasar",
+      "pos": "v",
+      "ja": "渡す・手渡す",
+      "form": "pasar の tú への命令 pasa ＋ me（私に）"
+    },
+    "dáselo": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "与える・渡す",
+      "form": "dar の tú への命令 da ＋ se（彼に）＋ lo（それを）"
+    },
+    "rarísimo": {
+      "w": "raro",
+      "pos": "adj",
+      "ja": "すごく変な",
+      "form": "raro の -ísimo 形"
+    },
+    "moviendo": {
+      "w": "mover",
+      "pos": "v",
+      "ja": "動かす",
+      "form": "mover の現在分詞（está moviendo＝進行形）"
+    },
+    "cállate": {
+      "w": "callarse",
+      "pos": "v",
+      "ja": "黙る",
+      "form": "callarse の tú への命令 calla ＋ te"
+    },
+    "palabra": {
+      "w": "palabra",
+      "pos": "n",
+      "g": "f",
+      "ja": "言葉・単語"
+    },
+    "diciendo": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う",
+      "form": "decir の現在分詞（está diciendo＝進行形）"
+    },
+    "casarte": {
+      "w": "casarse",
+      "pos": "v",
+      "ja": "結婚する",
+      "form": "casarse ＋ te（君が）。¿quieres casarte conmigo?＝僕と結婚してくれる？"
+    },
+    "conmigo": {
+      "w": "conmigo",
+      "pos": "pron",
+      "ja": "私と一緒に",
+      "note": "con ＋ mí の特別形"
+    },
+    "practicado": {
+      "w": "practicar",
+      "pos": "v",
+      "ja": "練習する",
+      "form": "practicar の過去分詞（he practicado＝現在完了）"
+    },
+    "practicando": {
+      "w": "practicar",
+      "pos": "v",
+      "ja": "練習する",
+      "form": "practicar の現在分詞（has estado practicando＝ずっと練習していた）"
+    },
+    "practicar": {
+      "w": "practicar",
+      "pos": "v",
+      "ja": "練習する"
+    },
+    "espejo": {
+      "w": "espejo",
+      "pos": "n",
+      "g": "m",
+      "ja": "鏡"
+    },
+    "plan": {
+      "w": "plan",
+      "pos": "n",
+      "g": "m",
+      "ja": "計画"
+    },
+    "flores": {
+      "w": "flor",
+      "pos": "n",
+      "g": "f",
+      "ja": "花",
+      "form": "複数形"
+    },
+    "anillo": {
+      "w": "anillo",
+      "pos": "n",
+      "g": "m",
+      "ja": "指輪"
+    },
+    "encima": {
+      "w": "encima",
+      "pos": "adv",
+      "ja": "上に",
+      "note": "encima de ＋ 名詞＝〜の上に"
+    },
+    "saqué": {
+      "w": "sacar",
+      "pos": "v",
+      "ja": "取り出す",
+      "form": "sacar の点過去・一人称単数（c → qu）"
+    },
+    "acuerdas": {
+      "w": "acordarse",
+      "pos": "v",
+      "ja": "覚えている・思い出す",
+      "form": "acordarse の二人称単数・現在（¿te acuerdas?＝覚えてる？）",
+      "cj": {
+        "stem": "ue"
+      }
+    },
+    "abuela": {
+      "w": "abuela",
+      "pos": "n",
+      "g": "f",
+      "ja": "おばあちゃん"
+    },
+    "perderías": {
+      "w": "perder",
+      "pos": "v",
+      "ja": "なくす・失う",
+      "form": "perder の過去未来・二人称単数（dijo que perderías＝なくすだろうと言った）"
+    },
+    "recuerdes": {
+      "w": "recordar",
+      "pos": "v",
+      "ja": "思い出させる",
+      "form": "recordar の接続法・二人称単数（no me lo recuerdes＝否定命令）"
+    },
+    "dentro": {
+      "w": "dentro",
+      "pos": "adv",
+      "ja": "中に",
+      "note": "dentro de ＋ 名詞＝〜の中に"
+    },
+    "debajo": {
+      "w": "debajo",
+      "pos": "adv",
+      "ja": "下に",
+      "note": "debajo de ＋ 名詞＝〜の下に"
+    },
+    "devuélvemelo": {
+      "w": "devolver",
+      "pos": "v",
+      "ja": "返す",
+      "form": "devolver の tú への命令 devuelve ＋ me（私に）＋ lo（それを）"
+    },
+    "déjalo": {
+      "w": "dejar",
+      "pos": "v",
+      "ja": "放っておく・やめる",
+      "form": "dejar の tú への命令 deja ＋ lo（それを）。déjalo＝いいから放っておいて"
+    },
+    "precioso": {
+      "w": "precioso",
+      "pos": "adj",
+      "ja": "きれいな・すばらしい"
+    },
+    "preguntes": {
+      "w": "preguntar",
+      "pos": "v",
+      "ja": "たずねる",
+      "form": "preguntar の接続法・二人称単数（quiero que me lo preguntes＝あなたの口から聞きたい）"
+    },
+    "mirándome": {
+      "w": "mirar",
+      "pos": "v",
+      "ja": "見る",
+      "form": "mirar の現在分詞 mirando ＋ me（私を）"
+    },
+    "ojos": {
+      "w": "ojo",
+      "pos": "n",
+      "g": "m",
+      "ja": "目",
+      "form": "複数形"
+    },
+    "broma": {
+      "w": "broma",
+      "pos": "n",
+      "g": "f",
+      "ja": "冗談"
+    },
+    "tonto": {
+      "w": "tonto",
+      "pos": "n",
+      "g": "m",
+      "ja": "ばか・間抜け",
+      "note": "形容詞では「ばかな」。愛情をこめた呼びかけにもなる"
+    },
+    "frase": {
+      "w": "frase",
+      "pos": "n",
+      "g": "f",
+      "ja": "文・セリフ"
+    },
+    "aprendido": {
+      "w": "aprender",
+      "pos": "v",
+      "ja": "覚える・学ぶ",
+      "form": "aprender の過去分詞（ha aprendido＝現在完了）"
+    },
+    "aprende": {
+      "w": "aprender",
+      "pos": "v",
+      "ja": "覚える・学ぶ",
+      "form": "aprender の三人称単数・現在"
+    },
+    "pensaba": {
+      "w": "pensar",
+      "pos": "v",
+      "ja": "思う・考える",
+      "form": "pensar の線過去・一人称単数（pensaba que＝〜と思っていた）"
+    },
+    "pensaré": {
+      "w": "pensarse",
+      "pos": "v",
+      "ja": "よく考える",
+      "form": "pensarse の未来・一人称単数（me lo pensaré＝考えておく）"
+    },
+    "dejado": {
+      "w": "dejar",
+      "pos": "v",
+      "ja": "置く・残す",
+      "form": "dejar の過去分詞（nos ha dejado una nota＝現在完了）"
+    },
+    "veces": {
+      "w": "vez",
+      "pos": "n",
+      "g": "f",
+      "ja": "回・度",
+      "form": "複数形（dos veces al día＝1日2回）"
+    },
+    "daño": {
+      "w": "daño",
+      "pos": "n",
+      "g": "m",
+      "ja": "害・損害",
+      "note": "hacer daño＝体に悪い・傷つける"
+    },
+    "vale": {
+      "w": "vale",
+      "pos": "interj",
+      "ja": "了解・いいよ",
+      "note": "valer の活用形だが、会話では「OK」の決まり文句"
+    },
+    "radio": {
+      "w": "radio",
+      "pos": "n",
+      "g": "f",
+      "ja": "ラジオ"
+    },
+    "quedé": {
+      "w": "quedarse",
+      "pos": "v",
+      "ja": "とどまる・残る",
+      "form": "quedarse の点過去・一人称単数（me quedé＝私は残った）"
+    },
+    "mías": {
+      "w": "mío",
+      "pos": "adj",
+      "ja": "私の",
+      "form": "mío の女性複数形（cosas mías＝私のこと）"
+    },
+    "acabamos": {
+      "w": "acabar",
+      "pos": "v",
+      "ja": "終える",
+      "form": "acabar の一人称複数・現在（acabamos de llegar＝着いたばかりだ）"
+    },
+    "acaba": {
+      "w": "acabar",
+      "pos": "v",
+      "ja": "終える",
+      "form": "acabar の三人称単数・現在（acaba de decir＝言ったばかりだ）"
+    },
+    "darle": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "与える・渡す",
+      "form": "dar ＋ le（彼に＝ペピートに）"
+    },
+    "toma": {
+      "w": "tomar",
+      "pos": "v",
+      "ja": "取る・受け取る",
+      "form": "tomar の tú への命令（toma＝はい、どうぞ）"
+    },
+    "vámonos": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "行く",
+      "form": "ir の一人称複数の命令 vamos ＋ nos（vámonos＝行こう）"
+    },
+    "ni": {
+      "w": "ni",
+      "pos": "conj",
+      "ja": "〜も…ない",
+      "note": "ni una palabra＝一言も（〜ない）"
+    },
+    "shh": {
+      "w": "shh",
+      "pos": "interj",
+      "ja": "しっ！（静かに）"
+    },
+    "exactamente": {
+      "w": "exactamente",
+      "pos": "adv",
+      "ja": "まさに・正確に",
+      "form": "exacta（女性形）＋ -mente"
+    },
+    "estado": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "いる・ある",
+      "form": "estar の過去分詞（has estado practicando＝現在完了進行）"
+    },
+    "unas": {
+      "w": "uno",
+      "pos": "det",
+      "ja": "約・いくつかの",
+      "form": "uno の女性複数形（unas veinte veces＝20回ほど）"
+    },
+    "decírtelo": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う・伝える",
+      "form": "decir ＋ te（君に）＋ lo（それを）"
+    },
+    "perfecto": {
+      "w": "perfecto",
+      "pos": "adj",
+      "ja": "完璧な"
+    },
+    "pues": {
+      "w": "pues",
+      "pos": "conj",
+      "ja": "だって・それなら・えっと"
+    },
+    "pensarás": {
+      "w": "pensar",
+      "pos": "v",
+      "ja": "思う・考える",
+      "form": "pensar の未来・二人称単数（te lo pensarás）"
+    },
+    "oído": {
+      "w": "oír",
+      "pos": "v",
+      "ja": "聞く・聞こえる",
+      "form": "oír の過去分詞（¿has oído?＝聞いた？）",
+      "cj": {
+        "pres": [
+          "oigo",
+          "oyes",
+          "oye",
+          "oímos",
+          "oís",
+          "oyen"
+        ],
+        "pret": [
+          "oí",
+          "oíste",
+          "oyó",
+          "oímos",
+          "oísteis",
+          "oyeron"
+        ],
+        "subj": [
+          "oiga",
+          "oigas",
+          "oiga",
+          "oigamos",
+          "oigáis",
+          "oigan"
+        ],
+        "futS": "oir"
+      }
+    },
+    "genial": {
+      "w": "genial",
+      "pos": "adj",
+      "ja": "最高の・すばらしい"
+    }
+  }
+}

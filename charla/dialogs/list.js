@@ -9,11 +9,13 @@
 window.CHARLA_SERIES = [
   {
     id: 'lucia-diego', title: 'ルシアとディエゴ', sub: '西検4級 リスニング・ダイアログ集', guide: 'guide.md',
-    names: ['Lucía', 'Diego', 'Tomate', 'Michi', 'Rosa', 'Rosario', 'Felipe', 'Ramón', 'Pepito', 'Madrid'],   /* 人名・地名（意味を出さない） */
+    names: ['Lucía', 'Diego', 'Tomate', 'Michi', 'Rosa', 'Rosario', 'Felipe', 'Ramón', 'Pepito', 'Madrid', 'Valencia', 'Eiffel', 'Napoleón', 'Retiro'],   /* 人名・地名（意味を出さない） */
     dialogs: [
       { id: '20261118-164801-d974', no: 1, title: 'La paella desaparecida', titleJa: '消えたパエリア' },
       { id: '20261118-165132-88b2', no: 2, title: 'Madame Rosa lo sabe todo', titleJa: 'マダム・ロサはすべてお見通し' },
-      { id: '20261118-170108-b559', no: 3, title: 'El piso equivocado', titleJa: '間違えた部屋' }
+      { id: '20261118-170108-b559', no: 3, title: 'El piso equivocado', titleJa: '間違えた部屋' },
+      { id: '20261118-170514-931d', no: 4, title: 'Pepito lo cuenta todo', titleJa: 'ペピートは何でもしゃべる' },
+      { id: '20261119-170223-2b45', no: 5, title: 'La carta del instituto', titleJa: '高校時代の手紙' }
     ]
   }
 ];

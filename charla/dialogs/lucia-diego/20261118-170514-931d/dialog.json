@@ -1,0 +1,352 @@
+{
+  "format": 1,
+  "id": "20261118-170514-931d",
+  "title": "04 Pepito lo cuenta todo",
+  "scene": "Piso de don Ramón, el vecino de Diego. Don Ramón se ha ido unos días a Valencia y Lucía y Diego cuidan a su loro, Pepito. Diego esconde un secreto. Conversación natural, con humor y un final emocionante.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-19T08:02:23.390Z",
+  "audio": "audio.mp3",
+  "durationMs": 295704,
+  "speakers": [
+    {
+      "id": "LUCIA",
+      "gender": "female",
+      "persona": "Lucía, unos 30 años, madrileña, segura de sí misma, irónica pero cariñosa"
+    },
+    {
+      "id": "DIEGO",
+      "gender": "male",
+      "persona": "Diego, unos 30 años, muy buena persona, un poco despistado, se pone nervioso con facilidad"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "LUCIA",
+      "text": "Diego, don Ramón se ha ido a Valencia y nos ha dejado una nota larguísima con instrucciones para cuidar a Pepito. ¿La has leído?",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 10173
+    },
+    {
+      "index": 1,
+      "speaker": "DIEGO",
+      "text": "No, todavía no. Léemela tú, por favor.",
+      "direction": "",
+      "startMs": 11329,
+      "endMs": 15229
+    },
+    {
+      "index": 2,
+      "speaker": "LUCIA",
+      "text": "A ver: «Queridos vecinos: muchas gracias por cuidar a mi loro esta semana». Qué majo. Dice que quiere que le demos de comer dos veces al día, por la mañana y por la noche.",
+      "direction": "",
+      "startMs": 16033,
+      "endMs": 29946
+    },
+    {
+      "index": 3,
+      "speaker": "DIEGO",
+      "text": "Muy bien. ¿Qué come?",
+      "direction": "",
+      "startMs": 30887,
+      "endMs": 32917
+    },
+    {
+      "index": 4,
+      "speaker": "LUCIA",
+      "text": "Fruta y semillas. Y dice que no le demos chocolate nunca, porque le hace daño.",
+      "direction": "",
+      "startMs": 33884,
+      "endMs": 40904
+    },
+    {
+      "index": 5,
+      "speaker": "DIEGO",
+      "text": "Vale. Nada de chocolate. ¿Algo más?",
+      "direction": "",
+      "startMs": 41866,
+      "endMs": 45666
+    },
+    {
+      "index": 6,
+      "speaker": "LUCIA",
+      "text": "Sí. Es importante que siempre tenga agua fresca. Y prefiere que no pongamos la radio cerca de él, porque aprende las canciones y luego las canta a las tres de la mañana.",
+      "direction": "",
+      "startMs": 46834,
+      "endMs": 60341
+    },
+    {
+      "index": 7,
+      "speaker": "DIEGO",
+      "text": "Qué loro tan listo.",
+      "direction": "riéndose",
+      "startMs": 61385,
+      "endMs": 66075
+    },
+    {
+      "index": 8,
+      "speaker": "LUCIA",
+      "text": "Espera, hay más. Escucha esto: «Cuidado: Pepito repite todo lo que oye. Os recomiendo que no habléis de cosas secretas delante de él».",
+      "direction": "",
+      "startMs": 66932,
+      "endMs": 80002
+    },
+    {
+      "index": 9,
+      "speaker": "DIEGO",
+      "text": "¿Todo… todo lo que oye?",
+      "direction": "nervioso",
+      "startMs": 80977,
+      "endMs": 83447
+    },
+    {
+      "index": 10,
+      "speaker": "LUCIA",
+      "text": "Eso pone. ¿Por qué? Te has puesto pálido.",
+      "direction": "",
+      "startMs": 84514,
+      "endMs": 89031
+    },
+    {
+      "index": 11,
+      "speaker": "DIEGO",
+      "text": "Por nada, por nada. Es que… ayer, cuando don Ramón me dio la llave, me quedé un rato solo con Pepito. Y estuve hablando con él.",
+      "direction": "",
+      "startMs": 89823,
+      "endMs": 101223
+    },
+    {
+      "index": 12,
+      "speaker": "LUCIA",
+      "text": "¿Hablaste con un loro? ¿De qué?",
+      "direction": "",
+      "startMs": 102195,
+      "endMs": 105048
+    },
+    {
+      "index": 13,
+      "speaker": "DIEGO",
+      "text": "De… cosas. Cosas mías. Oye, ¿por qué no vamos a dar un paseo? Hace muy buen día.",
+      "direction": "",
+      "startMs": 106095,
+      "endMs": 113065
+    },
+    {
+      "index": 14,
+      "speaker": "LUCIA",
+      "text": "¿Ahora? Acabamos de llegar. Primero tenemos que darle la fruta. Pásame el plátano, por favor.",
+      "direction": "",
+      "startMs": 114018,
+      "endMs": 121727
+    },
+    {
+      "index": 15,
+      "speaker": "DIEGO",
+      "text": "Toma… Pero dáselo rápido, y vámonos.",
+      "direction": "",
+      "startMs": 122718,
+      "endMs": 125719
+    },
+    {
+      "index": 16,
+      "speaker": "LUCIA",
+      "text": "Diego, estás rarísimo. ¡Oye, mira! Pepito está moviendo las alas. Creo que va a decir algo.",
+      "direction": "",
+      "startMs": 126511,
+      "endMs": 135470
+    },
+    {
+      "index": 17,
+      "speaker": "DIEGO",
+      "text": "¡No! ¡Pepito, cállate! ¡Ni una palabra!",
+      "direction": "desesperado",
+      "startMs": 136419,
+      "endMs": 139599
+    },
+    {
+      "index": 18,
+      "speaker": "LUCIA",
+      "text": "Shh… Escucha. Está diciendo… «Lucía… ¿quieres… casarte… conmigo?».",
+      "direction": "",
+      "startMs": 140480,
+      "endMs": 149500
+    },
+    {
+      "index": 19,
+      "speaker": "DIEGO",
+      "text": "Ay, madre mía…",
+      "direction": "en voz muy baja",
+      "startMs": 150475,
+      "endMs": 151745
+    },
+    {
+      "index": 20,
+      "speaker": "LUCIA",
+      "text": "Diego. ¿Qué acaba de decir este loro?",
+      "direction": "despacio",
+      "startMs": 152446,
+      "endMs": 156186
+    },
+    {
+      "index": 21,
+      "speaker": "DIEGO",
+      "text": "Lucía, no es lo que piensas. Bueno… sí. Es exactamente lo que piensas.",
+      "direction": "",
+      "startMs": 157190,
+      "endMs": 164000
+    },
+    {
+      "index": 22,
+      "speaker": "LUCIA",
+      "text": "¿Has estado practicando… con un loro?",
+      "direction": "",
+      "startMs": 165005,
+      "endMs": 168275
+    },
+    {
+      "index": 23,
+      "speaker": "DIEGO",
+      "text": "Toda la semana he practicado delante del espejo. Y ayer, delante de Pepito… unas veinte veces. Ahora él lo dice mejor que yo. Mi plan era decírtelo el domingo, en el parque del Retiro, con flores, con música… Todo perfecto.",
+      "direction": "",
+      "startMs": 169346,
+      "endMs": 188126
+    },
+    {
+      "index": 24,
+      "speaker": "LUCIA",
+      "text": "¿Y el anillo? Porque supongo que hay un anillo.",
+      "direction": "",
+      "startMs": 189174,
+      "endMs": 193424
+    },
+    {
+      "index": 25,
+      "speaker": "DIEGO",
+      "text": "Claro que hay un anillo. Lo tengo aquí, en el bolsillo… Espera. No está. Ayer lo saqué para practicar, y pensaba que lo había guardado…",
+      "direction": "",
+      "startMs": 194262,
+      "endMs": 206212
+    },
+    {
+      "index": 26,
+      "speaker": "LUCIA",
+      "text": "Pues aquí, encima de la mesa, no hay nada.",
+      "direction": "",
+      "startMs": 207185,
+      "endMs": 210905
+    },
+    {
+      "index": 27,
+      "speaker": "DIEGO",
+      "text": "Ay, no. ¿Dónde estará?",
+      "direction": "",
+      "startMs": 211775,
+      "endMs": 214935
+    },
+    {
+      "index": 28,
+      "speaker": "LUCIA",
+      "text": "¿Te acuerdas? Tu abuela dijo que perderías algo importante.",
+      "direction": "",
+      "startMs": 215996,
+      "endMs": 220897
+    },
+    {
+      "index": 29,
+      "speaker": "DIEGO",
+      "text": "¡No me lo recuerdes!",
+      "direction": "",
+      "startMs": 221849,
+      "endMs": 223749
+    },
+    {
+      "index": 30,
+      "speaker": "LUCIA",
+      "text": "Diego… mira dentro de la jaula. Hay algo que brilla debajo de las semillas.",
+      "direction": "",
+      "startMs": 224566,
+      "endMs": 231044
+    },
+    {
+      "index": 31,
+      "speaker": "DIEGO",
+      "text": "¡Pepito! ¡Devuélvemelo ahora mismo!",
+      "direction": "",
+      "startMs": 232054,
+      "endMs": 235024
+    },
+    {
+      "index": 32,
+      "speaker": "LUCIA",
+      "text": "Déjalo. Ya se lo quito yo. Aquí está. Es precioso.",
+      "direction": "riéndose",
+      "startMs": 235910,
+      "endMs": 241800
+    },
+    {
+      "index": 33,
+      "speaker": "DIEGO",
+      "text": "Bueno… ya no hay música, ni flores, ni parque. Pero… Lucía, ¿quieres…?",
+      "direction": "",
+      "startMs": 242680,
+      "endMs": 252960
+    },
+    {
+      "index": 34,
+      "speaker": "LUCIA",
+      "text": "Espera. Quiero que me lo preguntes tú. Tú, no el loro. Y mirándome a los ojos.",
+      "direction": "",
+      "startMs": 254192,
+      "endMs": 263288
+    },
+    {
+      "index": 35,
+      "speaker": "DIEGO",
+      "text": "Vale. Lucía… ¿quieres casarte conmigo?",
+      "direction": "serio y emocionado",
+      "startMs": 264376,
+      "endMs": 270386
+    },
+    {
+      "index": 36,
+      "speaker": "LUCIA",
+      "text": "Mmm… Me lo pensaré.",
+      "direction": "fingiendo dudar",
+      "startMs": 271579,
+      "endMs": 273959
+    },
+    {
+      "index": 37,
+      "speaker": "DIEGO",
+      "text": "¡¿Cómo que te lo pensarás?!",
+      "direction": "",
+      "startMs": 274832,
+      "endMs": 276578
+    },
+    {
+      "index": 38,
+      "speaker": "LUCIA",
+      "text": "¡Es broma! ¡Claro que sí, tonto!",
+      "direction": "riéndose",
+      "startMs": 277356,
+      "endMs": 280606
+    },
+    {
+      "index": 39,
+      "speaker": "DIEGO",
+      "text": "¿Has oído? Ahora Pepito está diciendo «¡Claro que sí, tonto!». Genial. Lo va a repetir toda la semana.",
+      "direction": "",
+      "startMs": 281468,
+      "endMs": 289718
+    },
+    {
+      "index": 40,
+      "speaker": "LUCIA",
+      "text": "Pues que lo repita. Es la mejor frase que ha aprendido.",
+      "direction": "",
+      "startMs": 290694,
+      "endMs": 294704
+    }
+  ]
+}

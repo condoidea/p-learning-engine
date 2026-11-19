@@ -1,0 +1,344 @@
+{
+  "format": 1,
+  "id": "20261119-170223-2b45",
+  "title": "05 La carta del instituto",
+  "scene": "Casa de los padres de Lucía, unos meses antes de la boda. Lucía encuentra una caja vieja en un armario. Conversación tierna y divertida.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-19T08:06:28.645Z",
+  "audio": "audio.mp3",
+  "durationMs": 319327,
+  "speakers": [
+    {
+      "id": "LUCIA",
+      "gender": "female",
+      "persona": "Lucía, unos 30 años, madrileña, segura de sí misma, irónica pero cariñosa"
+    },
+    {
+      "id": "DIEGO",
+      "gender": "male",
+      "persona": "Diego, unos 30 años, muy buena persona, un poco despistado, se pone nervioso con facilidad"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "LUCIA",
+      "text": "¡Diego, ven a ver esto! He encontrado una caja vieja en el armario de mis padres.",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 9118
+    },
+    {
+      "index": 1,
+      "speaker": "DIEGO",
+      "text": "¿Qué hay dentro? ¿Fotos tuyas de pequeña?",
+      "direction": "",
+      "startMs": 10024,
+      "endMs": 13036
+    },
+    {
+      "index": 2,
+      "speaker": "LUCIA",
+      "text": "Fotos, cuadernos… y un sobre. Pone: «Para Lucía, dentro de quince años. No lo abras antes».",
+      "direction": "",
+      "startMs": 14054,
+      "endMs": 23684
+    },
+    {
+      "index": 3,
+      "speaker": "DIEGO",
+      "text": "¿Una carta para ti misma? ¿La escribiste tú?",
+      "direction": "",
+      "startMs": 24625,
+      "endMs": 28885
+    },
+    {
+      "index": 4,
+      "speaker": "LUCIA",
+      "text": "Sí, ¡ya me acuerdo! En el instituto, la profesora de lengua nos dio un ejercicio: escribir una carta a nuestro «yo» del futuro. Yo ya me había olvidado completamente.",
+      "direction": "",
+      "startMs": 29941,
+      "endMs": 42751
+    },
+    {
+      "index": 5,
+      "speaker": "DIEGO",
+      "text": "¡Qué bonito! Léemela, por favor.",
+      "direction": "",
+      "startMs": 43732,
+      "endMs": 47132
+    },
+    {
+      "index": 6,
+      "speaker": "LUCIA",
+      "text": "Me da un poco de vergüenza… Bueno, vale. «Querida Lucía: cuando leas esta carta, tendrás treinta años. Seguramente vivirás en París y serás una actriz muy famosa».",
+      "direction": "un poco avergonzada",
+      "startMs": 48034,
+      "endMs": 69264
+    },
+    {
+      "index": 7,
+      "speaker": "DIEGO",
+      "text": "¿Actriz? ¿Tú?",
+      "direction": "riéndose",
+      "startMs": 70308,
+      "endMs": 73388
+    },
+    {
+      "index": 8,
+      "speaker": "LUCIA",
+      "text": "¡Oye! De pequeña actuaba muy bien. Sigo: «Tendrás un piso enorme con vistas a la torre Eiffel y un perro que se llamará Napoleón».",
+      "direction": "",
+      "startMs": 74431,
+      "endMs": 85541
+    },
+    {
+      "index": 9,
+      "speaker": "DIEGO",
+      "text": "Bueno, tienes un gato que se llama Michi. Casi.",
+      "direction": "",
+      "startMs": 86516,
+      "endMs": 90896
+    },
+    {
+      "index": 10,
+      "speaker": "LUCIA",
+      "text": "Calla. «Espero que no te cases con un chico aburrido. Y ojalá no trabajes en una oficina».",
+      "direction": "",
+      "startMs": 91789,
+      "endMs": 99809
+    },
+    {
+      "index": 11,
+      "speaker": "DIEGO",
+      "text": "Uy. Tú trabajas en una oficina. Y te vas a casar conmigo.",
+      "direction": "",
+      "startMs": 100720,
+      "endMs": 106080
+    },
+    {
+      "index": 12,
+      "speaker": "LUCIA",
+      "text": "Ya. Mi «yo» de quince años estaría muy decepcionada.",
+      "direction": "",
+      "startMs": 106966,
+      "endMs": 111356
+    },
+    {
+      "index": 13,
+      "speaker": "DIEGO",
+      "text": "¿Decepcionada? ¿Por qué? ¿Soy aburrido?",
+      "direction": "",
+      "startMs": 112214,
+      "endMs": 116404
+    },
+    {
+      "index": 14,
+      "speaker": "LUCIA",
+      "text": "Un chico que practica declaraciones con un loro no es aburrido, Diego. Es otra cosa.",
+      "direction": "",
+      "startMs": 117496,
+      "endMs": 125146
+    },
+    {
+      "index": 15,
+      "speaker": "DIEGO",
+      "text": "Gracias… creo. ¿Hay algo más en la caja?",
+      "direction": "",
+      "startMs": 126137,
+      "endMs": 130257
+    },
+    {
+      "index": 16,
+      "speaker": "LUCIA",
+      "text": "Sí, hay otro sobre. Es más pequeño. Pone… «Para Lucía. De D.».",
+      "direction": "",
+      "startMs": 131344,
+      "endMs": 139234
+    },
+    {
+      "index": 17,
+      "speaker": "DIEGO",
+      "text": "Ah. Ese sobre.",
+      "direction": "incómodo",
+      "startMs": 140183,
+      "endMs": 142293
+    },
+    {
+      "index": 18,
+      "speaker": "LUCIA",
+      "text": "¿«De D.»? ¿Diego? ¿Esta carta es tuya?",
+      "direction": "",
+      "startMs": 143131,
+      "endMs": 147261
+    },
+    {
+      "index": 19,
+      "speaker": "DIEGO",
+      "text": "Estábamos en la misma clase, ¿no te acuerdas? Ese día yo también escribí una carta… pero no para mí, sino para ti. Al final del curso, la profesora nos devolvió las cartas a todos. A ti te dio dos.",
+      "direction": "",
+      "startMs": 148351,
+      "endMs": 163911
+    },
+    {
+      "index": 20,
+      "speaker": "LUCIA",
+      "text": "Y yo las guardé las dos sin abrirlas. Pensé que eran mías. ¿Y por qué nunca me lo dijiste?",
+      "direction": "",
+      "startMs": 164861,
+      "endMs": 172387
+    },
+    {
+      "index": 21,
+      "speaker": "DIEGO",
+      "text": "Porque me daba mucha vergüenza. Creía que la abrirías enseguida y que te reirías de mí. Pero no dijiste nada… y entendí que no la habías leído. Luego intenté olvidarme de ella. Pero no me olvidé. Nunca me olvidé.",
+      "direction": "",
+      "startMs": 173541,
+      "endMs": 191379
+    },
+    {
+      "index": 22,
+      "speaker": "LUCIA",
+      "text": "¿Puedo abrirla?",
+      "direction": "con ternura",
+      "startMs": 192411,
+      "endMs": 193536
+    },
+    {
+      "index": 23,
+      "speaker": "DIEGO",
+      "text": "Ya es tuya. Ábrela.",
+      "direction": "",
+      "startMs": 194521,
+      "endMs": 196681
+    },
+    {
+      "index": 24,
+      "speaker": "LUCIA",
+      "text": "«Hola, Lucía. Soy Diego, el chico que se sienta detrás de ti en clase de matemáticas. Me gustas mucho, pero no te lo he dicho nunca porque eres demasiado guay para mí».",
+      "direction": "",
+      "startMs": 197515,
+      "endMs": 212475
+    },
+    {
+      "index": 25,
+      "speaker": "DIEGO",
+      "text": "Por favor, no la leas en voz alta…",
+      "direction": "avergonzado",
+      "startMs": 213443,
+      "endMs": 215923
+    },
+    {
+      "index": 26,
+      "speaker": "LUCIA",
+      "text": "«Cuando leas esto, ya serás una actriz famosa y no te acordarás de mí. Pero si algún día vuelves a Madrid, te invitaré a una paella. Hago una paella buenísima».",
+      "direction": "",
+      "startMs": 216696,
+      "endMs": 230233
+    },
+    {
+      "index": 27,
+      "speaker": "DIEGO",
+      "text": "Eso no era verdad. Ni entonces ni ahora.",
+      "direction": "",
+      "startMs": 231254,
+      "endMs": 235844
+    },
+    {
+      "index": 28,
+      "speaker": "LUCIA",
+      "text": "No, no lo era. Pero mira: al final no fui actriz, no vivo en París y no tengo un perro llamado Napoleón.",
+      "direction": "riéndose",
+      "startMs": 236712,
+      "endMs": 245712
+    },
+    {
+      "index": 29,
+      "speaker": "DIEGO",
+      "text": "Lo siento.",
+      "direction": "",
+      "startMs": 246768,
+      "endMs": 247918
+    },
+    {
+      "index": 30,
+      "speaker": "LUCIA",
+      "text": "No lo sientas. Lo que tengo es mejor: un chico que me escribió una carta hace quince años y que todavía no sabe hacer paella.",
+      "direction": "con cariño",
+      "startMs": 248705,
+      "endMs": 259095
+    },
+    {
+      "index": 31,
+      "speaker": "DIEGO",
+      "text": "Y un perro que se come todas mis paellas.",
+      "direction": "",
+      "startMs": 260146,
+      "endMs": 263364
+    },
+    {
+      "index": 32,
+      "speaker": "LUCIA",
+      "text": "Por cierto, ¿te acuerdas de lo que dijo tu abuela? Que este año yo viajaría a un país muy lejano.",
+      "direction": "",
+      "startMs": 264259,
+      "endMs": 272341
+    },
+    {
+      "index": 33,
+      "speaker": "DIEGO",
+      "text": "Sí, claro. ¿Por qué?",
+      "direction": "",
+      "startMs": 273286,
+      "endMs": 275536
+    },
+    {
+      "index": 34,
+      "speaker": "LUCIA",
+      "text": "Porque he estado pensando en el viaje de novios. ¿Qué te parece Japón?",
+      "direction": "",
+      "startMs": 276558,
+      "endMs": 282558
+    },
+    {
+      "index": 35,
+      "speaker": "DIEGO",
+      "text": "¿Japón? Me parece perfecto. Al final tu «Madame Rosa» va a tener razón en todo.",
+      "direction": "",
+      "startMs": 283836,
+      "endMs": 290496
+    },
+    {
+      "index": 36,
+      "speaker": "LUCIA",
+      "text": "Bueno, en todo, no. También dijo que encontraría un trabajo nuevo.",
+      "direction": "",
+      "startMs": 291465,
+      "endMs": 297045
+    },
+    {
+      "index": 37,
+      "speaker": "DIEGO",
+      "text": "Todavía queda tiempo. Y si no, siempre puedes ser actriz.",
+      "direction": "",
+      "startMs": 298046,
+      "endMs": 302816
+    },
+    {
+      "index": 38,
+      "speaker": "LUCIA",
+      "text": "Muy gracioso. Venga, guarda las cartas en la caja. Las leeremos otra vez dentro de quince años.",
+      "direction": "",
+      "startMs": 303715,
+      "endMs": 311775
+    },
+    {
+      "index": 39,
+      "speaker": "DIEGO",
+      "text": "Vale. Pero la próxima carta la escribimos juntos… y lejos del loro.",
+      "direction": "",
+      "startMs": 312807,
+      "endMs": 318327
+    }
+  ]
+}
