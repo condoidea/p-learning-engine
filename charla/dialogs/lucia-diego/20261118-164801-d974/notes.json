@@ -2,107 +2,855 @@
   "format": 1,
   "sceneJa": "🏠 日曜の昼、ディエゴの部屋。ルシアの両親が来る前",
   "phrases": [
-    { "t": "habla por los codos", "ja": "おしゃべりが止まらない", "key": true, "note": "hablar por los codos（直訳：ひじでしゃべる）" },
-    { "t": "por si acaso", "ja": "念のため", "key": true },
-    { "t": "no pasa nada", "ja": "大丈夫・気にしないで", "key": true, "note": "pasar（起こる）の「それは」＋ nada" },
-    { "t": "me di cuenta", "ja": "気づいた", "key": true, "note": "darse cuenta de（〜に気づく）の点過去" },
-    { "t": "ni hablar", "ja": "とんでもない・絶対ダメ", "key": true },
-    { "t": "no me digas que", "ja": "まさか…じゃないよね", "key": true, "note": "直訳：私に…と言わないで" },
-    { "t": "cara de inocente", "ja": "とぼけた顔・何も知らない顔", "key": true, "note": "tener cara de inocente の一部" },
-    { "t": "el lado positivo", "ja": "いい面", "key": true, "note": "mirar el lado positivo（いい面を見る）" },
-    { "t": "salir mal", "ja": "うまくいかない", "key": true },
-    { "t": "o sea", "ja": "つまり", "note": "言い換え・まとめるときに使う" },
-    { "t": "a ver", "ja": "ええと・どれどれ" },
-    { "t": "tardé tres horas en", "ja": "〜するのに3時間かかった", "key": true, "note": "tardar ＋ 時間 ＋ en ＋ 不定詞" },
-    { "t": "cada vez que", "ja": "〜するたびに" },
-    { "t": "la próxima vez", "ja": "次回・次は" },
-    { "t": "como siempre", "ja": "いつものように" },
-    { "t": "claro que", "ja": "もちろん〜だ" }
+    {
+      "t": "habla por los codos",
+      "ja": "おしゃべりが止まらない",
+      "key": true,
+      "note": "hablar por los codos（直訳：ひじでしゃべる）"
+    },
+    {
+      "t": "por si acaso",
+      "ja": "念のため",
+      "key": true
+    },
+    {
+      "t": "no pasa nada",
+      "ja": "大丈夫・気にしないで",
+      "key": true,
+      "note": "pasar（起こる）の「それは」＋ nada"
+    },
+    {
+      "t": "me di cuenta",
+      "ja": "気づいた",
+      "key": true,
+      "note": "darse cuenta de（〜に気づく）の点過去"
+    },
+    {
+      "t": "ni hablar",
+      "ja": "とんでもない・絶対ダメ",
+      "key": true
+    },
+    {
+      "t": "no me digas que",
+      "ja": "まさか…じゃないよね",
+      "key": true,
+      "note": "直訳：私に…と言わないで"
+    },
+    {
+      "t": "cara de inocente",
+      "ja": "とぼけた顔・何も知らない顔",
+      "key": true,
+      "note": "tener cara de inocente の一部"
+    },
+    {
+      "t": "el lado positivo",
+      "ja": "いい面",
+      "key": true,
+      "note": "mirar el lado positivo（いい面を見る）"
+    },
+    {
+      "t": "salir mal",
+      "ja": "うまくいかない",
+      "key": true
+    },
+    {
+      "t": "o sea",
+      "ja": "つまり",
+      "note": "言い換え・まとめるときに使う"
+    },
+    {
+      "t": "a ver",
+      "ja": "ええと・どれどれ"
+    },
+    {
+      "t": "tardé tres horas en",
+      "ja": "〜するのに3時間かかった",
+      "key": true,
+      "note": "tardar ＋ 時間 ＋ en ＋ 不定詞"
+    },
+    {
+      "t": "cada vez que",
+      "ja": "〜するたびに"
+    },
+    {
+      "t": "la próxima vez",
+      "ja": "次回・次は"
+    },
+    {
+      "t": "como siempre",
+      "ja": "いつものように"
+    },
+    {
+      "t": "claro que",
+      "ja": "もちろん〜だ"
+    },
+    {
+      "t": "tengo que",
+      "ja": "〜しなければならない",
+      "note": "tener que ＋ 不定詞"
+    }
   ],
   "words": {
-    "rara": { "w": "raro", "pos": "adj", "ja": "変な・めずらしい", "form": "raro の女性形" },
-    "contarte": { "w": "contar", "pos": "v", "ja": "話す・語る・数える", "form": "contar（話す）＋ te（君に）" },
-    "prométeme": { "w": "prometer", "pos": "v", "ja": "約束する", "form": "prometer の命令（君に）＋ me（私に）" },
-    "enfadar": { "w": "enfadarse", "pos": "v", "ja": "怒る", "form": "enfadarse の不定詞（te が付いて「君が」）" },
-    "uy": { "w": "uy", "pos": "interj", "ja": "うわっ・おっと" },
-    "señal": { "w": "señal", "pos": "n", "g": "f", "ja": "しるし・兆し・合図" },
-    "levanté": { "w": "levantarse", "pos": "v", "ja": "起きる", "form": "levantarse の「私は」（点過去）" },
-    "e": { "w": "e", "pos": "conj", "ja": "そして・と", "note": "i- で始まる語の前で y が e になる" },
-    "hice": { "w": "hacer", "pos": "v", "ja": "作る・する", "form": "hacer の「私は」（点過去）" },
-    "paella": { "w": "paella", "pos": "n", "g": "f", "ja": "パエリア" },
-    "tus": { "w": "tu", "pos": "det", "ja": "君の", "form": "tu の複数形" },
-    "tardé": { "w": "tardar", "pos": "v", "ja": "（時間が）かかる", "key": true, "form": "tardar の「私は」（点過去）", "note": "tardar ＋ 時間 ＋ en ＋ 不定詞", "clue": { "t": "ctx", "text": "⏱️ 3時間も、朝から台所で…" } },
-    "horas": { "w": "hora", "pos": "n", "g": "f", "ja": "時間・〜時", "form": "hora の複数形" },
-    "prepararla": { "w": "preparar", "pos": "v", "ja": "準備する・作る", "form": "preparar（作る）＋ la（それを＝パエリア）" },
-    "huele": { "w": "oler", "pos": "v", "cj": { "pres": ["huelo","hueles","huele","olemos","oléis","huelen"] }, "ja": "におう・においがする", "form": "oler の「彼・それは」（現在）" },
-    "hacía": { "w": "hacer", "pos": "v", "ja": "する・（天気が）〜だ", "form": "hacer の「それは」（線過去）", "note": "hacer calor で「暑い」" },
-    "dejé": { "w": "dejar", "pos": "v", "ja": "置く・置いておく", "form": "dejar の「私は」（点過去）" },
-    "terraza": { "w": "terraza", "pos": "n", "g": "f", "ja": "テラス・ベランダ" },
-    "vale": { "w": "vale", "pos": "interj", "ja": "わかった・オーケー", "note": "スペインでよく使う返事" },
-    "mientras": { "w": "mientras", "pos": "conj", "ja": "〜している間に" },
-    "duchaba": { "w": "ducharse", "pos": "v", "ja": "シャワーを浴びる", "form": "ducharse の「私は」（線過去）" },
-    "sonó": { "w": "sonar", "pos": "v", "ja": "鳴る・音がする", "form": "sonar の「それは」（点過去）" },
-    "teléfono": { "w": "teléfono", "pos": "n", "g": "m", "ja": "電話" },
-    "sabes": { "w": "saber", "pos": "v", "ja": "知っている", "form": "saber の「君は」（現在）" },
-    "estuvimos": { "w": "estar", "pos": "v", "ja": "〜している・いる", "form": "estar の「私たちは」（点過去）" },
-    "casi": { "w": "casi", "pos": "adv", "ja": "ほとんど・〜近く" },
-    "codos": { "w": "codo", "pos": "n", "g": "m", "ja": "ひじ", "form": "codo の複数形" },
-    "volví": { "w": "volver", "pos": "v", "ja": "戻る", "form": "volver の「私は」（点過去）" },
-    "paellera": { "w": "paellera", "pos": "n", "g": "f", "ja": "パエリア鍋", "key": true, "clue": { "t": "parts", "text": "paella（料理名）＋ -era（それを入れる道具）" } },
-    "completamente": { "w": "completamente", "pos": "adv", "ja": "完全に" },
-    "alguien": { "w": "alguien", "pos": "pron", "ja": "誰か" },
-    "pensé": { "w": "pensar", "pos": "v", "ja": "思う・考える", "form": "pensar の「私は」（点過去）" },
-    "principio": { "w": "principio", "pos": "n", "g": "m", "ja": "始め・最初", "note": "al principio で「最初は」" },
-    "unas": { "w": "uno", "pos": "det", "ja": "いくつかの・ある", "form": "una の複数形（不定冠詞）" },
-    "quién": { "w": "quién", "pos": "pron", "ja": "誰" },
-    "pues": { "w": "pues", "pos": "conj", "ja": "ええと・だって・それなら", "note": "話の切り出しや相づちに使う" },
-    "encontré": { "w": "encontrar", "pos": "v", "ja": "見つける", "form": "encontrar の「私は」（点過去）" },
-    "dormía": { "w": "dormir", "pos": "v", "ja": "眠る", "form": "dormir の「彼は」（線過去）" },
-    "angelito": { "w": "angelito", "pos": "n", "g": "m", "ja": "小さな天使", "form": "ángel（天使）の指小形", "note": "dormir como un angelito で「ぐっすり眠る」" },
-    "barriga": { "w": "barriga", "pos": "n", "g": "f", "ja": "お腹", "key": true, "clue": { "t": "ctx", "text": "🐶 食べすぎて、パンパンに…" } },
-    "gamba": { "w": "gamba", "pos": "n", "g": "f", "ja": "エビ" },
-    "gambas": { "w": "gamba", "pos": "n", "g": "f", "ja": "エビ", "form": "gamba の複数形" },
-    "oreja": { "w": "oreja", "pos": "n", "g": "f", "ja": "耳" },
-    "pobrecito": { "w": "pobrecito", "pos": "adj", "ja": "かわいそうに", "form": "pobre（かわいそうな）の指小形" },
-    "dijiste": { "w": "decir", "pos": "v", "ja": "言う", "form": "decir の「君は」（点過去）" },
-    "pregunté": { "w": "preguntar", "pos": "v", "ja": "たずねる・質問する", "form": "preguntar の「私は」（点過去）" },
-    "miró": { "w": "mirar", "pos": "v", "ja": "見る", "form": "mirar の「彼は」（点過去）" },
-    "doce": { "w": "doce", "pos": "num", "ja": "12" },
-    "media": { "w": "medio", "pos": "adj", "ja": "半分の", "form": "medio の女性形", "note": "las doce y media で「12時半」" },
-    "queda": { "w": "quedar", "pos": "v", "ja": "残っている・残る", "form": "quedar の「それは」（現在）" },
-    "ni": { "w": "ni", "pos": "conj", "ja": "〜も…ない", "note": "no ... ni ... ni ... で「〜も〜も…ない」" },
-    "acaso": { "w": "acaso", "pos": "adv", "ja": "もしかして・偶然", "note": "por si acaso で「念のため」" },
-    "tortilla": { "w": "tortilla", "pos": "n", "g": "f", "ja": "トルティージャ（スペイン風オムレツ）" },
-    "bolsa": { "w": "bolsa", "pos": "n", "g": "f", "ja": "袋" },
-    "iba": { "w": "ir", "pos": "v", "ja": "行く", "form": "ir の「それは」（線過去）", "note": "ir a ＋ 不定詞で「〜しようとしていた」" },
-    "sabía": { "w": "saber", "pos": "v", "ja": "知っている", "form": "saber の「私は・君は」（線過去）" },
-    "imaginaba": { "w": "imaginar", "pos": "v", "ja": "想像する", "form": "imaginar の「私は」（線過去）" },
-    "confiabas": { "w": "confiar", "pos": "v", "ja": "信頼する・信用する", "key": true, "form": "confiar の「君は」（線過去）", "note": "confiar en ＋ 人", "clue": { "t": "parts", "text": "con-（共に）＋ fiar（信じて任せる）" } },
-    "ti": { "w": "ti", "pos": "pron", "ja": "君（前置詞のあと）", "note": "en ti（君に・君を）のように前置詞のあとで使う" },
-    "además": { "w": "además", "pos": "adv", "ja": "それに・そのうえ" },
-    "secreto": { "w": "secreto", "pos": "n", "g": "m", "ja": "秘密" },
-    "secretos": { "w": "secreto", "pos": "n", "g": "m", "ja": "秘密", "form": "secreto の複数形" },
-    "acuerdas": { "w": "acordarse", "pos": "v", "cj": { "stem": "ue" }, "ja": "覚えている・思い出す", "form": "acordarse の「君は」（現在）", "note": "acordarse de ＋ 事柄" },
-    "primera": { "w": "primero", "pos": "adj", "ja": "最初の・1番目の", "form": "primero の女性形" },
-    "hiciste": { "w": "hacer", "pos": "v", "ja": "作る・する", "form": "hacer の「君は」（点過去）" },
-    "vida": { "w": "vida", "pos": "n", "g": "f", "ja": "人生・生活" },
-    "fuiste": { "w": "ir", "pos": "v", "ja": "行く", "form": "ir の「君は」（点過去）" },
-    "salada": { "w": "salado", "pos": "adj", "ja": "しょっぱい・塩辛い", "key": true, "form": "salado の女性形", "clue": { "t": "parts", "text": "sal（塩）＋ -ado" } },
-    "bastante": { "w": "bastante", "pos": "adv", "ja": "かなり・十分に" },
-    "encanta": { "w": "encantar", "pos": "v", "ja": "大好きである・とても気に入る", "form": "encantar の「それは」（現在）", "note": "me/te/le encanta ＋ 好きなもの（gustar と同じ形）" },
-    "positivo": { "w": "positivo", "pos": "adj", "ja": "前向きな・プラスの" },
-    "fan": { "w": "fan", "pos": "n", "g": "mf", "ja": "ファン" },
-    "fiel": { "w": "fiel", "pos": "adj", "ja": "忠実な・誠実な", "key": true, "clue": { "t": "cog", "text": "英語の fidelity（忠誠）と同じ祖先" } },
-    "patas": { "w": "pata", "pos": "n", "g": "f", "ja": "（動物の）足", "form": "pata の複数形" },
-    "graciosa": { "w": "gracioso", "pos": "adj", "ja": "面白い・おかしい", "form": "gracioso の女性形" },
-    "próxima": { "w": "próximo", "pos": "adj", "ja": "次の", "form": "próximo の女性形" },
-    "tampoco": { "w": "tampoco", "pos": "adv", "ja": "〜もまた…ない" },
-    "tonto": { "w": "tonto", "pos": "adj", "ja": "ばかな・間抜けな" },
-    "huellas": { "w": "huella", "pos": "n", "g": "f", "ja": "足跡", "key": true, "form": "huella の複数形", "clue": { "t": "ctx", "text": "🐾 床の上に、小さな…" } },
-    "culpa": { "w": "culpa", "pos": "n", "g": "f", "ja": "責任・罪・せい" },
-    "cocinero": { "w": "cocinero", "pos": "n", "g": "m", "ja": "料理人・コック" },
-    "arroz": { "w": "arroz", "pos": "n", "g": "m", "ja": "米・ご飯" },
-    "suelo": { "w": "suelo", "pos": "n", "g": "m", "ja": "床・地面" },
-    "panadería": { "w": "panadería", "pos": "n", "g": "f", "ja": "パン屋" }
+    "rara": {
+      "w": "raro",
+      "pos": "adj",
+      "ja": "変な・めずらしい",
+      "form": "raro の女性形"
+    },
+    "contarte": {
+      "w": "contar",
+      "pos": "v",
+      "ja": "話す・語る・数える",
+      "form": "contar（話す）＋ te（君に）"
+    },
+    "prométeme": {
+      "w": "prometer",
+      "pos": "v",
+      "ja": "約束する",
+      "form": "prometer の命令（君に）＋ me（私に）"
+    },
+    "enfadar": {
+      "w": "enfadarse",
+      "pos": "v",
+      "ja": "怒る",
+      "form": "enfadarse の不定詞（te が付いて「君が」）"
+    },
+    "uy": {
+      "w": "uy",
+      "pos": "interj",
+      "ja": "うわっ・おっと"
+    },
+    "señal": {
+      "w": "señal",
+      "pos": "n",
+      "g": "f",
+      "ja": "しるし・兆し・合図"
+    },
+    "levanté": {
+      "w": "levantarse",
+      "pos": "v",
+      "ja": "起きる",
+      "form": "levantarse の「私は」（点過去）"
+    },
+    "e": {
+      "w": "e",
+      "pos": "conj",
+      "ja": "そして・と",
+      "note": "i- で始まる語の前で y が e になる"
+    },
+    "hice": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "作る・する",
+      "form": "hacer の「私は」（点過去）"
+    },
+    "paella": {
+      "w": "paella",
+      "pos": "n",
+      "g": "f",
+      "ja": "パエリア"
+    },
+    "tus": {
+      "w": "tu",
+      "pos": "det",
+      "ja": "君の",
+      "form": "tu の複数形"
+    },
+    "tardé": {
+      "w": "tardar",
+      "pos": "v",
+      "ja": "（時間が）かかる",
+      "key": true,
+      "form": "tardar の「私は」（点過去）",
+      "note": "tardar ＋ 時間 ＋ en ＋ 不定詞",
+      "clue": {
+        "t": "ctx",
+        "text": "⏱️ 3時間も、朝から台所で…"
+      }
+    },
+    "horas": {
+      "w": "hora",
+      "pos": "n",
+      "g": "f",
+      "ja": "時間・〜時",
+      "form": "hora の複数形"
+    },
+    "prepararla": {
+      "w": "preparar",
+      "pos": "v",
+      "ja": "準備する・作る",
+      "form": "preparar（作る）＋ la（それを＝パエリア）"
+    },
+    "huele": {
+      "w": "oler",
+      "pos": "v",
+      "cj": {
+        "pres": [
+          "huelo",
+          "hueles",
+          "huele",
+          "olemos",
+          "oléis",
+          "huelen"
+        ]
+      },
+      "ja": "におう・においがする",
+      "form": "oler の「彼・それは」（現在）"
+    },
+    "hacía": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "する・（天気が）〜だ",
+      "form": "hacer の「それは」（線過去）",
+      "note": "hacer calor で「暑い」"
+    },
+    "dejé": {
+      "w": "dejar",
+      "pos": "v",
+      "ja": "置く・置いておく",
+      "form": "dejar の「私は」（点過去）"
+    },
+    "terraza": {
+      "w": "terraza",
+      "pos": "n",
+      "g": "f",
+      "ja": "テラス・ベランダ"
+    },
+    "vale": {
+      "w": "vale",
+      "pos": "interj",
+      "ja": "わかった・オーケー",
+      "note": "スペインでよく使う返事"
+    },
+    "mientras": {
+      "w": "mientras",
+      "pos": "conj",
+      "ja": "〜している間に"
+    },
+    "duchaba": {
+      "w": "ducharse",
+      "pos": "v",
+      "ja": "シャワーを浴びる",
+      "form": "ducharse の「私は」（線過去）"
+    },
+    "sonó": {
+      "w": "sonar",
+      "pos": "v",
+      "ja": "鳴る・音がする",
+      "form": "sonar の「それは」（点過去）"
+    },
+    "teléfono": {
+      "w": "teléfono",
+      "pos": "n",
+      "g": "m",
+      "ja": "電話"
+    },
+    "sabes": {
+      "w": "saber",
+      "pos": "v",
+      "ja": "知っている",
+      "form": "saber の「君は」（現在）"
+    },
+    "estuvimos": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "〜している・いる",
+      "form": "estar の「私たちは」（点過去）"
+    },
+    "casi": {
+      "w": "casi",
+      "pos": "adv",
+      "ja": "ほとんど・〜近く"
+    },
+    "codos": {
+      "w": "codo",
+      "pos": "n",
+      "g": "m",
+      "ja": "ひじ",
+      "form": "codo の複数形"
+    },
+    "volví": {
+      "w": "volver",
+      "pos": "v",
+      "ja": "戻る",
+      "form": "volver の「私は」（点過去）"
+    },
+    "paellera": {
+      "w": "paellera",
+      "pos": "n",
+      "g": "f",
+      "ja": "パエリア鍋",
+      "key": true,
+      "clue": {
+        "t": "parts",
+        "text": "paella（料理名）＋ -era（それを入れる道具）"
+      }
+    },
+    "completamente": {
+      "w": "completamente",
+      "pos": "adv",
+      "ja": "完全に"
+    },
+    "alguien": {
+      "w": "alguien",
+      "pos": "pron",
+      "ja": "誰か"
+    },
+    "pensé": {
+      "w": "pensar",
+      "pos": "v",
+      "ja": "思う・考える",
+      "form": "pensar の「私は」（点過去）"
+    },
+    "principio": {
+      "w": "principio",
+      "pos": "n",
+      "g": "m",
+      "ja": "始め・最初",
+      "note": "al principio で「最初は」"
+    },
+    "unas": {
+      "w": "uno",
+      "pos": "det",
+      "ja": "いくつかの・ある",
+      "form": "una の複数形（不定冠詞）"
+    },
+    "quién": {
+      "w": "quién",
+      "pos": "pron",
+      "ja": "誰"
+    },
+    "pues": {
+      "w": "pues",
+      "pos": "conj",
+      "ja": "ええと・だって・それなら",
+      "note": "話の切り出しや相づちに使う"
+    },
+    "encontré": {
+      "w": "encontrar",
+      "pos": "v",
+      "ja": "見つける",
+      "form": "encontrar の「私は」（点過去）"
+    },
+    "dormía": {
+      "w": "dormir",
+      "pos": "v",
+      "ja": "眠る",
+      "form": "dormir の「彼は」（線過去）"
+    },
+    "angelito": {
+      "w": "angelito",
+      "pos": "n",
+      "g": "m",
+      "ja": "小さな天使",
+      "form": "ángel（天使）の指小形",
+      "note": "dormir como un angelito で「ぐっすり眠る」"
+    },
+    "barriga": {
+      "w": "barriga",
+      "pos": "n",
+      "g": "f",
+      "ja": "お腹",
+      "key": true,
+      "clue": {
+        "t": "ctx",
+        "text": "🐶 食べすぎて、パンパンに…"
+      }
+    },
+    "gamba": {
+      "w": "gamba",
+      "pos": "n",
+      "g": "f",
+      "ja": "エビ"
+    },
+    "gambas": {
+      "w": "gamba",
+      "pos": "n",
+      "g": "f",
+      "ja": "エビ",
+      "form": "gamba の複数形"
+    },
+    "oreja": {
+      "w": "oreja",
+      "pos": "n",
+      "g": "f",
+      "ja": "耳"
+    },
+    "pobrecito": {
+      "w": "pobrecito",
+      "pos": "adj",
+      "ja": "かわいそうに",
+      "form": "pobre（かわいそうな）の指小形"
+    },
+    "dijiste": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う",
+      "form": "decir の「君は」（点過去）"
+    },
+    "pregunté": {
+      "w": "preguntar",
+      "pos": "v",
+      "ja": "たずねる・質問する",
+      "form": "preguntar の「私は」（点過去）"
+    },
+    "miró": {
+      "w": "mirar",
+      "pos": "v",
+      "ja": "見る",
+      "form": "mirar の「彼は」（点過去）"
+    },
+    "doce": {
+      "w": "doce",
+      "pos": "num",
+      "ja": "12"
+    },
+    "media": {
+      "w": "medio",
+      "pos": "adj",
+      "ja": "半分の",
+      "form": "medio の女性形",
+      "note": "las doce y media で「12時半」"
+    },
+    "queda": {
+      "w": "quedar",
+      "pos": "v",
+      "ja": "残っている・残る",
+      "form": "quedar の「それは」（現在）"
+    },
+    "ni": {
+      "w": "ni",
+      "pos": "conj",
+      "ja": "〜も…ない",
+      "note": "no ... ni ... ni ... で「〜も〜も…ない」"
+    },
+    "acaso": {
+      "w": "acaso",
+      "pos": "adv",
+      "ja": "もしかして・偶然",
+      "note": "por si acaso で「念のため」"
+    },
+    "tortilla": {
+      "w": "tortilla",
+      "pos": "n",
+      "g": "f",
+      "ja": "トルティージャ（スペイン風オムレツ）"
+    },
+    "bolsa": {
+      "w": "bolsa",
+      "pos": "n",
+      "g": "f",
+      "ja": "袋"
+    },
+    "iba": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "行く",
+      "form": "ir の「それは」（線過去）",
+      "note": "ir a ＋ 不定詞で「〜しようとしていた」"
+    },
+    "sabía": {
+      "w": "saber",
+      "pos": "v",
+      "ja": "知っている",
+      "form": "saber の「私は・君は」（線過去）"
+    },
+    "imaginaba": {
+      "w": "imaginar",
+      "pos": "v",
+      "ja": "想像する",
+      "form": "imaginar の「私は」（線過去）"
+    },
+    "confiabas": {
+      "w": "confiar",
+      "pos": "v",
+      "ja": "信頼する・信用する",
+      "key": true,
+      "form": "confiar の「君は」（線過去）",
+      "note": "confiar en ＋ 人",
+      "clue": {
+        "t": "parts",
+        "text": "con-（共に）＋ fiar（信じて任せる）"
+      }
+    },
+    "ti": {
+      "w": "ti",
+      "pos": "pron",
+      "ja": "君（前置詞のあと）",
+      "note": "en ti（君に・君を）のように前置詞のあとで使う"
+    },
+    "además": {
+      "w": "además",
+      "pos": "adv",
+      "ja": "それに・そのうえ"
+    },
+    "secreto": {
+      "w": "secreto",
+      "pos": "n",
+      "g": "m",
+      "ja": "秘密"
+    },
+    "secretos": {
+      "w": "secreto",
+      "pos": "n",
+      "g": "m",
+      "ja": "秘密",
+      "form": "secreto の複数形"
+    },
+    "acuerdas": {
+      "w": "acordarse",
+      "pos": "v",
+      "cj": {
+        "stem": "ue"
+      },
+      "ja": "覚えている・思い出す",
+      "form": "acordarse の「君は」（現在）",
+      "note": "acordarse de ＋ 事柄"
+    },
+    "primera": {
+      "w": "primero",
+      "pos": "adj",
+      "ja": "最初の・1番目の",
+      "form": "primero の女性形"
+    },
+    "hiciste": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "作る・する",
+      "form": "hacer の「君は」（点過去）"
+    },
+    "vida": {
+      "w": "vida",
+      "pos": "n",
+      "g": "f",
+      "ja": "人生・生活"
+    },
+    "fuiste": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "行く",
+      "form": "ir の「君は」（点過去）"
+    },
+    "salada": {
+      "w": "salado",
+      "pos": "adj",
+      "ja": "しょっぱい・塩辛い",
+      "key": true,
+      "form": "salado の女性形",
+      "clue": {
+        "t": "parts",
+        "text": "sal（塩）＋ -ado"
+      }
+    },
+    "bastante": {
+      "w": "bastante",
+      "pos": "adv",
+      "ja": "かなり・十分に"
+    },
+    "encanta": {
+      "w": "encantar",
+      "pos": "v",
+      "ja": "大好きである・とても気に入る",
+      "form": "encantar の「それは」（現在）",
+      "note": "me/te/le encanta ＋ 好きなもの（gustar と同じ形）"
+    },
+    "positivo": {
+      "w": "positivo",
+      "pos": "adj",
+      "ja": "前向きな・プラスの"
+    },
+    "fan": {
+      "w": "fan",
+      "pos": "n",
+      "g": "mf",
+      "ja": "ファン"
+    },
+    "fiel": {
+      "w": "fiel",
+      "pos": "adj",
+      "ja": "忠実な・誠実な",
+      "key": true,
+      "clue": {
+        "t": "cog",
+        "text": "英語の fidelity（忠誠）と同じ祖先"
+      }
+    },
+    "patas": {
+      "w": "pata",
+      "pos": "n",
+      "g": "f",
+      "ja": "（動物の）足",
+      "form": "pata の複数形"
+    },
+    "graciosa": {
+      "w": "gracioso",
+      "pos": "adj",
+      "ja": "面白い・おかしい",
+      "form": "gracioso の女性形"
+    },
+    "próxima": {
+      "w": "próximo",
+      "pos": "adj",
+      "ja": "次の",
+      "form": "próximo の女性形"
+    },
+    "tampoco": {
+      "w": "tampoco",
+      "pos": "adv",
+      "ja": "〜もまた…ない"
+    },
+    "tonto": {
+      "w": "tonto",
+      "pos": "adj",
+      "ja": "ばかな・間抜けな"
+    },
+    "huellas": {
+      "w": "huella",
+      "pos": "n",
+      "g": "f",
+      "ja": "足跡",
+      "key": true,
+      "form": "huella の複数形",
+      "clue": {
+        "t": "ctx",
+        "text": "🐾 床の上に、小さな…"
+      }
+    },
+    "culpa": {
+      "w": "culpa",
+      "pos": "n",
+      "g": "f",
+      "ja": "責任・罪・せい"
+    },
+    "cocinero": {
+      "w": "cocinero",
+      "pos": "n",
+      "g": "m",
+      "ja": "料理人・コック"
+    },
+    "arroz": {
+      "w": "arroz",
+      "pos": "n",
+      "g": "m",
+      "ja": "米・ご飯"
+    },
+    "suelo": {
+      "w": "suelo",
+      "pos": "n",
+      "g": "m",
+      "ja": "床・地面"
+    },
+    "panadería": {
+      "w": "panadería",
+      "pos": "n",
+      "g": "f",
+      "ja": "パン屋"
+    },
+    "cara#1": {
+      "w": "cara",
+      "pos": "n",
+      "g": "f",
+      "ja": "顔"
+    },
+    "cara#16": {
+      "w": "cara",
+      "pos": "n",
+      "g": "f",
+      "ja": "顔"
+    },
+    "eso#3": {
+      "w": "eso",
+      "pos": "pron",
+      "ja": "それ・そのこと"
+    },
+    "eso#12": {
+      "w": "eso",
+      "pos": "pron",
+      "ja": "それ・そのこと"
+    },
+    "ese#6": {
+      "w": "ese",
+      "pos": "pron",
+      "ja": "それ・そこ",
+      "form": "ese の代名詞（Ese es el problema＝そこが問題だ）"
+    },
+    "ha#3": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去分詞と使って）〜した",
+      "form": "haber の「それは」（現在）（¿qué ha pasado?＝何があった？）"
+    },
+    "pasado#3": {
+      "w": "pasar",
+      "pos": "v",
+      "ja": "起こる",
+      "form": "pasar の過去分詞（ha pasado＝起こった）"
+    },
+    "has#16": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去分詞と使って）〜した",
+      "form": "haber の「君は」（現在）（te la has comido＝食べた）"
+    },
+    "mañana#4": {
+      "w": "mañana",
+      "pos": "n",
+      "g": "f",
+      "ja": "朝",
+      "form": "esta mañana＝今朝"
+    },
+    "mañana#19": {
+      "w": "mañana",
+      "pos": "n",
+      "g": "f",
+      "ja": "朝",
+      "form": "esta mañana＝今朝"
+    },
+    "como#6": {
+      "w": "como",
+      "pos": "conj",
+      "ja": "〜なので・〜だから（理由）"
+    },
+    "como#14": {
+      "w": "como",
+      "pos": "prep",
+      "ja": "〜のように・〜みたいに"
+    },
+    "como#16": {
+      "w": "como",
+      "pos": "prep",
+      "ja": "〜のように・〜みたいに"
+    },
+    "cocina#6": {
+      "w": "cocina",
+      "pos": "n",
+      "g": "f",
+      "ja": "台所・キッチン"
+    },
+    "cocina#27": {
+      "w": "cocina",
+      "pos": "n",
+      "g": "f",
+      "ja": "台所・キッチン"
+    },
+    "ya#9": {
+      "w": "ya",
+      "pos": "interj",
+      "ja": "ああ・そうだね（相づち）"
+    },
+    "por#12": {
+      "w": "por",
+      "pos": "prep",
+      "ja": "〜じゅうに・〜のあちこちに"
+    },
+    "por#29": {
+      "w": "por",
+      "pos": "prep",
+      "ja": "〜じゅうを・〜のあちこちを"
+    },
+    "cuenta#12": {
+      "w": "cuenta",
+      "pos": "n",
+      "g": "f",
+      "ja": "（darse cuenta で）気づき",
+      "form": "me di cuenta＝気づいた"
+    },
+    "di#12": {
+      "w": "darse",
+      "pos": "v",
+      "ja": "（darse cuenta de で）気づく",
+      "form": "darse の「私は」（点過去）"
+    },
+    "di#27": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "あげる・渡す",
+      "form": "dar の「私は」（点過去）"
+    },
+    "se#12": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（強調）〜してしまう",
+      "form": "se la había comido＝食べてしまった"
+    },
+    "se#16": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "彼に",
+      "form": "le が lo の前で se になった形（se lo dije＝それを彼に言った）"
+    },
+    "se#27": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "彼に",
+      "form": "le が lo の前で se になった形（se lo di＝それを彼にあげた）"
+    },
+    "lo#14": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "彼を（トマテを）",
+      "form": "直接目的語の「彼を」"
+    },
+    "pues#14": {
+      "w": "pues",
+      "pos": "conj",
+      "ja": "そう・そのとおり（返事の強調）",
+      "form": "Pues sí＝そうだよ"
+    },
+    "claro#26": {
+      "w": "claro",
+      "pos": "interj",
+      "ja": "もちろん"
+    },
+    "bueno#17": {
+      "w": "bueno",
+      "pos": "interj",
+      "ja": "まあ・さて"
+    },
+    "bueno#29": {
+      "w": "bueno",
+      "pos": "interj",
+      "ja": "まあ・というか"
+    },
+    "bueno#31": {
+      "w": "bueno",
+      "pos": "interj",
+      "ja": "まあ・さて"
+    },
+    "bueno#33": {
+      "w": "bueno",
+      "pos": "adj",
+      "ja": "（〜が）上手な・腕がよい",
+      "form": "ser muy bueno＝とても腕がいい"
+    },
+    "inocente#16": {
+      "w": "inocente",
+      "pos": "adj",
+      "ja": "無邪気な・何も知らない"
+    },
+    "vaya#22": {
+      "w": "vaya",
+      "pos": "interj",
+      "ja": "なんだよ・おや",
+      "form": "ir の命令形から来た感嘆（¡Vaya!）"
+    },
+    "poco#29": {
+      "w": "poco",
+      "pos": "adv",
+      "ja": "少し",
+      "form": "un poco＝少し"
+    },
+    "había#12.2": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去分詞と使って）〜していた",
+      "form": "haber の「彼は」（線過去）。se la había comido＝（それを）食べてしまっていた（過去完了）"
+    },
+    "ya#8": {
+      "w": "ya",
+      "pos": "adv",
+      "ja": "（ya sabes で）ほら・知ってのとおり",
+      "form": "Ya sabes cómo es＝あの人がどんなだか知ってるでしょ"
+    }
   }
 }

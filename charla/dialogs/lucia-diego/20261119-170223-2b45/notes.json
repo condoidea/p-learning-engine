@@ -76,6 +76,10 @@
     {
       "t": "te acuerdas de",
       "ja": "〜を覚えている"
+    },
+    {
+      "t": "por qué",
+      "ja": "なぜ・どうして"
     }
   ],
   "words": {
@@ -444,8 +448,8 @@
     "daba": {
       "w": "dar",
       "pos": "v",
-      "ja": "与える・渡す",
-      "form": "dar の線過去・三人称単数（me daba vergüenza＝恥ずかしかった）"
+      "ja": "（vergüenza を）与える・感じさせる",
+      "form": "dar の線過去・三人称単数（me daba vergüenza＝恥ずかしい思いをさせた＝恥ずかしかった）"
     },
     "creía": {
       "w": "creer",
@@ -702,6 +706,225 @@
       "g": "m",
       "ja": "クローゼット・たんす",
       "key": true
+    },
+    "a#1": {
+      "w": "a",
+      "pos": "prep",
+      "ja": "〜しに（venir a ＋ 不定詞）",
+      "form": "ven a ver＝見に来て"
+    },
+    "a#12": {
+      "w": "a",
+      "pos": "prep",
+      "ja": "（ir a ＋ 不定詞で）〜するつもり",
+      "form": "te vas a casar＝結婚する予定だ"
+    },
+    "a#36": {
+      "w": "a",
+      "pos": "prep",
+      "ja": "（ir a ＋ 不定詞で）〜しそうだ",
+      "form": "va a tener razón＝当たりそうだ"
+    },
+    "he#1": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去分詞と組んで）〜した",
+      "form": "haber の一人称単数・現在。過去分詞とセットで現在完了（he encontrado＝見つけた）"
+    },
+    "he#25": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去分詞と組んで）〜した",
+      "form": "haber の一人称単数・現在。過去分詞とセットで現在完了（no te lo he dicho＝言ったことがない）"
+    },
+    "he#35": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去分詞と組んで）〜した",
+      "form": "haber の一人称単数・現在。過去分詞とセットで現在完了（he estado pensando＝ずっと考えていた）"
+    },
+    "había#5": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去分詞と組んで）〜していた",
+      "form": "haber の線過去。過去分詞とセットで過去完了（me había olvidado＝忘れていた）"
+    },
+    "habías#22": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去分詞と組んで）〜していた",
+      "form": "haber の線過去・二人称単数。過去分詞とセットで過去完了（no la habías leído＝読んでいなかった）"
+    },
+    "qué#6": {
+      "w": "qué",
+      "pos": "int",
+      "ja": "なんて〜（感嘆）",
+      "form": "¡Qué bonito!＝なんてすてき！"
+    },
+    "dentro#3": {
+      "w": "dentro",
+      "pos": "adv",
+      "ja": "（dentro de ＋ 期間で）〜後に",
+      "form": "dentro de quince años＝15年後に"
+    },
+    "dentro#39": {
+      "w": "dentro",
+      "pos": "adv",
+      "ja": "（dentro de ＋ 期間で）〜後に",
+      "form": "dentro de quince años＝15年後に"
+    },
+    "pone#3": {
+      "w": "poner",
+      "pos": "v",
+      "ja": "（〜と）書いてある",
+      "form": "poner の三人称単数・現在（Pone: …＝…と書いてある）"
+    },
+    "pone#17": {
+      "w": "poner",
+      "pos": "v",
+      "ja": "（〜と）書いてある",
+      "form": "poner の三人称単数・現在（Pone: …＝…と書いてある）"
+    },
+    "bueno#7": {
+      "w": "bueno",
+      "pos": "interj",
+      "ja": "まあ・さて",
+      "form": "文頭の Bueno は「まあ」（間をつなぐ言葉）"
+    },
+    "bueno#10": {
+      "w": "bueno",
+      "pos": "interj",
+      "ja": "まあ・ええと",
+      "form": "文頭の Bueno は「まあ」（間をつなぐ言葉）"
+    },
+    "bueno#37": {
+      "w": "bueno",
+      "pos": "interj",
+      "ja": "まあ・いや",
+      "form": "文頭の Bueno は「まあ」。Bueno, en todo, no＝まあ、全部じゃないよ"
+    },
+    "oye#9": {
+      "w": "oír",
+      "pos": "interj",
+      "ja": "ちょっと・ねえ",
+      "form": "oír の tú への命令 oye。相手の注意を引く呼びかけ（¡Oye!＝ちょっと！）"
+    },
+    "llama#10": {
+      "w": "llamarse",
+      "pos": "v",
+      "ja": "〜という名前である",
+      "form": "llamarse の三人称単数・現在（se llama Michi＝ミチという名前だ）"
+    },
+    "espero#11": {
+      "w": "esperar",
+      "pos": "v",
+      "ja": "望む・〜だといいと思う",
+      "form": "esperar の一人称単数・現在（espero que ...＝〜だといいな）"
+    },
+    "ya#13": {
+      "w": "ya",
+      "pos": "interj",
+      "ja": "そうね・まあね（相づち）",
+      "form": "Ya.＝そうね（相手の言うとおりだと認める）"
+    },
+    "más#16": {
+      "w": "más",
+      "pos": "adv",
+      "ja": "ほかに・さらに",
+      "form": "algo más＝ほかに何か"
+    },
+    "misma#20": {
+      "w": "mismo",
+      "pos": "adj",
+      "ja": "同じ",
+      "form": "mismo の女性形（la misma clase＝同じクラス）"
+    },
+    "leas#26": {
+      "w": "leer",
+      "pos": "v",
+      "ja": "読む",
+      "form": "leer の否定命令（接続法現在・二人称単数）。no la leas＝読まないで"
+    },
+    "olvidé#22": {
+      "w": "olvidarse",
+      "pos": "v",
+      "ja": "忘れる",
+      "form": "olvidarse の点過去・一人称単数（no me olvidé＝忘れなかった）"
+    },
+    "hace#31": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "（hace ＋ 期間で）〜前に",
+      "form": "hacer の三人称単数・現在（hace quince años＝15年前に）"
+    },
+    "se#32": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（強め）〜してしまう",
+      "form": "comerse の se。食べ物を「ぜんぶ食べてしまう」と強める"
+    },
+    "come#32": {
+      "w": "comerse",
+      "pos": "v",
+      "ja": "食べてしまう・平らげる",
+      "form": "comerse の三人称単数・現在（se come todas mis paellas＝僕のパエリアを全部食べてしまう）"
+    },
+    "abuela#33": {
+      "w": "abuela",
+      "pos": "n",
+      "g": "f",
+      "ja": "祖母・おばあちゃん"
+    },
+    "trabajo#37": {
+      "w": "trabajo",
+      "pos": "n",
+      "g": "m",
+      "ja": "仕事・職"
+    },
+    "venga#39": {
+      "w": "venga",
+      "pos": "interj",
+      "ja": "さあ・ほら",
+      "form": "venir の活用形だが、促す決まり文句（Venga, ...＝さあ、…）"
+    },
+    "yo#5.1": {
+      "w": "yo",
+      "pos": "n",
+      "g": "m",
+      "ja": "自分・自我",
+      "note": "«yo» と引用符つきで名詞として使っている（el yo＝自分というもの）",
+      "form": "nuestro «yo» del futuro＝未来の自分"
+    },
+    "yo#13": {
+      "w": "yo",
+      "pos": "n",
+      "g": "m",
+      "ja": "自分・自我",
+      "note": "«yo» と引用符つきで名詞として使っている（el yo＝自分というもの）",
+      "form": "mi «yo» de quince años＝15歳の私"
+    },
+    "las#21.1": {
+      "w": "las",
+      "pos": "pron",
+      "ja": "それらを（女性・複数）",
+      "form": "las guardé＝それら（の手紙）をしまった"
+    },
+    "las#21.2": {
+      "w": "las",
+      "pos": "art",
+      "ja": "（女性・複数の）その",
+      "form": "las dos＝2つとも"
+    },
+    "las#39.1": {
+      "w": "las",
+      "pos": "art",
+      "ja": "（女性・複数の）その"
+    },
+    "las#39.2": {
+      "w": "las",
+      "pos": "pron",
+      "ja": "それらを（女性・複数）",
+      "form": "Las leeremos＝それら（の手紙）を読もう"
     }
   }
 }

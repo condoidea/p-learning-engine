@@ -100,6 +100,14 @@
       "t": "no me lo recuerdes",
       "ja": "思い出させないで",
       "note": "否定命令は接続法と同じ形"
+    },
+    {
+      "t": "es que",
+      "ja": "実は〜なんだ・だって〜だから"
+    },
+    {
+      "t": "por qué",
+      "ja": "なぜ・どうして"
     }
   ],
   "words": {
@@ -777,6 +785,212 @@
       "w": "genial",
       "pos": "adj",
       "ja": "最高の・すばらしい"
+    },
+    "ido#1": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "出かける・行ってしまう",
+      "form": "ir の過去分詞（se ha ido＝出かけた。irse＝出かける）"
+    },
+    "ha#1": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去分詞と）〜した・〜してある（完了の助動詞）",
+      "form": "haber の三人称単数・現在（現在完了を作る：se ha ido／nos ha dejado）"
+    },
+    "has#1": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去分詞と）〜した・〜してある（完了の助動詞）",
+      "form": "haber の二人称単数・現在（¿la has leído?＝読んだ？）"
+    },
+    "has#11": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去分詞と）〜した・〜してある（完了の助動詞）",
+      "form": "haber の二人称単数・現在（te has puesto＝〜になった）"
+    },
+    "has#23": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去分詞と）〜した・〜してある（完了の助動詞）",
+      "form": "haber の二人称単数・現在（has estado practicando）"
+    },
+    "he#24": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去分詞と）〜した・〜してある（完了の助動詞）",
+      "form": "haber の一人称単数・現在（he practicado＝練習した）"
+    },
+    "había#26": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去分詞と）〜した・〜してある（完了の助動詞）",
+      "form": "haber の線過去（lo había guardado＝しまったと思っていた：過去完了）"
+    },
+    "has#40": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去分詞と）〜した・〜してある（完了の助動詞）",
+      "form": "haber の二人称単数・現在（¿has oído?＝聞いた？）"
+    },
+    "ha#41": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去分詞と）〜した・〜してある（完了の助動詞）",
+      "form": "haber の三人称単数・現在（ha aprendido＝覚えた）"
+    },
+    "mañana#3": {
+      "w": "mañana",
+      "pos": "n",
+      "g": "f",
+      "ja": "朝",
+      "form": "por la mañana＝朝に"
+    },
+    "mañana#7": {
+      "w": "mañana",
+      "pos": "n",
+      "g": "f",
+      "ja": "朝・明け方",
+      "form": "de la mañana＝午前（las tres de la mañana＝夜中の3時）"
+    },
+    "qué#3": {
+      "w": "qué",
+      "pos": "int",
+      "ja": "なんて（感嘆）",
+      "form": "Qué majo＝なんて感じのいい人"
+    },
+    "qué#8": {
+      "w": "qué",
+      "pos": "int",
+      "ja": "なんて（感嘆）",
+      "form": "Qué loro tan listo＝なんて賢いオウム"
+    },
+    "tan#8": {
+      "w": "tan",
+      "pos": "adv",
+      "ja": "とても・こんなに",
+      "form": "qué 〜 tan …＝なんて…な〜"
+    },
+    "hace#5": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "（daño を）与える",
+      "form": "hacer の三人称単数・現在（le hace daño＝体に悪い）"
+    },
+    "pone#11": {
+      "w": "poner",
+      "pos": "v",
+      "ja": "（文書に）書いてある",
+      "form": "poner の三人称単数・現在（eso pone＝そう書いてある）"
+    },
+    "puesto#11": {
+      "w": "ponerse",
+      "pos": "v",
+      "ja": "（ある状態に）なる",
+      "form": "ponerse の過去分詞（te has puesto pálido＝青ざめた）"
+    },
+    "oye#14": {
+      "w": "oír",
+      "pos": "interj",
+      "ja": "ねえ・ちょっと（呼びかけ）",
+      "form": "oír の命令（oye＝ねえ）"
+    },
+    "oye#17": {
+      "w": "oír",
+      "pos": "interj",
+      "ja": "ねえ・あっ（呼びかけ）",
+      "form": "oír の命令（¡oye, mira!＝ねえ、見て！）"
+    },
+    "dar#14": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "（dar un paseo で）〜をする",
+      "form": "dar un paseo＝散歩する"
+    },
+    "hace#14": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "（天気が）〜だ",
+      "form": "hacer の三人称単数・現在（hace buen día＝いい天気だ）"
+    },
+    "tenemos#15": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "〜しなければならない（tener que ＋ 原形）",
+      "form": "tener の一人称複数・現在（tenemos que darle＝あげなければ）"
+    },
+    "que#15": {
+      "w": "que",
+      "pos": "conj",
+      "ja": "（tener que ＋ 原形で）〜しなければ"
+    },
+    "rápido#16": {
+      "w": "rápido",
+      "pos": "adv",
+      "ja": "早く・すばやく",
+      "form": "形容詞 rápido を副詞のように使う（dáselo rápido＝早くあげて）"
+    },
+    "ay#20": {
+      "w": "ay",
+      "pos": "interj",
+      "ja": "ああ・あーあ（驚き・困惑）"
+    },
+    "ay#28": {
+      "w": "ay",
+      "pos": "interj",
+      "ja": "ああ・あーあ（困った）"
+    },
+    "mía#20": {
+      "w": "mío",
+      "pos": "adj",
+      "ja": "私の",
+      "form": "mío の女性形（madre mía＝私のお母さん→ああ、なんてこった）"
+    },
+    "bueno#22": {
+      "w": "bueno",
+      "pos": "interj",
+      "ja": "まあ・えーと・いや（言いよどみ）"
+    },
+    "bueno#34": {
+      "w": "bueno",
+      "pos": "interj",
+      "ja": "まあ・さて（切り出し）"
+    },
+    "mejor#24": {
+      "w": "mejor",
+      "pos": "adv",
+      "ja": "もっとうまく・よりよく",
+      "form": "bien の比較（lo dice mejor que yo＝僕より上手に言う）"
+    },
+    "estará#28": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "（〜に）あるだろう",
+      "form": "estar の未来・三人称単数（推量：¿dónde estará?＝どこにあるんだろう）"
+    },
+    "se#33": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "彼に・彼女に（le の代わり）",
+      "form": "se lo quito＝（彼から）それを取る"
+    },
+    "mmm#37": {
+      "w": "mmm",
+      "pos": "interj",
+      "ja": "うーん（考え中）"
+    },
+    "pensarás#38": {
+      "w": "pensarse",
+      "pos": "v",
+      "ja": "よく考える",
+      "form": "pensarse の未来・二人称単数（te lo pensarás＝考えておく）"
+    },
+    "ya#33": {
+      "w": "ya",
+      "pos": "adv",
+      "ja": "今すぐ・すぐに",
+      "form": "Ya se lo quito yo＝私が今取ってあげる"
     }
   }
 }

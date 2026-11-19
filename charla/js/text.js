@@ -40,10 +40,15 @@
       [e.w].concat(e.f || []).forEach(function (f) { var k = lower(f); if (!self.es[k]) self.es[k] = e; });
     });
   }
-  /* 1語の意味：{ w 見出し語, pos, g, ja, form, note, key, clue, cj, src } か null */
-  Dict.prototype.word = function (k) {
-    var g = this.words[k];
-    if (g) return { w: g.w, pos: g.pos, g: g.g, ja: g.ja, form: g.form, note: g.note, key: !!g.key, clue: g.clue, cj: g.cj, src: 'notes' };
+  /* 1語の意味：{ w 見出し語, pos, g, ja, form, note, key, clue, cj, src } か null
+   *  ln（セリフの番号。1から）があれば、notes の「語#番号」（そのセリフだけの意味）を先に見る。
+   *  同じつづりでもセリフによって意味がちがう語のため（例 puesto：屋台／poner の過去分詞）。
+   *  共通単語帳はつづりだけで引くので、文の中で合っているかは notes で確かめて上書きする */
+  Dict.prototype.word = function (k, ln, occ) {
+    /* 同じセリフに同じ語が2回以上あれば「語#番号.何回目」（例 había#12.2）でさらに分けられる */
+    var byLine = ln && (occ && this.words[k + '#' + ln + '.' + occ] || this.words[k + '#' + ln]), g = byLine || this.words[k];
+    /* そのセリフだけの意味（語#番号）は、共通単語帳の級（lv）を引き継ぐ（5級・機能語の直しで点線をふやさない） */
+    if (g) return { w: g.w, pos: g.pos, g: g.g, ja: g.ja, form: g.form, note: g.note, key: !!g.key, clue: g.clue, cj: g.cj, src: 'notes', byLine: !!byLine, lv: byLine && this.es[k] ? this.es[k].lv : undefined };
     if (this.names[k]) return { name: true };
     var e = this.es[k];
     if (e) return { w: e.w, pos: e.pos, ja: e.ja, form: lower(e.w) !== k ? e.w + ' の変化した形' : '', key: false, src: 'es-words', lv: e.lv };
@@ -51,8 +56,9 @@
   };
   /* 1つのセリフを、語・言い回し（phrases）・記号の並びにする
    *  言い回しは語の並びが一致したとき（間は空白だけ）。長いものから先に取る */
-  Dict.prototype.line = function (text) {
-    var toks = split(text), out = [], i = 0, self = this;
+  Dict.prototype.line = function (text, ln) {
+    var toks = split(text), out = [], i = 0, self = this, seen = {};
+    toks.forEach(function (t) { if (t.t === 'w') { seen[t.k] = (seen[t.k] || 0) + 1; t.occ = seen[t.k]; } });
     while (i < toks.length) {
       var t = toks[i];
       if (t.t !== 'w') { out.push(t); i++; continue; }
@@ -67,11 +73,11 @@
         if (ok) hit = { ph: self.phr[p].p, end: j };
       }
       if (hit) {
-        var inner = toks.slice(i, hit.end).map(function (x) { return x.t === 'w' ? { t: 'w', s: x.s, k: x.k, g: self.word(x.k) } : x; });
+        var inner = toks.slice(i, hit.end).map(function (x) { return x.t === 'w' ? { t: 'w', s: x.s, k: x.k, occ: x.occ, g: self.word(x.k, ln, x.occ) } : x; });
         out.push({ t: 'ph', ph: hit.ph, s: toks.slice(i, hit.end).map(function (x) { return x.s; }).join(''), toks: inner });
         i = hit.end;
       } else {
-        out.push({ t: 'w', s: t.s, k: t.k, g: self.word(t.k) });
+        out.push({ t: 'w', s: t.s, k: t.k, occ: t.occ, g: self.word(t.k, ln, t.occ) });
         i++;
       }
     }

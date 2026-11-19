@@ -80,7 +80,7 @@ W.CHARLA_DIALOGS.forEach(function (it) {
   var section = { id: D.id, name: D.title };
   deck.sections.push(section);
   D.lines.forEach(function (l, i) {
-    dict.line(l.text).forEach(function (t) {
+    dict.line(l.text, i + 1).forEach(function (t) {
       var ws = t.t === 'ph' ? t.toks : [t];
       if (t.t === 'ph') {
         usedPh[t.ph.t] = 1;
@@ -101,6 +101,13 @@ W.CHARLA_DIALOGS.forEach(function (it) {
   Object.keys(N.words || {}).forEach(function (k) {
     var g = N.words[k];
     if (k !== k.toLowerCase()) E('notes.json', 'words のキー「' + k + '」は小文字で');
+    /* 「語#番号」＝そのセリフだけの意味。そのセリフにその語があるか */
+    var mm = /^(.+)#(\d+)(?:\.\d+)?$/.exec(k);
+    if (mm) {
+      var ln = D.lines[+mm[2] - 1];
+      if (!ln) E('notes.json', '「' + k + '」：セリフ' + mm[2] + ' がない');
+      else if (!T.split(ln.text).some(function (t) { return t.t === 'w' && t.k === mm[1]; })) E('notes.json', '「' + k + '」：セリフ' + mm[2] + ' に「' + mm[1] + '」がない');
+    }
     if (!g || !g.w || !g.ja || !g.pos) E('notes.json', '「' + k + '」に w・ja・pos が必要');
     else if (g.pos === 'n' && !g.g) E('notes.json', '名詞「' + k + '」に g（m／f／mf）が必要');
   });
