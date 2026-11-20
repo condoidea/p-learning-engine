@@ -183,7 +183,7 @@
     var el = lineEl(i); if (el) el.scrollIntoView({ block: 'center' });
   });
   $('#pGuide').addEventListener('click', function () { if (C && C.d) guideScreen(C.d.series, C.d.no, 'play'); });
-  $('#hWords').addEventListener('click', function () { wordsScreen('home'); });
+  $('#hWords').addEventListener('click', function () { wScope = 'all'; wordsScreen('home'); });
 
   /* =========================================================
    * プレーヤー
@@ -265,7 +265,7 @@
     stopRec();
   }
   $('#pBack').addEventListener('click', home);
-  $('#pWords').addEventListener('click', function () { cancelGap(); au.pause(); shPause(); wordsScreen('play'); });
+  $('#pWords').addEventListener('click', function () { cancelGap(); au.pause(); shPause(); wScope = 'one'; wordsScreen('play'); });
 
   /* ---------- モード ---------- */
   function setMode(m) {
@@ -849,7 +849,8 @@
    *  まちがえて送った語は「取り消す」でデッキから外せる（その語の育ち具合も消す）。
    *  参考書のデッキがないときは、CHARLA だけのデッキ「charla」に入れる。?sandbox は「charla-sandbox」だけ
    * ========================================================= */
-  var wFrom = 'home', chosen = {};
+  /* wScope：'one' いま聞いている話だけ（話の中から開いたときの最初）／'all' すべての話 */
+  var wFrom = 'home', wScope = 'all', chosen = {};
   var SEC_PRE = 'charla-';
   function destDecks() {
     if (SANDBOX) return [{ id: DECK_ID, title: 'お試し（sandbox）', brand: '💬' }];
@@ -887,8 +888,19 @@
     Promise.all(list.map(function (d) { return loadDialog(d.id).catch(function () { return null; }); })).then(function () {
       var other = destHas(), all = lookedList(), html = '', dl = destDecks(), cur = destId();
       chosen = {};
+      /* 話の中から開いたときは「この話／すべて」のタブ（最初は この話） */
+      var here = wFrom === 'play' && C ? C.D.id : '';
+      if (!here) wScope = 'all';
+      $('#wTabs').hidden = !here;
+      if (here) {
+        var nHere = all.filter(function (r) { return r.did === here; }).length;
+        $('#wTabs [data-s="one"]').textContent = 'この話（' + nHere + '）';
+        $('#wTabs [data-s="all"]').textContent = 'すべて（' + all.length + '）';
+        $$('#wTabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.s === wScope); });
+      }
       $('#wDest').innerHTML = dl.map(function (d) { return '<option value="' + esc(d.id) + '"' + (d.id === cur ? ' selected' : '') + '>' + esc((d.brand ? d.brand + ' ' : '') + d.title) + '</option>'; }).join('');
       list.forEach(function (d) {
+        if (wScope === 'one' && here && d.id !== here) return;
         var rs = all.filter(function (r) { return r.did === d.id; }).sort(function (a, b) { return a.line - b.line || a.at - b.at; });
         if (!rs.length) return;
         var c = cache[d.id];
@@ -905,7 +917,7 @@
             '</span></label>' + (st ? '<button class="undo" data-undo="' + esc(id) + '">取り消す</button>' : '<button class="del" data-del="' + esc(id) + '" aria-label="記録から消す">✕</button>') + '</li>';
         }).join('') + '</ul>';
       });
-      $('#wBody').innerHTML = html || '<p class="empty">まだありません。<br>台本の語をタップして意味を見ると、ここに記録されます。</p>';
+      $('#wBody').innerHTML = html || '<p class="empty">' + (wScope === 'one' && here ? 'この話で調べた語はまだありません。' : 'まだありません。') + '<br>台本の語をタップして意味を見ると、ここに記録されます。</p>';
       paintSend();
     });
   }
@@ -925,6 +937,7 @@
     $('#wSend').disabled = !n;
   }
   $('#wBody').addEventListener('change', function (e) { var c = e.target.closest('input[data-id]'); if (c) { chosen[c.dataset.id] = c.checked; paintSend(); } });
+  $('#wTabs').addEventListener('click', function (e) { var b = e.target.closest('[data-s]'); if (!b || b.dataset.s === wScope) return; wScope = b.dataset.s; wordsScreen(wFrom); });
   $('#wDest').addEventListener('change', function () { S.set.dest = this.value; save(); wordsScreen(wFrom); });
   $('#wBody').addEventListener('click', function (e) {
     var u = e.target.closest('[data-undo]'); if (u) { undoSend(u.dataset.undo); return; }
