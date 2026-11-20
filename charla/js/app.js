@@ -4,7 +4,7 @@
  *  ダイアログ（charla/dialogs/<シリーズ>/<id>/ の dialog.json・audio.mp3・notes.json）を、
  *  シリーズの解説（charla/dialogs/<シリーズ>/guide.md）の訳・★・聞き取りポイントと合わせて、
  *  台本と音声をそろえて聞く道具。ゲームの要素は入れない。
- *    🎧 聞く        台本を見ながら（隠して）聞く。セリフをタップ → そのセリフを AB 区間にしてくり返す
+ *    🎧 聞く        台本を見ながら（隠して）聞く。セリフをタップ → そのセリフから。🔁 で「セリフ」（そのセリフをくり返す）⇄「全体」
  *    ✍️ 書き取り    1セリフずつ「聞く → 書く時間」を回数ぶん → 答えを見る（書くのは紙。アプリは再生だけ）
  *    🗣 シャドーイング 1セリフずつ「聞く → 間（あなたの番）」を回数ぶん。役になる・録音して聞き比べる
  *    📘 解説        guide.md から：聞き取りポイントは台本の頭に（聞く前に読む）。文法ノートなどはたたんで
@@ -23,10 +23,11 @@
   var KEY = SANDBOX ? 'charla.sandbox.v1' : 'charla.v1';
   var DECK_ID = SANDBOX ? 'charla-sandbox' : 'charla';
   var PRE = 120, TAIL = 250;                 /* セリフの前後の余白（ms）。書き出しの時刻は声の約30ms前〜約60ms後 */
-  var SPEEDS = [0.6, 0.75, 0.85, 1, 1.15];
+  var SPEEDS = [0.5, 0.6, 0.7, 0.75, 0.8, 0.85, 0.9, 1, 1.1, 1.2];
+  var GAP = 600;   /* くり返すときに入れる短い無音（ms） */
 
   /* ---------- 保存 ---------- */
-  function fresh() { return { lessons: {}, looked: {}, dict: {}, pos: {}, set: { speed: 1, text: 'show', ja: false, rep: 2, gap: 1.5, role: '', stext: 'show', rec: false, drep: 2, dgap: 3, dtext: 'after', dauto: false, only: '' }, pts: {}, dest: '' }; }
+  function fresh() { return { lessons: {}, looked: {}, dict: {}, pos: {}, set: { speed: 1, text: 'show', ja: false, rep: 2, gap: 1.5, role: '', stext: 'show', rec: false, drep: 2, dgap: 3, dtext: 'after', dauto: false, only: '', loop: 'ab' }, pts: {}, dest: '' }; }
   function load() {
     try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && s.set) { var f = fresh(); for (var k in f) if (!(k in s)) s[k] = f[k]; for (var j in f.set) if (!(j in s.set)) s.set[j] = f.set[j]; return s; } } catch (e) { /* 保存領域が使えない */ }
     return fresh();
@@ -194,8 +195,9 @@
   try { au.preservesPitch = true; au.webkitPreservesPitch = true; au.mozPreservesPitch = true; } catch (e) { /* */ }
 
   /* 再生の状態
-   *  loop：'' なし／'all' 全体／'ab' AB区間
-   *  ab：{ a, b, i, j }（ms と、セリフ i〜j）
+   *  loop：'ab' セリフをくり返す／'all' 全体をくり返す（S.set.loop に覚える）
+   *  ab：{ a, b, i, j }（ms と、くり返すセリフ i）
+   *  gapT：くり返しの前の短い無音のタイマー
    *  sh：シャドーイングの進行 { i：セリフ, n：何回目, phase：'play'|'gap'|'turn'|'model', timer } */
   var P = { loop: '', ab: null, cur: -1, sh: null, stopAt: null, raf: 0, reveal: {}, heard: {} };
 
@@ -219,12 +221,14 @@
   }
   au.addEventListener('loadedmetadata', function () { if (pendingSeek != null) { var m = pendingSeek; pendingSeek = null; try { au.currentTime = m / 1000; } catch (e) { /* */ } } });
   function nowMsSafe() { return pendingSeek != null ? pendingSeek : au.currentTime * 1000; }
-  function play() { var p = au.play(); if (p && p.catch) p.catch(function () { /* 自動再生の制限（タップで再開） */ }); }
+  function cancelGap() { if (P.gapT) { clearTimeout(P.gapT); P.gapT = 0; } }
+  function play() { cancelGap(); var p = au.play(); if (p && p.catch) p.catch(function () { /* 自動再生の制限（タップで再開） */ }); }
 
   function openDialog(id) {
     loadDialog(id).then(function (c) {
       C = c;
-      P = { loop: '', ab: null, cur: -1, sh: null, stopAt: null, raf: 0, reveal: {}, heard: {}, ptsOpen: !S.pts[id] };
+      cancelGap();
+      P = { loop: S.set.loop === 'all' ? 'all' : 'ab', ab: null, cur: -1, sh: null, stopAt: null, raf: 0, reveal: {}, heard: {}, ptsOpen: !S.pts[id] };
       S.pts[id] = 1; save();   /* 聞き取りポイントは初めての1回だけ開いて出す */
       au.src = c.base + (c.D.audio || 'audio.mp3');
       au.load();
@@ -254,13 +258,14 @@
   }
   function seekWhenReady(ms) { seekMs(ms); }
   function stopAll() {
+    cancelGap();
     au.pause();
     if (P.sh && P.sh.timer) clearTimeout(P.sh.timer);
     P.sh = null; P.stopAt = null;
     stopRec();
   }
   $('#pBack').addEventListener('click', home);
-  $('#pWords').addEventListener('click', function () { au.pause(); shPause(); wordsScreen('play'); });
+  $('#pWords').addEventListener('click', function () { cancelGap(); au.pause(); shPause(); wordsScreen('play'); });
 
   /* ---------- モード ---------- */
   function setMode(m) {
@@ -388,7 +393,7 @@
   });
   function isActive(i) {
     if (stepMode()) return P.sh ? P.sh.i === i : P.cur === i;
-    if (P.ab) return i >= P.ab.i && i <= P.ab.j;
+    if (P.ab && P.loop === 'ab') return i >= P.ab.i && i <= P.ab.j;
     return P.cur === i;
   }
   /* 1セリフの表示を変えたとき（全体を描き直し、スクロールの位置は保つ） */
@@ -400,13 +405,12 @@
     if (labText && P.sh && P.sh.phase !== 'turn') shLabel(labText, 0);
   }
 
-  /* セリフをタップ：聞く → そのセリフを AB 区間にして頭から（くり返す）／シャドーイング → そのセリフから始める */
+  /* セリフをタップ：聞く → そのセリフの頭から（くり返しが「セリフ」ならそのセリフを、「全体」なら続けて）／シャドーイング → そのセリフから始める */
   function lineTap(i) {
     closeBalloon();
     if (stepMode()) { shStart(i); return; }
     var s = seg(i);
     P.ab = { a: s.a, b: s.b, i: i, j: i };
-    P.loop = 'ab';
     P.cur = i;
     seekMs(s.a);
     play();
@@ -418,7 +422,8 @@
     if (!C) return;
     var t = nowMs();
     if (mode === 'listen' && !au.paused) {
-      if (P.loop === 'ab' && P.ab && (t >= P.ab.b || t < P.ab.a - 400)) { seekMs(P.ab.a); t = P.ab.a; }
+      if (P.loop === 'ab' && P.ab && t >= P.ab.b) { repeatFrom(P.ab.a); t = P.ab.a; }
+      else if (P.loop === 'ab' && P.ab && t < P.ab.a - 400) { seekMs(P.ab.a); t = P.ab.a; }
       else if (P.stopAt != null && t >= P.stopAt) { au.pause(); P.stopAt = null; }
     }
     if (stepMode() && P.sh && (P.sh.phase === 'play' || P.sh.phase === 'model')) {
@@ -430,6 +435,14 @@
     }
     paintTime(t);
   }
+  /* くり返し：頭へ戻して、短い無音のあとで再生。画面が消えているときは間を入れない（裏からの再生は止められることがある） */
+  function repeatFrom(ms) {
+    if (document.hidden) { seekMs(ms); if (au.paused) play(); return; }
+    au.pause(); seekMs(ms);
+    var tok = P;
+    P.gapT = setTimeout(function () { tok.gapT = 0; if (P !== tok || !C || mode !== 'listen') { paintPlay(); return; } play(); }, GAP);
+    paintPlay();
+  }
   function loopRaf() { tick(); if (!au.paused) P.raf = requestAnimationFrame(loopRaf); }
   au.addEventListener('play', function () { cancelAnimationFrame(P.raf); P.raf = requestAnimationFrame(loopRaf); paintPlay(); });
   au.addEventListener('pause', function () { paintPlay(); });
@@ -439,8 +452,8 @@
     if (!C) return;
     if (mode === 'listen') {
       S.lessons[C.D.id] = { done: true }; save();
-      if (P.loop === 'all') { seekMs(0); play(); }
-      else if (P.loop === 'ab' && P.ab) { seekMs(P.ab.a); play(); }
+      if (P.loop === 'all') repeatFrom(0);
+      else if (P.loop === 'ab' && P.ab) repeatFrom(P.ab.a);
     }
     if (stepMode() && P.sh) shAfterPlay();
     paintPlay();
@@ -450,9 +463,14 @@
   function togglePlay(force) {
     if (!C) return;
     closeBalloon();
+    if (P.gapT && force !== true) { cancelGap(); paintPlay(); return; }
     var want = force != null ? force : (au.paused && !(P.sh && P.sh.timer));
     if (stepMode()) { if (want) shStart(P.sh ? P.sh.i : stepTo(Math.max(0, P.cur), 1) < 0 ? stepTo(0, 1) : stepTo(Math.max(0, P.cur), 1)); else shPause(); return; }
-    if (want) { if (P.loop === 'ab' && P.ab && (nowMs() < P.ab.a || nowMs() >= P.ab.b)) seekMs(P.ab.a); play(); }
+    if (want) {
+      if (P.loop === 'ab' && !P.ab) { var k = Math.max(0, P.cur); var s0 = seg(k); P.ab = { a: s0.a, b: s0.b, i: k, j: k }; P.cur = k; paint(true); }
+      if (P.loop === 'ab' && P.ab && (nowMs() < P.ab.a || nowMs() >= P.ab.b)) seekMs(P.ab.a);
+      play();
+    }
     else au.pause();
   }
   function back2() {
@@ -479,14 +497,23 @@
   $('#cPrev').addEventListener('click', function () { stepLine(-1); });
   $('#cNext').addEventListener('click', function () { stepLine(1); });
   $('#cLoop').addEventListener('click', function () {
-    /* なし → 全体 → （AB区間があれば）AB → なし */
-    var order = P.ab ? ['', 'all', 'ab'] : ['', 'all'];
-    P.loop = order[(order.indexOf(P.loop) + 1) % order.length];
+    /* セリフ ⇄ 全体。セリフにしたら、いま聞いているセリフをくり返す */
+    P.loop = P.loop === 'ab' ? 'all' : 'ab';
+    S.set.loop = P.loop; save();
+    if (P.loop === 'ab' && P.cur >= 0) { var s = seg(P.cur); P.ab = { a: s.a, b: s.b, i: P.cur, j: P.cur }; }
     paintOpts(); paint();
   });
   function cycle(arr, v) { var k = arr.indexOf(v); return arr[(k + 1) % arr.length]; }
-  function setSpeed() {
-    S.set.speed = cycle(SPEEDS, S.set.speed); save();
+  /* 速さ：− ／ ＋ で1段ずつ（端で止まる） */
+  function speedIdx() {
+    var k = 0;
+    SPEEDS.forEach(function (v, j) { if (Math.abs(v - S.set.speed) < Math.abs(SPEEDS[k] - S.set.speed)) k = j; });
+    return k;
+  }
+  function setSpeed(e) {
+    var b = e.target.closest('[data-d]');
+    if (!b) return;
+    S.set.speed = SPEEDS[Math.max(0, Math.min(SPEEDS.length - 1, speedIdx() + +b.dataset.d))]; save();
     au.playbackRate = S.set.speed;
     paintOpts();
   }
@@ -494,13 +521,6 @@
   $('#sSpeed').addEventListener('click', setSpeed);
   $('#oText').addEventListener('click', function () { S.set.text = S.set.text === 'show' ? 'hide' : 'show'; P.reveal = {}; save(); renderScript(); paintOpts(); });
   $('#oJa').addEventListener('click', function () { S.set.ja = !S.set.ja; save(); renderScript(); paintOpts(); });
-  $('#abMore').addEventListener('click', function () {
-    if (!P.ab) return;
-    var j = Math.min(C.D.lines.length - 1, P.ab.j + 1);
-    P.ab.j = j; P.ab.b = seg(j).b;
-    paintOpts(); paint(true);
-  });
-  $('#abClear').addEventListener('click', function () { P.ab = null; if (P.loop === 'ab') P.loop = ''; paintOpts(); paint(true); });
 
   /* 進みのバー：セリフごとの区切り（話し手の色）・AB区間・いまの位置。タップでその位置へ */
   function drawSegs() {
@@ -514,7 +534,8 @@
     if (!C) return;
     var r = this.getBoundingClientRect(), ms = (e.clientX - r.left) / r.width * C.D.durationMs;
     if (stepMode()) { shStart(Math.max(0, lineAt(ms))); return; }
-    if (P.loop === 'ab') { P.loop = ''; }
+    if (P.loop === 'ab') { lineTap(Math.max(0, lineAt(ms))); return; }
+    cancelGap();
     seekMs(ms); P.cur = lineAt(ms); paintOpts(); paint(true);
   });
 
@@ -525,7 +546,7 @@
     $('#needle').style.left = Math.min(100, t / C.D.durationMs * 100) + '%';
   }
   function paintPlay() {
-    var on = stepMode() ? !!(P.sh && (P.sh.timer || !au.paused)) : !au.paused;
+    var on = stepMode() ? !!(P.sh && (P.sh.timer || !au.paused)) : (!au.paused || !!P.gapT);
     $('#cPlay').textContent = on ? '⏸' : '▶';
     $('#cPlay').setAttribute('aria-label', on ? '止める' : '再生');
   }
@@ -538,11 +559,10 @@
       el.classList.toggle('inab', mode === 'listen' && !!P.ab && P.loop === 'ab' && i >= P.ab.i && i <= P.ab.j);
     });
     var sh = $('#abShade');
-    if (mode === 'listen' && P.ab) {
+    if (mode === 'listen' && P.ab && P.loop === 'ab') {
       sh.hidden = false;
       sh.style.left = (P.ab.a / C.D.durationMs * 100) + '%';
       sh.style.width = ((P.ab.b - P.ab.a) / C.D.durationMs * 100) + '%';
-      sh.classList.toggle('off', P.loop !== 'ab');
     } else sh.hidden = true;
     if (scroll && act >= 0) {
       var el = lineEl(act), box = $('#script');
@@ -558,11 +578,13 @@
     $('#oSpeed b').textContent = sp; $('#sSpeed b').textContent = sp; $('#dSpeed b').textContent = sp;
     $('#oText b').textContent = S.set.text === 'show' ? '見せる' : '隠す';
     $('#oJa b').textContent = S.set.ja ? 'あり' : 'なし';
-    $('#cLoopT').textContent = { '': 'なし', all: '全体', ab: 'AB' }[P.loop];
-    $('#cLoop').classList.toggle('on', !!P.loop);
-    var chip = $('#abChip');
-    chip.hidden = !(mode === 'listen' && P.ab);
-    if (P.ab) $('#abT').textContent = 'AB：セリフ' + (P.ab.i + 1) + (P.ab.j > P.ab.i ? '〜' + (P.ab.j + 1) : '') + (P.loop === 'ab' ? '' : '（止めている）');
+    $('#cLoopT').textContent = P.loop === 'all' ? '全体' : 'セリフ';
+    $('#cLoop').classList.add('on');
+    var k = speedIdx();
+    $$('.chip.step').forEach(function (el) {
+      $('[data-d="-1"]', el).disabled = k === 0;
+      $('[data-d="1"]', el).disabled = k === SPEEDS.length - 1;
+    });
     $('#sRep b').textContent = S.set.rep;
     $('#sGap b').textContent = '×' + S.set.gap;
     $('#sRole b').textContent = S.set.role ? spName(S.set.role) + ' になる' : 'なし';
@@ -735,7 +757,7 @@
   var mine = new Audio();
   function playMine(i) {
     if (!P.recs || !P.recs[i]) return;
-    shPause(); au.pause();
+    cancelGap(); shPause(); au.pause();
     mine.src = P.recs[i]; mine.play().catch(function () { /* */ });
   }
 
@@ -790,7 +812,7 @@
   /* 語の読み上げ（語は読み上げでも十分。文はダイアログの音声で聞く） */
   function say(text) {
     if (!window.speechSynthesis) return;
-    au.pause(); if (P.sh) shPause();
+    cancelGap(); au.pause(); if (P.sh) shPause();
     try {
       speechSynthesis.cancel();
       var u = new SpeechSynthesisUtterance(text);

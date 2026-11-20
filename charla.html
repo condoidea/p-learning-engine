@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <script src="shared/cloud.js?v=2"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<style>html{touch-action:manipulation}</style><script>document.addEventListener('gesturestart',function(e){e.preventDefault()})</script>
 <title>CHARLA｜スペイン語の会話を聞く・書く・まねる</title>
 <meta name="theme-color" content="#14171f">
 <meta name="color-scheme" content="dark">
@@ -12,7 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
 <script src="shared/smooth-fonts.js?v=1"></script>
 <script src="shared/speech-fix.js?v=2"></script>
-<link rel="stylesheet" href="charla/css/charla.css?v=8">
+<link rel="stylesheet" href="charla/css/charla.css?v=9">
 </head>
 <body>
 <div id="app">
@@ -56,16 +57,15 @@
         <button class="ctl" id="cPrev" aria-label="前のセリフ">⏮</button>
         <button class="ctl big" id="cPlay" aria-label="再生">▶</button>
         <button class="ctl" id="cNext" aria-label="次のセリフ">⏭</button>
-        <button class="ctl" id="cLoop" aria-label="くり返し">🔁<small id="cLoopT">なし</small></button>
+        <button class="ctl" id="cLoop" aria-label="くり返し">🔁<small id="cLoopT">セリフ</small></button>
       </div>
       <div class="row opts" id="optsListen">
-        <button class="chip" id="oSpeed">速さ <b>1.0</b></button>
+        <span class="chip step" id="oSpeed"><button data-d="-1" aria-label="遅く">−</button>速さ <b>1.0</b><button data-d="1" aria-label="速く">＋</button></span>
         <button class="chip" id="oText">文字 <b>見せる</b></button>
         <button class="chip" id="oJa">訳 <b>なし</b></button>
-        <span class="abchip" id="abChip" hidden><span id="abT"></span><button id="abMore">＋次</button><button id="abClear" aria-label="AB区間を消す">✕</button></span>
       </div>
       <div class="row opts" id="optsShadow" hidden>
-        <button class="chip" id="sSpeed">速さ <b>1.0</b></button>
+        <span class="chip step" id="sSpeed"><button data-d="-1" aria-label="遅く">−</button>速さ <b>1.0</b><button data-d="1" aria-label="速く">＋</button></span>
         <button class="chip" id="sRep">回数 <b>2</b></button>
         <button class="chip" id="sGap">間 <b>×1.5</b></button>
         <button class="chip" id="sRole">役 <b>なし</b></button>
@@ -74,7 +74,7 @@
         <button class="chip" id="sRec">🎙 <b>録音しない</b></button>
       </div>
       <div class="row opts" id="optsDict" hidden>
-        <button class="chip" id="dSpeed">速さ <b>1.0</b></button>
+        <span class="chip step" id="dSpeed"><button data-d="-1" aria-label="遅く">−</button>速さ <b>1.0</b><button data-d="1" aria-label="速く">＋</button></span>
         <button class="chip" id="dRep">回数 <b>2</b></button>
         <button class="chip" id="dGap">書く時間 <b>×3</b></button>
         <button class="chip" id="dOnly" hidden>セリフ <b>全部</b></button>
@@ -124,6 +124,6 @@
 <script src="vocab/js/decks.js?v=37"></script>
 <script src="charla/dialogs/list.js?v=3"></script>
 <script src="charla/js/text.js?v=7"></script>
-<script src="charla/js/app.js?v=11"></script>
+<script src="charla/js/app.js?v=12"></script>
 </body>
 </html>
