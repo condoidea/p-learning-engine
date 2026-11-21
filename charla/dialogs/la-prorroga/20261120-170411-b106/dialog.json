@@ -1,0 +1,400 @@
+{
+  "format": 1,
+  "id": "20261120-170411-b106",
+  "title": "I-02 La Prórroga: el entrenador",
+  "scene": "Estudio de radio, una semana después. Programa de fútbol «La Prórroga», de la emisora Onda Balón. Nuria Campos entrevista en directo a Ramiro Salgado, el veterano entrenador del CD Río Verde. Ella le habla de usted. Tono de entrevista de radio, con humor y momentos emotivos.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-20T08:11:09.167Z",
+  "audio": "audio.mp3",
+  "durationMs": 446636,
+  "speakers": [
+    {
+      "id": "NURIA",
+      "gender": "female",
+      "persona": "Nuria Campos, unos 40 años, locutora de un programa deportivo de radio, rápida, simpática e irónica, voz clara de radio"
+    },
+    {
+      "id": "RAMIRO",
+      "gender": "male",
+      "persona": "Ramiro Salgado, 64 años, entrenador veterano, serio y gruñón por fuera pero sentimental por dentro, habla despacio y con autoridad, con humor seco"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "NURIA",
+      "text": "¡Buenas noches y bienvenidos a La Prórroga! Hace una semana estuvo con nosotros Dani Robles, el autor del famoso gol de espaldas. Y hoy tenemos en el estudio a su entrenador, un hombre que lleva cuarenta años en los banquillos. Don Ramiro Salgado, buenas noches.",
+      "direction": "tono de radio, con energía",
+      "startMs": 400,
+      "endMs": 18926
+    },
+    {
+      "index": 1,
+      "speaker": "RAMIRO",
+      "text": "Buenas noches. Y llámeme Ramiro, por favor, que lo de «don» me hace sentir viejo.",
+      "direction": "",
+      "startMs": 19832,
+      "endMs": 26302
+    },
+    {
+      "index": 2,
+      "speaker": "NURIA",
+      "text": "De acuerdo, Ramiro. ¿Y nos tuteamos?",
+      "direction": "",
+      "startMs": 27209,
+      "endMs": 30151
+    },
+    {
+      "index": 3,
+      "speaker": "RAMIRO",
+      "text": "Mejor no. Soy de otra época: en la radio, de usted.",
+      "direction": "",
+      "startMs": 31159,
+      "endMs": 36329
+    },
+    {
+      "index": 4,
+      "speaker": "NURIA",
+      "text": "Muy bien, de usted. Primero, enhorabuena por la salvación. ¿Cómo vivió aquel último partido?",
+      "direction": "",
+      "startMs": 37172,
+      "endMs": 45432
+    },
+    {
+      "index": 5,
+      "speaker": "RAMIRO",
+      "text": "Mal. Muy mal. A mis años, el corazón ya no está para esos sustos. En el minuto noventa, mi mujer me mandó un mensaje: «Si no ganáis, no vuelvas a casa».",
+      "direction": "",
+      "startMs": 46663,
+      "endMs": 60268
+    },
+    {
+      "index": 6,
+      "speaker": "NURIA",
+      "text": "¡Qué presión! ¿Y qué pensó cuando entró el gol?",
+      "direction": "riéndose",
+      "startMs": 61334,
+      "endMs": 65114
+    },
+    {
+      "index": 7,
+      "speaker": "RAMIRO",
+      "text": "Le voy a decir la verdad, Nuria, aunque todavía no lo sabe nadie: no vi el gol.",
+      "direction": "",
+      "startMs": 66259,
+      "endMs": 75112
+    },
+    {
+      "index": 8,
+      "speaker": "NURIA",
+      "text": "¿Cómo que no lo vio?",
+      "direction": "",
+      "startMs": 76081,
+      "endMs": 77571
+    },
+    {
+      "index": 9,
+      "speaker": "RAMIRO",
+      "text": "En ese momento estaba de espaldas al campo, discutiendo con el cuarto árbitro. Le estaba diciendo que el partido tenía que durar más minutos. De repente oí un ruido enorme, me di la vuelta… y vi a todos mis jugadores encima de Dani.",
+      "direction": "",
+      "startMs": 78556,
+      "endMs": 98757
+    },
+    {
+      "index": 10,
+      "speaker": "NURIA",
+      "text": "¡O sea, que el entrenador tampoco vio el gol!",
+      "direction": "",
+      "startMs": 99775,
+      "endMs": 103355
+    },
+    {
+      "index": 11,
+      "speaker": "RAMIRO",
+      "text": "Lo vi esa noche en la tele. Como todo el mundo.",
+      "direction": "",
+      "startMs": 104109,
+      "endMs": 107959
+    },
+    {
+      "index": 12,
+      "speaker": "NURIA",
+      "text": "Dani nos dijo la semana pasada que ese gol lo había practicado toda la semana en los entrenamientos. ¿Es verdad?",
+      "direction": "",
+      "startMs": 108785,
+      "endMs": 118287
+    },
+    {
+      "index": 13,
+      "speaker": "RAMIRO",
+      "text": "Ese chico… Mire, en mis entrenamientos practicamos muchas cosas. Pero goles de espaldas, no. Nunca. Eso se lo ha inventado él.",
+      "direction": "suspirando",
+      "startMs": 119520,
+      "endMs": 132196
+    },
+    {
+      "index": 14,
+      "speaker": "NURIA",
+      "text": "Lo sospechaba. Hablemos de su carrera. Usted empezó como jugador, ¿verdad?",
+      "direction": "",
+      "startMs": 133170,
+      "endMs": 139554
+    },
+    {
+      "index": 15,
+      "speaker": "RAMIRO",
+      "text": "Sí, era defensa central. Un defensa duro, de los de antes. En doce años me sacaron diecinueve tarjetas rojas. Todavía tengo el récord del club.",
+      "direction": "",
+      "startMs": 140750,
+      "endMs": 153580
+    },
+    {
+      "index": 16,
+      "speaker": "NURIA",
+      "text": "¡Diecinueve! ¿Y está orgulloso?",
+      "direction": "",
+      "startMs": 154552,
+      "endMs": 157242
+    },
+    {
+      "index": 17,
+      "speaker": "RAMIRO",
+      "text": "No mucho. Pero mi madre las tenía todas apuntadas en un cuaderno, con la fecha y el nombre del árbitro.",
+      "direction": "",
+      "startMs": 158249,
+      "endMs": 166709
+    },
+    {
+      "index": 18,
+      "speaker": "NURIA",
+      "text": "¿Y cómo se hizo entrenador?",
+      "direction": "",
+      "startMs": 167763,
+      "endMs": 169803
+    },
+    {
+      "index": 19,
+      "speaker": "RAMIRO",
+      "text": "A los treinta y dos años me rompí la pierna y tuve que dejar de jugar. Un amigo me ofreció entrenar a un equipo de niños, y descubrí que me gustaba más enseñar que jugar.",
+      "direction": "",
+      "startMs": 170810,
+      "endMs": 186061
+    },
+    {
+      "index": 20,
+      "speaker": "NURIA",
+      "text": "Sus métodos de entrenamiento son famosos. Dicen que sus jugadores bailan sevillanas. ¿Es cierto?",
+      "direction": "",
+      "startMs": 187011,
+      "endMs": 194268
+    },
+    {
+      "index": 21,
+      "speaker": "RAMIRO",
+      "text": "Totalmente cierto. Los martes, una hora de sevillanas. Es muy bueno para el equilibrio y la coordinación. Al principio, los jugadores se reían de mí. Ahora es su día favorito.",
+      "direction": "",
+      "startMs": 195412,
+      "endMs": 212130
+    },
+    {
+      "index": 22,
+      "speaker": "NURIA",
+      "text": "¿Y es verdad que les prohíbe usar el móvil en el vestuario?",
+      "direction": "",
+      "startMs": 213162,
+      "endMs": 217203
+    },
+    {
+      "index": 23,
+      "speaker": "RAMIRO",
+      "text": "Por supuesto. El vestuario es para hablar, no para mirar una pantalla. Si veo un móvil, me lo quedo hasta el lunes. El mes pasado me quedé con el de Dani tres veces.",
+      "direction": "",
+      "startMs": 218305,
+      "endMs": 232435
+    },
+    {
+      "index": 24,
+      "speaker": "NURIA",
+      "text": "Usted tiene fama de entrenador muy exigente. Pero también dicen que tiene un corazón enorme. Dani nos contó que, cuando se lesionó, usted iba a verlo a casa cada semana.",
+      "direction": "",
+      "startMs": 233483,
+      "endMs": 246603
+    },
+    {
+      "index": 25,
+      "speaker": "RAMIRO",
+      "text": "Bueno… eso no tiene importancia. Un entrenador tiene que cuidar a sus jugadores. Son como hijos. Hijos que no me hacen caso, pero hijos.",
+      "direction": "incómodo",
+      "startMs": 247571,
+      "endMs": 260025
+    },
+    {
+      "index": 26,
+      "speaker": "NURIA",
+      "text": "Y ahora le pregunto por algo que preocupa mucho a los aficionados. Se dice que Dani se va a ir a un equipo grande. ¿Qué opina usted?",
+      "direction": "",
+      "startMs": 260998,
+      "endMs": 271366
+    },
+    {
+      "index": 27,
+      "speaker": "RAMIRO",
+      "text": "Que si se va, me alegraré por él. El fútbol es así. Pero le pido dos cosas: que no se olvide nunca de dónde viene… y que se ate bien las botas antes de los córners.",
+      "direction": "",
+      "startMs": 272637,
+      "endMs": 287180
+    },
+    {
+      "index": 28,
+      "speaker": "NURIA",
+      "text": "¡Entonces usted también ha visto las imágenes!",
+      "direction": "riéndose",
+      "startMs": 288165,
+      "endMs": 291370
+    },
+    {
+      "index": 29,
+      "speaker": "RAMIRO",
+      "text": "Las he visto, sí. Cien veces. «Visión periférica», dice el chaval…",
+      "direction": "",
+      "startMs": 292255,
+      "endMs": 298485
+    },
+    {
+      "index": 30,
+      "speaker": "NURIA",
+      "text": "Hablemos del futuro. ¿Cuánto tiempo más va a seguir entrenando?",
+      "direction": "",
+      "startMs": 299475,
+      "endMs": 304220
+    },
+    {
+      "index": 31,
+      "speaker": "RAMIRO",
+      "text": "Pues, la verdad, Nuria… quería aprovechar esta entrevista para anunciar algo importante.",
+      "direction": "",
+      "startMs": 305411,
+      "endMs": 313861
+    },
+    {
+      "index": 32,
+      "speaker": "NURIA",
+      "text": "¿En directo? ¿Aquí, en La Prórroga?",
+      "direction": "sorprendida",
+      "startMs": 314928,
+      "endMs": 318347
+    },
+    {
+      "index": 33,
+      "speaker": "RAMIRO",
+      "text": "Sí. La próxima será mi última temporada. Cuando termine, me retiro.",
+      "direction": "",
+      "startMs": 319379,
+      "endMs": 326920
+    },
+    {
+      "index": 34,
+      "speaker": "NURIA",
+      "text": "¡Vaya noticia! ¿Está seguro?",
+      "direction": "",
+      "startMs": 327902,
+      "endMs": 330689
+    },
+    {
+      "index": 35,
+      "speaker": "RAMIRO",
+      "text": "Segurísimo. Mi mujer quiere que pasemos más tiempo juntos. Quiere que la lleve a ver el mar… y que aprenda a bailar sevillanas de verdad.",
+      "direction": "",
+      "startMs": 331839,
+      "endMs": 343408
+    },
+    {
+      "index": 36,
+      "speaker": "NURIA",
+      "text": "Pues ya tiene experiencia. ¿Y no lo va a echar de menos?",
+      "direction": "",
+      "startMs": 344411,
+      "endMs": 348560
+    },
+    {
+      "index": 37,
+      "speaker": "RAMIRO",
+      "text": "Claro que sí. Pero… bueno, le voy a confesar otra cosa. Llevo veinte años anunciando que me retiro. Todos los veranos digo lo mismo.",
+      "direction": "",
+      "startMs": 349754,
+      "endMs": 361234
+    },
+    {
+      "index": 38,
+      "speaker": "NURIA",
+      "text": "¿Veinte años?",
+      "direction": "riéndose",
+      "startMs": 362242,
+      "endMs": 364342
+    },
+    {
+      "index": 39,
+      "speaker": "RAMIRO",
+      "text": "Veinte. Mi mujer ya no me cree. Los jugadores tampoco. Pero este año va en serio. Creo.",
+      "direction": "",
+      "startMs": 365408,
+      "endMs": 374298
+    },
+    {
+      "index": 40,
+      "speaker": "NURIA",
+      "text": "Lo apuntaremos, por si acaso. Una última pregunta, Ramiro. Usted no vio el gol, pero ¿ha hablado con el árbitro de aquel partido?",
+      "direction": "",
+      "startMs": 375274,
+      "endMs": 386247
+    },
+    {
+      "index": 41,
+      "speaker": "RAMIRO",
+      "text": "Con el señor Gil, no. Pero le digo una cosa: ese hombre estaba muy cerca de la jugada. Demasiado cerca. En la repetición se ve algo raro… pero bueno, el gol subió al marcador y nadie dijo nada.",
+      "direction": "",
+      "startMs": 387460,
+      "endMs": 405452
+    },
+    {
+      "index": 42,
+      "speaker": "NURIA",
+      "text": "¿Algo raro? ¿Qué quiere decir?",
+      "direction": "",
+      "startMs": 406503,
+      "endMs": 409249
+    },
+    {
+      "index": 43,
+      "speaker": "RAMIRO",
+      "text": "Yo no digo nada. Pregúnteselo a él.",
+      "direction": "",
+      "startMs": 410364,
+      "endMs": 413344
+    },
+    {
+      "index": 44,
+      "speaker": "NURIA",
+      "text": "Pues eso haremos. Ramiro Salgado, muchas gracias por venir a La Prórroga.",
+      "direction": "",
+      "startMs": 414136,
+      "endMs": 420026
+    },
+    {
+      "index": 45,
+      "speaker": "RAMIRO",
+      "text": "Gracias a usted. Y a los aficionados: nos vemos en el estadio. Si mi mujer me deja.",
+      "direction": "",
+      "startMs": 421024,
+      "endMs": 427632
+    },
+    {
+      "index": 46,
+      "speaker": "NURIA",
+      "text": "La próxima semana tendremos con nosotros a un invitado que casi nunca habla con la prensa: Alberto Gil, el árbitro de aquel partido. ¿Qué pasó de verdad en el minuto noventa y tres? ¡No se lo pierdan!",
+      "direction": "",
+      "startMs": 428673,
+      "endMs": 445636
+    }
+  ]
+}

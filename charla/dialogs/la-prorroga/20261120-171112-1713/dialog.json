@@ -1,0 +1,448 @@
+{
+  "format": 1,
+  "id": "20261120-171112-1713",
+  "title": "I-03 La Prórroga: el árbitro",
+  "scene": "Estudio de radio, una semana después. Programa de fútbol «La Prórroga», de la emisora Onda Balón. Nuria Campos entrevista en directo a Alberto Gil, el árbitro del famoso partido. Él casi nunca habla con la prensa y viene a contar algo importante. Tono de entrevista de radio, primero ligero, después serio y al final emotivo.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-21T15:56:16.123Z",
+  "audio": "audio.mp3",
+  "durationMs": 528449,
+  "speakers": [
+    {
+      "id": "NURIA",
+      "gender": "female",
+      "persona": "Nuria Campos, unos 40 años, locutora de un programa deportivo de radio, rápida, simpática e irónica, voz clara de radio"
+    },
+    {
+      "id": "ALBERTO",
+      "gender": "male",
+      "persona": "Alberto Gil, 45 años, árbitro con veinte años de experiencia en categorías modestas, honesto, educado y un poco nervioso, habla con cuidado"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "NURIA",
+      "text": "¡Buenas noches y bienvenidos a La Prórroga! Durante dos semanas hemos hablado del famoso gol de espaldas del Río Verde. Primero con el goleador, Dani Robles, y después con su entrenador, Ramiro Salgado. Y hoy tenemos con nosotros a la persona más insultada de cualquier estadio: el árbitro. Alberto Gil, bienvenido.",
+      "direction": "tono de radio, con energía",
+      "startMs": 400,
+      "endMs": 23703
+    },
+    {
+      "index": 1,
+      "speaker": "ALBERTO",
+      "text": "Gracias, Nuria. Es la primera vez que me invitan a la radio. Normalmente, en la radio solo hablan mal de mí.",
+      "direction": "un poco nervioso",
+      "startMs": 24609,
+      "endMs": 32009
+    },
+    {
+      "index": 2,
+      "speaker": "NURIA",
+      "text": "Hoy no, te lo prometo. Para empezar, una pregunta que se hace mucha gente: ¿por qué alguien quiere ser árbitro?",
+      "direction": "",
+      "startMs": 32953,
+      "endMs": 42644
+    },
+    {
+      "index": 3,
+      "speaker": "ALBERTO",
+      "text": "Eso mismo me pregunta mi madre todos los domingos. Pues mira, de joven yo quería ser futbolista, pero era malísimo. Con dieciséis años, un día no vino el árbitro a un partido de mi equipo. El entrenador me dio un silbato y me dijo: «Tú, que no juegas, arbitra».",
+      "direction": "riéndose",
+      "startMs": 43835,
+      "endMs": 71318
+    },
+    {
+      "index": 4,
+      "speaker": "NURIA",
+      "text": "¿Y te gustó?",
+      "direction": "",
+      "startMs": 72254,
+      "endMs": 73384
+    },
+    {
+      "index": 5,
+      "speaker": "ALBERTO",
+      "text": "Me encantó. Por primera vez, todo el mundo me miraba. Bueno, me miraban y me gritaban. Pero me sentí importante.",
+      "direction": "",
+      "startMs": 74361,
+      "endMs": 84521
+    },
+    {
+      "index": 6,
+      "speaker": "NURIA",
+      "text": "Los árbitros recibís muchos insultos. ¿Cómo lo llevas?",
+      "direction": "",
+      "startMs": 85587,
+      "endMs": 90187
+    },
+    {
+      "index": 7,
+      "speaker": "ALBERTO",
+      "text": "Con paciencia. Y con tapones para los oídos. No, es broma. Al principio me afectaba mucho. Después de un partido difícil, no podía dormir. Ahora intento no leer nada en internet. Lo que más me duele es cuando se meten con mi familia.",
+      "direction": "",
+      "startMs": 91365,
+      "endMs": 111184
+    },
+    {
+      "index": 8,
+      "speaker": "NURIA",
+      "text": "¿Tus hijos lo pasan mal?",
+      "direction": "",
+      "startMs": 112153,
+      "endMs": 114013
+    },
+    {
+      "index": 9,
+      "speaker": "ALBERTO",
+      "text": "A veces. Mi hijo pequeño tiene ocho años. Un lunes volvió del colegio llorando, porque sus compañeros le habían cantado canciones contra su padre. Ese día pensé en dejarlo.",
+      "direction": "",
+      "startMs": 115013,
+      "endMs": 130876
+    },
+    {
+      "index": 10,
+      "speaker": "NURIA",
+      "text": "¿Y por qué no lo dejaste?",
+      "direction": "",
+      "startMs": 131894,
+      "endMs": 133646
+    },
+    {
+      "index": 11,
+      "speaker": "ALBERTO",
+      "text": "Porque mi hijo me dijo: «Papá, no lo dejes. Tú eres el único en el campo que no puede hacer trampas». Y tenía razón.",
+      "direction": "",
+      "startMs": 134577,
+      "endMs": 144950
+    },
+    {
+      "index": 12,
+      "speaker": "NURIA",
+      "text": "Qué bonito. Vamos a hablar un poco de reglas, porque muchos oyentes nos escriben con dudas. Explícanos el fuera de juego en una frase.",
+      "direction": "",
+      "startMs": 145922,
+      "endMs": 156929
+    },
+    {
+      "index": 13,
+      "speaker": "ALBERTO",
+      "text": "¿En una frase? Uf, eso es casi imposible. Pero lo intento. Dicho de forma sencilla: un jugador está en fuera de juego si, en el momento del pase, está más cerca de la portería contraria que el balón y que el penúltimo defensa.",
+      "direction": "",
+      "startMs": 157912,
+      "endMs": 176942
+    },
+    {
+      "index": 14,
+      "speaker": "NURIA",
+      "text": "¿El penúltimo? ¿No es el último?",
+      "direction": "",
+      "startMs": 177916,
+      "endMs": 180769
+    },
+    {
+      "index": 15,
+      "speaker": "ALBERTO",
+      "text": "El penúltimo, porque el último normalmente es el portero. Todo el mundo se equivoca con eso. Hasta algunos entrenadores.",
+      "direction": "",
+      "startMs": 181824,
+      "endMs": 191252
+    },
+    {
+      "index": 16,
+      "speaker": "NURIA",
+      "text": "¿Y el VAR? En vuestra categoría no hay, ¿verdad?",
+      "direction": "",
+      "startMs": 192224,
+      "endMs": 195844
+    },
+    {
+      "index": 17,
+      "speaker": "ALBERTO",
+      "text": "No, no hay. El VAR solo está en las categorías más altas. Aquí estamos yo y mis dos asistentes, y nada más. Si me equivoco, nadie puede corregirme. Por eso intento estar siempre muy cerca de la jugada… siempre que pueda, claro.",
+      "direction": "",
+      "startMs": 196888,
+      "endMs": 215638
+    },
+    {
+      "index": 18,
+      "speaker": "NURIA",
+      "text": "Muy cerca de la jugada… Eso nos lleva al partido del que habla todo el mundo. Río Verde contra Atlético Montaña, último día de liga. Ramiro Salgado nos dijo la semana pasada que estabas muy cerca de la jugada. «Demasiado cerca», dijo. Y que en la repetición se veía algo raro.",
+      "direction": "",
+      "startMs": 216692,
+      "endMs": 238898
+    },
+    {
+      "index": 19,
+      "speaker": "ALBERTO",
+      "text": "Nuria, he aceptado venir hoy precisamente por eso. Quiero contar lo que pasó de verdad.",
+      "direction": "respirando hondo",
+      "startMs": 239873,
+      "endMs": 246893
+    },
+    {
+      "index": 20,
+      "speaker": "NURIA",
+      "text": "Adelante. Te escuchamos.",
+      "direction": "",
+      "startMs": 247824,
+      "endMs": 250202
+    },
+    {
+      "index": 21,
+      "speaker": "ALBERTO",
+      "text": "Minuto noventa y tres, saque de esquina. Yo me coloqué dentro del área, porque en los córners siempre hay empujones. El balón rebotó en un defensa, salió hacia arriba… y me dio a mí. En la espalda.",
+      "direction": "",
+      "startMs": 250901,
+      "endMs": 267339
+    },
+    {
+      "index": 22,
+      "speaker": "NURIA",
+      "text": "¿A ti?",
+      "direction": "",
+      "startMs": 268371,
+      "endMs": 268921
+    },
+    {
+      "index": 23,
+      "speaker": "ALBERTO",
+      "text": "A mí. Y de mi espalda fue directamente a la espalda de Dani Robles, que estaba agachado, atándose la bota. Y de ahí, a la portería.",
+      "direction": "",
+      "startMs": 269883,
+      "endMs": 281526
+    },
+    {
+      "index": 24,
+      "speaker": "NURIA",
+      "text": "¡Un gol de dos espaldas! ¿Y qué dice el reglamento?",
+      "direction": "",
+      "startMs": 282574,
+      "endMs": 286994
+    },
+    {
+      "index": 25,
+      "speaker": "ALBERTO",
+      "text": "Desde hace unos años, la regla es muy clara: si el balón toca al árbitro y después termina en gol, el gol no vale. Hay que parar el juego y empezar otra vez con un bote neutral.",
+      "direction": "",
+      "startMs": 288089,
+      "endMs": 304689
+    },
+    {
+      "index": 26,
+      "speaker": "NURIA",
+      "text": "O sea, que el gol no era válido.",
+      "direction": "",
+      "startMs": 305662,
+      "endMs": 308249
+    },
+    {
+      "index": 27,
+      "speaker": "ALBERTO",
+      "text": "No. No era válido. Yo tenía que parar el juego, y no lo paré.",
+      "direction": "",
+      "startMs": 309074,
+      "endMs": 316501
+    },
+    {
+      "index": 28,
+      "speaker": "NURIA",
+      "text": "Entonces, ¿por qué lo diste por bueno?",
+      "direction": "",
+      "startMs": 317483,
+      "endMs": 320403
+    },
+    {
+      "index": 29,
+      "speaker": "ALBERTO",
+      "text": "Porque no me di cuenta. Sentí algo en la espalda, pero con tanta gente en el área, pensé que era un empujón. Mis asistentes tampoco lo vieron, porque tenían muchos jugadores delante. Y sin VAR, nadie me podía avisar.",
+      "direction": "",
+      "startMs": 321526,
+      "endMs": 339202
+    },
+    {
+      "index": 30,
+      "speaker": "NURIA",
+      "text": "¿Y cuándo te diste cuenta?",
+      "direction": "",
+      "startMs": 340243,
+      "endMs": 341953
+    },
+    {
+      "index": 31,
+      "speaker": "ALBERTO",
+      "text": "Al día siguiente, en casa de mi madre. Estábamos comiendo y en la tele pusieron la repetición a cámara lenta. Mi madre dejó el tenedor, se levantó y gritó: «¡Alberto! ¡El balón te ha dado a ti!».",
+      "direction": "",
+      "startMs": 343022,
+      "endMs": 360508
+    },
+    {
+      "index": 32,
+      "speaker": "NURIA",
+      "text": "O sea, que tu madre hizo de VAR.",
+      "direction": "riéndose un poco",
+      "startMs": 361575,
+      "endMs": 364785
+    },
+    {
+      "index": 33,
+      "speaker": "ALBERTO",
+      "text": "Mi madre lo ve todo. Y además, es del Atlético Montaña desde hace sesenta años. Desde ese día no me habla. Ni siquiera me coge el teléfono.",
+      "direction": "",
+      "startMs": 365558,
+      "endMs": 377439
+    },
+    {
+      "index": 34,
+      "speaker": "NURIA",
+      "text": "¿Y ahora puede cambiar el resultado?",
+      "direction": "",
+      "startMs": 378421,
+      "endMs": 381542
+    },
+    {
+      "index": 35,
+      "speaker": "ALBERTO",
+      "text": "No. El resultado ya es oficial: el Río Verde se ha salvado y el Montaña ha bajado de categoría. No se puede cambiar. Pero yo no podía seguir callado.",
+      "direction": "",
+      "startMs": 382705,
+      "endMs": 396835
+    },
+    {
+      "index": 36,
+      "speaker": "NURIA",
+      "text": "Es muy valiente contarlo en la radio.",
+      "direction": "",
+      "startMs": 397838,
+      "endMs": 400938
+    },
+    {
+      "index": 37,
+      "speaker": "ALBERTO",
+      "text": "O muy tonto. Es posible que mañana me llamen del comité y que me sancionen.",
+      "direction": "",
+      "startMs": 401840,
+      "endMs": 407830
+    },
+    {
+      "index": 38,
+      "speaker": "NURIA",
+      "text": "¿Te arrepientes de haber venido?",
+      "direction": "",
+      "startMs": 408778,
+      "endMs": 411040
+    },
+    {
+      "index": 39,
+      "speaker": "ALBERTO",
+      "text": "No. Un árbitro puede equivocarse. Pero no puede mentir.",
+      "direction": "",
+      "startMs": 412112,
+      "endMs": 416972
+    },
+    {
+      "index": 40,
+      "speaker": "NURIA",
+      "text": "Alberto… nos están llegando muchísimos mensajes de los oyentes. ¿Puedo leerte algunos?",
+      "direction": "",
+      "startMs": 417843,
+      "endMs": 424703
+    },
+    {
+      "index": 41,
+      "speaker": "ALBERTO",
+      "text": "Si son insultos, prefiero que no.",
+      "direction": "nervioso",
+      "startMs": 425891,
+      "endMs": 428471
+    },
+    {
+      "index": 42,
+      "speaker": "NURIA",
+      "text": "Escucha este: «Soy Dani Robles. Alberto, gracias por decir la verdad. Mi abuela dice que eres un caballero. El día del partido te llamó otra cosa, pero ya se le ha olvidado».",
+      "direction": "",
+      "startMs": 429326,
+      "endMs": 444446
+    },
+    {
+      "index": 43,
+      "speaker": "ALBERTO",
+      "text": "Pues ojalá no se acuerde nunca.",
+      "direction": "riéndose",
+      "startMs": 445502,
+      "endMs": 448902
+    },
+    {
+      "index": 44,
+      "speaker": "NURIA",
+      "text": "Y este otro, de un tal Ramiro: «Ya lo sabía yo. Visión periférica… ¡los dos! Que conste que este año sí me retiro».",
+      "direction": "",
+      "startMs": 449711,
+      "endMs": 459501
+    },
+    {
+      "index": 45,
+      "speaker": "ALBERTO",
+      "text": "Eso dice todos los años.",
+      "direction": "",
+      "startMs": 460563,
+      "endMs": 462723
+    },
+    {
+      "index": 46,
+      "speaker": "NURIA",
+      "text": "Y aquí hay uno más… de una señora que se llama Carmen Gil.",
+      "direction": "",
+      "startMs": 463586,
+      "endMs": 469306
+    },
+    {
+      "index": 47,
+      "speaker": "ALBERTO",
+      "text": "¡Es mi madre!",
+      "direction": "sorprendido",
+      "startMs": 470313,
+      "endMs": 471473
+    },
+    {
+      "index": 48,
+      "speaker": "NURIA",
+      "text": "Dice: «Hijo, he oído el programa entero. Estoy orgullosa de ti. El domingo hago paella, ven a comer. Pero el pan lo traes tú. Y no te preocupes: el Montaña volverá a subir».",
+      "direction": "",
+      "startMs": 472218,
+      "endMs": 488136
+    },
+    {
+      "index": 49,
+      "speaker": "ALBERTO",
+      "text": "Mamá… allí estaré. Con el pan. Y con la camiseta del Montaña, si quieres.",
+      "direction": "emocionado",
+      "startMs": 489070,
+      "endMs": 495466
+    },
+    {
+      "index": 50,
+      "speaker": "NURIA",
+      "text": "Alberto Gil, muchas gracias por venir a La Prórroga y por tu sinceridad.",
+      "direction": "",
+      "startMs": 496333,
+      "endMs": 501916
+    },
+    {
+      "index": 51,
+      "speaker": "ALBERTO",
+      "text": "Gracias a ti, Nuria. Y a los aficionados del Montaña: lo siento muchísimo. De verdad.",
+      "direction": "",
+      "startMs": 502791,
+      "endMs": 510553
+    },
+    {
+      "index": 52,
+      "speaker": "NURIA",
+      "text": "Y así terminamos nuestra serie especial sobre el gol de espaldas. Un gol que vio todo el mundo… menos el goleador, el entrenador y el árbitro. ¡Buenas noches y hasta la próxima semana en La Prórroga!",
+      "direction": "",
+      "startMs": 511519,
+      "endMs": 527449
+    }
+  ]
+}

@@ -4,9 +4,9 @@
   "title": "02 Madame Rosa lo sabe todo",
   "scene": "Viernes por la tarde en una cafetería de Madrid. Lucía, muy emocionada, le cuenta a Diego su visita a una adivina. Diego no cree en esas cosas. Conversación natural, con humor.",
   "accent": "es-ES",
-  "createdAt": "2026-11-18T08:01:05.239Z",
+  "createdAt": "2026-11-21T16:01:25.152Z",
   "audio": "audio.mp3",
-  "durationMs": 242343,
+  "durationMs": 241976,
   "speakers": [
     {
       "id": "LUCIA",
@@ -274,63 +274,63 @@
       "text": "Sí. El que pierda paga la cena del domingo.",
       "direction": "",
       "startMs": 197206,
-      "endMs": 200608
+      "endMs": 200256
     },
     {
       "index": 32,
       "speaker": "LUCIA",
       "text": "O sea, que tu abuela sí conoce el futuro.",
       "direction": "riéndose",
-      "startMs": 201511,
-      "endMs": 205207
+      "startMs": 201145,
+      "endMs": 204840
     },
     {
       "index": 33,
       "speaker": "DIEGO",
       "text": "Conoce mi futuro, eso seguro. Por cierto, ¿qué hora es? ¿Dónde estará ahora?",
       "direction": "",
-      "startMs": 206000,
-      "endMs": 213025
+      "startMs": 205633,
+      "endMs": 212659
     },
     {
       "index": 34,
       "speaker": "LUCIA",
       "text": "Serán las seis. Estará en su tienda, esperando a otra clienta.",
       "direction": "",
-      "startMs": 214238,
-      "endMs": 220038
+      "startMs": 213872,
+      "endMs": 219672
     },
     {
       "index": 35,
       "speaker": "DIEGO",
       "text": "Pues vamos a verla. Quiero que te devuelva los cincuenta euros.",
       "direction": "",
-      "startMs": 221058,
-      "endMs": 225521
+      "startMs": 220692,
+      "endMs": 225154
     },
     {
       "index": 36,
       "speaker": "LUCIA",
       "text": "¿Crees que me los devolverá?",
       "direction": "",
-      "startMs": 226402,
-      "endMs": 228162
+      "startMs": 226035,
+      "endMs": 227795
     },
     {
       "index": 37,
       "speaker": "DIEGO",
       "text": "Lo dudo. Pero a lo mejor este domingo, con tus cincuenta euros, paga ella la cena. Por fin.",
       "direction": "",
-      "startMs": 229260,
-      "endMs": 237755
+      "startMs": 228893,
+      "endMs": 237388
     },
     {
       "index": 38,
       "speaker": "LUCIA",
       "text": "Entonces la que pierde soy yo.",
       "direction": "",
-      "startMs": 238763,
-      "endMs": 241343
+      "startMs": 238396,
+      "endMs": 240976
     }
   ]
 }

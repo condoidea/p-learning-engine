@@ -1,0 +1,384 @@
+{
+  "format": 1,
+  "id": "20261119-170640-b51a",
+  "title": "I-01 La Prórroga: el goleador",
+  "scene": "Estudio de radio, lunes por la noche. Programa de fútbol «La Prórroga», de la emisora Onda Balón. La locutora Nuria Campos entrevista en directo a Dani Robles, el delantero que marcó un gol muy raro en el último minuto de la temporada. El Río Verde juega en una categoría modesta, sin VAR. Tono de entrevista de radio, ágil y con humor.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-20T08:04:09.137Z",
+  "audio": "audio.mp3",
+  "durationMs": 438745,
+  "speakers": [
+    {
+      "id": "NURIA",
+      "gender": "female",
+      "persona": "Nuria Campos, unos 40 años, locutora de un programa deportivo de radio, rápida, simpática e irónica, voz clara de radio"
+    },
+    {
+      "id": "DANI",
+      "gender": "male",
+      "persona": "Dani Robles, 23 años, delantero del CD Río Verde, simpático, muy seguro de sí mismo y un poco presumido"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "NURIA",
+      "text": "¡Buenas noches y bienvenidos a La Prórroga, el programa de fútbol de Onda Balón! Soy Nuria Campos, y esta noche tenemos en el estudio al hombre del momento. Marcó el gol que salvó a su equipo en el último minuto de la temporada. ¡Dani Robles, bienvenido!",
+      "direction": "tono de radio, con energía",
+      "startMs": 400,
+      "endMs": 18522
+    },
+    {
+      "index": 1,
+      "speaker": "DANI",
+      "text": "¡Hola, Nuria! Gracias por invitarme. Es un placer estar aquí.",
+      "direction": "",
+      "startMs": 19428,
+      "endMs": 23528
+    },
+    {
+      "index": 2,
+      "speaker": "NURIA",
+      "text": "El placer es nuestro. Dani, ya han pasado ocho días desde aquel partido. ¿Cómo estás?",
+      "direction": "",
+      "startMs": 24340,
+      "endMs": 31130
+    },
+    {
+      "index": 3,
+      "speaker": "DANI",
+      "text": "Pues todavía no me lo creo. Cada mañana me despierto y pienso: «¿De verdad ha pasado?». Y luego veo el vídeo del gol otra vez. Lo he visto unas quinientas veces.",
+      "direction": "",
+      "startMs": 32292,
+      "endMs": 44585
+    },
+    {
+      "index": 4,
+      "speaker": "NURIA",
+      "text": "Para los oyentes que no lo vieron, vamos a recordarlo. Último partido de liga. El Río Verde necesitaba ganar para no bajar de categoría. Minuto noventa y tres, uno a uno contra el Atlético Montaña…",
+      "direction": "",
+      "startMs": 45521,
+      "endMs": 61835
+    },
+    {
+      "index": 5,
+      "speaker": "DANI",
+      "text": "…y saque de esquina para nosotros. La última oportunidad.",
+      "direction": "",
+      "startMs": 62816,
+      "endMs": 66586
+    },
+    {
+      "index": 6,
+      "speaker": "NURIA",
+      "text": "Exacto. El balón entra en el área, rebota en varios jugadores… y de repente, ¡gol! ¡Gol de Dani Robles! ¡De espaldas!",
+      "direction": "",
+      "startMs": 67503,
+      "endMs": 77813
+    },
+    {
+      "index": 7,
+      "speaker": "DANI",
+      "text": "Un gol histórico, ¿eh?",
+      "direction": "orgulloso",
+      "startMs": 78857,
+      "endMs": 80437
+    },
+    {
+      "index": 8,
+      "speaker": "NURIA",
+      "text": "Histórico y muy raro. Mucha gente dice que fue un gol de suerte. ¿Qué les dices tú?",
+      "direction": "",
+      "startMs": 81420,
+      "endMs": 88276
+    },
+    {
+      "index": 9,
+      "speaker": "DANI",
+      "text": "Que no tienen ni idea de fútbol. Ese gol lo había practicado toda la semana en los entrenamientos.",
+      "direction": "",
+      "startMs": 89475,
+      "endMs": 96506
+    },
+    {
+      "index": 10,
+      "speaker": "NURIA",
+      "text": "¿Practicaste un gol de espaldas?",
+      "direction": "riéndose",
+      "startMs": 97505,
+      "endMs": 100715
+    },
+    {
+      "index": 11,
+      "speaker": "DANI",
+      "text": "Claro. Un delantero tiene que estar preparado para todo. Con el pie, con la cabeza… y con la espalda.",
+      "direction": "",
+      "startMs": 101704,
+      "endMs": 109821
+    },
+    {
+      "index": 12,
+      "speaker": "NURIA",
+      "text": "Ya veo. Bueno, luego volveremos a ese gol, porque tengo algunas preguntas. Pero antes, háblanos un poco de ti. ¿Dónde empezaste a jugar al fútbol?",
+      "direction": "",
+      "startMs": 110793,
+      "endMs": 122975
+    },
+    {
+      "index": 13,
+      "speaker": "DANI",
+      "text": "En mi pueblo, en Extremadura. Es un pueblo muy pequeño, de unas trescientas personas. No había campo de fútbol, así que jugábamos en la plaza, delante de la iglesia.",
+      "direction": "",
+      "startMs": 124208,
+      "endMs": 136083
+    },
+    {
+      "index": 14,
+      "speaker": "NURIA",
+      "text": "¿En la plaza? ¿Y el cura no se enfadaba?",
+      "direction": "",
+      "startMs": 137057,
+      "endMs": 140637
+    },
+    {
+      "index": 15,
+      "speaker": "DANI",
+      "text": "Muchísimo. En un año rompimos tres ventanas de la iglesia. Al final, el cura se hizo portero de nuestro equipo, para proteger las ventanas.",
+      "direction": "",
+      "startMs": 141721,
+      "endMs": 152460
+    },
+    {
+      "index": 16,
+      "speaker": "NURIA",
+      "text": "¡Qué bueno! ¿Y cuándo te diste cuenta de que querías ser futbolista profesional?",
+      "direction": "riéndose",
+      "startMs": 153432,
+      "endMs": 159452
+    },
+    {
+      "index": 17,
+      "speaker": "DANI",
+      "text": "A los doce años. Un entrenador del Río Verde vino a ver un partido en el pueblo de al lado y me dijo: «Chaval, tú tienes algo especial». Esa misma semana me fui a vivir a la residencia del club.",
+      "direction": "",
+      "startMs": 160592,
+      "endMs": 175662
+    },
+    {
+      "index": 18,
+      "speaker": "NURIA",
+      "text": "Con doce años, lejos de tu familia. Debió de ser duro.",
+      "direction": "",
+      "startMs": 176716,
+      "endMs": 181696
+    },
+    {
+      "index": 19,
+      "speaker": "DANI",
+      "text": "Sí, el primer año fue muy duro. Echaba mucho de menos a mi madre y a mi abuela. Llamaba a casa todas las noches y lloraba. Pero mi abuela siempre me decía: «Dani, si quieres algo, tienes que luchar por ello».",
+      "direction": "",
+      "startMs": 182570,
+      "endMs": 200313
+    },
+    {
+      "index": 20,
+      "speaker": "NURIA",
+      "text": "Tu abuela es muy famosa entre los aficionados, ¿verdad? Siempre está en la grada con una bufanda enorme.",
+      "direction": "",
+      "startMs": 201263,
+      "endMs": 208839
+    },
+    {
+      "index": 21,
+      "speaker": "DANI",
+      "text": "Sí, no se pierde ni un partido. Tiene ochenta y dos años y grita más que todo el estadio. A veces le grita al árbitro cosas que no puedo repetir en la radio.",
+      "direction": "",
+      "startMs": 209743,
+      "endMs": 221596
+    },
+    {
+      "index": 22,
+      "speaker": "NURIA",
+      "text": "Mejor que no. Oye, dicen que los futbolistas sois muy supersticiosos. ¿Tú tienes alguna manía?",
+      "direction": "",
+      "startMs": 222628,
+      "endMs": 230138
+    },
+    {
+      "index": 23,
+      "speaker": "DANI",
+      "text": "Uf, muchas. Siempre entro en el campo con el pie derecho. Antes de cada partido como macarrones con tomate. Y llevo los mismos calcetines desde hace dos años.",
+      "direction": "",
+      "startMs": 231378,
+      "endMs": 243321
+    },
+    {
+      "index": 24,
+      "speaker": "NURIA",
+      "text": "¿Los mismos calcetines? ¿Y los lavas?",
+      "direction": "",
+      "startMs": 244369,
+      "endMs": 248099
+    },
+    {
+      "index": 25,
+      "speaker": "DANI",
+      "text": "Eh… eso es un secreto profesional.",
+      "direction": "",
+      "startMs": 249166,
+      "endMs": 252566
+    },
+    {
+      "index": 26,
+      "speaker": "NURIA",
+      "text": "Vale, no quiero saberlo. Hablemos de cosas más serias. El año pasado tuviste una lesión muy grave en la rodilla. Estuviste seis meses sin jugar.",
+      "direction": "riéndose",
+      "startMs": 253375,
+      "endMs": 265859
+    },
+    {
+      "index": 27,
+      "speaker": "DANI",
+      "text": "Sí, fue el peor momento de mi carrera. Me operaron y tuve que aprender a caminar otra vez. Hubo días en que pensé en dejar el fútbol.",
+      "direction": "",
+      "startMs": 266880,
+      "endMs": 277626
+    },
+    {
+      "index": 28,
+      "speaker": "NURIA",
+      "text": "¿Y qué te ayudó a seguir?",
+      "direction": "",
+      "startMs": 278611,
+      "endMs": 280851
+    },
+    {
+      "index": 29,
+      "speaker": "DANI",
+      "text": "El míster, don Ramiro. Venía a verme a casa cada semana y me decía: «Te necesito en el campo, no en el sofá». Y también mi abuela, claro. Me hacía croquetas todos los días.",
+      "direction": "",
+      "startMs": 281947,
+      "endMs": 295728
+    },
+    {
+      "index": 30,
+      "speaker": "NURIA",
+      "text": "Las croquetas de la abuela lo curan todo. Y ahora, la pregunta que todos quieren hacerte. Se habla mucho de que algunos equipos grandes quieren ficharte. ¿Es verdad?",
+      "direction": "",
+      "startMs": 296769,
+      "endMs": 309399
+    },
+    {
+      "index": 31,
+      "speaker": "DANI",
+      "text": "Bueno… he oído cosas, pero no sé nada oficial. Ahora mismo solo pienso en descansar y en irme de vacaciones.",
+      "direction": "",
+      "startMs": 310700,
+      "endMs": 319713
+    },
+    {
+      "index": 32,
+      "speaker": "NURIA",
+      "text": "Respuesta de futbolista profesional. ¿Y si te llama un equipo de Madrid o de Barcelona?",
+      "direction": "",
+      "startMs": 320780,
+      "endMs": 327820
+    },
+    {
+      "index": 33,
+      "speaker": "DANI",
+      "text": "Pues… lo escucharé, claro. Pero el Río Verde es mi casa. Aquí me hice hombre. Y mi abuela tiene el abono para toda la vida.",
+      "direction": "",
+      "startMs": 328996,
+      "endMs": 339468
+    },
+    {
+      "index": 34,
+      "speaker": "NURIA",
+      "text": "Muy bonito. ¿Y qué te gustaría conseguir en los próximos años?",
+      "direction": "",
+      "startMs": 340450,
+      "endMs": 345790
+    },
+    {
+      "index": 35,
+      "speaker": "DANI",
+      "text": "Me gustaría jugar con la selección española. Y algún día, cuando me retire, quiero volver a mi pueblo y construir un campo de fútbol de verdad. Para que los niños no tengan que romper más ventanas.",
+      "direction": "",
+      "startMs": 347042,
+      "endMs": 361539
+    },
+    {
+      "index": 36,
+      "speaker": "NURIA",
+      "text": "Seguro que el cura te lo agradecerá. Bueno, Dani, se nos acaba el tiempo. Pero antes, volvamos al gol. Tengo aquí las imágenes de la televisión. En el minuto noventa y tres, justo antes del córner, tú estás en el área… agachado. ¿Qué estabas haciendo?",
+      "direction": "",
+      "startMs": 362542,
+      "endMs": 383016
+    },
+    {
+      "index": 37,
+      "speaker": "DANI",
+      "text": "Eh… me estaba… concentrando.",
+      "direction": "nervioso",
+      "startMs": 384344,
+      "endMs": 388294
+    },
+    {
+      "index": 38,
+      "speaker": "NURIA",
+      "text": "Las cámaras dicen que te estabas atando la bota.",
+      "direction": "",
+      "startMs": 389160,
+      "endMs": 392784
+    },
+    {
+      "index": 39,
+      "speaker": "DANI",
+      "text": "Las cámaras no saben nada de fútbol.",
+      "direction": "",
+      "startMs": 393661,
+      "endMs": 396691
+    },
+    {
+      "index": 40,
+      "speaker": "NURIA",
+      "text": "Y cuando el balón te da en la espalda, tú estás mirando al suelo. Ni siquiera ves el gol.",
+      "direction": "",
+      "startMs": 397488,
+      "endMs": 404265
+    },
+    {
+      "index": 41,
+      "speaker": "DANI",
+      "text": "Eso es… técnica. Se llama «visión periférica».",
+      "direction": "",
+      "startMs": 405200,
+      "endMs": 409860
+    },
+    {
+      "index": 42,
+      "speaker": "NURIA",
+      "text": "Visión periférica. Muy bien. Dani Robles, muchas gracias por venir a La Prórroga.",
+      "direction": "riéndose",
+      "startMs": 410798,
+      "endMs": 417298
+    },
+    {
+      "index": 43,
+      "speaker": "DANI",
+      "text": "Gracias a vosotros. Y un saludo a mi abuela, que seguro que nos está escuchando.",
+      "direction": "",
+      "startMs": 418314,
+      "endMs": 422871
+    },
+    {
+      "index": 44,
+      "speaker": "NURIA",
+      "text": "¡Un saludo, abuela! Y la próxima semana, en La Prórroga, hablaremos con el hombre que estaba en el banquillo aquel día: el entrenador del Río Verde, don Ramiro Salgado. ¡No se lo pierdan!",
+      "direction": "",
+      "startMs": 423726,
+      "endMs": 437745
+    }
+  ]
+}

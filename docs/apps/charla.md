@@ -45,7 +45,7 @@ TTS で作ったスペイン語の会話（音声＋台本）を、学習向け�
 受け取り方の約束（フォルダ・dialog.json の title・guide.md の書き方）は [ダイアログ音声の書き出し仕様.md の「渡し方」](../ダイアログ音声の書き出し仕様.md)。
 1. `charla/dialogs/<シリーズ>/<id>/` に `dialog.json`・`audio.mp3` を置く。解説は `charla/dialogs/<シリーズ>/guide.md`。
 2. 同じフォルダに **`notes.json`** を作る（下）。台本と guide.md（慣用表現・境目の語彙）から作れる。話ごとにサブエージェント（Sonnet）に分けて並行で作ってよい。
-3. `charla/dialogs/list.js` の `CHARLA_SERIES` に1行足す（`no`＝第N話、`title` は NN を除いたもの、`titleJa`）。人名・地名はシリーズの `names` に。`courses/registry.js` の charla の `lessons` をダイアログの数に（`index.html`・`cloud.html` の `registry.js?v=` を上げる）。
+3. `charla/dialogs/list.js` の `CHARLA_SERIES` に1行足す（`no`＝第N話、`title` は NN を除いたもの、`titleJa`）。人名・地名はシリーズの `names` に（ふつうの語でもある名前＝Onda Balón の balón などは names に入れず、notes.json の言い回しで「（名前）」とする）。`courses/registry.js` の charla の `lessons` をダイアログの数に（`index.html`・`cloud.html` の `registry.js?v=` を上げる）。
 4. `node tests/check-charla.js` でエラー0に。guide.md の本文とセリフの照合、意味のない語、送れない語、言い回しの空白ちがいを教えてくれる。代名詞つきの形（contarte・Ponla）の「活用形として作れない」は気にしなくてよい。
 
 ### notes.json の形
@@ -98,3 +98,7 @@ TTS で作ったスペイン語の会話（音声＋台本）を、学習向け�
 - `charla/dialogs/list.js`・`charla/dialogs/<id>/`（dialog.json・audio.mp3・notes.json）
 - `tests/check-charla.js`
 - 保存：`charla.v1`（`?sandbox` は `charla.sandbox.v1`）。単語アプリへは `vocab.deck.charla`・`vocab.decks.v1`。
+
+## 入っているシリーズ
+- **ルシアとディエゴ**（`lucia-diego`）：第1〜5話。第1・2話は単語の読み方を直した音声に差し替えた（2026-11-22。文は同じなので notes.json はそのまま）。
+- **ラ・プロロガ**（`la-prorroga`）：ラジオのサッカー番組のインタビュー。第1〜3話（選手・監督・審判）。dialog.json の題は「I-01 La Prórroga: el goleador」の形で、list.js では guide.md の題（El goleador）にした。guide.md の頭に「サッカー用語集」（📘 教材について で読める）。

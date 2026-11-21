@@ -38,6 +38,17 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* ---------- ホーム ---------- */
 .dlist { list-style: none; margin: 8px 0 16px; padding: 0; display: grid; gap: 10px; }
+.drows { margin-top: 8px; border-radius: 14px; background: var(--bg2); border: 1px solid var(--line); overflow: hidden; }
+.drow { width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px 12px; text-align: left; border-top: 1px solid var(--line); }
+.drow:first-child { border-top: 0; }
+.drow:active { background: var(--bg3); }
+.drow > i { flex: none; width: 22px; font-style: normal; text-align: center; color: var(--tx3); font-size: 14px; }
+.drow .dt { flex: 1; min-width: 0; }
+.drow .dt b { display: block; font-family: var(--es); font-size: 17.5px; font-weight: 600; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.drow .dt small { display: block; color: var(--tx2); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.drow .dm { flex: none; display: flex; align-items: center; gap: 6px; color: var(--tx3); font-size: 13px; }
+.drow .dm small { font-size: 13px; color: var(--tx2); font-variant-numeric: tabular-nums; }
+.drow .dm em { font-style: normal; color: var(--ok, #7fd49a); font-weight: 700; }
 .dcard { width: 100%; text-align: left; padding: 14px 16px; border-radius: 14px; background: var(--bg2); border: 1px solid var(--line); display: grid; gap: 2px; }
 .dcard:active { background: var(--bg3); }
 .dcard .es { font-family: var(--es); font-size: 21px; font-weight: 600; }
@@ -167,11 +178,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 
 /* ---------- シリーズ・★・聞き取りポイント・📘 解説 ---------- */
-.series { margin-top: 6px; }
+.series { margin-top: 10px; }
 .shead { display: flex; align-items: center; gap: 10px; padding: 4px 2px; }
 .shead > div { flex: 1; min-width: 0; }
 .shead b { display: block; font-size: 16px; }
-.shead small { display: block; color: var(--tx3); font-size: 12.5px; }
+.shead small { display: block; color: var(--tx3); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .gbtn { flex: none; padding: 7px 10px; border-radius: 10px; background: var(--bg2); border: 1px solid var(--line); color: var(--tx2); font-size: 13.5px; }
 .dcard .es i { font-style: normal; font-family: var(--ja); font-size: 13px; font-weight: 700; color: var(--tx3); margin-right: 8px; }
 

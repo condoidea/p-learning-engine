@@ -17,6 +17,15 @@ window.CHARLA_SERIES = [
       { id: '20261118-170514-931d', no: 4, title: 'Pepito lo cuenta todo', titleJa: 'ペピートは何でもしゃべる' },
       { id: '20261119-170223-2b45', no: 5, title: 'La carta del instituto', titleJa: '高校時代の手紙' }
     ]
+  },
+  {
+    id: 'la-prorroga', title: 'ラ・プロロガ', sub: '西検4級 サッカー番組のインタビュー', guide: 'guide.md',
+    names: ['Nuria', 'Campos', 'Dani', 'Robles', 'Ramiro', 'Salgado', 'Alberto', 'Gil', 'Carmen', 'Río', 'Verde', 'Prórroga'],   /* 人名・番組名・チーム名（意味を出さない。Onda Balón は balón＝ボールがあるので notes の言い回しで） */
+    dialogs: [
+      { id: '20261119-170640-b51a', no: 1, title: 'El goleador', titleJa: '得点者' },
+      { id: '20261120-170411-b106', no: 2, title: 'El entrenador', titleJa: '監督' },
+      { id: '20261120-171112-1713', no: 3, title: 'El árbitro', titleJa: '審判' }
+    ]
   }
 ];
 /* ダイアログを id で引けるように（シリーズの id と、ファイルの場所をつける） */

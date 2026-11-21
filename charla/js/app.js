@@ -104,16 +104,20 @@
     var list = window.CHARLA_DIALOGS || [];
     $('#dlist').innerHTML = (window.CHARLA_SERIES || []).map(function (s) {
       return '<li class="series"><div class="shead"><div><b>' + esc(s.title) + '</b><small>' + esc(s.sub || '') + '</small></div>' +
-        (s.guide ? '<button class="gbtn" data-series="' + esc(s.id) + '">📘 教材について</button>' : '') + '</div></li>' +
-        s.dialogs.map(function (d) {
-          return '<li><button class="dcard" data-id="' + esc(d.id) + '"><b class="es">' + (d.no ? '<i>' + d.no + '</i>' : '') + esc(d.title) + '</b><span>' + esc(d.titleJa || '') + '</span>' +
-            '<small id="dm-' + esc(d.id) + '">' + (S.lessons[d.id] && S.lessons[d.id].done ? '🎧 最後まで聞いた' : '') + '</small></button></li>';
-        }).join('');
+        (s.guide ? '<button class="gbtn" data-series="' + esc(s.id) + '">📘 教材について</button>' : '') + '</div>' +
+        /* 話はシリーズの1枚のカードに1行ずつ（番号・題・日本語の題・長さ・最後まで聞いたら ✓） */
+        '<div class="drows">' + s.dialogs.map(function (d) {
+          var done = S.lessons[d.id] && S.lessons[d.id].done;
+          return '<button class="drow" data-id="' + esc(d.id) + '"><i>' + (d.no || '') + '</i>' +
+            '<span class="dt"><b class="es">' + esc(d.title) + '</b><small>' + esc(d.titleJa || '') + '</small></span>' +
+            '<span class="dm"><small id="dm-' + esc(d.id) + '"></small>' + (done ? '<em title="最後まで聞いた">✓</em>' : '') + '</span></button>';
+        }).join('') + '</div></li>';
     }).join('') || '<li class="empty">ダイアログがまだありません</li>';
     list.forEach(function (d) {
       loadDialog(d.id).then(function (c) {
         var el = document.getElementById('dm-' + d.id); if (!el) return;
-        el.textContent = c.D.lines.length + 'セリフ・' + mmss(c.D.durationMs) + (el.textContent ? '　' + el.textContent : '');
+        el.textContent = mmss(c.D.durationMs);
+        el.title = c.D.lines.length + 'セリフ';
       }).catch(function () { /* 一覧は出したまま */ });
     });
     var n = lookedList().filter(function (r) { return !r.sent; }).length;

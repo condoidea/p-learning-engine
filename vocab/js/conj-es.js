@@ -70,7 +70,7 @@
   };
 
   function parse(inf) {
-    var refl = /se$/.test(inf) && inf.length > 4, base = refl ? inf.slice(0, -2) : inf;
+    var refl = /[aeií]rse$/.test(inf), base = refl ? inf.slice(0, -2) : inf;
     /* oír・reír のように -ír と書く動詞も -ir 動詞として扱う */
     return { inf: inf, base: base, refl: refl, cls: base.slice(-2).replace('í', 'i'), stem: base.slice(0, -2), x: IRR[base] || {} };
   }

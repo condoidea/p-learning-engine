@@ -1,0 +1,2043 @@
+{
+  "format": 1,
+  "sceneJa": "📻 月曜の夜、ラジオ局のスタジオ。司会のヌリアが、最終回のゲストの審判アルベルト・ヒルを迎える",
+  "phrases": [
+    {
+      "t": "buenas noches",
+      "ja": "こんばんは・おやすみなさい（夜のあいさつ。会うときも別れるときも使う）"
+    },
+    {
+      "t": "la prórroga",
+      "ja": "（番組名）ラ・プロロガ（直訳：延長戦）"
+    },
+    {
+      "t": "gol de espaldas",
+      "ja": "背中で決めたゴール（本人が背を向けたまま入ったゴール）",
+      "key": true
+    },
+    {
+      "t": "gol de dos espaldas",
+      "ja": "背中二つ分のゴール（審判とダニ、二人の背中に当たって入った）"
+    },
+    {
+      "t": "primera vez",
+      "ja": "初めて（es la primera vez que〜＝〜は初めてだ）"
+    },
+    {
+      "t": "hablan mal de",
+      "ja": "〜の悪口を言う（hablar mal de）",
+      "key": true
+    },
+    {
+      "t": "para empezar",
+      "ja": "まず・最初に"
+    },
+    {
+      "t": "por qué",
+      "ja": "なぜ"
+    },
+    {
+      "t": "todos los domingos",
+      "ja": "毎週日曜日に"
+    },
+    {
+      "t": "de joven",
+      "ja": "若いころ（は）",
+      "key": true
+    },
+    {
+      "t": "un día",
+      "ja": "ある日"
+    },
+    {
+      "t": "eso mismo",
+      "ja": "まさにそのこと"
+    },
+    {
+      "t": "todo el mundo",
+      "ja": "みんな・世界中の人"
+    },
+    {
+      "t": "cómo lo llevas",
+      "ja": "どうやって乗り切ってる？（llevar＝こなす・耐える）",
+      "key": true
+    },
+    {
+      "t": "al principio",
+      "ja": "最初は",
+      "key": true
+    },
+    {
+      "t": "es broma",
+      "ja": "冗談だよ"
+    },
+    {
+      "t": "después de",
+      "ja": "〜のあとで"
+    },
+    {
+      "t": "lo que",
+      "ja": "〜なこと・〜するもの（lo que más me duele＝一番つらいこと）"
+    },
+    {
+      "t": "se meten con",
+      "ja": "〜を悪く言う・〜にちょっかいを出す（meterse con）",
+      "key": true
+    },
+    {
+      "t": "lo pasan mal",
+      "ja": "つらい思いをする（pasarlo mal）",
+      "key": true
+    },
+    {
+      "t": "a veces",
+      "ja": "ときどき"
+    },
+    {
+      "t": "tenía razón",
+      "ja": "正しかった（tener razón）"
+    },
+    {
+      "t": "hacer trampas",
+      "ja": "ずるをする",
+      "key": true
+    },
+    {
+      "t": "qué bonito",
+      "ja": "なんて素敵な（話だ）"
+    },
+    {
+      "t": "vamos a hablar",
+      "ja": "話しましょう（Vamos a ＋ 原形＝〜しましょう）"
+    },
+    {
+      "t": "fuera de juego",
+      "ja": "オフサイド",
+      "key": true
+    },
+    {
+      "t": "dicho de forma sencilla",
+      "ja": "簡単に言えば",
+      "key": true
+    },
+    {
+      "t": "más cerca de",
+      "ja": "〜よりも近い"
+    },
+    {
+      "t": "nada más",
+      "ja": "それだけ・ほかにはない",
+      "key": true
+    },
+    {
+      "t": "por eso",
+      "ja": "だから・そのために"
+    },
+    {
+      "t": "siempre que pueda",
+      "ja": "できる限り・できるときはいつも（siempre que ＋ 接続法）",
+      "key": true
+    },
+    {
+      "t": "atlético montaña",
+      "ja": "（サッカークラブの名前）アトレティコ・モンターニャ"
+    },
+    {
+      "t": "la semana pasada",
+      "ja": "先週"
+    },
+    {
+      "t": "de verdad",
+      "ja": "本当に"
+    },
+    {
+      "t": "saque de esquina",
+      "ja": "コーナーキック",
+      "key": true
+    },
+    {
+      "t": "dentro del",
+      "ja": "〜の中に（dentro de ＋ el）"
+    },
+    {
+      "t": "me dio a mí",
+      "ja": "私に当たった（dar a〜＝〜に当たる）"
+    },
+    {
+      "t": "te ha dado a ti",
+      "ja": "君に当たった（dar a〜＝〜に当たる）"
+    },
+    {
+      "t": "atándose la bota",
+      "ja": "スパイクのひもを結びながら"
+    },
+    {
+      "t": "desde hace",
+      "ja": "〜前から（desde hace ＋ 期間）"
+    },
+    {
+      "t": "hay que",
+      "ja": "〜しなければならない"
+    },
+    {
+      "t": "bote neutral",
+      "ja": "ドロップボール（審判がボールを落として再開する）",
+      "key": true
+    },
+    {
+      "t": "otra vez",
+      "ja": "もう一度"
+    },
+    {
+      "t": "o sea",
+      "ja": "つまり・要するに",
+      "key": true
+    },
+    {
+      "t": "tenía que",
+      "ja": "〜しなければならなかった・〜すべきだった（tener que）"
+    },
+    {
+      "t": "diste por bueno",
+      "ja": "（ゴールを）認めた（dar por bueno＝正しいと認める）",
+      "key": true
+    },
+    {
+      "t": "me di cuenta",
+      "ja": "気づいた（darse cuenta）",
+      "key": true
+    },
+    {
+      "t": "te diste cuenta",
+      "ja": "気づいた（darse cuenta）",
+      "key": true
+    },
+    {
+      "t": "al día siguiente",
+      "ja": "翌日に"
+    },
+    {
+      "t": "en casa de",
+      "ja": "〜の家で"
+    },
+    {
+      "t": "a cámara lenta",
+      "ja": "スローモーションで",
+      "key": true
+    },
+    {
+      "t": "hizo de",
+      "ja": "〜の役をした（hacer de）",
+      "key": true
+    },
+    {
+      "t": "es del",
+      "ja": "〜のファンだ（ser de ＋ チーム名）",
+      "key": true
+    },
+    {
+      "t": "ni siquiera",
+      "ja": "〜すらしない"
+    },
+    {
+      "t": "coge el teléfono",
+      "ja": "電話に出る（スペイン）"
+    },
+    {
+      "t": "ha bajado de categoría",
+      "ja": "降格した（bajar de categoría）",
+      "key": true
+    },
+    {
+      "t": "se ha salvado",
+      "ja": "残留した・降格を免れた（salvarse）",
+      "key": true
+    },
+    {
+      "t": "seguir callado",
+      "ja": "黙ったままでいる"
+    },
+    {
+      "t": "es posible que",
+      "ja": "〜かもしれない（後ろは接続法）",
+      "key": true
+    },
+    {
+      "t": "prefiero que no",
+      "ja": "やめてほしい（prefiero que no leas…の「leas」を省略）"
+    },
+    {
+      "t": "se le ha olvidado",
+      "ja": "（うっかり）忘れてしまった（無意志の se）"
+    },
+    {
+      "t": "un tal",
+      "ja": "〜とかいう人",
+      "key": true
+    },
+    {
+      "t": "ya lo sabía yo",
+      "ja": "やっぱりな・分かってたよ"
+    },
+    {
+      "t": "visión periférica",
+      "ja": "周辺視野（第1話でダニが言い訳に使った言葉）"
+    },
+    {
+      "t": "que conste que",
+      "ja": "言っておくが",
+      "key": true
+    },
+    {
+      "t": "todos los años",
+      "ja": "毎年"
+    },
+    {
+      "t": "se llama",
+      "ja": "〜という名前だ"
+    },
+    {
+      "t": "estoy orgullosa de ti",
+      "ja": "あなたを誇りに思う"
+    },
+    {
+      "t": "no te preocupes",
+      "ja": "心配しないで"
+    },
+    {
+      "t": "volverá a subir",
+      "ja": "また昇格する（volver a ＋ 原形＝再び〜する）"
+    },
+    {
+      "t": "si quieres",
+      "ja": "よかったら"
+    },
+    {
+      "t": "lo siento",
+      "ja": "ごめんなさい"
+    }
+  ],
+  "words": {
+    "bienvenidos": {
+      "w": "bienvenido",
+      "pos": "adj",
+      "ja": "ようこそ・歓迎された",
+      "form": "複数形（¡bienvenidos!＝みなさん、ようこそ）"
+    },
+    "bienvenido": {
+      "w": "bienvenido",
+      "pos": "adj",
+      "ja": "ようこそ・歓迎された",
+      "form": "男性単数形（¡bienvenido!＝ようこそ）"
+    },
+    "durante": {
+      "w": "durante",
+      "pos": "prep",
+      "ja": "〜の間（ずっと）"
+    },
+    "semanas": {
+      "w": "semana",
+      "pos": "n",
+      "g": "f",
+      "ja": "週",
+      "form": "複数形"
+    },
+    "hemos": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（助動詞）〜した・〜してきた",
+      "form": "haber の現在・一人称複数（hemos hablado＝話してきた：現在完了）"
+    },
+    "hablado": {
+      "w": "hablar",
+      "pos": "v",
+      "ja": "話す",
+      "form": "hablar の過去分詞（hemos hablado＝話してきた）"
+    },
+    "gol": {
+      "w": "gol",
+      "pos": "n",
+      "g": "m",
+      "ja": "ゴール・得点",
+      "key": true,
+      "note": "英語の goal と同じ"
+    },
+    "espaldas": {
+      "w": "espalda",
+      "pos": "n",
+      "g": "f",
+      "ja": "背中",
+      "form": "複数形（de espaldas＝背中で・背を向けて）"
+    },
+    "espalda": {
+      "w": "espalda",
+      "pos": "n",
+      "g": "f",
+      "ja": "背中",
+      "key": true
+    },
+    "primero": {
+      "w": "primero",
+      "pos": "adv",
+      "ja": "最初に・まず"
+    },
+    "goleador": {
+      "w": "goleador",
+      "pos": "n",
+      "g": "m",
+      "ja": "得点者・点取り屋",
+      "key": true
+    },
+    "después": {
+      "w": "después",
+      "pos": "adv",
+      "ja": "あとで・そのあと・次に"
+    },
+    "entrenador": {
+      "w": "entrenador",
+      "pos": "n",
+      "g": "m",
+      "ja": "監督・コーチ",
+      "key": true
+    },
+    "entrenadores": {
+      "w": "entrenador",
+      "pos": "n",
+      "g": "m",
+      "ja": "監督・コーチ",
+      "form": "複数形",
+      "key": true
+    },
+    "tenemos": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "（ゲストとして）迎えている・持っている",
+      "form": "tener の現在・一人称複数（tenemos con nosotros a〜＝〜をお迎えしている）"
+    },
+    "insultada": {
+      "w": "insultar",
+      "pos": "v",
+      "ja": "侮辱する・悪口を言う",
+      "form": "insultar の過去分詞・女性形（la persona más insultada＝一番悪口を言われる人）"
+    },
+    "cualquier": {
+      "w": "cualquier",
+      "pos": "det",
+      "ja": "どんな〜でも・どの〜でも"
+    },
+    "árbitro": {
+      "w": "árbitro",
+      "pos": "n",
+      "g": "m",
+      "ja": "審判",
+      "key": true
+    },
+    "árbitros": {
+      "w": "árbitro",
+      "pos": "n",
+      "g": "m",
+      "ja": "審判",
+      "form": "複数形",
+      "key": true
+    },
+    "primera": {
+      "w": "primero",
+      "pos": "adj",
+      "ja": "最初の・1番目の",
+      "form": "女性形（la primera vez＝初めて）"
+    },
+    "invitan": {
+      "w": "invitar",
+      "pos": "v",
+      "ja": "招待する・呼ぶ",
+      "form": "invitar の現在・三人称複数（me invitan＝（人々が）私を呼ぶ）"
+    },
+    "radio": {
+      "w": "radio",
+      "pos": "n",
+      "g": "f",
+      "ja": "ラジオ（放送）"
+    },
+    "prometo": {
+      "w": "prometer",
+      "pos": "v",
+      "ja": "約束する",
+      "form": "prometer の現在・一人称単数（te lo prometo＝約束するよ）"
+    },
+    "pregunta": {
+      "w": "pregunta",
+      "pos": "n",
+      "g": "f",
+      "ja": "質問・疑問"
+    },
+    "hace": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "（hace ＋ 期間で）〜前",
+      "form": "hacer の現在・三人称単数（desde hace unos años＝数年前から）"
+    },
+    "hace#3": {
+      "w": "hacerse",
+      "pos": "v",
+      "ja": "（疑問を）自分に問う・疑問に思う",
+      "form": "hacer の現在・三人称単数（hacerse una pregunta＝自問する）"
+    },
+    "alguien": {
+      "w": "alguien",
+      "pos": "pron",
+      "ja": "だれか"
+    },
+    "eso": {
+      "w": "eso",
+      "pos": "pron",
+      "ja": "それ・そのこと"
+    },
+    "mismo#4": {
+      "w": "mismo",
+      "pos": "adj",
+      "ja": "まさにその（eso mismo＝まさにそのこと）"
+    },
+    "pregunta#4": {
+      "w": "preguntar",
+      "pos": "v",
+      "ja": "尋ねる・質問する",
+      "form": "preguntar の現在・三人称単数（me pregunta＝私に尋ねる）"
+    },
+    "pues": {
+      "w": "pues",
+      "pos": "interj",
+      "ja": "えーと・じゃあ・だって（つなぎの言葉）"
+    },
+    "mira#4": {
+      "w": "mirar",
+      "pos": "interj",
+      "ja": "あのね・ほら（相手の注意を引く）",
+      "form": "mirar の命令形（tú）"
+    },
+    "quería": {
+      "w": "querer",
+      "pos": "v",
+      "ja": "ほしい・〜したい",
+      "form": "querer の線過去・一人称単数（quería ser＝なりたかった）"
+    },
+    "futbolista": {
+      "w": "futbolista",
+      "pos": "n",
+      "g": "mf",
+      "ja": "サッカー選手",
+      "key": true
+    },
+    "era": {
+      "w": "ser",
+      "pos": "v",
+      "ja": "〜だった・〜であった",
+      "form": "ser の線過去・三人称単数"
+    },
+    "malísimo": {
+      "w": "malo",
+      "pos": "adj",
+      "ja": "ひどく下手な・とても悪い",
+      "form": "malo ＋ ísimo（絶対最上級＝とても〜）"
+    },
+    "dieciséis": {
+      "w": "dieciséis",
+      "pos": "num",
+      "ja": "16"
+    },
+    "vino": {
+      "w": "venir",
+      "pos": "v",
+      "ja": "来る",
+      "form": "venir の点過去・三人称単数（no vino＝来なかった）"
+    },
+    "dio": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "あげる・渡す",
+      "form": "dar の点過去・三人称単数（me dio un silbato＝私にホイッスルをくれた）"
+    },
+    "dio#22": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "（ボールが）当たる（dar a〜＝〜に当たる）",
+      "form": "dar の点過去・三人称単数（me dio a mí＝私に当たった）"
+    },
+    "silbato": {
+      "w": "silbato",
+      "pos": "n",
+      "g": "m",
+      "ja": "ホイッスル・笛",
+      "key": true
+    },
+    "dijo": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う",
+      "form": "decir の点過去・三人称単数"
+    },
+    "juegas": {
+      "w": "jugar",
+      "pos": "v",
+      "ja": "（試合に）出る・プレーする",
+      "form": "jugar の現在・二人称単数（que no juegas＝試合に出ない）"
+    },
+    "arbitra": {
+      "w": "arbitrar",
+      "pos": "v",
+      "ja": "審判をする",
+      "form": "arbitrar の命令形（tú）（arbitra＝審判をやれ）",
+      "key": true
+    },
+    "gustó": {
+      "w": "gustar",
+      "pos": "v",
+      "ja": "好きだ・気に入る",
+      "form": "gustar の点過去・三人称単数（te gustó＝気に入った？）"
+    },
+    "encantó": {
+      "w": "encantar",
+      "pos": "v",
+      "ja": "大好きになる・とても気に入る",
+      "form": "encantar の点過去・三人称単数（me encantó＝大好きになった）"
+    },
+    "mundo": {
+      "w": "mundo",
+      "pos": "n",
+      "g": "m",
+      "ja": "世界・人々（todo el mundo＝みんな）"
+    },
+    "miraba": {
+      "w": "mirar",
+      "pos": "v",
+      "ja": "見る",
+      "form": "mirar の線過去・三人称単数（me miraba＝私を見ていた）"
+    },
+    "miraban": {
+      "w": "mirar",
+      "pos": "v",
+      "ja": "見る",
+      "form": "mirar の線過去・三人称複数（me miraban＝私を見ていた）"
+    },
+    "gritaban": {
+      "w": "gritar",
+      "pos": "v",
+      "ja": "叫ぶ・怒鳴る",
+      "form": "gritar の線過去・三人称複数（me gritaban＝私に怒鳴っていた）"
+    },
+    "bueno": {
+      "w": "bueno",
+      "pos": "adj",
+      "ja": "よい・正しい（dar por bueno＝正しいと認める）"
+    },
+    "bueno#6": {
+      "w": "bueno",
+      "pos": "interj",
+      "ja": "まあ・えーと（言い直しのつなぎ）"
+    },
+    "sentí": {
+      "w": "sentirse",
+      "pos": "v",
+      "ja": "〜な気持ちになる（me sentí importante＝自分が大事だと感じた）",
+      "form": "sentir の点過去・一人称単数"
+    },
+    "sentí#30": {
+      "w": "sentir",
+      "pos": "v",
+      "ja": "感じる",
+      "form": "sentir の点過去・一人称単数（sentí algo＝何かを感じた）"
+    },
+    "recibís": {
+      "w": "recibir",
+      "pos": "v",
+      "ja": "受ける・もらう",
+      "form": "recibir の現在・二人称複数（vosotros／スペインの「君たち」）"
+    },
+    "insultos": {
+      "w": "insulto",
+      "pos": "n",
+      "g": "m",
+      "ja": "侮辱・悪口",
+      "form": "複数形"
+    },
+    "llevas": {
+      "w": "llevar",
+      "pos": "v",
+      "ja": "（困難を）乗り切る・こなす",
+      "form": "llevar の現在・二人称単数（¿cómo lo llevas?＝どう受け止めてる？）"
+    },
+    "paciencia": {
+      "w": "paciencia",
+      "pos": "n",
+      "g": "f",
+      "ja": "我慢強さ・忍耐"
+    },
+    "tapones": {
+      "w": "tapón",
+      "pos": "n",
+      "g": "m",
+      "ja": "栓（tapones para los oídos＝耳栓）",
+      "form": "複数形"
+    },
+    "oídos": {
+      "w": "oído",
+      "pos": "n",
+      "g": "m",
+      "ja": "耳（聞く器官）",
+      "form": "複数形"
+    },
+    "broma": {
+      "w": "broma",
+      "pos": "n",
+      "g": "f",
+      "ja": "冗談"
+    },
+    "principio": {
+      "w": "principio",
+      "pos": "n",
+      "g": "m",
+      "ja": "はじめ・最初"
+    },
+    "afectaba": {
+      "w": "afectar",
+      "pos": "v",
+      "ja": "影響する・（心に）こたえる",
+      "form": "afectar の線過去・三人称単数（me afectaba＝私にこたえた）"
+    },
+    "podía": {
+      "w": "poder",
+      "pos": "v",
+      "ja": "できる",
+      "form": "poder の線過去・一人称／三人称単数（no podía dormir＝眠れなかった）"
+    },
+    "intento": {
+      "w": "intentar",
+      "pos": "v",
+      "ja": "試みる・〜しようとする",
+      "form": "intentar の現在・一人称単数（intento no leer＝読まないようにする）"
+    },
+    "internet": {
+      "w": "internet",
+      "pos": "n",
+      "g": "m",
+      "ja": "インターネット・ネット"
+    },
+    "duele": {
+      "w": "doler",
+      "pos": "v",
+      "ja": "痛む・（心が）つらい",
+      "form": "doler の現在・三人称単数（me duele＝私には痛い・つらい）"
+    },
+    "meten": {
+      "w": "meterse",
+      "pos": "v",
+      "ja": "ちょっかいを出す・（悪く）言う（meterse con〜）",
+      "form": "meter の現在・三人称複数（se meten con〜＝〜を悪く言う）"
+    },
+    "familia": {
+      "w": "familia",
+      "pos": "n",
+      "g": "f",
+      "ja": "家族"
+    },
+    "tus": {
+      "w": "tu",
+      "pos": "det",
+      "ja": "君の",
+      "form": "複数形（tus hijos＝君の子どもたち）"
+    },
+    "pasan": {
+      "w": "pasar",
+      "pos": "v",
+      "ja": "（時を）すごす",
+      "form": "pasar の現在・三人称複数（lo pasan mal＝つらい思いをする）"
+    },
+    "veces": {
+      "w": "vez",
+      "pos": "n",
+      "g": "f",
+      "ja": "回・度（a veces＝ときどき）",
+      "form": "複数形"
+    },
+    "pequeño": {
+      "w": "pequeño",
+      "pos": "adj",
+      "ja": "小さい・（兄弟で）下の（mi hijo pequeño＝下の息子）"
+    },
+    "volvió": {
+      "w": "volver",
+      "pos": "v",
+      "ja": "もどる・帰る",
+      "form": "volver の点過去・三人称単数"
+    },
+    "colegio": {
+      "w": "colegio",
+      "pos": "n",
+      "g": "m",
+      "ja": "学校"
+    },
+    "llorando": {
+      "w": "llorar",
+      "pos": "v",
+      "ja": "泣く",
+      "form": "llorar の現在分詞（llorando＝泣きながら）"
+    },
+    "compañeros": {
+      "w": "compañero",
+      "pos": "n",
+      "g": "m",
+      "ja": "仲間・同級生",
+      "form": "複数形（compañeros de clase＝クラスメート）"
+    },
+    "habían": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（助動詞）〜していた",
+      "form": "haber の線過去・三人称複数（habían cantado＝歌っていた：過去完了）"
+    },
+    "cantado": {
+      "w": "cantar",
+      "pos": "v",
+      "ja": "歌う",
+      "form": "cantar の過去分詞"
+    },
+    "canciones": {
+      "w": "canción",
+      "pos": "n",
+      "g": "f",
+      "ja": "歌",
+      "form": "複数形"
+    },
+    "contra": {
+      "w": "contra",
+      "pos": "prep",
+      "ja": "〜に対して・〜に反対して（A contra B＝A対B）"
+    },
+    "pensé": {
+      "w": "pensar",
+      "pos": "v",
+      "ja": "考える・思う",
+      "form": "pensar の点過去・一人称単数（pensé en dejarlo＝やめようと思った）"
+    },
+    "dejarlo": {
+      "w": "dejar",
+      "pos": "v",
+      "ja": "やめる・置く",
+      "form": "dejar ＋ lo（それ）（dejarlo＝審判をやめる）",
+      "key": true
+    },
+    "dejaste": {
+      "w": "dejar",
+      "pos": "v",
+      "ja": "やめる・置く",
+      "form": "dejar の点過去・二人称単数（¿por qué no lo dejaste?＝なぜやめなかった？）",
+      "key": true
+    },
+    "papá": {
+      "w": "papá",
+      "pos": "n",
+      "g": "m",
+      "ja": "パパ・お父さん"
+    },
+    "dejes": {
+      "w": "dejar",
+      "pos": "v",
+      "ja": "やめる",
+      "form": "dejar の否定命令（tú）（no lo dejes＝やめないで）"
+    },
+    "campo": {
+      "w": "campo",
+      "pos": "n",
+      "g": "m",
+      "ja": "ピッチ・グラウンド（いなか・畑の意味もある）",
+      "key": true
+    },
+    "puede": {
+      "w": "poder",
+      "pos": "v",
+      "ja": "できる",
+      "form": "poder の現在・三人称単数"
+    },
+    "puede#12": {
+      "w": "poder",
+      "pos": "v",
+      "ja": "〜してはいけない・〜できない（立場上）",
+      "form": "poder の現在・三人称単数（no puede hacer trampas＝ずるをしてはいけない）"
+    },
+    "puede#40": {
+      "w": "poder",
+      "pos": "v",
+      "ja": "〜することがある・〜しうる",
+      "form": "poder の現在・三人称単数（puede equivocarse＝間違えることがある）"
+    },
+    "puede#40.2": {
+      "w": "poder",
+      "pos": "v",
+      "ja": "〜してはいけない・許されない",
+      "form": "poder の現在・三人称単数（no puede mentir＝うそをついてはいけない）"
+    },
+    "trampas": {
+      "w": "trampa",
+      "pos": "n",
+      "g": "f",
+      "ja": "ずる・わな（hacer trampas＝ずるをする）",
+      "form": "複数形"
+    },
+    "razón": {
+      "w": "razón",
+      "pos": "n",
+      "g": "f",
+      "ja": "道理・正しさ（tener razón＝正しい）"
+    },
+    "tenía": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持つ",
+      "form": "tener の線過去・三人称単数（tenía razón＝正しかった／tenía que〜＝〜すべきだった）"
+    },
+    "bonito": {
+      "w": "bonito",
+      "pos": "adj",
+      "ja": "すてきな・きれいな"
+    },
+    "reglas": {
+      "w": "regla",
+      "pos": "n",
+      "g": "f",
+      "ja": "ルール・規則",
+      "form": "複数形"
+    },
+    "oyentes": {
+      "w": "oyente",
+      "pos": "n",
+      "g": "mf",
+      "ja": "（ラジオの）リスナー",
+      "form": "複数形",
+      "key": true
+    },
+    "dudas": {
+      "w": "duda",
+      "pos": "n",
+      "g": "f",
+      "ja": "疑問・質問",
+      "form": "複数形（escribir con dudas＝疑問を寄せる）"
+    },
+    "explícanos": {
+      "w": "explicar",
+      "pos": "v",
+      "ja": "説明する",
+      "form": "explicar の命令形（tú）＋ nos（私たちに）（explícanos＝私たちに説明して）"
+    },
+    "juego": {
+      "w": "juego",
+      "pos": "n",
+      "g": "m",
+      "ja": "プレー・試合（fuera de juego＝オフサイド）"
+    },
+    "frase": {
+      "w": "frase",
+      "pos": "n",
+      "g": "f",
+      "ja": "一文・ひとこと（en una frase＝一言で）"
+    },
+    "uf": {
+      "w": "uf",
+      "pos": "interj",
+      "ja": "うわ・ふう（困ったときの声）"
+    },
+    "casi": {
+      "w": "casi",
+      "pos": "adv",
+      "ja": "ほとんど・もう少しで"
+    },
+    "dicho": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う",
+      "form": "decir の過去分詞（dicho de forma sencilla＝簡単に言えば）"
+    },
+    "forma": {
+      "w": "forma",
+      "pos": "n",
+      "g": "f",
+      "ja": "方法・形（de forma sencilla＝簡単な形で）"
+    },
+    "sencilla": {
+      "w": "sencillo",
+      "pos": "adj",
+      "ja": "簡単な・単純な",
+      "form": "女性形"
+    },
+    "momento": {
+      "w": "momento",
+      "pos": "n",
+      "g": "m",
+      "ja": "瞬間・とき"
+    },
+    "pase": {
+      "w": "pase",
+      "pos": "n",
+      "g": "m",
+      "ja": "パス",
+      "key": true
+    },
+    "portería": {
+      "w": "portería",
+      "pos": "n",
+      "g": "f",
+      "ja": "ゴール（枠）",
+      "key": true
+    },
+    "contraria": {
+      "w": "contrario",
+      "pos": "adj",
+      "ja": "相手の・反対の",
+      "form": "女性形（la portería contraria＝相手のゴール）"
+    },
+    "que#14": {
+      "w": "que",
+      "pos": "conj",
+      "ja": "〜よりも（más 〜 que＝〜より…）"
+    },
+    "que#14.2": {
+      "w": "que",
+      "pos": "conj",
+      "ja": "〜よりも（más 〜 que＝〜より…）"
+    },
+    "penúltimo": {
+      "w": "penúltimo",
+      "pos": "adj",
+      "ja": "後ろから2番目の・最後から2つ目の",
+      "key": true
+    },
+    "defensa": {
+      "w": "defensa",
+      "pos": "n",
+      "g": "mf",
+      "ja": "ディフェンダー・守備の選手",
+      "key": true
+    },
+    "último": {
+      "w": "último",
+      "pos": "adj",
+      "ja": "最後の・一番後ろの"
+    },
+    "portero": {
+      "w": "portero",
+      "pos": "n",
+      "g": "m",
+      "ja": "ゴールキーパー",
+      "key": true,
+      "note": "サッカーでは portero ＝ GK（ふつうの意味は「管理人・門番」）"
+    },
+    "equivoca": {
+      "w": "equivocarse",
+      "pos": "v",
+      "ja": "まちがえる",
+      "form": "equivocarse の現在・三人称単数（se equivoca＝間違える）",
+      "key": true
+    },
+    "hasta": {
+      "w": "hasta",
+      "pos": "prep",
+      "ja": "〜でさえ・〜まで（hasta algunos entrenadores＝監督にさえ）"
+    },
+    "algunos": {
+      "w": "alguno",
+      "pos": "det",
+      "ja": "いくつかの・何人かの",
+      "form": "複数形（algunos entrenadores＝一部の監督）"
+    },
+    "var": {
+      "w": "VAR",
+      "pos": "n",
+      "g": "m",
+      "ja": "VAR（ビデオ判定。スペイン語でも「バル」と読む）",
+      "key": true
+    },
+    "vuestra": {
+      "w": "vuestro",
+      "pos": "det",
+      "ja": "君たちの",
+      "form": "女性形（vuestra categoría＝君たちのカテゴリー）"
+    },
+    "categoría": {
+      "w": "categoría",
+      "pos": "n",
+      "g": "f",
+      "ja": "カテゴリー・リーグの階層",
+      "key": true
+    },
+    "categorías": {
+      "w": "categoría",
+      "pos": "n",
+      "g": "f",
+      "ja": "カテゴリー・リーグの階層",
+      "form": "複数形",
+      "key": true
+    },
+    "verdad": {
+      "w": "verdad",
+      "pos": "n",
+      "g": "f",
+      "ja": "本当のこと（文末の ¿verdad?＝〜だよね？）"
+    },
+    "altas": {
+      "w": "alto",
+      "pos": "adj",
+      "ja": "高い・（階層が）上の",
+      "form": "女性複数形（las categorías más altas＝上のカテゴリー）"
+    },
+    "asistentes": {
+      "w": "asistente",
+      "pos": "n",
+      "g": "mf",
+      "ja": "副審",
+      "form": "複数形",
+      "key": true
+    },
+    "equivoco": {
+      "w": "equivocarse",
+      "pos": "v",
+      "ja": "まちがえる",
+      "form": "equivocarse の現在・一人称単数（me equivoco＝間違える）"
+    },
+    "corregirme": {
+      "w": "corregir",
+      "pos": "v",
+      "ja": "直す・訂正する",
+      "form": "corregir ＋ me（私を）（corregirme＝私を正す）"
+    },
+    "jugada": {
+      "w": "jugada",
+      "pos": "n",
+      "g": "f",
+      "ja": "プレー（一連の動き）",
+      "key": true
+    },
+    "pueda": {
+      "w": "poder",
+      "pos": "v",
+      "ja": "できる",
+      "form": "poder の接続法現在・三人称単数（siempre que pueda＝できる限り）"
+    },
+    "claro": {
+      "w": "claro",
+      "pos": "interj",
+      "ja": "もちろん・そりゃそうだ"
+    },
+    "lleva": {
+      "w": "llevar",
+      "pos": "v",
+      "ja": "（ある所へ）導く・連れていく",
+      "form": "llevar の現在・三人称単数（nos lleva a〜＝私たちを〜へ導く）"
+    },
+    "atlético": {
+      "w": "Atlético",
+      "pos": "n",
+      "g": "m",
+      "ja": "（クラブ名の一部）アトレティコ",
+      "note": "Atlético Montaña＝架空のクラブ名"
+    },
+    "montaña": {
+      "w": "Montaña",
+      "pos": "n",
+      "g": "f",
+      "ja": "モンターニャ（クラブ名 Atlético Montaña の略。ふつうの名詞なら「山」）"
+    },
+    "liga": {
+      "w": "liga",
+      "pos": "n",
+      "g": "f",
+      "ja": "リーグ"
+    },
+    "pasada": {
+      "w": "pasado",
+      "pos": "adj",
+      "ja": "過去の・この前の",
+      "form": "女性形（la semana pasada＝先週）"
+    },
+    "estabas": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "いる・〜の状態だ",
+      "form": "estar の線過去・二人称単数（estabas cerca＝近くにいた）"
+    },
+    "demasiado": {
+      "w": "demasiado",
+      "pos": "adv",
+      "ja": "あまりに・〜すぎる（demasiado cerca＝近すぎる）"
+    },
+    "repetición": {
+      "w": "repetición",
+      "pos": "n",
+      "g": "f",
+      "ja": "（スロー）リプレー・繰り返し",
+      "key": true
+    },
+    "veía": {
+      "w": "ver",
+      "pos": "v",
+      "ja": "見える・見る",
+      "form": "ver の線過去・三人称単数（se veía＝見えていた）"
+    },
+    "se#19": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（受身）〜される（se veía＝見えた）"
+    },
+    "raro": {
+      "w": "raro",
+      "pos": "adj",
+      "ja": "変な・妙な・珍しい"
+    },
+    "he": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（助動詞）〜した",
+      "form": "haber の現在・一人称単数（he aceptado＝承諾した：現在完了）"
+    },
+    "aceptado": {
+      "w": "aceptar",
+      "pos": "v",
+      "ja": "受け入れる・承諾する",
+      "form": "aceptar の過去分詞"
+    },
+    "precisamente": {
+      "w": "precisamente",
+      "pos": "adv",
+      "ja": "まさに・ちょうど",
+      "key": true
+    },
+    "pasó": {
+      "w": "pasar",
+      "pos": "v",
+      "ja": "起こる",
+      "form": "pasar の点過去・三人称単数（lo que pasó＝起こったこと）"
+    },
+    "adelante": {
+      "w": "adelante",
+      "pos": "interj",
+      "ja": "どうぞ（続けて）・前へ"
+    },
+    "escuchamos": {
+      "w": "escuchar",
+      "pos": "v",
+      "ja": "聞く",
+      "form": "escuchar の現在・一人称複数（te escuchamos＝聞いてるよ）"
+    },
+    "noventa": {
+      "w": "noventa",
+      "pos": "num",
+      "ja": "90"
+    },
+    "saque": {
+      "w": "saque",
+      "pos": "n",
+      "g": "m",
+      "ja": "（サッカーの）キック・サーブ（saque de esquina＝コーナーキック）"
+    },
+    "esquina": {
+      "w": "esquina",
+      "pos": "n",
+      "g": "f",
+      "ja": "角・隅"
+    },
+    "coloqué": {
+      "w": "colocarse",
+      "pos": "v",
+      "ja": "位置につく・身を置く",
+      "form": "colocar の点過去・一人称単数（me coloqué＝位置についた）"
+    },
+    "área": {
+      "w": "área",
+      "pos": "n",
+      "g": "f",
+      "ja": "ペナルティエリア・エリア",
+      "key": true,
+      "note": "女性名詞だが el área と言う（アクセントのある a で始まるため）"
+    },
+    "córners": {
+      "w": "córner",
+      "pos": "n",
+      "g": "m",
+      "ja": "コーナーキック",
+      "form": "複数形",
+      "key": true
+    },
+    "empujones": {
+      "w": "empujón",
+      "pos": "n",
+      "g": "m",
+      "ja": "押すこと・押し合い（ファウル）",
+      "form": "複数形",
+      "key": true
+    },
+    "rebotó": {
+      "w": "rebotar",
+      "pos": "v",
+      "ja": "跳ね返る・当たって跳ねる",
+      "form": "rebotar の点過去・三人称単数（rebotó en un defensa＝ディフェンダーに当たって跳ねた）",
+      "key": true
+    },
+    "salió": {
+      "w": "salir",
+      "pos": "v",
+      "ja": "飛び出す・（ボールが）飛ぶ",
+      "form": "salir の点過去・三人称単数（salió hacia arriba＝上に飛んだ）"
+    },
+    "hacia": {
+      "w": "hacia",
+      "pos": "prep",
+      "ja": "〜の方へ（hacia arriba＝上の方へ）"
+    },
+    "arriba": {
+      "w": "arriba",
+      "pos": "adv",
+      "ja": "上に・上へ"
+    },
+    "ti": {
+      "w": "ti",
+      "pos": "pron",
+      "ja": "君（前置詞のあと）"
+    },
+    "fue": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "（ボールが）〜へ行く・飛ぶ",
+      "form": "ir の点過去・三人称単数（fue a la espalda de〜＝〜の背中へ飛んだ）",
+      "note": "点過去の fue は ser と ir で同じ形。ここは ir"
+    },
+    "directamente": {
+      "w": "directamente",
+      "pos": "adv",
+      "ja": "直接・まっすぐ"
+    },
+    "agachado": {
+      "w": "agachado",
+      "pos": "adj",
+      "ja": "かがんだ",
+      "form": "男性単数形（estaba agachado＝かがんでいた）"
+    },
+    "atándose": {
+      "w": "atarse",
+      "pos": "v",
+      "ja": "（自分の〜を）結ぶ",
+      "form": "atar の現在分詞＋ se（atándose la bota＝スパイクのひもを結びながら）"
+    },
+    "bota": {
+      "w": "bota",
+      "pos": "n",
+      "g": "f",
+      "ja": "スパイク（サッカーシューズ）",
+      "key": true
+    },
+    "estaba": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "いる・〜の状態だ",
+      "form": "estar の線過去・三人称単数（estaba agachado＝かがんでいた）"
+    },
+    "dice#25": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う・（規則が）定める",
+      "form": "decir の現在・三人称単数（¿qué dice el reglamento?＝ルールではどうなる？）"
+    },
+    "reglamento": {
+      "w": "reglamento",
+      "pos": "n",
+      "g": "m",
+      "ja": "ルール・規則（全体）",
+      "key": true
+    },
+    "unos": {
+      "w": "unos",
+      "pos": "det",
+      "ja": "数〜・いくつかの（unos años＝数年）"
+    },
+    "regla": {
+      "w": "regla",
+      "pos": "n",
+      "g": "f",
+      "ja": "ルール・規則"
+    },
+    "clara": {
+      "w": "claro",
+      "pos": "adj",
+      "ja": "はっきりした・明らかな",
+      "form": "女性形"
+    },
+    "toca": {
+      "w": "tocar",
+      "pos": "v",
+      "ja": "さわる・（ボールが）当たる",
+      "form": "tocar の現在・三人称単数（toca al árbitro＝審判に当たる）"
+    },
+    "termina": {
+      "w": "terminar",
+      "pos": "v",
+      "ja": "終わる",
+      "form": "terminar の現在・三人称単数（termina en gol＝ゴールで終わる）"
+    },
+    "vale": {
+      "w": "valer",
+      "pos": "v",
+      "ja": "有効だ・価値がある",
+      "form": "valer の現在・三人称単数（el gol no vale＝ゴールは無効）"
+    },
+    "parar": {
+      "w": "parar",
+      "pos": "v",
+      "ja": "止める・止まる",
+      "key": true
+    },
+    "empezar#26": {
+      "w": "empezar",
+      "pos": "v",
+      "ja": "（プレーを）再開する・始める"
+    },
+    "bote": {
+      "w": "bote",
+      "pos": "n",
+      "g": "m",
+      "ja": "バウンド・ボールの跳ね"
+    },
+    "neutral": {
+      "w": "neutral",
+      "pos": "adj",
+      "ja": "中立の"
+    },
+    "sea": {
+      "w": "ser",
+      "pos": "v",
+      "ja": "（o sea で）つまり",
+      "form": "ser の接続法現在・三人称単数"
+    },
+    "válido": {
+      "w": "válido",
+      "pos": "adj",
+      "ja": "有効な・認められる"
+    },
+    "paré": {
+      "w": "parar",
+      "pos": "v",
+      "ja": "止める",
+      "form": "parar の点過去・一人称単数（no lo paré＝止めなかった）"
+    },
+    "entonces#29": {
+      "w": "entonces",
+      "pos": "adv",
+      "ja": "じゃあ・それなら"
+    },
+    "diste": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "与える（dar por bueno＝正しいと認める）",
+      "form": "dar の点過去・二人称単数（lo diste por bueno＝ゴールを認めた）"
+    },
+    "diste#31": {
+      "w": "darse",
+      "pos": "v",
+      "ja": "（darse cuenta で）気づく",
+      "form": "dar の点過去・二人称単数（te diste cuenta＝気づいた）"
+    },
+    "di": {
+      "w": "darse",
+      "pos": "v",
+      "ja": "（darse cuenta で）気づく",
+      "form": "dar の点過去・一人称単数（me di cuenta＝気づいた）"
+    },
+    "cuenta": {
+      "w": "cuenta",
+      "pos": "n",
+      "g": "f",
+      "ja": "勘定（darse cuenta＝気づく）"
+    },
+    "tanta": {
+      "w": "tanto",
+      "pos": "det",
+      "ja": "これほど多くの・あれだけの",
+      "form": "女性形（tanta gente＝あれだけ多くの人）"
+    },
+    "pensé#30": {
+      "w": "pensar",
+      "pos": "v",
+      "ja": "思う・考える",
+      "form": "pensar の点過去・一人称単数（pensé que era un empujón＝押されたのだと思った）"
+    },
+    "empujón": {
+      "w": "empujón",
+      "pos": "n",
+      "g": "m",
+      "ja": "押すこと・押し合い（ファウル）",
+      "key": true
+    },
+    "tampoco": {
+      "w": "tampoco",
+      "pos": "adv",
+      "ja": "〜もまた…ない（tampoco lo vieron＝〜も見なかった）"
+    },
+    "vieron": {
+      "w": "ver",
+      "pos": "v",
+      "ja": "見る",
+      "form": "ver の点過去・三人称複数"
+    },
+    "tenían": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持っている・いる",
+      "form": "tener の線過去・三人称複数（tenían jugadores delante＝前に選手がいた）"
+    },
+    "jugadores": {
+      "w": "jugador",
+      "pos": "n",
+      "g": "m",
+      "ja": "選手",
+      "form": "複数形"
+    },
+    "sin": {
+      "w": "sin",
+      "pos": "prep",
+      "ja": "〜なしで（sin VAR＝VARなしで）"
+    },
+    "avisar": {
+      "w": "avisar",
+      "pos": "v",
+      "ja": "知らせる・教える"
+    },
+    "cuándo": {
+      "w": "cuándo",
+      "pos": "int",
+      "ja": "いつ"
+    },
+    "siguiente": {
+      "w": "siguiente",
+      "pos": "adj",
+      "ja": "次の・翌〜（al día siguiente＝翌日に）"
+    },
+    "estábamos": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "いる・〜の状態だ",
+      "form": "estar の線過去・一人称複数（estábamos comiendo＝食べていた）"
+    },
+    "comiendo": {
+      "w": "comer",
+      "pos": "v",
+      "ja": "食べる",
+      "form": "comer の現在分詞（estábamos comiendo＝食べていた）"
+    },
+    "pusieron": {
+      "w": "poner",
+      "pos": "v",
+      "ja": "（番組・映像を）流す・置く",
+      "form": "poner の点過去・三人称複数（pusieron la repetición＝リプレーを流した）"
+    },
+    "cámara": {
+      "w": "cámara",
+      "pos": "n",
+      "g": "f",
+      "ja": "カメラ"
+    },
+    "dejó": {
+      "w": "dejar",
+      "pos": "v",
+      "ja": "置く・やめる",
+      "form": "dejar の点過去・三人称単数（dejó el tenedor＝フォークを置いた）"
+    },
+    "tenedor": {
+      "w": "tenedor",
+      "pos": "n",
+      "g": "m",
+      "ja": "フォーク"
+    },
+    "levantó": {
+      "w": "levantarse",
+      "pos": "v",
+      "ja": "立ち上がる",
+      "form": "levantar の点過去・三人称単数（se levantó＝立ち上がった）"
+    },
+    "gritó": {
+      "w": "gritar",
+      "pos": "v",
+      "ja": "叫ぶ・大声で言う",
+      "form": "gritar の点過去・三人称単数"
+    },
+    "ha": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（助動詞）〜した",
+      "form": "haber の現在・三人称単数（現在完了：ha dado＝当たった／se ha salvado＝残留した）"
+    },
+    "dado": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "（ボールが）当たる（dar a〜＝〜に当たる）",
+      "form": "dar の過去分詞（te ha dado a ti＝君に当たった）"
+    },
+    "hizo": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "（hacer de〜）〜の役をする",
+      "form": "hacer の点過去・三人称単数（hizo de VAR＝VARの役をした）"
+    },
+    "ve": {
+      "w": "ver",
+      "pos": "v",
+      "ja": "見る",
+      "form": "ver の現在・三人称単数（lo ve todo＝何でも見ている）"
+    },
+    "todo#34": {
+      "w": "todo",
+      "pos": "pron",
+      "ja": "すべて・何でも"
+    },
+    "además": {
+      "w": "además",
+      "pos": "adv",
+      "ja": "そのうえ・しかも"
+    },
+    "sesenta": {
+      "w": "sesenta",
+      "pos": "num",
+      "ja": "60"
+    },
+    "coge": {
+      "w": "coger",
+      "pos": "v",
+      "ja": "取る・（電話に）出る",
+      "form": "coger の現在・三人称単数（coge el teléfono＝電話に出る）"
+    },
+    "teléfono": {
+      "w": "teléfono",
+      "pos": "n",
+      "g": "m",
+      "ja": "電話"
+    },
+    "resultado": {
+      "w": "resultado",
+      "pos": "n",
+      "g": "m",
+      "ja": "結果"
+    },
+    "cambiar": {
+      "w": "cambiar",
+      "pos": "v",
+      "ja": "変える・変わる"
+    },
+    "oficial": {
+      "w": "oficial",
+      "pos": "adj",
+      "ja": "公式の・正式な"
+    },
+    "salvado": {
+      "w": "salvarse",
+      "pos": "v",
+      "ja": "降格を免れる・残留する",
+      "form": "salvar の過去分詞（se ha salvado＝残留した）",
+      "key": true
+    },
+    "bajado": {
+      "w": "bajar",
+      "pos": "v",
+      "ja": "下がる・降格する",
+      "form": "bajar の過去分詞（ha bajado de categoría＝降格した）",
+      "key": true
+    },
+    "seguir": {
+      "w": "seguir",
+      "pos": "v",
+      "ja": "続ける（seguir callado＝黙ったままでいる）"
+    },
+    "callado": {
+      "w": "callado",
+      "pos": "adj",
+      "ja": "黙った・口を閉ざした"
+    },
+    "se#36": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "自分を（再帰）（se ha salvado＝自分を救った→残留した）"
+    },
+    "se#36.2": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（受身）〜される（no se puede cambiar＝変えられない）"
+    },
+    "valiente": {
+      "w": "valiente",
+      "pos": "adj",
+      "ja": "勇気のある・勇敢な"
+    },
+    "contarlo": {
+      "w": "contar",
+      "pos": "v",
+      "ja": "話す・語る",
+      "form": "contar ＋ lo（それ）（contarlo＝それを話す）"
+    },
+    "tonto": {
+      "w": "tonto",
+      "pos": "adj",
+      "ja": "ばかな・愚かな"
+    },
+    "llamen": {
+      "w": "llamar",
+      "pos": "v",
+      "ja": "呼ぶ・呼び出す",
+      "form": "llamar の接続法現在・三人称複数（es posible que me llamen＝呼び出されるかもしれない）"
+    },
+    "comité": {
+      "w": "comité",
+      "pos": "n",
+      "g": "m",
+      "ja": "委員会",
+      "key": true
+    },
+    "sancionen": {
+      "w": "sancionar",
+      "pos": "v",
+      "ja": "処分する",
+      "form": "sancionar の接続法現在・三人称複数",
+      "key": true
+    },
+    "arrepientes": {
+      "w": "arrepentirse",
+      "pos": "v",
+      "ja": "後悔する（arrepentirse de〜）",
+      "form": "arrepentirse の現在・二人称単数",
+      "key": true
+    },
+    "haber": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（haber ＋ 過去分詞）〜したこと",
+      "form": "haber の不定詞（haber venido＝来たこと：完了不定詞）"
+    },
+    "venido": {
+      "w": "venir",
+      "pos": "v",
+      "ja": "来る",
+      "form": "venir の過去分詞"
+    },
+    "equivocarse": {
+      "w": "equivocarse",
+      "pos": "v",
+      "ja": "まちがえる",
+      "key": true
+    },
+    "mentir": {
+      "w": "mentir",
+      "pos": "v",
+      "ja": "うそをつく"
+    },
+    "llegando": {
+      "w": "llegar",
+      "pos": "v",
+      "ja": "届く・着く",
+      "form": "llegar の現在分詞（están llegando＝届きつつある）"
+    },
+    "muchísimos": {
+      "w": "mucho",
+      "pos": "det",
+      "ja": "とてもたくさんの",
+      "form": "複数形の絶対最上級（mucho ＋ ísimo）"
+    },
+    "mensajes": {
+      "w": "mensaje",
+      "pos": "n",
+      "g": "m",
+      "ja": "メッセージ",
+      "form": "複数形"
+    },
+    "puedo": {
+      "w": "poder",
+      "pos": "v",
+      "ja": "できる・〜してもいい",
+      "form": "poder の現在・一人称単数（¿Puedo leerte algunos?＝いくつか読んでもいい？）"
+    },
+    "leerte": {
+      "w": "leer",
+      "pos": "v",
+      "ja": "読む",
+      "form": "leer ＋ te（君に）（leerte＝君に読む）"
+    },
+    "algunos#41": {
+      "w": "alguno",
+      "pos": "pron",
+      "ja": "いくつか・何人か",
+      "form": "複数形（¿Puedo leerte algunos?＝いくつか読んでもいい？）"
+    },
+    "prefiero": {
+      "w": "preferir",
+      "pos": "v",
+      "ja": "（〜のほうが）よい・好む",
+      "form": "preferir の現在・一人称単数（prefiero que no＝やめてほしい）"
+    },
+    "caballero": {
+      "w": "caballero",
+      "pos": "n",
+      "g": "m",
+      "ja": "紳士"
+    },
+    "llamó": {
+      "w": "llamar",
+      "pos": "v",
+      "ja": "呼ぶ",
+      "form": "llamar の点過去・三人称単数（te llamó otra cosa＝君を別の名前で呼んだ）"
+    },
+    "olvidado": {
+      "w": "olvidar",
+      "pos": "v",
+      "ja": "忘れる",
+      "form": "olvidar の過去分詞（se le ha olvidado＝うっかり忘れた）"
+    },
+    "abuela": {
+      "w": "abuela",
+      "pos": "n",
+      "g": "f",
+      "ja": "祖母・おばあちゃん"
+    },
+    "ojalá": {
+      "w": "ojalá",
+      "pos": "interj",
+      "ja": "〜でありますように・〜だといいのに（後ろは接続法）",
+      "key": true
+    },
+    "acuerde": {
+      "w": "acordarse",
+      "pos": "v",
+      "ja": "思い出す・覚えている（acordarse de〜）",
+      "form": "acordarse の接続法現在・三人称単数（ojalá no se acuerde＝思い出しませんように）"
+    },
+    "tal": {
+      "w": "tal",
+      "pos": "det",
+      "ja": "（un tal〜）〜とかいう人"
+    },
+    "sabía": {
+      "w": "saber",
+      "pos": "v",
+      "ja": "知っている・分かっている",
+      "form": "saber の線過去・一人称単数（ya lo sabía yo＝やっぱり分かっていた）"
+    },
+    "visión": {
+      "w": "visión",
+      "pos": "n",
+      "g": "f",
+      "ja": "視野・視力"
+    },
+    "periférica": {
+      "w": "periférico",
+      "pos": "adj",
+      "ja": "周辺の",
+      "form": "女性形（visión periférica＝周辺視野）"
+    },
+    "conste": {
+      "w": "constar",
+      "pos": "v",
+      "ja": "（記録として）明らかである・はっきりしている",
+      "form": "constar の接続法現在・三人称単数（que conste que〜＝言っておくが）",
+      "key": true
+    },
+    "sí#45": {
+      "w": "sí",
+      "pos": "adv",
+      "ja": "（強調）本当に・確かに（sí me retiro＝本当に引退する）"
+    },
+    "retiro": {
+      "w": "retirarse",
+      "pos": "v",
+      "ja": "引退する",
+      "form": "retirarse の現在・一人称単数（me retiro＝引退する）",
+      "key": true
+    },
+    "señora": {
+      "w": "señora",
+      "pos": "n",
+      "g": "f",
+      "ja": "女の人・奥さん・〜さん"
+    },
+    "uno#47": {
+      "w": "uno",
+      "pos": "pron",
+      "ja": "（メッセージの）1通・1つ"
+    },
+    "llama#47": {
+      "w": "llamarse",
+      "pos": "v",
+      "ja": "〜という名前だ",
+      "form": "llamar の現在・三人称単数（se llama Carmen＝カルメンという名前だ）"
+    },
+    "hijo#49": {
+      "w": "hijo",
+      "pos": "n",
+      "g": "m",
+      "ja": "息子（呼びかけ）"
+    },
+    "oído": {
+      "w": "oír",
+      "pos": "v",
+      "ja": "聞く・聞こえる",
+      "form": "oír の過去分詞（he oído＝聞いた）"
+    },
+    "programa": {
+      "w": "programa",
+      "pos": "n",
+      "g": "m",
+      "ja": "番組"
+    },
+    "entero": {
+      "w": "entero",
+      "pos": "adj",
+      "ja": "全部の・まるごとの"
+    },
+    "orgullosa": {
+      "w": "orgulloso",
+      "pos": "adj",
+      "ja": "誇りに思っている",
+      "form": "女性形（estar orgulloso de〜＝〜を誇りに思う）"
+    },
+    "hago": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "作る・する",
+      "form": "hacer の現在・一人称単数（hago paella＝パエリアを作る）"
+    },
+    "paella": {
+      "w": "paella",
+      "pos": "n",
+      "g": "f",
+      "ja": "パエリア"
+    },
+    "ven": {
+      "w": "venir",
+      "pos": "v",
+      "ja": "来る",
+      "form": "venir の命令形（tú）（ven a comer＝食べにおいで）"
+    },
+    "preocupes": {
+      "w": "preocuparse",
+      "pos": "v",
+      "ja": "心配する",
+      "form": "preocuparse の否定命令（tú）（no te preocupes＝心配しないで）"
+    },
+    "volverá": {
+      "w": "volver",
+      "pos": "v",
+      "ja": "（volver a ＋ 原形で）また〜する・もどる",
+      "form": "volver の未来・三人称単数（volverá a subir＝また昇格する）"
+    },
+    "subir": {
+      "w": "subir",
+      "pos": "v",
+      "ja": "上がる・昇格する",
+      "key": true
+    },
+    "mamá": {
+      "w": "mamá",
+      "pos": "n",
+      "g": "f",
+      "ja": "お母さん・ママ"
+    },
+    "estaré": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "いる・（〜に）行く",
+      "form": "estar の未来・一人称単数（allí estaré＝そこに必ず行く）"
+    },
+    "camiseta": {
+      "w": "camiseta",
+      "pos": "n",
+      "g": "f",
+      "ja": "ユニフォーム・Tシャツ"
+    },
+    "quieres": {
+      "w": "querer",
+      "pos": "v",
+      "ja": "ほしい・〜したい",
+      "form": "querer の現在・二人称単数（si quieres＝よかったら）"
+    },
+    "sinceridad": {
+      "w": "sinceridad",
+      "pos": "n",
+      "g": "f",
+      "ja": "誠実さ・正直さ"
+    },
+    "aficionados": {
+      "w": "aficionado",
+      "pos": "n",
+      "g": "m",
+      "ja": "ファン・サポーター",
+      "form": "複数形",
+      "key": true
+    },
+    "muchísimo": {
+      "w": "mucho",
+      "pos": "adv",
+      "ja": "とても・本当に",
+      "form": "mucho ＋ ísimo（絶対最上級）"
+    },
+    "así": {
+      "w": "así",
+      "pos": "adv",
+      "ja": "こうして・このように"
+    },
+    "terminamos": {
+      "w": "terminar",
+      "pos": "v",
+      "ja": "終わる・終える",
+      "form": "terminar の現在・一人称複数"
+    },
+    "nuestra": {
+      "w": "nuestro",
+      "pos": "det",
+      "ja": "私たちの",
+      "form": "女性形"
+    },
+    "serie": {
+      "w": "serie",
+      "pos": "n",
+      "g": "f",
+      "ja": "シリーズ・連続もの"
+    },
+    "especial": {
+      "w": "especial",
+      "pos": "adj",
+      "ja": "特別な"
+    },
+    "vio": {
+      "w": "ver",
+      "pos": "v",
+      "ja": "見る",
+      "form": "ver の点過去・三人称単数"
+    },
+    "menos#53": {
+      "w": "menos",
+      "pos": "prep",
+      "ja": "〜を除いて（menos el goleador＝得点者を除いて）"
+    },
+    "próxima": {
+      "w": "próximo",
+      "pos": "adj",
+      "ja": "次の・来〜",
+      "form": "女性形（la próxima semana＝来週）"
+    },
+    "lo": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを・そのこと（前に出た物事を指す）",
+      "note": "lo que＝〜なこと・〜するもの"
+    },
+    "ni": {
+      "w": "ni",
+      "pos": "conj",
+      "ja": "〜も…ない（ni siquiera＝〜すらない）"
+    },
+    "siquiera": {
+      "w": "siquiera",
+      "pos": "adv",
+      "ja": "せめて・〜さえ（ni siquiera＝〜すらない）"
+    }
+  }
+}
