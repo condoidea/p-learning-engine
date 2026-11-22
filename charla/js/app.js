@@ -98,15 +98,21 @@
   /* =========================================================
    * ホーム
    * ========================================================= */
+  var openSeries = {};
   function home() {
     stopAll();
     show('home');
     var list = window.CHARLA_DIALOGS || [];
     $('#dlist').innerHTML = (window.CHARLA_SERIES || []).map(function (s) {
-      return '<li class="series"><div class="shead"><div><b>' + esc(s.title) + '</b><small>' + esc(s.sub || '') + '</small></div>' +
-        (s.guide ? '<button class="gbtn" data-series="' + esc(s.id) + '">📘 教材について</button>' : '') + '</div>' +
+      /* シリーズは見出しのタップで開閉（最初は全部閉じる。開いた状態はアプリを開いているあいだだけ覚える） */
+      var open = !!openSeries[s.id];
+      var heard = s.dialogs.filter(function (d) { return S.lessons[d.id] && S.lessons[d.id].done; }).length;
+      return '<li class="series' + (open ? ' open' : '') + '"><div class="shead"><button class="stog" data-tog="' + esc(s.id) + '" aria-expanded="' + open + '">' +
+        '<span class="caret">' + (open ? '▼' : '▶') + '</span><span class="sname"><b>' + esc(s.title) + '</b>' +
+        '<small>' + s.dialogs.length + '話' + (heard ? '・' + heard + '話 聞いた' : '') + '　' + esc(s.sub || '') + '</small></span></button>' +
+        (s.guide ? '<button class="gbtn" data-series="' + esc(s.id) + '" aria-label="教材について">📘 解説</button>' : '') + '</div>' +
         /* 話はシリーズの1枚のカードに1行ずつ（番号・題・日本語の題・長さ・最後まで聞いたら ✓） */
-        '<div class="drows">' + s.dialogs.map(function (d) {
+        '<div class="drows"' + (open ? '' : ' hidden') + '>' + s.dialogs.map(function (d) {
           var done = S.lessons[d.id] && S.lessons[d.id].done;
           return '<button class="drow" data-id="' + esc(d.id) + '"><i>' + (d.no || '') + '</i>' +
             '<span class="dt"><b class="es">' + esc(d.title) + '</b><small>' + esc(d.titleJa || '') + '</small></span>' +
@@ -125,6 +131,16 @@
   }
   $('#dlist').addEventListener('click', function (e) {
     var g = e.target.closest('[data-series]'); if (g) { guideScreen(g.dataset.series, null, 'home'); return; }
+    var t = e.target.closest('[data-tog]');
+    if (t) {
+      var li = t.closest('.series'), open = !openSeries[t.dataset.tog];
+      openSeries[t.dataset.tog] = open;
+      li.classList.toggle('open', open);
+      $('.drows', li).hidden = !open;
+      $('.caret', t).textContent = open ? '▼' : '▶';
+      t.setAttribute('aria-expanded', open);
+      return;
+    }
     var b = e.target.closest('[data-id]'); if (b) openDialog(b.dataset.id);
   });
 
