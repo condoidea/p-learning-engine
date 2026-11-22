@@ -1,0 +1,360 @@
+{
+  "format": 1,
+  "id": "20261122-014424-0bcc",
+  "title": "S2-01 La pista del reloj",
+  "scene": "Lunes por la mañana en Salamanca. Los hermanos Marta y Javi abren por primera vez el viejo café de su abuelo, que se ha ido a vivir a Cádiz. El café está cerrado desde hace un mes. Conversación natural entre hermanos, con humor y algo de nostalgia.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-22T13:55:00.364Z",
+  "audio": "audio.mp3",
+  "durationMs": 301277,
+  "speakers": [
+    {
+      "id": "MARTA",
+      "gender": "female",
+      "persona": "Marta, 34 años, hermana mayor, impulsiva y optimista, habla con energía y dice lo primero que piensa"
+    },
+    {
+      "id": "JAVI",
+      "gender": "male",
+      "persona": "Javi, 29 años, hermano menor, ingeniero informático, prudente, ordenado y un poco desconfiado"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "MARTA",
+      "text": "¡Javi, por fin! Llevo media hora esperándote en la puerta. ¿Dónde estabas?",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 5909
+    },
+    {
+      "index": 1,
+      "speaker": "JAVI",
+      "text": "Lo siento. Se me olvidaron las llaves en casa y tuve que volver a por ellas.",
+      "direction": "agobiado",
+      "startMs": 6985,
+      "endMs": 12129
+    },
+    {
+      "index": 2,
+      "speaker": "MARTA",
+      "text": "Típico de ti. Bueno, dámelas, que abro yo. Uf, esta puerta pesa muchísimo.",
+      "direction": "",
+      "startMs": 12983,
+      "endMs": 19899
+    },
+    {
+      "index": 3,
+      "speaker": "JAVI",
+      "text": "Cuidado, que se te van a caer… ¡Marta! ¡Se te han caído!",
+      "direction": "",
+      "startMs": 20816,
+      "endMs": 26086
+    },
+    {
+      "index": 4,
+      "speaker": "MARTA",
+      "text": "Tranquilo, no se han roto. Son de hierro. Venga, entra.",
+      "direction": "",
+      "startMs": 26933,
+      "endMs": 30973
+    },
+    {
+      "index": 5,
+      "speaker": "JAVI",
+      "text": "Vaya… Huele igual que cuando éramos pequeños.",
+      "direction": "en voz baja",
+      "startMs": 32454,
+      "endMs": 37244
+    },
+    {
+      "index": 6,
+      "speaker": "MARTA",
+      "text": "¿Te acuerdas? Veníamos aquí todos los veranos. El abuelo nos hacía chocolate con churros y nos dejaba jugar detrás de la barra.",
+      "direction": "",
+      "startMs": 38201,
+      "endMs": 48583
+    },
+    {
+      "index": 7,
+      "speaker": "JAVI",
+      "text": "Y tú siempre te comías mis churros.",
+      "direction": "",
+      "startMs": 49627,
+      "endMs": 52003
+    },
+    {
+      "index": 8,
+      "speaker": "MARTA",
+      "text": "Porque tú comías muy despacio. A mí me encantaban los churros del abuelo… y a ti siempre te dolía la barriga.",
+      "direction": "",
+      "startMs": 52767,
+      "endMs": 60897
+    },
+    {
+      "index": 9,
+      "speaker": "JAVI",
+      "text": "Porque tomaba demasiado chocolate. Oye, ¿por qué crees que el abuelo nos ha dejado el café a nosotros?",
+      "direction": "",
+      "startMs": 61872,
+      "endMs": 69610
+    },
+    {
+      "index": 10,
+      "speaker": "MARTA",
+      "text": "Porque nos quiere, claro. Y porque a papá y a mamá no les interesa nada. Papá dice que el café le sienta fatal.",
+      "direction": "",
+      "startMs": 70878,
+      "endMs": 80459
+    },
+    {
+      "index": 11,
+      "speaker": "JAVI",
+      "text": "Ya, pero yo soy informático y tú trabajabas en un banco. No sabemos nada de cafés.",
+      "direction": "",
+      "startMs": 81370,
+      "endMs": 88600
+    },
+    {
+      "index": 12,
+      "speaker": "MARTA",
+      "text": "Trabajaba, tú lo has dicho. Ya no. Lo dejé hace un mes y no lo echo nada de menos.",
+      "direction": "",
+      "startMs": 89561,
+      "endMs": 96664
+    },
+    {
+      "index": 13,
+      "speaker": "JAVI",
+      "text": "Eso me preocupa un poco, la verdad.",
+      "direction": "",
+      "startMs": 97631,
+      "endMs": 100418
+    },
+    {
+      "index": 14,
+      "speaker": "MARTA",
+      "text": "A ti todo te preocupa. Mira, el abuelo nos ha dejado una carta encima de la barra. ¿La leemos?",
+      "direction": "",
+      "startMs": 101204,
+      "endMs": 109499
+    },
+    {
+      "index": 15,
+      "speaker": "JAVI",
+      "text": "Léela tú. A mí se me han olvidado las gafas.",
+      "direction": "",
+      "startMs": 110740,
+      "endMs": 114444
+    },
+    {
+      "index": 16,
+      "speaker": "MARTA",
+      "text": "¿También? Hoy se te olvida todo. A ver: «Queridos nietos: ahora vivo en Cádiz, cerca del mar, y estoy muy feliz. Os dejo mi café y también un secreto: en este café hay un tesoro escondido. Si lo encontráis, es vuestro».",
+      "direction": "riéndose",
+      "startMs": 115265,
+      "endMs": 134045
+    },
+    {
+      "index": 17,
+      "speaker": "JAVI",
+      "text": "¿Un tesoro? ¿En serio?",
+      "direction": "",
+      "startMs": 134994,
+      "endMs": 137394
+    },
+    {
+      "index": 18,
+      "speaker": "MARTA",
+      "text": "Espera, sigue: «Primera pista: el tesoro empieza donde el tiempo se paró».",
+      "direction": "",
+      "startMs": 138494,
+      "endMs": 145130
+    },
+    {
+      "index": 19,
+      "speaker": "JAVI",
+      "text": "¿Donde el tiempo se paró? ¿Qué significa eso?",
+      "direction": "",
+      "startMs": 146070,
+      "endMs": 150400
+    },
+    {
+      "index": 20,
+      "speaker": "MARTA",
+      "text": "Ni idea. Al abuelo siempre le gustaban los misterios. Solía esconder nuestros regalos de cumpleaños por toda la casa.",
+      "direction": "",
+      "startMs": 151473,
+      "endMs": 160144
+    },
+    {
+      "index": 21,
+      "speaker": "JAVI",
+      "text": "Es verdad. Una vez tardé tres días en encontrar mi bicicleta. Estaba en el tejado.",
+      "direction": "",
+      "startMs": 161048,
+      "endMs": 167940
+    },
+    {
+      "index": 22,
+      "speaker": "MARTA",
+      "text": "Bueno, piensa. Tú eres el listo de la familia.",
+      "direction": "",
+      "startMs": 168948,
+      "endMs": 172755
+    },
+    {
+      "index": 23,
+      "speaker": "JAVI",
+      "text": "Hmm… «Donde el tiempo se paró»… ¡El reloj! El café se llama El Reloj, ¿no? Y el reloj de la pared nunca funcionaba. Siempre marcaba las cinco y diez.",
+      "direction": "",
+      "startMs": 173598,
+      "endMs": 187328
+    },
+    {
+      "index": 24,
+      "speaker": "MARTA",
+      "text": "¡Es verdad! Cuando le preguntábamos la hora, el abuelo siempre decía: «Aquí siempre son las cinco y diez. La hora del café».",
+      "direction": "",
+      "startMs": 188376,
+      "endMs": 198496
+    },
+    {
+      "index": 25,
+      "speaker": "JAVI",
+      "text": "Mira, todavía marca las cinco y diez.",
+      "direction": "",
+      "startMs": 199464,
+      "endMs": 202644
+    },
+    {
+      "index": 26,
+      "speaker": "MARTA",
+      "text": "Bájalo tú, que eres más alto.",
+      "direction": "",
+      "startMs": 203445,
+      "endMs": 205554
+    },
+    {
+      "index": 27,
+      "speaker": "JAVI",
+      "text": "Vale, pero sujétame la silla. Si me caigo, me rompo algo… y a mí me duele todo con facilidad.",
+      "direction": "",
+      "startMs": 206360,
+      "endMs": 214284
+    },
+    {
+      "index": 28,
+      "speaker": "MARTA",
+      "text": "Qué exagerado eres. Venga, sube.",
+      "direction": "",
+      "startMs": 215269,
+      "endMs": 219625
+    },
+    {
+      "index": 29,
+      "speaker": "JAVI",
+      "text": "Ya lo tengo… Pesa bastante. Espera, detrás hay algo. Un sobre pegado con cinta.",
+      "direction": "esforzándose",
+      "startMs": 220556,
+      "endMs": 228376
+    },
+    {
+      "index": 30,
+      "speaker": "MARTA",
+      "text": "¡Dámelo! ¡Dámelo!",
+      "direction": "",
+      "startMs": 229417,
+      "endMs": 231047
+    },
+    {
+      "index": 31,
+      "speaker": "JAVI",
+      "text": "Calma, calma. Toma. Pero no lo rompas.",
+      "direction": "",
+      "startMs": 231863,
+      "endMs": 235247
+    },
+    {
+      "index": 32,
+      "speaker": "MARTA",
+      "text": "«Muy bien, nietos. Segunda pista: la persona que mejor hace mi tarta de Santiago sabe dónde está el tesoro».",
+      "direction": "leyendo",
+      "startMs": 236149,
+      "endMs": 244729
+    },
+    {
+      "index": 33,
+      "speaker": "JAVI",
+      "text": "¿La tarta de Santiago? Pero si la receta solo la sabía el abuelo. Nunca se la enseñó a nadie.",
+      "direction": "",
+      "startMs": 245674,
+      "endMs": 253969
+    },
+    {
+      "index": 34,
+      "speaker": "MARTA",
+      "text": "Pues alguien la sabe. Y tenemos que encontrar a esa persona.",
+      "direction": "",
+      "startMs": 254951,
+      "endMs": 259720
+    },
+    {
+      "index": 35,
+      "speaker": "JAVI",
+      "text": "¿Y cómo? ¿Ponemos un cartel en la puerta? «Se busca a alguien que sepa hacer la tarta del abuelo».",
+      "direction": "",
+      "startMs": 260699,
+      "endMs": 268106
+    },
+    {
+      "index": 36,
+      "speaker": "MARTA",
+      "text": "Oye… pues no es mala idea. Por cierto, necesitamos un camarero, ¿no? Podemos poner un anuncio.",
+      "direction": "pensando",
+      "startMs": 269105,
+      "endMs": 276542
+    },
+    {
+      "index": 37,
+      "speaker": "JAVI",
+      "text": "Marta, era una broma.",
+      "direction": "",
+      "startMs": 277617,
+      "endMs": 279667
+    },
+    {
+      "index": 38,
+      "speaker": "MARTA",
+      "text": "Pues a mí me parece una idea genial. Bueno, ¿qué hora es?",
+      "direction": "",
+      "startMs": 280457,
+      "endMs": 285517
+    },
+    {
+      "index": 39,
+      "speaker": "JAVI",
+      "text": "Según este reloj, las cinco y diez.",
+      "direction": "",
+      "startMs": 286701,
+      "endMs": 290121
+    },
+    {
+      "index": 40,
+      "speaker": "MARTA",
+      "text": "Entonces es la hora del café. Prepáralo tú, que yo no sé usar la máquina.",
+      "direction": "",
+      "startMs": 290934,
+      "endMs": 296847
+    },
+    {
+      "index": 41,
+      "speaker": "JAVI",
+      "text": "Yo tampoco. Empezamos bien.",
+      "direction": "",
+      "startMs": 297747,
+      "endMs": 300277
+    }
+  ]
+}

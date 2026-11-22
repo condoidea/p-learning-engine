@@ -42,7 +42,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .drow { width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px 12px; text-align: left; border-top: 1px solid var(--line); }
 .drow:first-child { border-top: 0; }
 .drow:active { background: var(--bg3); }
-.drow > i { flex: none; width: 22px; font-style: normal; text-align: center; color: var(--tx3); font-size: 14px; }
+.drow > i { flex: none; min-width: 22px; white-space: nowrap; font-style: normal; text-align: center; color: var(--tx3); font-size: 14px; }
 .drow .dt { flex: 1; min-width: 0; }
 .drow .dt b { display: block; font-family: var(--es); font-size: 17.5px; font-weight: 600; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .drow .dt small { display: block; color: var(--tx2); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

@@ -1,0 +1,168 @@
+{
+  "format": 1,
+  "id": "20261122-224730-6344",
+  "title": "L12-02 El tren bala",
+  "scene": "Por la noche, en casa de Yuki, en Tokio. Carlos, un amigo español, está de visita en Japón. Mañana temprano los dos van a ir a Kioto en tren bala para visitar a la abuela de Yuki. Conversación natural entre amigos, con humor.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-22T13:49:20.656Z",
+  "audio": "audio.mp3",
+  "durationMs": 134061,
+  "speakers": [
+    {
+      "id": "YUKI",
+      "gender": "female",
+      "persona": "Yuki, unos 28 años, japonesa, organizada y práctica, habla español muy bien"
+    },
+    {
+      "id": "CARLOS",
+      "gender": "male",
+      "persona": "Carlos, unos 28 años, español, simpático y un poco perezoso por las mañanas"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "CARLOS",
+      "text": "Mira, Yuki, en el canal cuatro ponen una película española. ¿La vemos?",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 6385
+    },
+    {
+      "index": 1,
+      "speaker": "YUKI",
+      "text": "¿Ahora? Ya son las diez y media. Mañana tenemos que levantarnos muy temprano.",
+      "direction": "",
+      "startMs": 7480,
+      "endMs": 14800
+    },
+    {
+      "index": 2,
+      "speaker": "CARLOS",
+      "text": "¿Por qué? ¿A qué hora sale el tren?",
+      "direction": "",
+      "startMs": 15741,
+      "endMs": 18459
+    },
+    {
+      "index": 3,
+      "speaker": "YUKI",
+      "text": "El tren bala sale a las siete y cuarto. Tenemos que estar en la estación a las siete.",
+      "direction": "",
+      "startMs": 19458,
+      "endMs": 25888
+    },
+    {
+      "index": 4,
+      "speaker": "CARLOS",
+      "text": "¿A las siete? ¡Qué horror! ¿Y a qué hora piensas levantarte tú?",
+      "direction": "",
+      "startMs": 26781,
+      "endMs": 32741
+    },
+    {
+      "index": 5,
+      "speaker": "YUKI",
+      "text": "A las cinco y media. Me visto, me peino, desayuno y salgo. Yo me baño por la noche, así por la mañana tengo más tiempo.",
+      "direction": "",
+      "startMs": 33911,
+      "endMs": 46001
+    },
+    {
+      "index": 6,
+      "speaker": "CARLOS",
+      "text": "Yo no. Yo siempre me ducho por la mañana. Y también tengo que afeitarme. Necesito por lo menos media hora.",
+      "direction": "",
+      "startMs": 47067,
+      "endMs": 56857
+    },
+    {
+      "index": 7,
+      "speaker": "YUKI",
+      "text": "Entonces tienes que levantarte a las cinco.",
+      "direction": "",
+      "startMs": 57901,
+      "endMs": 61931
+    },
+    {
+      "index": 8,
+      "speaker": "CARLOS",
+      "text": "Vale, vale. ¿Y dónde nos sentamos en el tren?",
+      "direction": "suspira",
+      "startMs": 62762,
+      "endMs": 67032
+    },
+    {
+      "index": 9,
+      "speaker": "YUKI",
+      "text": "Tengo los billetes aquí. Fila siete, asientos A y B. Tú vas junto a la ventanilla. Si está despejado, puedes ver el monte Fuji.",
+      "direction": "",
+      "startMs": 68128,
+      "endMs": 80298
+    },
+    {
+      "index": 10,
+      "speaker": "CARLOS",
+      "text": "¡Qué bien! ¿Y qué tiempo va a hacer mañana?",
+      "direction": "",
+      "startMs": 81316,
+      "endMs": 85426
+    },
+    {
+      "index": 11,
+      "speaker": "YUKI",
+      "text": "Según la tele, va a estar despejado todo el día. Pero por la mañana hace fresco. Llévate una chaqueta.",
+      "direction": "",
+      "startMs": 86451,
+      "endMs": 96031
+    },
+    {
+      "index": 12,
+      "speaker": "CARLOS",
+      "text": "Oye, ¿quién fabrica estos trenes? Son rapidísimos.",
+      "direction": "",
+      "startMs": 97003,
+      "endMs": 101883
+    },
+    {
+      "index": 13,
+      "speaker": "YUKI",
+      "text": "Varias empresas japonesas. Mi tío trabaja en una empresa que fabrica piezas para el tren bala.",
+      "direction": "",
+      "startMs": 102761,
+      "endMs": 110681
+    },
+    {
+      "index": 14,
+      "speaker": "CARLOS",
+      "text": "¡Qué interesante!",
+      "direction": "",
+      "startMs": 111655,
+      "endMs": 113095
+    },
+    {
+      "index": 15,
+      "speaker": "YUKI",
+      "text": "Y en Kioto vamos primero a casa de mi abuela. Tiene muchas ganas de conocerte.",
+      "direction": "",
+      "startMs": 113843,
+      "endMs": 120133
+    },
+    {
+      "index": 16,
+      "speaker": "CARLOS",
+      "text": "¡Y yo a ella! Tengo muchas ganas de saludarla. ¿Le doy dos besos, como en España?",
+      "direction": "contento",
+      "startMs": 121057,
+      "endMs": 127427
+    },
+    {
+      "index": 17,
+      "speaker": "YUKI",
+      "text": "¡No, no! En Japón no nos saludamos con besos.",
+      "direction": "riéndose",
+      "startMs": 128581,
+      "endMs": 133061
+    }
+  ]
+}

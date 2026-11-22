@@ -1,0 +1,256 @@
+{
+  "format": 1,
+  "sceneJa": "👗 ブティックで、トマスとエレナがドレスを選んでいる。店員が値段を教えてくれる",
+  "phrases": [
+    {
+      "t": "me gusta más",
+      "ja": "（私は）〜のほうが好き（gustar の比較）",
+      "key": true
+    },
+    {
+      "t": "me parece",
+      "ja": "（私には）〜と思える・〜だと思う（parecer）",
+      "key": true
+    },
+    {
+      "t": "no te parece",
+      "ja": "〜だと思わない？（¿No te parece…?）",
+      "key": true
+    },
+    {
+      "t": "no es tan bueno como",
+      "ja": "〜ほどよくない（tan … como＝同じくらい）",
+      "key": true
+    },
+    {
+      "t": "más barato",
+      "ja": "もっと安い（比較級）",
+      "key": true
+    },
+    {
+      "t": "el más caro",
+      "ja": "いちばん高いもの（最上級）",
+      "key": true
+    },
+    {
+      "t": "una marca de prestigio",
+      "ja": "有名ブランド（marca de prestigio）",
+      "key": true
+    },
+    {
+      "t": "por qué no compramos",
+      "ja": "（いっしょに）買ってはどう？（¿Por qué no + 1人称複数?＝〜しようよ）",
+      "key": true
+    },
+    {
+      "t": "no siempre",
+      "ja": "いつも〜とは限らない",
+      "key": true
+    }
+  ],
+  "words": {
+    "qué": {
+      "w": "qué",
+      "pos": "int",
+      "ja": "何・どの（疑問詞）"
+    },
+    "mucho": {
+      "w": "mucho",
+      "pos": "adv",
+      "ja": "とても・ずっと",
+      "note": "me gusta mucho＝とても好き／mucho más＝ずっと〜"
+    },
+    "vestido": {
+      "w": "vestido",
+      "pos": "n",
+      "g": "m",
+      "ja": "ドレス・ワンピース",
+      "key": true
+    },
+    "gusta": {
+      "w": "gustar",
+      "pos": "v",
+      "ja": "好きだ・気に入る（me gusta＝私は〜が好き）",
+      "form": "gustar の現在・三人称単数（主語は好きなもの：Este me gusta＝これが好き）",
+      "key": true
+    },
+    "cuánto": {
+      "w": "cuánto",
+      "pos": "int",
+      "ja": "いくら・どれだけ（疑問詞）",
+      "key": true
+    },
+    "cuesta": {
+      "w": "costar",
+      "pos": "v",
+      "ja": "（値段が）〜する・かかる",
+      "form": "costar の現在・三人称単数（cuesta＝〜の値段である）",
+      "key": true
+    },
+    "oiga": {
+      "w": "oír",
+      "pos": "interj",
+      "ja": "すみません（人に呼びかける）",
+      "form": "oír の命令・usted（¡Oiga!＝すみません！）"
+    },
+    "quinientos": {
+      "w": "quinientos",
+      "pos": "num",
+      "ja": "500"
+    },
+    "marca": {
+      "w": "marca",
+      "pos": "n",
+      "g": "f",
+      "ja": "ブランド・商標",
+      "key": true
+    },
+    "prestigio": {
+      "w": "prestigio",
+      "pos": "n",
+      "g": "m",
+      "ja": "名声・威信",
+      "key": true
+    },
+    "oh": {
+      "w": "oh",
+      "pos": "interj",
+      "ja": "おお・えっ"
+    },
+    "caro": {
+      "w": "caro",
+      "pos": "adj",
+      "ja": "（値段が）高い",
+      "key": true
+    },
+    "barato": {
+      "w": "barato",
+      "pos": "adj",
+      "ja": "安い",
+      "key": true
+    },
+    "como": {
+      "w": "como",
+      "pos": "conj",
+      "ja": "〜のように・〜と同じく（tan … como＝〜と同じくらい…）",
+      "note": "comer の「食べる」ではない"
+    },
+    "ese": {
+      "w": "ese",
+      "pos": "pron",
+      "ja": "それ（相手に近いもの）",
+      "note": "ここは名詞なしの代名詞（ese＝その ドレス）"
+    },
+    "parece": {
+      "w": "parecer",
+      "pos": "v",
+      "ja": "〜のように思われる・見える",
+      "form": "parecer の現在・三人称単数（me parece＝私には〜と思える）",
+      "key": true
+    },
+    "tontería": {
+      "w": "tontería",
+      "pos": "n",
+      "g": "f",
+      "ja": "ばかげたこと・くだらないこと",
+      "key": true
+    },
+    "gastar": {
+      "w": "gastar",
+      "pos": "v",
+      "ja": "（お金を）使う・費やす",
+      "key": true
+    },
+    "tanto": {
+      "w": "tanto",
+      "pos": "det",
+      "ja": "そんなに多くの（tanto dinero＝そんなにたくさんのお金）"
+    },
+    "diferente": {
+      "w": "diferente",
+      "pos": "adj",
+      "ja": "違う・別の"
+    },
+    "vestidos": {
+      "w": "vestido",
+      "pos": "n",
+      "g": "m",
+      "ja": "ドレス・ワンピース",
+      "form": "vestido の複数形"
+    },
+    "viejos": {
+      "w": "viejo",
+      "pos": "adj",
+      "ja": "古い",
+      "form": "viejo の男性複数形（vestidos viejos＝古いドレス）"
+    },
+    "bueno": {
+      "w": "bueno",
+      "pos": "interj",
+      "ja": "まあ・えーと（話の切り出し）",
+      "note": "ここは「よい」ではなく話しはじめの言葉"
+    },
+    "compramos": {
+      "w": "comprar",
+      "pos": "v",
+      "ja": "買う",
+      "form": "comprar の現在・一人称複数（¿por qué no compramos…?＝買ってはどう？）"
+    },
+    "uno": {
+      "w": "uno",
+      "pos": "pron",
+      "ja": "（もの）ひとつ",
+      "note": "ここは数ではなく、vestido を指す代名詞（uno más barato＝もっと安いの）"
+    },
+    "mejor": {
+      "w": "mejor",
+      "pos": "adj",
+      "ja": "いちばんよい",
+      "form": "bueno の比較級・最上級（el mejor＝いちばんよいもの）",
+      "key": true
+    },
+    "mal": {
+      "w": "mal",
+      "pos": "adv",
+      "ja": "悪く・よくなく（no está mal＝悪くない）"
+    }
+  },
+  "lines": [
+    {
+      "ja": "どのドレスがいちばん好き？"
+    },
+    {
+      "ja": "これがとても好きよ。"
+    },
+    {
+      "ja": "すみません、このドレスはいくらですか？"
+    },
+    {
+      "ja": "2500ユーロです。有名ブランドのものです。"
+    },
+    {
+      "ja": "えっ！ とても高いですね。"
+    },
+    {
+      "ja": "こちらのほうが安いですが、そちらほど質はよくありません。"
+    },
+    {
+      "ja": "悪くないわね。でも、こっちのほうが好き。ずっときれいだもの。"
+    },
+    {
+      "ja": "ドレス1着にそんなにお金を使うなんて、ばかげていると思うよ。"
+    },
+    {
+      "ja": "で、あなたはどうして新しい車を買いたいの？ ばかげていると思わない？"
+    },
+    {
+      "ja": "それは別だよ。ぼくの車はもうおんぼろなんだ。"
+    },
+    {
+      "ja": "わたしのドレスだって古いわよ。"
+    },
+    {
+      "ja": "まあ、もっと安いのを買ったらどう？ 高いものがいつもいちばんいいとは限らないよ。"
+    }
+  ]
+}

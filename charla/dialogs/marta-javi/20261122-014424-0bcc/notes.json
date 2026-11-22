@@ -1,0 +1,1415 @@
+{
+  "format": 1,
+  "sceneJa": "☕ サラマンカの古いカフェ。祖父から店を譲られたきょうだいのマルタとハビが、閉めきっていた店に入って宝探しの手紙を見つける。",
+  "phrases": [
+    {
+      "t": "por fin",
+      "ja": "ついに・やっと",
+      "key": true
+    },
+    {
+      "t": "lo siento",
+      "ja": "ごめんなさい（直訳：それを残念に思う）",
+      "key": true
+    },
+    {
+      "t": "típico de ti",
+      "ja": "君らしいね・君にありがちだ"
+    },
+    {
+      "t": "se me olvidaron",
+      "ja": "（うっかり）忘れてしまった（se＋me＋動詞＝無意図の表現）",
+      "key": true
+    },
+    {
+      "t": "se me han olvidado",
+      "ja": "（うっかり）忘れてしまった",
+      "key": true
+    },
+    {
+      "t": "se te olvida",
+      "ja": "君は（うっかり）忘れる"
+    },
+    {
+      "t": "todos los veranos",
+      "ja": "毎年夏に"
+    },
+    {
+      "t": "a mí me encantaban",
+      "ja": "私は〜が大好きだった（a mí は強調）"
+    },
+    {
+      "t": "a ti siempre te dolía",
+      "ja": "君はいつも〜が痛くなった"
+    },
+    {
+      "t": "le sienta fatal",
+      "ja": "（体に）まったく合わない"
+    },
+    {
+      "t": "echo nada de menos",
+      "ja": "ちっとも恋しくない（echar de menos＝恋しく思う）",
+      "key": true
+    },
+    {
+      "t": "hace un mes",
+      "ja": "1か月前"
+    },
+    {
+      "t": "la verdad",
+      "ja": "正直なところ"
+    },
+    {
+      "t": "a ver",
+      "ja": "どれどれ・さてと",
+      "key": true
+    },
+    {
+      "t": "en serio",
+      "ja": "本気で・本当に",
+      "key": true
+    },
+    {
+      "t": "ni idea",
+      "ja": "さあね・まったくわからない",
+      "key": true
+    },
+    {
+      "t": "por cierto",
+      "ja": "ところで",
+      "key": true
+    },
+    {
+      "t": "una vez",
+      "ja": "あるとき・一度"
+    },
+    {
+      "t": "tardé tres días en encontrar",
+      "ja": "見つけるのに3日かかった（tardar＋期間＋en＋原形）"
+    },
+    {
+      "t": "tuve que volver",
+      "ja": "戻らなければならなかった"
+    },
+    {
+      "t": "tenemos que encontrar",
+      "ja": "見つけなければならない"
+    },
+    {
+      "t": "según este reloj",
+      "ja": "この時計によれば"
+    },
+    {
+      "t": "la hora del café",
+      "ja": "コーヒーの時間"
+    },
+    {
+      "t": "tarta de santiago",
+      "ja": "サンティアゴ風タルト（アーモンドのケーキ。ガリシア地方の名物）",
+      "key": true
+    },
+    {
+      "t": "se busca a",
+      "ja": "〜求む（張り紙の定型）"
+    },
+    {
+      "t": "me parece una idea genial",
+      "ja": "すばらしい考えだと思う"
+    },
+    {
+      "t": "con facilidad",
+      "ja": "簡単に・すぐに"
+    },
+    {
+      "t": "por qué",
+      "ja": "なぜ"
+    },
+    {
+      "t": "cerca del mar",
+      "ja": "海の近くに"
+    },
+    {
+      "t": "no es mala idea",
+      "ja": "悪くない考えだ"
+    },
+    {
+      "t": "empezamos bien",
+      "ja": "幸先がいいね（皮肉にも使う）"
+    }
+  ],
+  "words": {
+    "fin": {
+      "w": "fin",
+      "pos": "n",
+      "ja": "終わり（por fin＝ついに・やっと）",
+      "g": "m",
+      "key": true
+    },
+    "llevo": {
+      "w": "llevar",
+      "pos": "v",
+      "ja": "（時間が）たつ・〜している（llevo ＋ 時間 ＋ 〜ando＝〜してから…になる）",
+      "form": "llevar の現在・一人称単数",
+      "key": true
+    },
+    "media": {
+      "w": "medio",
+      "pos": "adj",
+      "ja": "半分の（media hora＝30分）",
+      "form": "medio の女性形"
+    },
+    "esperándote": {
+      "w": "esperar",
+      "pos": "v",
+      "ja": "待つ",
+      "form": "現在分詞（〜している）＋ te（君を）＝君を待っている"
+    },
+    "estabas": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "いる・ある",
+      "form": "estar の線過去・二人称単数"
+    },
+    "lo": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを・そのことを（Lo siento＝ごめんなさい）"
+    },
+    "se#2": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（se me olvidaron＝うっかり忘れた。意図しない出来事を表す se）"
+    },
+    "olvidaron": {
+      "w": "olvidarse",
+      "pos": "v",
+      "ja": "忘れる（se me olvidó 〜＝〜を忘れてしまった）",
+      "form": "olvidar の点過去・三人称複数",
+      "key": true
+    },
+    "tuve": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "〜しなければならない（tener que ＋ 原形）",
+      "form": "tener の点過去・一人称単数（tuve que volver＝戻らなければならなかった）",
+      "key": true
+    },
+    "que#2": {
+      "w": "que",
+      "pos": "conj",
+      "ja": "（tener que ＋ 原形＝〜しなければならない）"
+    },
+    "a#2": {
+      "w": "a",
+      "pos": "prep",
+      "ja": "（volver a por＝〜を取りに戻る）"
+    },
+    "por#2": {
+      "w": "por",
+      "pos": "prep",
+      "ja": "（a por＝〜を取りに）"
+    },
+    "ellas": {
+      "w": "ella",
+      "pos": "pron",
+      "ja": "それら・彼女たち（ここでは las llaves＝鍵）",
+      "form": "ella の複数形"
+    },
+    "de#3": {
+      "w": "de",
+      "pos": "prep",
+      "ja": "（típico de ti＝君らしい）"
+    },
+    "ti": {
+      "w": "ti",
+      "pos": "pron",
+      "ja": "君（前置詞のあとの形）"
+    },
+    "bueno": {
+      "w": "bueno",
+      "pos": "interj",
+      "ja": "まあ・じゃあ（話をつなぐ言葉）"
+    },
+    "dámelas": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "あげる・渡す",
+      "form": "命令形（tú）＋ me（私に）＋ las（それらを）＝それらを私にちょうだい"
+    },
+    "que": {
+      "w": "que",
+      "pos": "conj",
+      "ja": "〜ということ／〜する…（関係詞）／〜だから（理由）"
+    },
+    "uf": {
+      "w": "uf",
+      "pos": "interj",
+      "ja": "うわあ・ふう（疲れ・驚き）"
+    },
+    "muchísimo": {
+      "w": "mucho",
+      "pos": "adv",
+      "ja": "とてもたくさん・すごく",
+      "form": "mucho の絶対最上級（「すごく」と強める）"
+    },
+    "pesa": {
+      "w": "pesar",
+      "pos": "v",
+      "ja": "重い・重さがある",
+      "form": "pesar の現在・三人称単数（pesa muchísimo＝すごく重い）"
+    },
+    "cuidado#4": {
+      "w": "cuidado",
+      "pos": "interj",
+      "ja": "気をつけて！"
+    },
+    "se#4": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（se te van a caer＝落ちそう。出来事を表す se）"
+    },
+    "te#4": {
+      "w": "te",
+      "pos": "pron",
+      "ja": "君に（影響を受ける人）"
+    },
+    "se#4.2": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（se te han caído＝落ちてしまった。うっかり・出来事を表す se）"
+    },
+    "te#4.2": {
+      "w": "te",
+      "pos": "pron",
+      "ja": "君に（影響を受ける人）"
+    },
+    "han": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（助動詞）〜した（完了形をつくる）",
+      "form": "haber の現在・三人称複数"
+    },
+    "caído": {
+      "w": "caer",
+      "pos": "v",
+      "ja": "落ちる",
+      "form": "過去分詞（se te han caído＝落ちてしまった）"
+    },
+    "tranquilo": {
+      "w": "tranquilo",
+      "pos": "adj",
+      "ja": "落ち着いた（Tranquilo＝落ち着いて・心配しないで）"
+    },
+    "se#5": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（se han roto＝壊れた。romperse＝壊れる）"
+    },
+    "roto": {
+      "w": "romperse",
+      "pos": "v",
+      "ja": "壊れる（romper＝壊す）",
+      "form": "romper の過去分詞（no se han roto＝壊れていない）"
+    },
+    "hierro": {
+      "w": "hierro",
+      "pos": "n",
+      "ja": "鉄（de hierro＝鉄でできた）",
+      "g": "m"
+    },
+    "de#5": {
+      "w": "de",
+      "pos": "prep",
+      "ja": "〜でできた（de hierro＝鉄製の）"
+    },
+    "venga": {
+      "w": "venga",
+      "pos": "interj",
+      "ja": "さあ・ほら（人をうながす言葉）",
+      "form": "venir の接続法から。うながしの決まり文句"
+    },
+    "entra": {
+      "w": "entrar",
+      "pos": "v",
+      "ja": "入る",
+      "form": "命令形（tú）＝入って"
+    },
+    "vaya": {
+      "w": "vaya",
+      "pos": "interj",
+      "ja": "わあ・おや（驚き・感慨）",
+      "form": "ir の接続法から。感嘆の決まり文句"
+    },
+    "huele": {
+      "w": "oler",
+      "pos": "v",
+      "ja": "においがする（huele igual que＝〜と同じにおいがする）",
+      "form": "oler の現在・三人称単数",
+      "key": true
+    },
+    "igual": {
+      "w": "igual",
+      "pos": "adj",
+      "ja": "同じ（igual que＝〜と同じように）"
+    },
+    "que#6": {
+      "w": "que",
+      "pos": "conj",
+      "ja": "〜と（igual que＝〜と同じように）"
+    },
+    "éramos": {
+      "w": "ser",
+      "pos": "v",
+      "ja": "〜である",
+      "form": "ser の線過去・一人称複数（éramos pequeños＝小さかったころ）"
+    },
+    "acuerdas": {
+      "w": "acordarse",
+      "pos": "v",
+      "ja": "覚えている・思い出す（¿Te acuerdas?＝覚えてる？）",
+      "form": "acordarse の現在・二人称単数",
+      "key": true
+    },
+    "te#7": {
+      "w": "te",
+      "pos": "pron",
+      "ja": "（acordarse の再帰代名詞。意味は動詞に含まれる）"
+    },
+    "veníamos": {
+      "w": "venir",
+      "pos": "v",
+      "ja": "来る",
+      "form": "venir の線過去・一人称複数（よく来ていた）"
+    },
+    "veranos": {
+      "w": "verano",
+      "pos": "n",
+      "ja": "夏（todos los veranos＝毎年夏に）",
+      "g": "m",
+      "form": "複数形"
+    },
+    "hacía": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "作る",
+      "form": "hacer の線過去・三人称単数（nos hacía chocolate＝私たちにチョコレートを作ってくれた）"
+    },
+    "chocolate": {
+      "w": "chocolate",
+      "pos": "n",
+      "ja": "チョコレート・ココア（スペインでは濃いホットチョコレートを飲む）",
+      "g": "m"
+    },
+    "churros": {
+      "w": "churro",
+      "pos": "n",
+      "ja": "チュロス（棒状の揚げ菓子。チョコレートにつけて食べる）",
+      "g": "m",
+      "form": "複数形",
+      "key": true
+    },
+    "dejaba": {
+      "w": "dejar",
+      "pos": "v",
+      "ja": "〜させる・許す（dejar ＋ 原形）",
+      "form": "dejar の線過去・三人称単数（nos dejaba jugar＝遊ばせてくれた）",
+      "key": true
+    },
+    "detrás": {
+      "w": "detrás",
+      "pos": "adv",
+      "ja": "後ろに（detrás de＝〜の後ろに）"
+    },
+    "barra": {
+      "w": "barra",
+      "pos": "n",
+      "ja": "（バル・カフェの）カウンター",
+      "g": "f"
+    },
+    "te#8": {
+      "w": "te",
+      "pos": "pron",
+      "ja": "（te comías＝食べてしまう。「全部食べる」ニュアンスを強める te）"
+    },
+    "comías": {
+      "w": "comer",
+      "pos": "v",
+      "ja": "食べる",
+      "form": "comer の線過去・二人称単数"
+    },
+    "despacio": {
+      "w": "despacio",
+      "pos": "adv",
+      "ja": "ゆっくり"
+    },
+    "encantaban": {
+      "w": "encantar",
+      "pos": "v",
+      "ja": "大好きだ（me encanta 〜＝〜が大好き）",
+      "form": "encantar の線過去・三人称複数（me encantaban los churros＝チュロスが大好きだった）",
+      "key": true
+    },
+    "te#9": {
+      "w": "te",
+      "pos": "pron",
+      "ja": "君に（a ti te dolía＝君は〜が痛かった）"
+    },
+    "dolía": {
+      "w": "doler",
+      "pos": "v",
+      "ja": "痛む",
+      "form": "doler の線過去・三人称単数"
+    },
+    "barriga": {
+      "w": "barriga",
+      "pos": "n",
+      "ja": "おなか",
+      "g": "f"
+    },
+    "tomaba": {
+      "w": "tomar",
+      "pos": "v",
+      "ja": "飲む・食べる",
+      "form": "tomar の線過去・三人称単数"
+    },
+    "demasiado": {
+      "w": "demasiado",
+      "pos": "det",
+      "ja": "多すぎる（demasiado chocolate＝チョコレートの飲みすぎ）",
+      "key": true
+    },
+    "oye": {
+      "w": "oír",
+      "pos": "interj",
+      "ja": "ねえ・ちょっと（話しかける言葉）",
+      "form": "oír の命令形（tú）"
+    },
+    "crees": {
+      "w": "creer",
+      "pos": "v",
+      "ja": "思う・信じる",
+      "form": "creer の現在・二人称単数"
+    },
+    "dejado": {
+      "w": "dejar",
+      "pos": "v",
+      "ja": "残す・譲る",
+      "form": "過去分詞（nos ha dejado el café＝私たちにカフェを残してくれた）",
+      "key": true
+    },
+    "ha": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（助動詞）〜した（完了形をつくる）",
+      "form": "haber の現在・三人称単数"
+    },
+    "quiere": {
+      "w": "querer",
+      "pos": "v",
+      "ja": "愛している・大切に思う（nos quiere＝私たちを愛している）",
+      "form": "querer の現在・三人称単数"
+    },
+    "claro": {
+      "w": "claro",
+      "pos": "interj",
+      "ja": "もちろん・当然"
+    },
+    "papá": {
+      "w": "papá",
+      "pos": "n",
+      "ja": "パパ・お父さん",
+      "g": "m"
+    },
+    "mamá": {
+      "w": "mamá",
+      "pos": "n",
+      "ja": "ママ・お母さん",
+      "g": "f"
+    },
+    "les": {
+      "w": "le",
+      "pos": "pron",
+      "ja": "彼らに（ここでは a papá y a mamá）",
+      "form": "le の複数形"
+    },
+    "interesa": {
+      "w": "interesar",
+      "pos": "v",
+      "ja": "興味を持たせる（le interesa 〜＝〜に興味がある）",
+      "form": "interesar の現在・三人称単数",
+      "key": true
+    },
+    "dice": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う",
+      "form": "decir の現在・三人称単数"
+    },
+    "sienta": {
+      "w": "sentar",
+      "pos": "v",
+      "ja": "（体・服に）合う（sentar bien／mal＝体に合う／合わない）",
+      "form": "sentar の現在・三人称単数（le sienta fatal＝彼にはまったく合わない）",
+      "key": true
+    },
+    "fatal": {
+      "w": "fatal",
+      "pos": "adv",
+      "ja": "ひどく・最悪に（sentar fatal＝まるで体に合わない）"
+    },
+    "ya#12": {
+      "w": "ya",
+      "pos": "interj",
+      "ja": "まあね・うん（相づち。「わかってるけど…」）"
+    },
+    "informático": {
+      "w": "informático",
+      "pos": "n",
+      "ja": "IT技術者・情報技術者",
+      "g": "m"
+    },
+    "trabajabas": {
+      "w": "trabajar",
+      "pos": "v",
+      "ja": "働く",
+      "form": "trabajar の線過去・二人称単数"
+    },
+    "sabemos": {
+      "w": "saber",
+      "pos": "v",
+      "ja": "知っている",
+      "form": "saber の現在・一人称複数"
+    },
+    "trabajaba": {
+      "w": "trabajar",
+      "pos": "v",
+      "ja": "働く",
+      "form": "trabajar の線過去・一人称単数（「働いていた」と過去）"
+    },
+    "lo#13": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを（ここでは「働いていた」と言ったこと）"
+    },
+    "has": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（助動詞）〜した（完了形をつくる）",
+      "form": "haber の現在・二人称単数"
+    },
+    "dicho": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う",
+      "form": "過去分詞（tú lo has dicho＝君が言ったとおり）"
+    },
+    "lo#13.2": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを（ここでは仕事）"
+    },
+    "dejé": {
+      "w": "dejar",
+      "pos": "v",
+      "ja": "やめる・辞める",
+      "form": "dejar の点過去・一人称単数（Lo dejé＝それ（仕事）を辞めた）",
+      "key": true
+    },
+    "hace#13": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "（hace ＋ 期間）〜前",
+      "form": "hacer の現在・三人称単数（hace un mes＝1か月前）"
+    },
+    "lo#13.3": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを（ここでは仕事）"
+    },
+    "echo": {
+      "w": "echar",
+      "pos": "v",
+      "ja": "（echar de menos＝恋しく思う）",
+      "form": "echar の現在・一人称単数",
+      "key": true
+    },
+    "nada#13": {
+      "w": "nada",
+      "pos": "adv",
+      "ja": "少しも〜ない（no … nada de menos＝ちっとも恋しくない）"
+    },
+    "eso": {
+      "w": "eso",
+      "pos": "pron",
+      "ja": "それ・そのこと（中性）"
+    },
+    "preocupa": {
+      "w": "preocupar",
+      "pos": "v",
+      "ja": "心配させる・気にかかる（me preocupa＝私は心配だ）",
+      "form": "preocupar の現在・三人称単数",
+      "key": true
+    },
+    "poco": {
+      "w": "poco",
+      "pos": "adv",
+      "ja": "少し（un poco＝ちょっと）"
+    },
+    "todo": {
+      "w": "todo",
+      "pos": "pron",
+      "ja": "すべて・何もかも"
+    },
+    "te#15": {
+      "w": "te",
+      "pos": "pron",
+      "ja": "君を（A ti todo te preocupa＝君は何でも気にする）"
+    },
+    "mira": {
+      "w": "mirar",
+      "pos": "v",
+      "ja": "見る・（ほら）見て",
+      "form": "mirar の命令形（tú）"
+    },
+    "encima": {
+      "w": "encima",
+      "pos": "adv",
+      "ja": "上に（encima de＝〜の上に）"
+    },
+    "leemos": {
+      "w": "leer",
+      "pos": "v",
+      "ja": "読む",
+      "form": "leer の現在・一人称複数（¿La leemos?＝読もうか）"
+    },
+    "léela": {
+      "w": "leer",
+      "pos": "v",
+      "ja": "読む",
+      "form": "命令形（tú）＋ la（それを）＝それを読んで"
+    },
+    "olvidado": {
+      "w": "olvidarse",
+      "pos": "v",
+      "ja": "忘れる",
+      "form": "olvidar の過去分詞（se me han olvidado las gafas＝めがねを忘れてきた）"
+    },
+    "se#16": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（se me han olvidado＝うっかり忘れた。意図しない出来事を表す se）"
+    },
+    "olvida": {
+      "w": "olvidarse",
+      "pos": "v",
+      "ja": "忘れる",
+      "form": "olvidar の現在・三人称単数（se te olvida todo＝君は何でも忘れる）"
+    },
+    "se#17": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（se te olvida＝うっかり忘れる。意図しない出来事を表す se）"
+    },
+    "te#17": {
+      "w": "te",
+      "pos": "pron",
+      "ja": "君に（影響を受ける人）"
+    },
+    "ver": {
+      "w": "ver",
+      "pos": "v",
+      "ja": "見る（a ver＝どれどれ・さてと）"
+    },
+    "queridos": {
+      "w": "querido",
+      "pos": "adj",
+      "ja": "親愛なる・大切な（手紙の書き出し）",
+      "form": "querido の男性複数形"
+    },
+    "nietos": {
+      "w": "nieto",
+      "pos": "n",
+      "ja": "孫",
+      "g": "m",
+      "form": "複数形（nietos＝孫たち）",
+      "key": true
+    },
+    "dejo": {
+      "w": "dejar",
+      "pos": "v",
+      "ja": "残す・譲る",
+      "form": "dejar の現在・一人称単数（Os dejo mi café＝君たちに私のカフェを残す）"
+    },
+    "secreto": {
+      "w": "secreto",
+      "pos": "n",
+      "ja": "秘密",
+      "g": "m",
+      "key": true
+    },
+    "mar": {
+      "w": "mar",
+      "pos": "n",
+      "ja": "海",
+      "g": "mf"
+    },
+    "escondido": {
+      "w": "esconder",
+      "pos": "v",
+      "ja": "隠す",
+      "form": "過去分詞（un tesoro escondido＝隠された宝物）",
+      "key": true
+    },
+    "lo#17": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを（ここでは宝物）"
+    },
+    "encontráis": {
+      "w": "encontrar",
+      "pos": "v",
+      "ja": "見つける",
+      "form": "encontrar の現在・二人称複数（vosotros＝君たち）",
+      "key": true
+    },
+    "vuestro": {
+      "w": "vuestro",
+      "pos": "pron",
+      "ja": "君たちのもの・君たちの",
+      "form": "es vuestro＝君たちのものだ"
+    },
+    "tesoro": {
+      "w": "tesoro",
+      "pos": "n",
+      "ja": "宝物・宝",
+      "g": "m",
+      "key": true
+    },
+    "serio": {
+      "w": "serio",
+      "pos": "adj",
+      "ja": "まじめな・本気の（¿En serio?＝本気で？）"
+    },
+    "espera": {
+      "w": "esperar",
+      "pos": "v",
+      "ja": "待つ",
+      "form": "命令形（tú）＝待って"
+    },
+    "sigue": {
+      "w": "seguir",
+      "pos": "v",
+      "ja": "続ける（続けて）",
+      "form": "seguir の命令形（tú）",
+      "key": true
+    },
+    "primera": {
+      "w": "primero",
+      "pos": "adj",
+      "ja": "最初の・1番目の",
+      "form": "primero の女性形"
+    },
+    "pista": {
+      "w": "pista",
+      "pos": "n",
+      "ja": "手がかり・ヒント",
+      "g": "f",
+      "key": true
+    },
+    "paró": {
+      "w": "pararse",
+      "pos": "v",
+      "ja": "止まる（se paró＝止まった）",
+      "form": "parar の点過去・三人称単数",
+      "key": true
+    },
+    "se#19": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（pararse＝止まる。動詞の一部）"
+    },
+    "se#20": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（pararse＝止まる。動詞の一部）"
+    },
+    "significa": {
+      "w": "significar",
+      "pos": "v",
+      "ja": "意味する",
+      "form": "significar の現在・三人称単数",
+      "key": true
+    },
+    "ni": {
+      "w": "ni",
+      "pos": "adv",
+      "ja": "〜ない（Ni idea＝まったくわからない）"
+    },
+    "idea": {
+      "w": "idea",
+      "pos": "n",
+      "ja": "考え・アイデア（Ni idea＝さあね）",
+      "g": "f"
+    },
+    "gustaban": {
+      "w": "gustar",
+      "pos": "v",
+      "ja": "好きだ・気に入る（le gustaban los misterios＝彼は謎が好きだった）",
+      "form": "gustar の線過去・三人称複数"
+    },
+    "misterios": {
+      "w": "misterio",
+      "pos": "n",
+      "ja": "謎・ミステリー",
+      "g": "m",
+      "form": "複数形"
+    },
+    "solía": {
+      "w": "soler",
+      "pos": "v",
+      "ja": "〜するのがつねだ（soler ＋ 原形）",
+      "form": "soler の線過去・三人称単数",
+      "key": true
+    },
+    "esconder": {
+      "w": "esconder",
+      "pos": "v",
+      "ja": "隠す",
+      "key": true
+    },
+    "regalos": {
+      "w": "regalo",
+      "pos": "n",
+      "ja": "プレゼント",
+      "g": "m",
+      "form": "複数形"
+    },
+    "cumpleaños": {
+      "w": "cumpleaños",
+      "pos": "n",
+      "ja": "誕生日",
+      "g": "m"
+    },
+    "por#21": {
+      "w": "por",
+      "pos": "prep",
+      "ja": "〜じゅうに（por toda la casa＝家じゅうに）"
+    },
+    "tardé": {
+      "w": "tardar",
+      "pos": "v",
+      "ja": "（時間が）かかる（tardar ＋ 期間 ＋ en ＋ 原形）",
+      "form": "tardar の点過去・一人称単数",
+      "key": true
+    },
+    "en#22": {
+      "w": "en",
+      "pos": "prep",
+      "ja": "（tardar … en ＋ 原形＝〜するのに…かかる）"
+    },
+    "encontrar": {
+      "w": "encontrar",
+      "pos": "v",
+      "ja": "見つける"
+    },
+    "tejado": {
+      "w": "tejado",
+      "pos": "n",
+      "ja": "屋根",
+      "g": "m"
+    },
+    "listo": {
+      "w": "listo",
+      "pos": "adj",
+      "ja": "頭のいい・賢い（ser listo）"
+    },
+    "familia": {
+      "w": "familia",
+      "pos": "n",
+      "ja": "家族",
+      "g": "f"
+    },
+    "hmm": {
+      "w": "hmm",
+      "pos": "interj",
+      "ja": "うーん（考えるときの声）"
+    },
+    "se#24": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（pararse＝止まる。動詞の一部）"
+    },
+    "se#24.2": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（llamarse＝〜という名前だ。動詞の一部）"
+    },
+    "llama": {
+      "w": "llamarse",
+      "pos": "v",
+      "ja": "〜という名前だ（se llama El Reloj＝「エル・レロホ」という名前だ）",
+      "form": "llamarse の現在・三人称単数"
+    },
+    "funcionaba": {
+      "w": "funcionar",
+      "pos": "v",
+      "ja": "動く・作動する",
+      "form": "funcionar の線過去・三人称単数（nunca funcionaba＝ずっと動かなかった）",
+      "key": true
+    },
+    "marcaba": {
+      "w": "marcar",
+      "pos": "v",
+      "ja": "（時計が時刻を）示す",
+      "form": "marcar の線過去・三人称単数",
+      "key": true
+    },
+    "preguntábamos": {
+      "w": "preguntar",
+      "pos": "v",
+      "ja": "たずねる・聞く",
+      "form": "preguntar の線過去・一人称複数"
+    },
+    "decía": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う",
+      "form": "decir の線過去・三人称単数"
+    },
+    "marca": {
+      "w": "marcar",
+      "pos": "v",
+      "ja": "（時計が時刻を）示す",
+      "form": "marcar の現在・三人称単数"
+    },
+    "bájalo": {
+      "w": "bajar",
+      "pos": "v",
+      "ja": "下ろす",
+      "form": "命令形（tú）＋ lo（それを）＝それを下ろして"
+    },
+    "vale": {
+      "w": "vale",
+      "pos": "interj",
+      "ja": "わかった・いいよ"
+    },
+    "sujétame": {
+      "w": "sujetar",
+      "pos": "v",
+      "ja": "押さえる・つかまえる",
+      "form": "命令形（tú）＋ me（私に）＝私のために押さえて",
+      "key": true
+    },
+    "me#28": {
+      "w": "me",
+      "pos": "pron",
+      "ja": "自分を（me caigo＝自分が落ちる。caerse の再帰代名詞）"
+    },
+    "caigo": {
+      "w": "caerse",
+      "pos": "v",
+      "ja": "落ちる・転ぶ",
+      "form": "caer の現在・一人称単数"
+    },
+    "me#28.2": {
+      "w": "me",
+      "pos": "pron",
+      "ja": "自分を（me rompo＝自分が〜を折る・壊す）"
+    },
+    "rompo": {
+      "w": "romper",
+      "pos": "v",
+      "ja": "壊す・折る（me rompo algo＝どこかを骨折する）",
+      "form": "romper の現在・一人称単数"
+    },
+    "me#28.3": {
+      "w": "me",
+      "pos": "pron",
+      "ja": "私に（me duele＝私は痛い）"
+    },
+    "facilidad": {
+      "w": "facilidad",
+      "pos": "n",
+      "ja": "簡単さ・たやすさ（con facilidad＝簡単に・すぐに）",
+      "g": "f"
+    },
+    "qué#29": {
+      "w": "qué",
+      "pos": "interj",
+      "ja": "なんて〜！（感嘆。Qué exagerado eres＝なんて大げさなの）"
+    },
+    "exagerado": {
+      "w": "exagerado",
+      "pos": "adj",
+      "ja": "大げさな",
+      "key": true
+    },
+    "sube": {
+      "w": "subir",
+      "pos": "v",
+      "ja": "上る・上がる",
+      "form": "命令形（tú）＝上って"
+    },
+    "ya#30": {
+      "w": "ya",
+      "pos": "adv",
+      "ja": "（ほら）もう・すでに（Ya lo tengo＝取れた）"
+    },
+    "bastante": {
+      "w": "bastante",
+      "pos": "adv",
+      "ja": "かなり・けっこう",
+      "key": true
+    },
+    "sobre": {
+      "w": "sobre",
+      "pos": "n",
+      "ja": "封筒",
+      "g": "m",
+      "key": true
+    },
+    "pegado": {
+      "w": "pegar",
+      "pos": "v",
+      "ja": "貼る・くっつける",
+      "form": "過去分詞（pegado con cinta＝テープで貼られた）"
+    },
+    "cinta": {
+      "w": "cinta",
+      "pos": "n",
+      "ja": "テープ（cinta adhesiva＝粘着テープ）",
+      "g": "f"
+    },
+    "dámelo": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "あげる・渡す",
+      "form": "命令形（tú）＋ me（私に）＋ lo（それを）＝それを私にちょうだい"
+    },
+    "calma": {
+      "w": "calma",
+      "pos": "n",
+      "ja": "落ち着き（Calma！＝落ち着いて！）",
+      "g": "f"
+    },
+    "toma": {
+      "w": "tomar",
+      "pos": "v",
+      "ja": "受け取る（Toma＝はい、どうぞ）",
+      "form": "命令形（tú）"
+    },
+    "rompas": {
+      "w": "romper",
+      "pos": "v",
+      "ja": "壊す",
+      "form": "接続法現在・二人称単数（no lo rompas＝それを壊さないで）"
+    },
+    "lo#32": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを（ここでは封筒）"
+    },
+    "segunda": {
+      "w": "segundo",
+      "pos": "adj",
+      "ja": "2番目の",
+      "form": "segundo の女性形"
+    },
+    "mejor#33": {
+      "w": "mejor",
+      "pos": "adv",
+      "ja": "いちばんうまく・いちばん上手に（la persona que mejor hace＝いちばん上手に作る人）"
+    },
+    "tarta": {
+      "w": "tarta",
+      "pos": "n",
+      "ja": "タルト・ケーキ",
+      "g": "f",
+      "key": true
+    },
+    "sabe": {
+      "w": "saber",
+      "pos": "v",
+      "ja": "知っている",
+      "form": "saber の現在・三人称単数"
+    },
+    "si#34": {
+      "w": "si",
+      "pos": "conj",
+      "ja": "だって〜じゃないか（強調して反論するときの si）"
+    },
+    "receta": {
+      "w": "receta",
+      "pos": "n",
+      "ja": "レシピ",
+      "g": "f",
+      "key": true
+    },
+    "sabía": {
+      "w": "saber",
+      "pos": "v",
+      "ja": "知っている",
+      "form": "saber の線過去・三人称単数"
+    },
+    "se#34": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "彼・彼女に（le が la の前で se に変わる。se la enseñó＝それを（その人に）教えた）"
+    },
+    "enseñó": {
+      "w": "enseñar",
+      "pos": "v",
+      "ja": "教える",
+      "form": "enseñar の点過去・三人称単数",
+      "key": true
+    },
+    "pues": {
+      "w": "pues",
+      "pos": "interj",
+      "ja": "それなら・じゃあ・だって"
+    },
+    "alguien": {
+      "w": "alguien",
+      "pos": "pron",
+      "ja": "だれか"
+    },
+    "que#35": {
+      "w": "que",
+      "pos": "conj",
+      "ja": "（tener que ＋ 原形＝〜しなければならない）"
+    },
+    "tenemos": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持っている・〜しなければならない（tener que ＋ 原形）",
+      "form": "tener の現在・一人称複数"
+    },
+    "ponemos": {
+      "w": "poner",
+      "pos": "v",
+      "ja": "置く・貼る・掲げる",
+      "form": "poner の現在・一人称複数（¿Ponemos un cartel?＝張り紙を出す？）"
+    },
+    "se#36": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（se busca＝〜求む。「〜される」の se）"
+    },
+    "sepa": {
+      "w": "saber",
+      "pos": "v",
+      "ja": "知っている",
+      "form": "接続法現在・三人称単数（alguien que sepa hacer＝作り方を知っている人）"
+    },
+    "mala": {
+      "w": "malo",
+      "pos": "adj",
+      "ja": "悪い",
+      "form": "malo の女性形（no es mala idea＝悪くない考えだ）"
+    },
+    "cierto": {
+      "w": "cierto",
+      "pos": "adj",
+      "ja": "確かな（por cierto＝ところで）"
+    },
+    "necesitamos": {
+      "w": "necesitar",
+      "pos": "v",
+      "ja": "必要とする",
+      "form": "necesitar の現在・一人称複数"
+    },
+    "anuncio": {
+      "w": "anuncio",
+      "pos": "n",
+      "ja": "広告・告知（ここでは求人広告）",
+      "g": "m",
+      "key": true
+    },
+    "broma": {
+      "w": "broma",
+      "pos": "n",
+      "ja": "冗談",
+      "g": "f",
+      "key": true
+    },
+    "parece": {
+      "w": "parecer",
+      "pos": "v",
+      "ja": "〜に思える（me parece una idea genial＝すばらしい考えに思える）",
+      "form": "parecer の現在・三人称単数",
+      "key": true
+    },
+    "genial": {
+      "w": "genial",
+      "pos": "adj",
+      "ja": "すばらしい・最高の",
+      "key": true
+    },
+    "según": {
+      "w": "según",
+      "pos": "prep",
+      "ja": "〜によると・〜によれば",
+      "key": true
+    },
+    "entonces#41": {
+      "w": "entonces",
+      "pos": "adv",
+      "ja": "それなら・では"
+    },
+    "prepáralo": {
+      "w": "preparar",
+      "pos": "v",
+      "ja": "準備する・用意する（ここではコーヒーを淹れる）",
+      "form": "命令形（tú）＋ lo（それを）＝それを用意して"
+    },
+    "máquina": {
+      "w": "máquina",
+      "pos": "n",
+      "ja": "機械（ここではコーヒーマシン）",
+      "g": "f"
+    },
+    "tampoco": {
+      "w": "tampoco",
+      "pos": "adv",
+      "ja": "〜もない（Yo tampoco＝私もだめ）",
+      "key": true
+    },
+    "empezamos": {
+      "w": "empezar",
+      "pos": "v",
+      "ja": "始める",
+      "form": "empezar の現在・一人称複数（Empezamos bien＝幸先がいい。皮肉も含む）"
+    }
+  },
+  "names": [
+    "Santiago"
+  ],
+  "lines": [
+    {
+      "ja": "ハビ、やっと来た！ドアの前で30分も待ってるんだよ。どこにいたの？"
+    },
+    {
+      "ja": "ごめん。家に鍵を忘れてきて、取りに戻らなきゃならなかったんだ。"
+    },
+    {
+      "ja": "君らしいね。まあいいや、貸して、私が開けるから。うわ、このドア、すごく重い。"
+    },
+    {
+      "ja": "気をつけて、落ちそうだよ…！マルタ！落としちゃった！"
+    },
+    {
+      "ja": "落ち着いて、壊れてないよ。鉄でできてるんだから。ほら、入って。"
+    },
+    {
+      "ja": "わあ…子どものころと同じにおいがする。"
+    },
+    {
+      "ja": "覚えてる？毎年夏にここへ来てたよね。おじいちゃんがチュロス付きのチョコレートを作ってくれて、カウンターの後ろで遊ばせてくれた。"
+    },
+    {
+      "ja": "それに君はいつも僕のチュロスを食べちゃったんだ。"
+    },
+    {
+      "ja": "だって君は食べるのがすごく遅かったから。私はおじいちゃんのチュロスが大好きだったのに…それに君はいつもおなかが痛くなってた。"
+    },
+    {
+      "ja": "チョコレートを飲みすぎてたからさ。ねえ、どうしておじいちゃんは僕たちにこのカフェを残してくれたんだと思う？"
+    },
+    {
+      "ja": "そりゃ私たちを愛してるからでしょ。それに、パパもママも全然興味がないから。パパはコーヒーが体に合わないって言うし。"
+    },
+    {
+      "ja": "まあね、でも僕はIT技術者で、君は銀行で働いてた。コーヒーのことは何も知らないよ。"
+    },
+    {
+      "ja": "「働いてた」ね、君が言ったとおり。もう違うの。1か月前に辞めたし、ちっとも恋しくない。"
+    },
+    {
+      "ja": "それはちょっと心配だな、正直なところ。"
+    },
+    {
+      "ja": "あなたは何でも心配するのね。ほら、おじいちゃんがカウンターの上に手紙を置いていってくれた。読む？"
+    },
+    {
+      "ja": "君が読んでよ。僕はめがねを忘れてきた。"
+    },
+    {
+      "ja": "あなたも？今日は何でも忘れるのね。どれどれ…「愛する孫たちへ。わたしはいま、海の近くのカディスで暮らしていて、とても幸せです。この店をおまえたちに譲ります。それと、秘密をひとつ。このカフェには隠された宝物があります。見つけたら、おまえたちのものです」。"
+    },
+    {
+      "ja": "宝物？本当に？"
+    },
+    {
+      "ja": "待って、続きがある。「最初のヒント：宝物は、時が止まった場所から始まる」。"
+    },
+    {
+      "ja": "時が止まった場所？それ、どういう意味？"
+    },
+    {
+      "ja": "さあね。おじいちゃんはいつも謎が好きだったから。私たちの誕生日プレゼントを家じゅうに隠すのがつねだったよね。"
+    },
+    {
+      "ja": "そうだった。いつか自転車を見つけるのに3日かかったことがある。屋根の上にあったんだ。"
+    },
+    {
+      "ja": "じゃあ、考えて。あなたは家族の頭脳派でしょ。"
+    },
+    {
+      "ja": "うーん…「時が止まった場所」…時計だ！このカフェの名前は「エル・レロホ（時計）」だよね？それに壁の時計はずっと動いてなかった。いつも5時10分を指してた。"
+    },
+    {
+      "ja": "そのとおり！時間を聞くと、おじいちゃんはいつもこう言ってた。「ここはいつも5時10分。コーヒーの時間だ」って。"
+    },
+    {
+      "ja": "見て、まだ5時10分を指してる。"
+    },
+    {
+      "ja": "あなたが下ろして、背が高いんだから。"
+    },
+    {
+      "ja": "わかった、でもいすを押さえててよ。落ちたら何か折っちゃうし、僕はすぐあちこち痛くなるんだ。"
+    },
+    {
+      "ja": "なんて大げさなの。ほら、上って。"
+    },
+    {
+      "ja": "取れた…けっこう重い。待って、後ろに何かある。テープで貼りつけた封筒だ。"
+    },
+    {
+      "ja": "ちょうだい！ちょうだい！"
+    },
+    {
+      "ja": "落ち着いて、落ち着いて。はい。でも壊さないでよ。"
+    },
+    {
+      "ja": "「よくやった、孫たち。2番目のヒント：サンティアゴ風タルトをいちばん上手に作る人が、宝物のありかを知っている」。"
+    },
+    {
+      "ja": "サンティアゴ風タルト？だってレシピを知ってたのはおじいちゃんだけだよ。だれにも教えなかったのに。"
+    },
+    {
+      "ja": "じゃあ、だれかは知ってるんだよ。その人を見つけなきゃ。"
+    },
+    {
+      "ja": "でもどうやって？ドアに張り紙を出す？「おじいちゃんのタルトの作り方を知っている人求む」って。"
+    },
+    {
+      "ja": "ねえ…それ、悪くない考えかも。ところで、ウェイターが必要だよね？求人広告を出せるよ。"
+    },
+    {
+      "ja": "マルタ、冗談だったんだよ。"
+    },
+    {
+      "ja": "私にはすごくいい考えに思えるけど。ところで、いま何時？"
+    },
+    {
+      "ja": "この時計によれば、5時10分。"
+    },
+    {
+      "ja": "じゃあコーヒーの時間だね。あなたが淹れて、私はマシンの使い方がわからないから。"
+    },
+    {
+      "ja": "僕もだよ。幸先がいいね。"
+    }
+  ]
+}

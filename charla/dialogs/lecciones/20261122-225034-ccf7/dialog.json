@@ -1,0 +1,165 @@
+{
+  "format": 1,
+  "id": "20261122-225034-ccf7",
+  "title": "L11-02 En una tienda de deportes",
+  "scene": "Lucía y su amigo Pablo compran ropa y botas en una tienda de deportes antes de una excursión a la montaña. Conversación natural entre amigos, con humor.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-22T13:52:35.359Z",
+  "audio": "audio.mp3",
+  "durationMs": 112545,
+  "speakers": [
+    {
+      "id": "LUCIA",
+      "gender": "female",
+      "persona": "Lucía, unos 32 años, trabaja mucho y quiere desconectar, alegre"
+    },
+    {
+      "id": "PABLO",
+      "gender": "male",
+      "persona": "Pablo, unos 32 años, amigo de Lucía, le encanta la montaña, bromista"
+    },
+    {
+      "id": "DEPENDIENTE",
+      "gender": "male",
+      "persona": "dependiente de la tienda, educado y profesional"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "LUCIA",
+      "text": "Mira, Pablo, ¿qué te parecen estas botas?",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 3563
+    },
+    {
+      "index": 1,
+      "speaker": "PABLO",
+      "text": "Son bonitas, pero esas negras son más fuertes. Para la montaña son mejores.",
+      "direction": "",
+      "startMs": 4545,
+      "endMs": 11405
+    },
+    {
+      "index": 2,
+      "speaker": "LUCIA",
+      "text": "Oiga, ¿cuánto cuestan estas botas negras?",
+      "direction": "",
+      "startMs": 12327,
+      "endMs": 16297
+    },
+    {
+      "index": 3,
+      "speaker": "DEPENDIENTE",
+      "text": "Ciento ochenta euros. Son las más caras de la tienda, pero también son las mejores.",
+      "direction": "",
+      "startMs": 17346,
+      "endMs": 23936
+    },
+    {
+      "index": 4,
+      "speaker": "LUCIA",
+      "text": "¡Uf! ¿No tiene unas más baratas?",
+      "direction": "",
+      "startMs": 24835,
+      "endMs": 28185
+    },
+    {
+      "index": 5,
+      "speaker": "DEPENDIENTE",
+      "text": "Estas cuestan noventa euros. No son tan buenas como las negras, pero son más ligeras.",
+      "direction": "",
+      "startMs": 29250,
+      "endMs": 35810
+    },
+    {
+      "index": 6,
+      "speaker": "PABLO",
+      "text": "Lucía, vamos a caminar seis horas. Para las piernas, unas buenas botas son muy importantes.",
+      "direction": "",
+      "startMs": 36838,
+      "endMs": 44258
+    },
+    {
+      "index": 7,
+      "speaker": "LUCIA",
+      "text": "Tienes razón. Me llevo las negras. ¿Y esta chaqueta? ¿Te gusta?",
+      "direction": "",
+      "startMs": 45299,
+      "endMs": 50679
+    },
+    {
+      "index": 8,
+      "speaker": "PABLO",
+      "text": "Es muy delgada. No es apropiada para la montaña. Allí hace mucho más frío que aquí.",
+      "direction": "",
+      "startMs": 51814,
+      "endMs": 59714
+    },
+    {
+      "index": 9,
+      "speaker": "LUCIA",
+      "text": "¿Y esta? ¿Qué tal me queda?",
+      "direction": "",
+      "startMs": 60689,
+      "endMs": 63239
+    },
+    {
+      "index": 10,
+      "speaker": "PABLO",
+      "text": "Pareces un muñeco de nieve.",
+      "direction": "riéndose",
+      "startMs": 64309,
+      "endMs": 67209
+    },
+    {
+      "index": 11,
+      "speaker": "LUCIA",
+      "text": "¡Qué tonto eres! Pero es muy calentita. Me la llevo también.",
+      "direction": "",
+      "startMs": 67936,
+      "endMs": 74866
+    },
+    {
+      "index": 12,
+      "speaker": "PABLO",
+      "text": "Oye, ¿por qué gastas tanto dinero de repente? Antes siempre comprabas lo más barato.",
+      "direction": "",
+      "startMs": 75815,
+      "endMs": 82463
+    },
+    {
+      "index": 13,
+      "speaker": "LUCIA",
+      "text": "Porque ahora tengo un cargo nuevo en la empresa. Gano más que antes.",
+      "direction": "",
+      "startMs": 83412,
+      "endMs": 88712
+    },
+    {
+      "index": 14,
+      "speaker": "PABLO",
+      "text": "¿En la empresa de petróleo? Ese sector paga muy bien.",
+      "direction": "",
+      "startMs": 89598,
+      "endMs": 94058
+    },
+    {
+      "index": 15,
+      "speaker": "LUCIA",
+      "text": "Sí, pero trabajo mucho más que antes. Por eso necesito la montaña. La vida en la ciudad es muy estresante.",
+      "direction": "",
+      "startMs": 94927,
+      "endMs": 104497
+    },
+    {
+      "index": 16,
+      "speaker": "PABLO",
+      "text": "Te entiendo. Desde arriba, la vista es maravillosa. No hay nada mejor.",
+      "direction": "",
+      "startMs": 105469,
+      "endMs": 111545
+    }
+  ]
+}

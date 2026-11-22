@@ -1,0 +1,587 @@
+{
+  "format": 1,
+  "sceneJa": "🚄 前の晩、カルロスと恋人のユキが、明日の新幹線での京都行きの準備をしている",
+  "phrases": [
+    {
+      "t": "tenemos que levantarnos",
+      "ja": "起きなければならない（tener que＋再帰動詞）",
+      "key": true
+    },
+    {
+      "t": "a qué hora",
+      "ja": "何時に",
+      "key": true
+    },
+    {
+      "t": "y cuarto",
+      "ja": "15分過ぎ（7時15分＝las siete y cuarto）",
+      "key": true
+    },
+    {
+      "t": "y media",
+      "ja": "30分（半）",
+      "key": true
+    },
+    {
+      "t": "por lo menos",
+      "ja": "少なくとも",
+      "key": true
+    },
+    {
+      "t": "qué horror",
+      "ja": "ひどい！（¡Qué horror!）",
+      "key": true
+    },
+    {
+      "t": "por la mañana",
+      "ja": "朝に・午前中に",
+      "key": true
+    },
+    {
+      "t": "por la noche",
+      "ja": "夜に",
+      "key": true
+    },
+    {
+      "t": "tengo muchas ganas de",
+      "ja": "〜するのをとても楽しみにしている（tener ganas de＋原形）",
+      "key": true
+    },
+    {
+      "t": "tiene muchas ganas de",
+      "ja": "〜するのをとても楽しみにしている（tener ganas de＋原形）",
+      "key": true
+    },
+    {
+      "t": "qué tiempo va a hacer",
+      "ja": "天気はどうなる？（hacer：天候）",
+      "key": true
+    },
+    {
+      "t": "va a estar despejado",
+      "ja": "晴れるだろう（ir a＋原形）",
+      "key": true
+    },
+    {
+      "t": "hace fresco",
+      "ja": "肌寒い・涼しい（hacer fresco）",
+      "key": true
+    },
+    {
+      "t": "todo el día",
+      "ja": "一日じゅう",
+      "key": true
+    },
+    {
+      "t": "según la tele",
+      "ja": "テレビによると（según＋名詞）",
+      "key": true
+    },
+    {
+      "t": "qué bien",
+      "ja": "よかった！・いいね！（¡Qué bien!）"
+    },
+    {
+      "t": "qué interesante",
+      "ja": "おもしろい！（¡Qué interesante!）"
+    },
+    {
+      "t": "tren bala",
+      "ja": "新幹線（弾丸列車）",
+      "key": true
+    }
+  ],
+  "words": {
+    "mira": {
+      "w": "mirar",
+      "pos": "interj",
+      "ja": "ねえ・見て",
+      "form": "mirar の命令・tú（Mira,＝ねえ）"
+    },
+    "b": {
+      "w": "b",
+      "pos": "n",
+      "g": "f",
+      "ja": "（座席の記号の）B",
+      "note": "asientos A y B＝A席とB席"
+    },
+    "canal": {
+      "w": "canal",
+      "pos": "n",
+      "g": "m",
+      "ja": "（テレビの）チャンネル",
+      "key": true
+    },
+    "ponen": {
+      "w": "poner",
+      "pos": "v",
+      "ja": "（映画を）上映する・放送する",
+      "form": "poner の現在・三人称複数（ponen una película＝映画をやっている）",
+      "key": true
+    },
+    "española": {
+      "w": "español",
+      "pos": "adj",
+      "ja": "スペインの",
+      "form": "español の女性形（película española＝スペイン映画）"
+    },
+    "vemos": {
+      "w": "ver",
+      "pos": "v",
+      "ja": "見る",
+      "form": "ver の現在・一人称複数（¿La vemos?＝（それを）見ようか？）"
+    },
+    "levantarnos": {
+      "w": "levantarse",
+      "pos": "v",
+      "ja": "起きる",
+      "form": "levantarse の原形＋nos（再帰・私たちが起きる）",
+      "key": true
+    },
+    "sale": {
+      "w": "salir",
+      "pos": "v",
+      "ja": "出発する・出る",
+      "form": "salir の現在・三人称単数（el tren sale＝電車が出る）",
+      "key": true
+    },
+    "bala": {
+      "w": "bala",
+      "pos": "n",
+      "g": "f",
+      "ja": "弾丸",
+      "note": "tren bala＝新幹線（弾丸列車）"
+    },
+    "cuarto": {
+      "w": "cuarto",
+      "pos": "n",
+      "g": "m",
+      "ja": "15分",
+      "note": "y cuarto＝15分過ぎ"
+    },
+    "estar": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "（〜に）いる・ある",
+      "note": "tenemos que estar en la estación＝駅にいなければならない"
+    },
+    "horror": {
+      "w": "horror",
+      "pos": "n",
+      "g": "m",
+      "ja": "恐怖・ひどいこと",
+      "note": "¡Qué horror!＝ひどい！"
+    },
+    "piensas": {
+      "w": "pensar",
+      "pos": "v",
+      "ja": "〜するつもりだ",
+      "form": "pensar の現在・二人称単数（pensar＋原形＝〜するつもり）",
+      "note": "ここは「考える」ではなく「〜するつもり」",
+      "key": true
+    },
+    "levantarte": {
+      "w": "levantarse",
+      "pos": "v",
+      "ja": "起きる",
+      "form": "levantarse の原形＋te（再帰・君が起きる）"
+    },
+    "media": {
+      "w": "medio",
+      "pos": "adj",
+      "ja": "半分の・30分",
+      "form": "medio の女性形（y media＝30分／media hora＝30分間）",
+      "key": true
+    },
+    "visto": {
+      "w": "vestirse",
+      "pos": "v",
+      "ja": "服を着る",
+      "form": "vestirse の現在・一人称単数（me visto＝服を着る）",
+      "key": true
+    },
+    "peino": {
+      "w": "peinarse",
+      "pos": "v",
+      "ja": "髪をとかす",
+      "form": "peinarse の現在・一人称単数（me peino＝髪をとかす）",
+      "key": true
+    },
+    "desayuno": {
+      "w": "desayunar",
+      "pos": "v",
+      "ja": "朝食を食べる",
+      "form": "desayunar の現在・一人称単数",
+      "key": true
+    },
+    "salgo": {
+      "w": "salir",
+      "pos": "v",
+      "ja": "出かける",
+      "form": "salir の現在・一人称単数"
+    },
+    "baño": {
+      "w": "bañarse",
+      "pos": "v",
+      "ja": "お風呂に入る",
+      "form": "bañarse の現在・一人称単数（me baño＝お風呂に入る）",
+      "note": "ここは名詞の「浴室」ではなく動詞",
+      "key": true
+    },
+    "así": {
+      "w": "así",
+      "pos": "adv",
+      "ja": "そうすれば・そのように",
+      "key": true
+    },
+    "tiempo": {
+      "w": "tiempo",
+      "pos": "n",
+      "g": "m",
+      "ja": "時間",
+      "note": "tengo más tiempo＝時間にゆとりがある"
+    },
+    "ducho": {
+      "w": "ducharse",
+      "pos": "v",
+      "ja": "シャワーを浴びる",
+      "form": "ducharse の現在・一人称単数",
+      "key": true
+    },
+    "afeitarme": {
+      "w": "afeitarse",
+      "pos": "v",
+      "ja": "ひげをそる",
+      "form": "afeitarse の原形＋me（再帰）",
+      "key": true
+    },
+    "menos": {
+      "w": "menos",
+      "pos": "adv",
+      "ja": "少ない",
+      "note": "por lo menos＝少なくとも"
+    },
+    "entonces": {
+      "w": "entonces",
+      "pos": "adv",
+      "ja": "それなら・じゃあ"
+    },
+    "vale": {
+      "w": "vale",
+      "pos": "interj",
+      "ja": "わかった・OK",
+      "key": true
+    },
+    "sentamos": {
+      "w": "sentarse",
+      "pos": "v",
+      "ja": "座る",
+      "form": "sentarse の現在・一人称複数（nos sentamos＝私たちは座る）",
+      "key": true
+    },
+    "billetes": {
+      "w": "billete",
+      "pos": "n",
+      "g": "m",
+      "ja": "切符・乗車券",
+      "form": "billete の複数形",
+      "key": true
+    },
+    "fila": {
+      "w": "fila",
+      "pos": "n",
+      "g": "f",
+      "ja": "列",
+      "key": true
+    },
+    "asientos": {
+      "w": "asiento",
+      "pos": "n",
+      "g": "m",
+      "ja": "座席",
+      "form": "asiento の複数形",
+      "key": true
+    },
+    "junto": {
+      "w": "junto",
+      "pos": "adv",
+      "ja": "そばに",
+      "note": "junto a＝〜のそばに",
+      "key": true
+    },
+    "ventanilla": {
+      "w": "ventanilla",
+      "pos": "n",
+      "g": "f",
+      "ja": "（乗り物の）窓",
+      "note": "junto a la ventanilla＝窓側に（ここは窓口ではない）",
+      "key": true
+    },
+    "despejado": {
+      "w": "despejado",
+      "pos": "adj",
+      "ja": "晴れた・雲のない",
+      "key": true
+    },
+    "puedes": {
+      "w": "poder",
+      "pos": "v",
+      "ja": "〜できる",
+      "form": "poder の現在・二人称単数"
+    },
+    "monte": {
+      "w": "monte",
+      "pos": "n",
+      "g": "m",
+      "ja": "山",
+      "note": "monte Fuji＝富士山"
+    },
+    "mañana": {
+      "w": "mañana",
+      "pos": "n",
+      "g": "f",
+      "ja": "朝",
+      "note": "por la mañana＝朝に"
+    },
+    "mañana#2": {
+      "w": "mañana",
+      "pos": "adv",
+      "ja": "明日"
+    },
+    "mañana#11": {
+      "w": "mañana",
+      "pos": "adv",
+      "ja": "明日"
+    },
+    "tiempo#11": {
+      "w": "tiempo",
+      "pos": "n",
+      "g": "m",
+      "ja": "天気",
+      "note": "¿Qué tiempo hace?＝どんな天気？"
+    },
+    "hacer": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "（天気が）〜である",
+      "note": "qué tiempo va a hacer＝天気はどうなるか（天候の hacer）"
+    },
+    "va": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "〜するだろう",
+      "form": "ir の現在・三人称単数（va a＋原形＝〜する予定／〜するだろう）"
+    },
+    "según": {
+      "w": "según",
+      "pos": "prep",
+      "ja": "〜によると",
+      "key": true
+    },
+    "hace": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "（天候が）〜である",
+      "form": "hacer の現在・三人称単数（hace fresco＝肌寒い）"
+    },
+    "fresco": {
+      "w": "fresco",
+      "pos": "adj",
+      "ja": "涼しい・肌寒い",
+      "note": "hace fresco＝肌寒い",
+      "key": true
+    },
+    "llévate": {
+      "w": "llevarse",
+      "pos": "v",
+      "ja": "持っていく",
+      "form": "llevarse の命令・tú（llévate una chaqueta＝上着を持っていって）",
+      "key": true
+    },
+    "chaqueta": {
+      "w": "chaqueta",
+      "pos": "n",
+      "g": "f",
+      "ja": "上着・ジャケット"
+    },
+    "quién": {
+      "w": "quién",
+      "pos": "int",
+      "ja": "だれ（疑問詞）"
+    },
+    "fabrica": {
+      "w": "fabricar",
+      "pos": "v",
+      "ja": "製造する・つくる",
+      "form": "fabricar の現在・三人称単数（¿quién fabrica…?＝だれがつくっているの？）",
+      "key": true
+    },
+    "rapidísimos": {
+      "w": "rápido",
+      "pos": "adj",
+      "ja": "とても速い",
+      "form": "rápido の絶対最上級・男性複数（-ísimo＝すごく〜）"
+    },
+    "varias": {
+      "w": "varios",
+      "pos": "adj",
+      "ja": "いくつかの・さまざまな",
+      "form": "varios の女性形"
+    },
+    "japonesas": {
+      "w": "japonés",
+      "pos": "adj",
+      "ja": "日本の",
+      "form": "japonés の女性複数形"
+    },
+    "empresas": {
+      "w": "empresa",
+      "pos": "n",
+      "g": "f",
+      "ja": "会社",
+      "form": "empresa の複数形",
+      "key": true
+    },
+    "empresa": {
+      "w": "empresa",
+      "pos": "n",
+      "g": "f",
+      "ja": "会社",
+      "key": true
+    },
+    "piezas": {
+      "w": "pieza",
+      "pos": "n",
+      "g": "f",
+      "ja": "部品",
+      "form": "pieza の複数形",
+      "key": true
+    },
+    "que": {
+      "w": "que",
+      "pos": "pron",
+      "ja": "〜する（関係詞）",
+      "note": "una empresa que fabrica…＝…をつくる会社"
+    },
+    "para": {
+      "w": "para",
+      "pos": "prep",
+      "ja": "〜のための",
+      "note": "piezas para el tren bala＝新幹線の部品"
+    },
+    "ganas": {
+      "w": "gana",
+      "pos": "n",
+      "g": "f",
+      "ja": "したい気持ち",
+      "form": "gana の複数形（tener ganas de＋原形＝〜したい・楽しみだ）",
+      "key": true
+    },
+    "conocerte": {
+      "w": "conocer",
+      "pos": "v",
+      "ja": "知り合う・会う",
+      "form": "conocer の原形＋te（君に会う）",
+      "key": true
+    },
+    "saludarla": {
+      "w": "saludar",
+      "pos": "v",
+      "ja": "あいさつする",
+      "form": "saludar の原形＋la（彼女に）",
+      "key": true
+    },
+    "besos": {
+      "w": "beso",
+      "pos": "n",
+      "g": "m",
+      "ja": "キス",
+      "form": "beso の複数形（dos besos＝頬への2回のキス）",
+      "key": true
+    },
+    "como": {
+      "w": "como",
+      "pos": "conj",
+      "ja": "〜のように",
+      "note": "como en España＝スペインのように（comer の「食べる」ではない）"
+    },
+    "saludamos": {
+      "w": "saludarse",
+      "pos": "v",
+      "ja": "あいさつを交わす",
+      "form": "saludarse の現在・一人称複数（nos saludamos＝あいさつし合う）",
+      "key": true
+    },
+    "vamos": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "行く",
+      "form": "ir の現在・一人称複数（vamos a casa de mi abuela＝祖母の家に行く）"
+    },
+    "tengo": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持っている",
+      "form": "tener の現在・一人称単数（tengo que＋原形＝〜しなければならない／tengo muchas ganas de＝〜が楽しみ）"
+    }
+  },
+  "lines": [
+    {
+      "ja": "ねえユキ、4チャンネルでスペイン映画をやってるよ。見ない？"
+    },
+    {
+      "ja": "今から？ もう10時半よ。明日はすごく早起きしなきゃいけないのに。"
+    },
+    {
+      "ja": "どうして？ 電車は何時に出るの？"
+    },
+    {
+      "ja": "新幹線は7時15分発よ。7時には駅にいなきゃいけないの。"
+    },
+    {
+      "ja": "7時に？ ひどいな！ で、君は何時に起きるつもり？"
+    },
+    {
+      "ja": "5時半よ。着替えて、髪をとかして、朝ごはんを食べて、出る。わたしは夜にお風呂に入るの。そうすれば朝は時間にゆとりができるから。"
+    },
+    {
+      "ja": "ぼくは違う。いつも朝にシャワーを浴びるんだ。それにひげもそらなきゃ。少なくとも30分は必要だよ。"
+    },
+    {
+      "ja": "じゃあ、5時に起きなきゃね。"
+    },
+    {
+      "ja": "わかった、わかった。ところで、電車ではどこに座るの？"
+    },
+    {
+      "ja": "切符はここにあるわ。7列目のAとB席。あなたは窓側よ。晴れていれば富士山が見えるわ。"
+    },
+    {
+      "ja": "いいね！ 明日の天気はどうなの？"
+    },
+    {
+      "ja": "テレビによると、一日じゅう晴れるって。でも朝は肌寒いわ。上着を持っていってね。"
+    },
+    {
+      "ja": "ねえ、こういう電車はだれがつくってるの？ すごく速いよね。"
+    },
+    {
+      "ja": "日本のいくつかの会社よ。おじさんは新幹線の部品をつくる会社で働いているの。"
+    },
+    {
+      "ja": "おもしろいね！"
+    },
+    {
+      "ja": "それから京都では、まずおばあちゃんの家に行くの。あなたに会うのをとても楽しみにしているわ。"
+    },
+    {
+      "ja": "ぼくもだよ！ ごあいさつするのが楽しみだ。スペインみたいに2回キスしてもいい？"
+    },
+    {
+      "ja": "だめだめ！ 日本ではキスであいさつしないの。"
+    }
+  ],
+  "names": [
+    "Fuji"
+  ]
+}

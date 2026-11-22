@@ -1,0 +1,104 @@
+{
+  "format": 1,
+  "id": "20261122-224642-4033",
+  "title": "L12-01 Mañana empieza el curso",
+  "scene": "Por la noche, en un piso compartido en España. Makoto, un estudiante japonés, se despide de Elena, su compañera de piso, porque quiere acostarse pronto. Conversación tranquila y amistosa.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-22T13:47:28.138Z",
+  "audio": "audio.mp3",
+  "durationMs": 58316,
+  "speakers": [
+    {
+      "id": "MAKOTO",
+      "gender": "male",
+      "persona": "Makoto, unos 22 años, estudiante japonés, serio, ordenado y un poco tímido, habla despacio y con claridad"
+    },
+    {
+      "id": "ELENA",
+      "gender": "female",
+      "persona": "Elena, unos 25 años, compañera de piso española, alegre y curiosa"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "MAKOTO",
+      "text": "Bueno, ya me voy a la cama.",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 2640
+    },
+    {
+      "index": 1,
+      "speaker": "ELENA",
+      "text": "¿Qué te pasa? ¡Todavía son las once!",
+      "direction": "sorprendida",
+      "startMs": 3335,
+      "endMs": 6130
+    },
+    {
+      "index": 2,
+      "speaker": "MAKOTO",
+      "text": "Es que mañana empieza el curso y tengo que levantarme temprano.",
+      "direction": "",
+      "startMs": 6890,
+      "endMs": 12360
+    },
+    {
+      "index": 3,
+      "speaker": "ELENA",
+      "text": "¿Qué curso es?",
+      "direction": "",
+      "startMs": 13219,
+      "endMs": 14329
+    },
+    {
+      "index": 4,
+      "speaker": "MAKOTO",
+      "text": "Es el curso para extranjeros de la universidad.",
+      "direction": "",
+      "startMs": 15259,
+      "endMs": 19049
+    },
+    {
+      "index": 5,
+      "speaker": "ELENA",
+      "text": "Muy bien. ¿A qué hora empiezan las clases?",
+      "direction": "",
+      "startMs": 19882,
+      "endMs": 23041
+    },
+    {
+      "index": 6,
+      "speaker": "MAKOTO",
+      "text": "A las nueve.",
+      "direction": "",
+      "startMs": 24183,
+      "endMs": 25096
+    },
+    {
+      "index": 7,
+      "speaker": "ELENA",
+      "text": "¿A qué hora piensas levantarte?",
+      "direction": "",
+      "startMs": 25876,
+      "endMs": 28045
+    },
+    {
+      "index": 8,
+      "speaker": "MAKOTO",
+      "text": "Voy a levantarme a las siete. Me ducho, desayuno, me limpio los dientes y me cambio de ropa. Voy a salir de casa a las ocho y cuarto para llegar a la clase antes de las nueve. Para levantarme a las siete, tengo que acostarme a las once. Pongo el despertador para las siete menos cinco.",
+      "direction": "",
+      "startMs": 29051,
+      "endMs": 54451
+    },
+    {
+      "index": 9,
+      "speaker": "ELENA",
+      "text": "¡Eres muy ordenado!",
+      "direction": "riéndose",
+      "startMs": 55426,
+      "endMs": 57316
+    }
+  ]
+}

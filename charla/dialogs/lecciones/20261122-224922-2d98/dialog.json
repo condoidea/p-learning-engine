@@ -1,0 +1,125 @@
+{
+  "format": 1,
+  "id": "20261122-224922-2d98",
+  "title": "L11-01 En una tienda de moda",
+  "scene": "Una pareja, Tomás y Elena, mira vestidos en una tienda de moda. Elena quiere un vestido muy caro; Tomás piensa que es demasiado dinero. Discusión ligera de pareja, con humor.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-22T13:50:33.843Z",
+  "audio": "audio.mp3",
+  "durationMs": 56088,
+  "speakers": [
+    {
+      "id": "TOMAS",
+      "gender": "male",
+      "persona": "Tomás, unos 35 años, práctico y algo ahorrador"
+    },
+    {
+      "id": "ELENA",
+      "gender": "female",
+      "persona": "Elena, unos 33 años, decidida y con sentido del humor"
+    },
+    {
+      "id": "DEPENDIENTE",
+      "gender": "male",
+      "persona": "dependiente de la tienda, educado y profesional"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "TOMAS",
+      "text": "¿Qué vestido te gusta más?",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 2150
+    },
+    {
+      "index": 1,
+      "speaker": "ELENA",
+      "text": "Este me gusta mucho.",
+      "direction": "",
+      "startMs": 3076,
+      "endMs": 4946
+    },
+    {
+      "index": 2,
+      "speaker": "TOMAS",
+      "text": "Oiga, ¿cuánto cuesta este vestido?",
+      "direction": "",
+      "startMs": 5669,
+      "endMs": 9129
+    },
+    {
+      "index": 3,
+      "speaker": "DEPENDIENTE",
+      "text": "Dos mil quinientos euros. Es de una marca de prestigio.",
+      "direction": "",
+      "startMs": 10158,
+      "endMs": 14418
+    },
+    {
+      "index": 4,
+      "speaker": "TOMAS",
+      "text": "¡Oh! Es muy caro.",
+      "direction": "",
+      "startMs": 15224,
+      "endMs": 17384
+    },
+    {
+      "index": 5,
+      "speaker": "DEPENDIENTE",
+      "text": "Este es más barato, pero no es tan bueno como ese.",
+      "direction": "",
+      "startMs": 18152,
+      "endMs": 22312
+    },
+    {
+      "index": 6,
+      "speaker": "ELENA",
+      "text": "No está mal. Pero me gusta más este. Es mucho más bonito.",
+      "direction": "",
+      "startMs": 23244,
+      "endMs": 28074
+    },
+    {
+      "index": 7,
+      "speaker": "TOMAS",
+      "text": "Me parece una tontería gastar tanto dinero en un vestido.",
+      "direction": "",
+      "startMs": 29011,
+      "endMs": 34081
+    },
+    {
+      "index": 8,
+      "speaker": "ELENA",
+      "text": "Y tú, ¿por qué quieres comprar un coche nuevo? ¿No te parece una tontería?",
+      "direction": "",
+      "startMs": 34953,
+      "endMs": 40318
+    },
+    {
+      "index": 9,
+      "speaker": "TOMAS",
+      "text": "Es diferente. Mi coche ya está viejo.",
+      "direction": "",
+      "startMs": 41458,
+      "endMs": 45118
+    },
+    {
+      "index": 10,
+      "speaker": "ELENA",
+      "text": "Mis vestidos también están viejos.",
+      "direction": "",
+      "startMs": 45983,
+      "endMs": 48353
+    },
+    {
+      "index": 11,
+      "speaker": "TOMAS",
+      "text": "Bueno, ¿por qué no compramos uno más barato? No siempre el más caro es el mejor.",
+      "direction": "",
+      "startMs": 49059,
+      "endMs": 55088
+    }
+  ]
+}

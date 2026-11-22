@@ -1,0 +1,324 @@
+{
+  "format": 1,
+  "sceneJa": "🌙 夜11時、マコトとエレナの会話。マコトは明日から大学の留学生向けコースが始まる",
+  "phrases": [
+    {
+      "t": "me voy a la cama",
+      "ja": "寝にいく・寝る（irse a la cama）",
+      "key": true
+    },
+    {
+      "t": "qué te pasa",
+      "ja": "どうしたの？（pasar：起こる）",
+      "key": true
+    },
+    {
+      "t": "es que",
+      "ja": "だって〜なんだ（理由を言うときの言い方）",
+      "key": true
+    },
+    {
+      "t": "tengo que levantarme",
+      "ja": "起きなければならない（tener que＋原形）",
+      "key": true
+    },
+    {
+      "t": "voy a levantarme",
+      "ja": "起きるつもりだ（ir a＋原形）",
+      "key": true
+    },
+    {
+      "t": "me limpio los dientes",
+      "ja": "歯をみがく（limpiarse los dientes）",
+      "key": true
+    },
+    {
+      "t": "me cambio de ropa",
+      "ja": "着替える（cambiarse de ropa）",
+      "key": true
+    },
+    {
+      "t": "antes de las nueve",
+      "ja": "9時前に",
+      "key": true
+    },
+    {
+      "t": "siete menos cinco",
+      "ja": "6時55分（7時5分前）",
+      "key": true
+    },
+    {
+      "t": "las ocho y cuarto",
+      "ja": "8時15分",
+      "key": true
+    }
+  ],
+  "words": {
+    "bueno": {
+      "w": "bueno",
+      "pos": "interj",
+      "ja": "さて・まあ（話の区切り）",
+      "note": "ここは「よい」ではなく話の切り出し"
+    },
+    "ya": {
+      "w": "ya",
+      "pos": "adv",
+      "ja": "もう・そろそろ"
+    },
+    "voy": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "行く・〜するつもりだ",
+      "form": "ir の現在・一人称単数（ir a＋原形＝〜するつもり／me voy a la cama＝寝にいく）",
+      "note": "irse a la cama＝寝る"
+    },
+    "cama": {
+      "w": "cama",
+      "pos": "n",
+      "g": "f",
+      "ja": "ベッド",
+      "key": true
+    },
+    "pasa": {
+      "w": "pasar",
+      "pos": "v",
+      "ja": "（〜に）起こる",
+      "form": "pasar の現在・三人称単数（¿Qué te pasa?＝どうしたの？）"
+    },
+    "todavía": {
+      "w": "todavía",
+      "pos": "adv",
+      "ja": "まだ",
+      "key": true
+    },
+    "es": {
+      "w": "ser",
+      "pos": "v",
+      "ja": "〜である",
+      "form": "ser の現在・三人称単数（es que＝だって〜だから）"
+    },
+    "mañana": {
+      "w": "mañana",
+      "pos": "adv",
+      "ja": "明日",
+      "note": "ここは「朝」ではなく「明日」"
+    },
+    "empieza": {
+      "w": "empezar",
+      "pos": "v",
+      "ja": "始まる",
+      "form": "empezar の現在・三人称単数（empieza el curso＝コースが始まる）",
+      "key": true
+    },
+    "curso": {
+      "w": "curso",
+      "pos": "n",
+      "g": "m",
+      "ja": "講座・コース・学年",
+      "key": true
+    },
+    "tengo": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持っている",
+      "form": "tener の現在・一人称単数（tengo que＋原形＝〜しなければならない）",
+      "note": "tener que＋原形＝〜しなければならない"
+    },
+    "levantarme": {
+      "w": "levantarse",
+      "pos": "v",
+      "ja": "起きる",
+      "form": "levantarse の原形＋me（再帰：自分を起こす＝起きる）",
+      "key": true
+    },
+    "temprano": {
+      "w": "temprano",
+      "pos": "adv",
+      "ja": "早く",
+      "key": true
+    },
+    "clase": {
+      "w": "clase",
+      "pos": "n",
+      "g": "f",
+      "ja": "授業・教室",
+      "key": true
+    },
+    "clases": {
+      "w": "clase",
+      "pos": "n",
+      "g": "f",
+      "ja": "授業",
+      "form": "clase の複数形"
+    },
+    "extranjeros": {
+      "w": "extranjero",
+      "pos": "n",
+      "g": "m",
+      "ja": "外国人",
+      "form": "extranjero の複数形（curso para extranjeros＝留学生向けコース）",
+      "key": true
+    },
+    "empiezan": {
+      "w": "empezar",
+      "pos": "v",
+      "ja": "始まる",
+      "form": "empezar の現在・三人称複数（las clases empiezan＝授業が始まる）"
+    },
+    "piensas": {
+      "w": "pensar",
+      "pos": "v",
+      "ja": "〜するつもりだ",
+      "form": "pensar の現在・二人称単数（pensar＋原形＝〜するつもり）",
+      "note": "ここは「考える」ではなく「〜するつもり」",
+      "key": true
+    },
+    "levantarte": {
+      "w": "levantarse",
+      "pos": "v",
+      "ja": "起きる",
+      "form": "levantarse の原形＋te（再帰・君が起きる）"
+    },
+    "ducho": {
+      "w": "ducharse",
+      "pos": "v",
+      "ja": "シャワーを浴びる",
+      "form": "ducharse の現在・一人称単数（me ducho＝シャワーを浴びる）",
+      "key": true
+    },
+    "desayuno": {
+      "w": "desayunar",
+      "pos": "v",
+      "ja": "朝食を食べる",
+      "form": "desayunar の現在・一人称単数",
+      "key": true
+    },
+    "limpio": {
+      "w": "limpiarse",
+      "pos": "v",
+      "ja": "（自分の〜を）みがく",
+      "form": "limpiarse の現在・一人称単数（me limpio los dientes＝歯をみがく）",
+      "key": true
+    },
+    "dientes": {
+      "w": "diente",
+      "pos": "n",
+      "g": "m",
+      "ja": "歯",
+      "form": "diente の複数形",
+      "key": true
+    },
+    "cambio": {
+      "w": "cambiarse",
+      "pos": "v",
+      "ja": "（服を）着替える",
+      "form": "cambiarse の現在・一人称単数（me cambio de ropa＝着替える）",
+      "note": "ここは名詞の「変化」ではなく動詞",
+      "key": true
+    },
+    "ropa": {
+      "w": "ropa",
+      "pos": "n",
+      "g": "f",
+      "ja": "服・衣類",
+      "key": true
+    },
+    "salir": {
+      "w": "salir",
+      "pos": "v",
+      "ja": "出る・出かける",
+      "key": true
+    },
+    "cuarto": {
+      "w": "cuarto",
+      "pos": "n",
+      "g": "m",
+      "ja": "15分・4分の1",
+      "note": "y cuarto＝15分過ぎ"
+    },
+    "llegar": {
+      "w": "llegar",
+      "pos": "v",
+      "ja": "着く・到着する",
+      "key": true
+    },
+    "para": {
+      "w": "para",
+      "pos": "prep",
+      "ja": "〜するために",
+      "note": "para＋原形＝〜するために"
+    },
+    "acostarme": {
+      "w": "acostarse",
+      "pos": "v",
+      "ja": "寝る・床につく",
+      "form": "acostarse の原形＋me（再帰）",
+      "key": true
+    },
+    "pongo": {
+      "w": "poner",
+      "pos": "v",
+      "ja": "（目覚ましを）セットする",
+      "form": "poner の現在・一人称単数（pongo el despertador＝目覚ましをかける）",
+      "key": true
+    },
+    "despertador": {
+      "w": "despertador",
+      "pos": "n",
+      "g": "m",
+      "ja": "目覚まし時計",
+      "key": true
+    },
+    "menos": {
+      "w": "menos",
+      "pos": "adv",
+      "ja": "〜前（時刻）",
+      "note": "las siete menos cinco＝7時5分前＝6時55分"
+    },
+    "ordenado": {
+      "w": "ordenado",
+      "pos": "adj",
+      "ja": "きちんとした",
+      "note": "Eres muy ordenado＝きちんとしてるね",
+      "key": true
+    },
+    "que": {
+      "w": "que",
+      "pos": "conj",
+      "ja": "〜ということ",
+      "note": "es que＝だって〜（理由）／tengo que＝〜しなければならない"
+    }
+  },
+  "lines": [
+    {
+      "ja": "さて、もう寝るよ。"
+    },
+    {
+      "ja": "どうしたの？ まだ11時よ！"
+    },
+    {
+      "ja": "だって、明日コースが始まるから、早起きしなきゃいけないんだ。"
+    },
+    {
+      "ja": "何のコース？"
+    },
+    {
+      "ja": "大学の留学生向けコースだよ。"
+    },
+    {
+      "ja": "いいわね。授業は何時に始まるの？"
+    },
+    {
+      "ja": "9時。"
+    },
+    {
+      "ja": "何時に起きるつもり？"
+    },
+    {
+      "ja": "7時に起きるよ。シャワーを浴びて、朝食を食べて、歯をみがいて、着替える。8時15分に家を出れば、9時前に教室に着ける。7時に起きるには、11時に寝なきゃいけない。目覚ましは6時55分にセットするよ。"
+    },
+    {
+      "ja": "きちんとしてるのね！"
+    }
+  ]
+}

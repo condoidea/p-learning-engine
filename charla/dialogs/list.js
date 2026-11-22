@@ -8,7 +8,7 @@
  * ========================================================= */
 window.CHARLA_SERIES = [
   {
-    id: 'lucia-diego', title: 'ルシアとディエゴ', sub: '西検4級 リスニング・ダイアログ集', guide: 'guide.md',
+    id: 'lucia-diego', title: 'シーズン1　ルシアとディエゴ', sub: '西検4級 オリジナル会話（マドリード）', guide: 'guide.md',
     names: ['Lucía', 'Diego', 'Tomate', 'Michi', 'Rosa', 'Rosario', 'Felipe', 'Ramón', 'Pepito', 'Madrid', 'Valencia', 'Eiffel', 'Napoleón', 'Retiro'],   /* 人名・地名（意味を出さない） */
     dialogs: [
       { id: '20261118-164801-d974', no: 1, title: 'La paella desaparecida', titleJa: '消えたパエリア' },
@@ -19,12 +19,31 @@ window.CHARLA_SERIES = [
     ]
   },
   {
+    /* シーズン2：dialog.json の題は「S2-01 Título」 */
+    id: 'marta-javi', title: 'シーズン2　マルタとハビ', sub: '西検4級 オリジナル会話（サラマンカの古いカフェ）',
+    names: ['Marta', 'Javi', 'Salamanca', 'Cádiz'],   /* 人名・地名（意味を出さない） */
+    dialogs: [
+      { id: '20261122-014424-0bcc', no: 1, title: 'La pista del reloj', titleJa: '時計の手がかり' }
+    ]
+  },
+  {
     id: 'la-prorroga', title: 'ラ・プロロガ', sub: '西検4級 サッカー番組のインタビュー', guide: 'guide.md',
     names: ['Nuria', 'Campos', 'Dani', 'Robles', 'Ramiro', 'Salgado', 'Alberto', 'Gil', 'Carmen', 'Río', 'Verde', 'Prórroga'],   /* 人名・番組名・チーム名（意味を出さない。Onda Balón は balón＝ボールがあるので notes の言い回しで） */
     dialogs: [
       { id: '20261119-170640-b51a', no: 1, title: 'El goleador', titleJa: '得点者' },
       { id: '20261120-170411-b106', no: 2, title: 'El entrenador', titleJa: '監督' },
       { id: '20261120-171112-1713', no: 3, title: 'El árbitro', titleJa: '審判' }
+    ]
+  },
+  {
+    /* レッスン：課ごとの短い会話。dialog.json の題は「L11-01 Título」→ no は「11-1」（課-何番目） */
+    id: 'lecciones', title: 'レッスン', sub: '課ごとの短い会話',
+    names: ['Makoto', 'Elena', 'Yuki', 'Carlos', 'Tomás', 'Lucía', 'Pablo', 'Tokio', 'Kioto'],
+    dialogs: [
+      { id: '20261122-224922-2d98', no: '11-1', title: 'En una tienda de moda', titleJa: '洋服の店で' },
+      { id: '20261122-225034-ccf7', no: '11-2', title: 'En una tienda de deportes', titleJa: 'スポーツ用品店で' },
+      { id: '20261122-224642-4033', no: '12-1', title: 'Mañana empieza el curso', titleJa: 'あしたから授業' },
+      { id: '20261122-224730-6344', no: '12-2', title: 'El tren bala', titleJa: '新幹線' }
     ]
   }
 ];

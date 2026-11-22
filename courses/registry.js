@@ -82,7 +82,7 @@ window.LE_COURSES = [
     id: 'charla', entry: 'charla.html', storageKey: 'charla.v1',
     title: 'スペイン語 会話を聞く', brand: 'CHARLA', icon: '🎧',
     desc: '会話の音声を台本と一緒に。セリフのくり返し・全体のくり返し・速さ・2秒戻し・文字を隠す。書き取り・シャドーイング用に1セリフずつ「聞く → 書く・言う時間」。調べた語は単語アプリへ。',
-    color: '#8cc8f5', color2: '#f4b48a', lessons: 8
+    color: '#8cc8f5', color2: '#f4b48a', lessons: 13
   },
   /* ユーキ・クエスト（yuki/）：有機化学のRPG。独立アプリ。進み具合は lessons[id].done を数える（序章4＋1章4＋ボス2） */
   {

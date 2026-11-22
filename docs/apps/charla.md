@@ -100,5 +100,8 @@ TTS で作ったスペイン語の会話（音声＋台本）を、学習向け�
 - 保存：`charla.v1`（`?sandbox` は `charla.sandbox.v1`）。単語アプリへは `vocab.deck.charla`・`vocab.decks.v1`。
 
 ## 入っているシリーズ
-- **ルシアとディエゴ**（`lucia-diego`）：第1〜5話。第1・2話は単語の読み方を直した音声に差し替えた（2026-11-22。文は同じなので notes.json はそのまま）。
+- **シーズン1　ルシアとディエゴ**（`lucia-diego`）：第1〜5話。第1・2話は単語の読み方を直した音声に差し替えた（2026-11-22。文は同じなので notes.json はそのまま）。
 - **ラ・プロロガ**（`la-prorroga`）：ラジオのサッカー番組のインタビュー。第1〜3話（選手・監督・審判）。dialog.json の題は「I-01 La Prórroga: el goleador」の形で、list.js では guide.md の題（El goleador）にした。guide.md の頭に「サッカー用語集」（📘 教材について で読める）。
+- **シーズン2　マルタとハビ**（`marta-javi`）：dialog.json の題は「S2-01 Título」。2026-11-23 に第1話（解説 guide.md はまだない → 訳は notes.json の `lines` に、こちらで書いた）。
+- **レッスン**（`lecciones`）：課ごとの短い会話。題は「L11-01 Título」→ list.js の `no` は「11-1」（課-何番目）。解説はなく、訳は notes.json の `lines`（こちらで書いた）。2026-11-23 に 11・12 課。
+- guide.md がないシリーズは list.js の `guide` を書かない（📘 は出ない）。訳は notes.json の `"lines": [{ "ja": … }, …]`（セリフの順）。あとで guide.md が来たら、本文の表の訳が優先される。

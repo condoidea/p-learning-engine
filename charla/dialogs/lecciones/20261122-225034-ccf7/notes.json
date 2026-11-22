@@ -1,0 +1,544 @@
+{
+  "format": 1,
+  "sceneJa": "🥾 スポーツ用品店。ルシアとパブロが山登りのための靴と上着を選ぶ",
+  "phrases": [
+    {
+      "t": "qué te parecen",
+      "ja": "〜をどう思う？（parecer：複数のものにはparecen）",
+      "key": true
+    },
+    {
+      "t": "son mejores",
+      "ja": "（そちらのほうが）よりよい（bueno の比較）",
+      "key": true
+    },
+    {
+      "t": "las más caras",
+      "ja": "いちばん高いもの（最上級・複数）",
+      "key": true
+    },
+    {
+      "t": "no son tan buenas como",
+      "ja": "〜ほどよくない（tan … como）",
+      "key": true
+    },
+    {
+      "t": "vamos a caminar",
+      "ja": "歩くつもりだ（ir a＋原形）",
+      "key": true
+    },
+    {
+      "t": "tienes razón",
+      "ja": "君の言うとおりだ（tener razón）",
+      "key": true
+    },
+    {
+      "t": "me llevo",
+      "ja": "（買って）持って帰る・これをもらう（llevarse）",
+      "key": true
+    },
+    {
+      "t": "qué tal me queda",
+      "ja": "似合う？・サイズはどう？（quedar：服が〜に合う）",
+      "key": true
+    },
+    {
+      "t": "hace mucho más frío que",
+      "ja": "〜よりずっと寒い（hacer frío＝寒い）",
+      "key": true
+    },
+    {
+      "t": "de repente",
+      "ja": "急に・突然",
+      "key": true
+    },
+    {
+      "t": "por eso",
+      "ja": "だから",
+      "key": true
+    },
+    {
+      "t": "no hay nada mejor",
+      "ja": "これ以上のものはない",
+      "key": true
+    }
+  ],
+  "words": {
+    "mira": {
+      "w": "mirar",
+      "pos": "interj",
+      "ja": "ねえ・見て",
+      "form": "mirar の命令・tú（Mira,＝ねえ）"
+    },
+    "estas": {
+      "w": "este",
+      "pos": "det",
+      "ja": "この",
+      "form": "este の女性複数形（estas botas＝これらのブーツ）"
+    },
+    "botas": {
+      "w": "bota",
+      "pos": "n",
+      "g": "f",
+      "ja": "ブーツ・靴",
+      "form": "bota の複数形",
+      "key": true
+    },
+    "parecen": {
+      "w": "parecer",
+      "pos": "v",
+      "ja": "〜のように思われる",
+      "form": "parecer の現在・三人称複数（¿qué te parecen…?＝〜をどう思う？）",
+      "key": true
+    },
+    "esas": {
+      "w": "ese",
+      "pos": "det",
+      "ja": "その（相手に近いもの）",
+      "form": "ese の女性複数形"
+    },
+    "negras": {
+      "w": "negro",
+      "pos": "adj",
+      "ja": "黒い",
+      "form": "negro の女性複数形"
+    },
+    "fuertes": {
+      "w": "fuerte",
+      "pos": "adj",
+      "ja": "丈夫な・強い",
+      "key": true
+    },
+    "para": {
+      "w": "para",
+      "pos": "prep",
+      "ja": "〜にとって・〜には（para la montaña＝山には）"
+    },
+    "mejores": {
+      "w": "mejor",
+      "pos": "adj",
+      "ja": "よりよい",
+      "form": "mejor の複数形（bueno の比較）",
+      "key": true
+    },
+    "cuánto": {
+      "w": "cuánto",
+      "pos": "int",
+      "ja": "いくら",
+      "key": true
+    },
+    "cuestan": {
+      "w": "costar",
+      "pos": "v",
+      "ja": "（値段が）〜する",
+      "form": "costar の現在・三人称複数",
+      "key": true
+    },
+    "caras": {
+      "w": "caro",
+      "pos": "adj",
+      "ja": "（値段が）高い",
+      "form": "caro の女性複数形（las más caras＝いちばん高いもの）",
+      "key": true
+    },
+    "uf": {
+      "w": "uf",
+      "pos": "interj",
+      "ja": "うわっ・ふう（驚き・うんざり）"
+    },
+    "unas": {
+      "w": "unos",
+      "pos": "det",
+      "ja": "いくつかの",
+      "form": "unos の女性形（¿unas más baratas?＝もっと安いもの）",
+      "note": "複数形なので「いくつか」の意味。日本語では訳さないことが多い"
+    },
+    "baratas": {
+      "w": "barato",
+      "pos": "adj",
+      "ja": "安い",
+      "form": "barato の女性複数形",
+      "key": true
+    },
+    "noventa": {
+      "w": "noventa",
+      "pos": "num",
+      "ja": "90"
+    },
+    "ligeras": {
+      "w": "ligero",
+      "pos": "adj",
+      "ja": "軽い",
+      "form": "ligero の女性複数形",
+      "key": true
+    },
+    "horas": {
+      "w": "hora",
+      "pos": "n",
+      "g": "f",
+      "ja": "時間（1時間・2時間の「時間」）",
+      "form": "hora の複数形"
+    },
+    "caminar": {
+      "w": "caminar",
+      "pos": "v",
+      "ja": "歩く",
+      "key": true
+    },
+    "piernas": {
+      "w": "pierna",
+      "pos": "n",
+      "g": "f",
+      "ja": "脚",
+      "form": "pierna の複数形",
+      "key": true
+    },
+    "importantes": {
+      "w": "importante",
+      "pos": "adj",
+      "ja": "大切な・重要な",
+      "form": "importante の複数形"
+    },
+    "chaqueta": {
+      "w": "chaqueta",
+      "pos": "n",
+      "g": "f",
+      "ja": "ジャケット・上着",
+      "key": true
+    },
+    "delgada": {
+      "w": "delgado",
+      "pos": "adj",
+      "ja": "（布が）薄い・（人が）細い",
+      "form": "delgado の女性形（chaqueta delgada＝薄いジャケット）",
+      "key": true
+    },
+    "apropiada": {
+      "w": "apropiado",
+      "pos": "adj",
+      "ja": "適した・ふさわしい",
+      "form": "apropiado の女性形（apropiada para＝〜に適している）",
+      "key": true
+    },
+    "hace": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "（天候が）〜である",
+      "form": "hacer の現在・三人称単数（hace frío＝寒い）",
+      "key": true
+    },
+    "frío": {
+      "w": "frío",
+      "pos": "n",
+      "g": "m",
+      "ja": "寒さ",
+      "note": "hace frío＝寒い（天気の言い方）"
+    },
+    "que": {
+      "w": "que",
+      "pos": "conj",
+      "ja": "〜より（más … que＝〜より多く…）",
+      "note": "比較の que"
+    },
+    "tal": {
+      "w": "tal",
+      "pos": "adv",
+      "ja": "どう（¿qué tal?）",
+      "note": "qué tal＝どう？（調子・具合をたずねる）"
+    },
+    "queda": {
+      "w": "quedar",
+      "pos": "v",
+      "ja": "（服が）合う・似合う",
+      "form": "quedar の現在・三人称単数（¿qué tal me queda?＝私に似合う？）",
+      "key": true
+    },
+    "pareces": {
+      "w": "parecer",
+      "pos": "v",
+      "ja": "〜のように見える",
+      "form": "parecer の現在・二人称単数（pareces un muñeco＝君は〜みたいだ）",
+      "key": true
+    },
+    "muñeco": {
+      "w": "muñeco",
+      "pos": "n",
+      "g": "m",
+      "ja": "人形",
+      "note": "muñeco de nieve＝雪だるま"
+    },
+    "nieve": {
+      "w": "nieve",
+      "pos": "n",
+      "g": "f",
+      "ja": "雪"
+    },
+    "tonto": {
+      "w": "tonto",
+      "pos": "adj",
+      "ja": "ばかな・間抜けな",
+      "note": "¡Qué tonto eres!＝ばかね！（軽い言い方）",
+      "key": true
+    },
+    "calentita": {
+      "w": "calentito",
+      "pos": "adj",
+      "ja": "ほかほか暖かい",
+      "form": "calentito の女性形（caliente の親しみをこめた形）"
+    },
+    "llevo": {
+      "w": "llevar",
+      "pos": "v",
+      "ja": "（買って）持っていく",
+      "form": "llevar の現在・一人称単数（me la llevo＝それをもらう）",
+      "note": "llevarse：買って持っていく・もらう"
+    },
+    "oye": {
+      "w": "oír",
+      "pos": "interj",
+      "ja": "ねえ",
+      "form": "oír の命令・tú（Oye,＝ねえ）"
+    },
+    "gastas": {
+      "w": "gastar",
+      "pos": "v",
+      "ja": "（お金を）使う",
+      "form": "gastar の現在・二人称単数",
+      "key": true
+    },
+    "antes": {
+      "w": "antes",
+      "pos": "adv",
+      "ja": "前は・以前",
+      "note": "más que antes＝前より"
+    },
+    "comprabas": {
+      "w": "comprar",
+      "pos": "v",
+      "ja": "買っていた",
+      "form": "comprar の線過去・二人称単数（antes siempre comprabas＝前はいつも買っていた）"
+    },
+    "porque": {
+      "w": "porque",
+      "pos": "conj",
+      "ja": "なぜなら・〜だから",
+      "note": "por qué（なぜ）と porque（なぜなら）は別"
+    },
+    "cargo": {
+      "w": "cargo",
+      "pos": "n",
+      "g": "m",
+      "ja": "役職・ポスト",
+      "key": true
+    },
+    "empresa": {
+      "w": "empresa",
+      "pos": "n",
+      "g": "f",
+      "ja": "会社",
+      "key": true
+    },
+    "gano": {
+      "w": "ganar",
+      "pos": "v",
+      "ja": "稼ぐ・もうける",
+      "form": "ganar の現在・一人称単数",
+      "note": "ここは「勝つ」でなく「収入を得る」",
+      "key": true
+    },
+    "petróleo": {
+      "w": "petróleo",
+      "pos": "n",
+      "g": "m",
+      "ja": "石油"
+    },
+    "sector": {
+      "w": "sector",
+      "pos": "n",
+      "g": "m",
+      "ja": "業界・分野"
+    },
+    "paga": {
+      "w": "pagar",
+      "pos": "v",
+      "ja": "（給料を）払う",
+      "form": "pagar の現在・三人称単数（ese sector paga bien＝その業界は給料がいい）"
+    },
+    "trabajo": {
+      "w": "trabajar",
+      "pos": "v",
+      "ja": "働く",
+      "form": "trabajar の現在・一人称単数（trabajo mucho＝よく働く）"
+    },
+    "necesito": {
+      "w": "necesitar",
+      "pos": "v",
+      "ja": "必要とする",
+      "form": "necesitar の現在・一人称単数"
+    },
+    "vida": {
+      "w": "vida",
+      "pos": "n",
+      "g": "f",
+      "ja": "生活・人生"
+    },
+    "estresante": {
+      "w": "estresante",
+      "pos": "adj",
+      "ja": "ストレスの多い",
+      "key": true
+    },
+    "entiendo": {
+      "w": "entender",
+      "pos": "v",
+      "ja": "理解する・わかる",
+      "form": "entender の現在・一人称単数（Te entiendo＝君の気持ちはわかる）",
+      "key": true
+    },
+    "arriba": {
+      "w": "arriba",
+      "pos": "adv",
+      "ja": "上・上のほう",
+      "note": "desde arriba＝上から"
+    },
+    "vista": {
+      "w": "vista",
+      "pos": "n",
+      "g": "f",
+      "ja": "景色・眺め",
+      "key": true
+    },
+    "maravillosa": {
+      "w": "maravilloso",
+      "pos": "adj",
+      "ja": "すばらしい",
+      "form": "maravilloso の女性形",
+      "key": true
+    },
+    "nada": {
+      "w": "nada",
+      "pos": "pron",
+      "ja": "何も（〜ない）",
+      "note": "no hay nada mejor＝これ以上のものはない"
+    },
+    "mucho": {
+      "w": "mucho",
+      "pos": "adv",
+      "ja": "ずっと・たくさん",
+      "note": "mucho más＝ずっと〜"
+    },
+    "como": {
+      "w": "como",
+      "pos": "conj",
+      "ja": "〜のように・〜と同じく（tan … como＝〜ほど…）",
+      "note": "comer の「食べる」ではない"
+    },
+    "tanto": {
+      "w": "tanto",
+      "pos": "det",
+      "ja": "そんなに多くの（tanto dinero＝そんなに大金）"
+    },
+    "eso": {
+      "w": "eso",
+      "pos": "pron",
+      "ja": "それ（por eso＝だから）"
+    },
+    "montaña": {
+      "w": "montaña",
+      "pos": "n",
+      "g": "f",
+      "ja": "山",
+      "key": true
+    },
+    "allí": {
+      "w": "allí",
+      "pos": "adv",
+      "ja": "あそこに",
+      "note": "ここは「山のほう」を指す"
+    },
+    "aquí": {
+      "w": "aquí",
+      "pos": "adv",
+      "ja": "ここに"
+    },
+    "vamos": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "行く",
+      "form": "ir の現在・一人称複数（vamos a caminar＝歩くつもりだ・歩こう）",
+      "note": "ir a＋原形＝〜するつもり"
+    },
+    "tengo": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持っている・（役職などに）ついている",
+      "form": "tener の現在・一人称単数"
+    },
+    "tienes": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持っている",
+      "form": "tener の現在・二人称単数（tienes razón＝君が正しい）"
+    },
+    "razón": {
+      "w": "razón",
+      "pos": "n",
+      "g": "f",
+      "ja": "理由・道理",
+      "note": "tener razón＝正しい"
+    }
+  },
+  "lines": [
+    {
+      "ja": "ねえパブロ、このブーツはどう思う？"
+    },
+    {
+      "ja": "すてきだけど、その黒いののほうが丈夫だよ。山にはそっちのほうがいい。"
+    },
+    {
+      "ja": "すみません、この黒いブーツはいくらですか？"
+    },
+    {
+      "ja": "180ユーロです。店でいちばん高いですが、いちばんいい品でもあります。"
+    },
+    {
+      "ja": "うわっ！ もう少し安いのはありませんか？"
+    },
+    {
+      "ja": "こちらは90ユーロです。黒いほど質はよくありませんが、もっと軽いですよ。"
+    },
+    {
+      "ja": "ルシア、ぼくたちは6時間歩くんだよ。脚には、いいブーツがとても大事だ。"
+    },
+    {
+      "ja": "そのとおりね。黒いのをもらうわ。それで、このジャケットは？ どう思う？"
+    },
+    {
+      "ja": "ずいぶん薄いよ。山には向いていない。あそこはここよりずっと寒いんだ。"
+    },
+    {
+      "ja": "じゃあ、これは？ サイズはどう？"
+    },
+    {
+      "ja": "雪だるまみたいだ。"
+    },
+    {
+      "ja": "失礼ね！ でもとても暖かいの。これも買うわ。"
+    },
+    {
+      "ja": "ねえ、どうして急にそんなにお金を使うの？ 前はいつもいちばん安いものを買ってたのに。"
+    },
+    {
+      "ja": "今は会社で新しい役職についたからよ。前より稼いでいるの。"
+    },
+    {
+      "ja": "石油会社で？ その業界は給料がとてもいいよね。"
+    },
+    {
+      "ja": "ええ、でも前よりずっと働いているわ。だから山が必要なの。都会の生活はストレスがとても多いから。"
+    },
+    {
+      "ja": "わかるよ。上から見る景色は最高だ。これ以上のものはないね。"
+    }
+  ]
+}

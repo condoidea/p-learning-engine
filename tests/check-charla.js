@@ -48,7 +48,7 @@ W.CHARLA_DIALOGS.forEach(function (it) {
   if (!fs.existsSync(path.join(dir, D.audio || 'audio.mp3'))) E('audio', (D.audio || 'audio.mp3') + ' がない');
   if (D.format !== 1) E('dialog.json', 'format が 1 ではない（仕様が変わった？）');
   if (D.id !== it.id) E('dialog.json', 'id「' + D.id + '」がフォルダ名とちがう');
-  if (D.title.replace(/^(?:[A-Z]+-)?\d+\s+/, '').replace(/^La Prórroga: e/, 'E') !== it.title) Wn('list.js', '題が dialog.json（' + D.title + '）とちがう');
+  if (D.title.replace(/^(?:[A-Z]+\d*-)?\d+\s+/, '').replace(/^La Prórroga: e/, 'E') !== it.title) Wn('list.js', '題が dialog.json（' + D.title + '）とちがう');
   var prevEnd = 0;
   D.lines.forEach(function (l, i) {
     var at = 'セリフ' + (i + 1);
