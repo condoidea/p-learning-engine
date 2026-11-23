@@ -1,0 +1,507 @@
+{
+  "format": 1,
+  "sceneJa": "🏠 日曜の夜、マドリードのシェアハウス。ピレネーの村から帰ったダニエルを、ソフィアが迎える",
+  "names": [
+    "Pirineos"
+  ],
+  "phrases": [
+    {
+      "t": "ya estoy en casa",
+      "ja": "ただいま（直訳：もう家にいる）",
+      "key": true
+    },
+    {
+      "t": "por fin",
+      "ja": "やっと・ついに",
+      "key": true
+    },
+    {
+      "t": "fin de semana",
+      "ja": "週末",
+      "key": true
+    },
+    {
+      "t": "no supe nada de ti",
+      "ja": "君の消息は何もなかった（saber de ＋ 人＝〜の消息を知る）",
+      "key": true
+    },
+    {
+      "t": "lo siento",
+      "ja": "ごめんなさい・残念です",
+      "key": true
+    },
+    {
+      "t": "quise llamarte",
+      "ja": "電話しようとした（querer の点過去＝実際にやってみた）",
+      "key": true
+    },
+    {
+      "t": "no pude",
+      "ja": "（やってみたが）できなかった（poder の点過去）",
+      "key": true
+    },
+    {
+      "t": "qué tal",
+      "ja": "…はどうだった？（¿Qué tal el viaje?）",
+      "key": true
+    },
+    {
+      "t": "no te traje nada",
+      "ja": "何も持ってこなかった（二重否定：no ＋ 動詞 ＋ nada）",
+      "key": true
+    },
+    {
+      "t": "nada bonito",
+      "ja": "素敵なものは何も（nada ＋ 形容詞の男性単数形）",
+      "key": true
+    },
+    {
+      "t": "tampoco hay nada",
+      "ja": "…にも何もない（tampoco が動詞の前なので no は付けない）",
+      "key": true
+    },
+    {
+      "t": "tienes hambre",
+      "ja": "おなかがすいている（tener hambre）",
+      "key": true
+    },
+    {
+      "t": "ni un yogur",
+      "ja": "ヨーグルト1個も（ni un ＝ 1つも…ない）",
+      "key": true
+    },
+    {
+      "t": "me los comí todos",
+      "ja": "全部食べてしまった（comerse ＋ los yogures）",
+      "key": true
+    },
+    {
+      "t": "damos una vuelta",
+      "ja": "ちょっと出かける・ひと回りする（dar una vuelta）",
+      "key": true
+    },
+    {
+      "t": "cenamos fuera",
+      "ja": "外で晩ごはんにする（cenar fuera＝外食）",
+      "key": true
+    },
+    {
+      "t": "te invito yo",
+      "ja": "僕がおごるよ",
+      "key": true
+    },
+    {
+      "t": "mejor que cualquier recuerdo",
+      "ja": "どんなお土産よりもいい（mejor que ＋ 比較対象）",
+      "key": true
+    }
+  ],
+  "words": {
+    "hola": {
+      "w": "hola",
+      "pos": "interj",
+      "ja": "やあ・こんにちは"
+    },
+    "ya": {
+      "w": "ya",
+      "pos": "adv",
+      "ja": "もう・すでに（ya estoy en casa＝もう家にいる）"
+    },
+    "por": {
+      "w": "por",
+      "pos": "prep",
+      "ja": "（por fin で）やっと"
+    },
+    "fin": {
+      "w": "fin",
+      "pos": "n",
+      "g": "m",
+      "ja": "終わり（por fin＝やっと／fin de semana＝週末）"
+    },
+    "veces": {
+      "w": "vez",
+      "pos": "n",
+      "g": "f",
+      "ja": "回・度（tres veces＝3回）",
+      "form": "複数形"
+    },
+    "llamé": {
+      "w": "llamar",
+      "pos": "v",
+      "ja": "電話する",
+      "form": "llamar の点過去・一人称単数（te llamé＝君に電話した）"
+    },
+    "contestó": {
+      "w": "contestar",
+      "pos": "v",
+      "ja": "答える・電話に出る",
+      "form": "contestar の点過去・三人称単数（nadie contestó＝誰も出なかった）",
+      "key": true
+    },
+    "supe": {
+      "w": "saber",
+      "pos": "v",
+      "ja": "知る・消息を知る",
+      "form": "saber の点過去・一人称単数（不規則）。no supe nada de ti＝君の消息は何もなかった",
+      "key": true
+    },
+    "nada": {
+      "w": "nada",
+      "pos": "pron",
+      "ja": "何も（〜ない）",
+      "key": true
+    },
+    "nadie": {
+      "w": "nadie",
+      "pos": "pron",
+      "ja": "誰も（〜ない）",
+      "key": true
+    },
+    "ti": {
+      "w": "ti",
+      "pos": "pron",
+      "ja": "君（前置詞のあとの形。de ti＝君について・君から）"
+    },
+    "lo": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを（lo siento の lo は決まり文句）"
+    },
+    "siento": {
+      "w": "sentir",
+      "pos": "v",
+      "ja": "残念に思う・感じる",
+      "form": "sentir の現在・一人称単数（lo siento＝ごめんなさい）"
+    },
+    "quise": {
+      "w": "querer",
+      "pos": "v",
+      "ja": "〜しようとした",
+      "form": "querer の点過去・一人称単数（不規則）。quise ＋ 不定詞＝〜しようとした（やってみた）",
+      "key": true
+    },
+    "llamarte": {
+      "w": "llamar",
+      "pos": "v",
+      "ja": "電話する（llamar ＋ te＝君に電話する）",
+      "form": "llamar の不定詞に te（君に）がついた形"
+    },
+    "pude": {
+      "w": "poder",
+      "pos": "v",
+      "ja": "できた",
+      "form": "poder の点過去・一人称単数（不規則）。no pude＝（やってみたが）できなかった",
+      "key": true
+    },
+    "estuve": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "（〜に）いた・滞在した",
+      "form": "estar の点過去・一人称単数（不規則）",
+      "key": true
+    },
+    "pueblo": {
+      "w": "pueblo",
+      "pos": "n",
+      "g": "m",
+      "ja": "村"
+    },
+    "móvil": {
+      "w": "móvil",
+      "pos": "n",
+      "g": "m",
+      "ja": "携帯電話",
+      "key": true
+    },
+    "allí": {
+      "w": "allí",
+      "pos": "adv",
+      "ja": "そこで・あそこで"
+    },
+    "funciona": {
+      "w": "funcionar",
+      "pos": "v",
+      "ja": "（機械が）動く・機能する",
+      "form": "funcionar の現在・三人称単数（el móvil no funciona＝携帯がつながらない）",
+      "key": true
+    },
+    "tal": {
+      "w": "tal",
+      "pos": "adv",
+      "ja": "（qué tal で）どう",
+      "note": "¿Qué tal …? ＝ …はどうだった？"
+    },
+    "viaje": {
+      "w": "viaje",
+      "pos": "n",
+      "g": "m",
+      "ja": "旅行"
+    },
+    "hiciste": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "する・やる",
+      "form": "hacer の点過去・二人称単数（不規則）",
+      "key": true
+    },
+    "algo": {
+      "w": "algo",
+      "pos": "pron",
+      "ja": "何か",
+      "key": true
+    },
+    "interesante": {
+      "w": "interesante",
+      "pos": "adj",
+      "ja": "おもしろい・興味深い"
+    },
+    "anduve": {
+      "w": "andar",
+      "pos": "v",
+      "ja": "歩く・歩き回る",
+      "form": "andar の点過去・一人称単数（不規則）",
+      "key": true
+    },
+    "montaña": {
+      "w": "montaña",
+      "pos": "n",
+      "g": "f",
+      "ja": "山"
+    },
+    "fue": {
+      "w": "ser",
+      "pos": "v",
+      "ja": "〜だった",
+      "form": "ser の点過去・三人称単数（fue estupendo＝最高だった）。ir の点過去と同じ形"
+    },
+    "estupendo": {
+      "w": "estupendo",
+      "pos": "adj",
+      "ja": "すばらしい・最高の",
+      "key": true
+    },
+    "qué": {
+      "w": "qué",
+      "pos": "int",
+      "ja": "なんて（¡Qué bien!＝いいわね！）／何"
+    },
+    "bien": {
+      "w": "bien",
+      "pos": "adv",
+      "ja": "よく・いい（¡Qué bien!＝いいわね！）"
+    },
+    "me": {
+      "w": "me",
+      "pos": "pron",
+      "ja": "私に（me trajiste＝私に持ってきた）"
+    },
+    "me#10": {
+      "w": "comerse",
+      "pos": "pron",
+      "ja": "自分に（comerse の me。me los comí＝それらを全部食べてしまった）"
+    },
+    "trajiste": {
+      "w": "traer",
+      "pos": "v",
+      "ja": "持ってくる",
+      "form": "traer の点過去・二人称単数（不規則）",
+      "key": true
+    },
+    "traje": {
+      "w": "traer",
+      "pos": "v",
+      "ja": "持ってくる",
+      "form": "traer の点過去・一人称単数（不規則）",
+      "key": true
+    },
+    "algún": {
+      "w": "alguno",
+      "pos": "det",
+      "ja": "何かの",
+      "form": "alguno が男性単数名詞の前で変わった形（algún recuerdo＝何かお土産）",
+      "key": true
+    },
+    "recuerdo": {
+      "w": "recuerdo",
+      "pos": "n",
+      "g": "m",
+      "ja": "お土産・思い出",
+      "note": "recordar（思い出す）の動詞ではなく名詞",
+      "key": true
+    },
+    "pues": {
+      "w": "pues",
+      "pos": "interj",
+      "ja": "えーと・ええと（言いよどみ）"
+    },
+    "comprarte": {
+      "w": "comprar",
+      "pos": "v",
+      "ja": "買う（comprar ＋ te＝君に買う）",
+      "form": "comprar の不定詞に te（君に）がついた形"
+    },
+    "encontré": {
+      "w": "encontrar",
+      "pos": "v",
+      "ja": "見つける",
+      "form": "encontrar の点過去・一人称単数"
+    },
+    "bonito": {
+      "w": "bonito",
+      "pos": "adj",
+      "ja": "すてきな・かわいい",
+      "form": "男性単数形（nada bonito＝すてきなものは何も）"
+    },
+    "bueno": {
+      "w": "bueno",
+      "pos": "interj",
+      "ja": "まあ・さて（間をおく言い方）"
+    },
+    "tienes": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持っている",
+      "form": "tener の現在・二人称単数（tener hambre＝おなかがすく）"
+    },
+    "hambre": {
+      "w": "hambre",
+      "pos": "n",
+      "g": "f",
+      "ja": "空腹",
+      "note": "女性名詞だが el hambre の形で使う（アクセントのある a の前）",
+      "key": true
+    },
+    "nevera": {
+      "w": "nevera",
+      "pos": "n",
+      "g": "f",
+      "ja": "冷蔵庫",
+      "key": true
+    },
+    "tampoco": {
+      "w": "tampoco",
+      "pos": "adv",
+      "ja": "〜もまた…ない",
+      "key": true
+    },
+    "hay": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（hay で）〜がある・いる",
+      "form": "haber の現在・三人称単数（hay＝ある）"
+    },
+    "ir": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "行く"
+    },
+    "supermercado": {
+      "w": "supermercado",
+      "pos": "n",
+      "g": "m",
+      "ja": "スーパーマーケット"
+    },
+    "ni": {
+      "w": "ni",
+      "pos": "conj",
+      "ja": "〜さえ…ない・〜も…ない（ni un yogur＝ヨーグルト1個も）"
+    },
+    "yogur": {
+      "w": "yogur",
+      "pos": "n",
+      "g": "m",
+      "ja": "ヨーグルト",
+      "key": true
+    },
+    "ninguno": {
+      "w": "ninguno",
+      "pos": "pron",
+      "ja": "1つも…ない（ninguno＝1個もない）",
+      "key": true
+    },
+    "los#10": {
+      "w": "los",
+      "pos": "pron",
+      "ja": "それらを（los yogures）",
+      "note": "me los comí の los は冠詞ではなく「それらを」"
+    },
+    "comí": {
+      "w": "comerse",
+      "pos": "v",
+      "ja": "全部食べてしまう",
+      "form": "comer の点過去・一人称単数（comerse＝残らず食べる）",
+      "key": true
+    },
+    "todos": {
+      "w": "todo",
+      "pos": "pron",
+      "ja": "全部（los yogures すべて）",
+      "form": "todo の男性複数形"
+    },
+    "entonces": {
+      "w": "entonces",
+      "pos": "adv",
+      "ja": "じゃあ・それなら"
+    },
+    "damos": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "（dar una vuelta で）出かける・ひと回りする",
+      "form": "dar の現在・一人称複数"
+    },
+    "vuelta": {
+      "w": "vuelta",
+      "pos": "n",
+      "g": "f",
+      "ja": "ひと回り・散歩",
+      "key": true
+    },
+    "cenamos": {
+      "w": "cenar",
+      "pos": "v",
+      "ja": "晩ごはんを食べる",
+      "form": "cenar の現在・一人称複数（¿cenamos fuera?＝外で食べない？）"
+    },
+    "fuera": {
+      "w": "fuera",
+      "pos": "adv",
+      "ja": "外で・外に"
+    },
+    "invito": {
+      "w": "invitar",
+      "pos": "v",
+      "ja": "おごる・招待する",
+      "form": "invitar の現在・一人称単数（te invito＝君におごる）",
+      "key": true
+    },
+    "vale": {
+      "w": "vale",
+      "pos": "interj",
+      "ja": "いいね・オーケー"
+    },
+    "eso": {
+      "w": "eso",
+      "pos": "pron",
+      "ja": "それ",
+      "form": "ese の中性形（それ・そのこと）"
+    },
+    "mejor": {
+      "w": "mejor",
+      "pos": "adj",
+      "ja": "もっとよい",
+      "form": "bueno の比較級",
+      "key": true
+    },
+    "que": {
+      "w": "que",
+      "pos": "conj",
+      "ja": "〜より（mejor que＝〜よりよい）"
+    },
+    "cualquier": {
+      "w": "cualquier",
+      "pos": "det",
+      "ja": "どんな〜でも",
+      "key": true
+    }
+  }
+}

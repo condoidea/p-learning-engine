@@ -1,0 +1,96 @@
+{
+  "format": 1,
+  "id": "20261123-134134-663e",
+  "title": "L10-01 El regalo de cumpleaños",
+  "scene": "Madrid, en primavera. Makoto, un estudiante japonés, quiere enviar un regalo de cumpleaños a su hermana, que vive en Japón. Le pide ayuda a su amiga Carmen. Después, los dos van a unos grandes almacenes. Conversación natural y alegre entre amigos.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-23T04:42:18.701Z",
+  "audio": "audio.mp3",
+  "durationMs": 67962,
+  "speakers": [
+    {
+      "id": "MAKOTO",
+      "gender": "male",
+      "persona": "Makoto, unos 22 años, estudiante japonés en Madrid, amable y un poco despistado"
+    },
+    {
+      "id": "CARMEN",
+      "gender": "female",
+      "persona": "Carmen, unos 22 años, amiga española de Makoto, simpática, generosa y con sentido del humor"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "MAKOTO",
+      "text": "¡El veinticuatro de mayo es el cumpleaños de mi hermana! Voy a enviarle por correo un regalo. ¿Qué le compro?",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 11350
+    },
+    {
+      "index": 1,
+      "speaker": "CARMEN",
+      "text": "¿Por qué no le compras una cartera?",
+      "direction": "",
+      "startMs": 12506,
+      "endMs": 15406
+    },
+    {
+      "index": 2,
+      "speaker": "MAKOTO",
+      "text": "¡Buena idea! Oye, ¿me enseñas a enviar un paquete a Japón? No sé cómo se hace.",
+      "direction": "",
+      "startMs": 16420,
+      "endMs": 23680
+    },
+    {
+      "index": 3,
+      "speaker": "CARMEN",
+      "text": "Claro. Mañana te acompaño a Correos. Si lo envías esta semana, se lo entregan a tu hermana antes del veinticuatro.",
+      "direction": "",
+      "startMs": 24611,
+      "endMs": 35037
+    },
+    {
+      "index": 4,
+      "speaker": "MAKOTO",
+      "text": "¿Qué tal esta cartera azul?",
+      "direction": "",
+      "startMs": 36473,
+      "endMs": 39073
+    },
+    {
+      "index": 5,
+      "speaker": "CARMEN",
+      "text": "Sí, es graciosa.",
+      "direction": "",
+      "startMs": 40108,
+      "endMs": 41898
+    },
+    {
+      "index": 6,
+      "speaker": "MAKOTO",
+      "text": "Voy a comprársela. Y también quiero esa cartera negra para mí.",
+      "direction": "",
+      "startMs": 42735,
+      "endMs": 49505
+    },
+    {
+      "index": 7,
+      "speaker": "CARMEN",
+      "text": "¿Cuándo es tu cumpleaños? Voy a regalártela el día de tu cumpleaños.",
+      "direction": "",
+      "startMs": 50520,
+      "endMs": 56311
+    },
+    {
+      "index": 8,
+      "speaker": "MAKOTO",
+      "text": "Gracias, no lo voy a olvidar. Pero tengo que esperar casi un año. ¡Mi cumpleaños es el veinte de abril!",
+      "direction": "riéndose",
+      "startMs": 57212,
+      "endMs": 66962
+    }
+  ]
+}

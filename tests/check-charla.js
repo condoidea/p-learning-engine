@@ -32,9 +32,11 @@ fs.readdirSync(path.join(root, 'charla/dialogs')).forEach(function (sid) {
   fs.readdirSync(sd).forEach(function (id) {
     if (fs.statSync(path.join(sd, id)).isDirectory() && listIds.indexOf(sid + '/' + id) < 0) { errs++; console.log('✖ charla/dialogs/' + sid + '/' + id + ' が list.js にない'); }
   });
-  if (S.guide) {
-    try { guides[sid] = T.parseGuide(fs.readFileSync(path.join(sd, S.guide), 'utf8')); } catch (e) { errs++; console.log('✖ ' + sid + '/' + S.guide + ' が読めない'); }
-  }
+  /* 解説：シリーズに1つ（S.guide）か、話ごと（d.guide） */
+  [S.guide].concat(S.dialogs.map(function (d) { return d.guide; })).forEach(function (f) {
+    if (!f || guides[sid + '/' + f]) return;
+    try { guides[sid + '/' + f] = T.parseGuide(fs.readFileSync(path.join(sd, f), 'utf8')); } catch (e) { errs++; console.log('✖ ' + sid + '/' + f + ' が読めない'); }
+  });
 });
 
 W.CHARLA_DIALOGS.forEach(function (it) {
@@ -61,8 +63,9 @@ W.CHARLA_DIALOGS.forEach(function (it) {
   if (prevEnd > D.durationMs) E('dialog.json', '最後の endMs が durationMs を越える');
 
   /* 訳：guide.md の本文の表（あれば）→ notes.json の lines */
-  var G = guides[it.series], ep = G && G.eps[it.no];
-  if (G && !ep) E('guide.md', '「## 第' + it.no + '話」がない');
+  var SS = W.CHARLA_SERIES.filter(function (x) { return x.id === it.series; })[0], gf = it.guide || SS.guide, gno = it.gno || it.no;
+  var G = gf && guides[it.series + '/' + gf], ep = G && G.eps[gno];
+  if (G && !ep) E(gf, '「## 第' + gno + '話」（または「## 会話' + gno + '」）がない');
   if (ep) {
     var rows = ep.rows.filter(function (r) { return r.no; });
     if (rows.length !== D.lines.length) E('guide.md', '第' + it.no + '話の本文の行（' + rows.length + '）がセリフの数（' + D.lines.length + '）とちがう');

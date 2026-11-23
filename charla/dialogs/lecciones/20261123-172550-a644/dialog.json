@@ -1,0 +1,120 @@
+{
+  "format": 1,
+  "id": "20261123-172550-a644",
+  "title": "L13-02 La boda en Sevilla",
+  "scene": "Lunes por la mañana, en una oficina de Madrid. Ana vuelve al trabajo después de la boda de su hermana en Sevilla y se lo cuenta a su compañero Kenji, un japonés que trabaja en España. Conversación natural entre compañeros, de tú.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-23T08:26:55.392Z",
+  "audio": "audio.mp3",
+  "durationMs": 81892,
+  "speakers": [
+    {
+      "id": "ANA",
+      "gender": "female",
+      "persona": "Ana, unos 30 años, española, alegre y habladora, un poco cansada después del fin de semana"
+    },
+    {
+      "id": "KENJI",
+      "gender": "male",
+      "persona": "Kenji, unos 32 años, japonés que vive en Madrid, simpático y curioso por las costumbres españolas"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "KENJI",
+      "text": "Hola, Ana. ¿Cuándo volviste de Sevilla?",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 4230
+    },
+    {
+      "index": 1,
+      "speaker": "ANA",
+      "text": "Anoche, a eso de las once. El tren salió con una hora de retraso y llegué muy tarde a casa.",
+      "direction": "",
+      "startMs": 5239,
+      "endMs": 12729
+    },
+    {
+      "index": 2,
+      "speaker": "KENJI",
+      "text": "¡Qué pena! ¿Y qué tal la boda de tu hermana?",
+      "direction": "",
+      "startMs": 13676,
+      "endMs": 17686
+    },
+    {
+      "index": 3,
+      "speaker": "ANA",
+      "text": "¡Muy bonita! Se casaron anteayer en una iglesia muy antigua del centro.",
+      "direction": "contenta",
+      "startMs": 18737,
+      "endMs": 25247
+    },
+    {
+      "index": 4,
+      "speaker": "KENJI",
+      "text": "¿Ah, sí? ¿Cuándo se construyó?",
+      "direction": "",
+      "startMs": 26143,
+      "endMs": 28893
+    },
+    {
+      "index": 5,
+      "speaker": "ANA",
+      "text": "Se construyó en el siglo quince. Mis abuelos también se casaron allí, en mil novecientos cuarenta, justo después de la guerra.",
+      "direction": "",
+      "startMs": 29934,
+      "endMs": 39104
+    },
+    {
+      "index": 6,
+      "speaker": "KENJI",
+      "text": "¡Qué bonito! ¿Y la fiesta? ¿Cuánto duró?",
+      "direction": "",
+      "startMs": 40170,
+      "endMs": 44480
+    },
+    {
+      "index": 7,
+      "speaker": "ANA",
+      "text": "Duró hasta las cuatro de la mañana. Anteanoche casi no dormí.",
+      "direction": "",
+      "startMs": 45646,
+      "endMs": 51116
+    },
+    {
+      "index": 8,
+      "speaker": "KENJI",
+      "text": "Por eso pediste permiso para no venir el viernes, ¿no?",
+      "direction": "",
+      "startMs": 52004,
+      "endMs": 56224
+    },
+    {
+      "index": 9,
+      "speaker": "ANA",
+      "text": "Sí. El jefe me dio permiso enseguida. Ah, mira, te compré un regalo en Sevilla.",
+      "direction": "",
+      "startMs": 57318,
+      "endMs": 64736
+    },
+    {
+      "index": 10,
+      "speaker": "KENJI",
+      "text": "¡Un monedero! Muchas gracias. Justo el mes pasado perdí el mío. Oye, ¿y esta moneda?",
+      "direction": "",
+      "startMs": 65751,
+      "endMs": 74601
+    },
+    {
+      "index": 11,
+      "speaker": "ANA",
+      "text": "Es para la suerte. En España, un monedero nunca se regala vacío.",
+      "direction": "riéndose",
+      "startMs": 75762,
+      "endMs": 80892
+    }
+  ]
+}

@@ -115,7 +115,9 @@
     md = String(md).replace(/\r\n?/g, '\n');
     var parts = md.split(/\n(?=## )/), G = { intro: '', eps: {}, extra: [] };
     parts.forEach(function (p, k) {
-      var m = /^## +第(\d+)話[ 　]*(.*)/.exec(p);
+      /* 「## 第N話」（シリーズ）か「## 会話N」（レッスンの解説） */
+      var m = /^## +(?:第(\d+)話|会話(\d+))[ 　]*(.*)/.exec(p);
+      if (m) m = [m[0], m[1] || m[2], m[3]];
       if (!m) {
         /* 最初の「第N話」より前はシリーズの説明（intro）、あとは付録など（extra） */
         if (!Object.keys(G.eps).length) G.intro += (G.intro ? '\n' : '') + p.replace(/\n---\s*$/, '');
@@ -141,8 +143,9 @@
       if (!/^\s*\|/.test(ln) || /^\s*\|\s*-/.test(ln)) return;
       var c = ln.replace(/^\s*\|/, '').replace(/\|\s*$/, '').split('|').map(function (x) { return x.trim(); });
       if (c[0] === '#') return;
-      var es = c[2] || '', star = /^★/.test(es);
-      out.push({ no: c[0] ? +c[0] : null, sp: c[1] || '', es: es.replace(/^★\s*/, ''), ja: c[3] || '', star: star });
+      /* # の欄に「1 ★」「4 ＋★」のような記号がつくこともある（レッスンの解説。★＝くり返したい、＋＝元のテキストにない追加） */
+      var es = c[2] || '', n = /^(\d+)/.exec(c[0] || ''), star = /^★/.test(es) || /★/.test(c[0] || '');
+      out.push({ no: n ? +n[1] : null, sp: c[1] || '', es: es.replace(/^★\s*/, ''), ja: c[3] || '', star: star });
     });
     return out;
   }

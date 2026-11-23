@@ -1,0 +1,524 @@
+{
+  "format": 1,
+  "sceneJa": "💒 月曜の朝、マドリードの会社。姉の結婚式でセビーリャに行っていたアナが、同僚のケンジに週末の話をして、お土産を渡す",
+  "phrases": [
+    {
+      "t": "a eso de las once",
+      "ja": "11時ごろ",
+      "key": true
+    },
+    {
+      "t": "con una hora de retraso",
+      "ja": "1時間遅れで",
+      "key": true
+    },
+    {
+      "t": "qué pena",
+      "ja": "それは残念（¡Qué pena!）",
+      "key": true
+    },
+    {
+      "t": "qué tal",
+      "ja": "〜はどうだった？（¿Qué tal…?）",
+      "key": true
+    },
+    {
+      "t": "se casaron",
+      "ja": "結婚した（casarse の点過去・三人称複数。受身ではなく再帰）",
+      "key": true
+    },
+    {
+      "t": "se construyó",
+      "ja": "建てられた（受身の se）",
+      "key": true
+    },
+    {
+      "t": "en el siglo quince",
+      "ja": "15世紀に（siglo XV）",
+      "key": true
+    },
+    {
+      "t": "mil novecientos cuarenta",
+      "ja": "1940年（千・九百・四十と読む）",
+      "key": true
+    },
+    {
+      "t": "justo después de",
+      "ja": "〜のすぐ後に",
+      "key": true
+    },
+    {
+      "t": "hasta las cuatro de la mañana",
+      "ja": "朝の4時まで"
+    },
+    {
+      "t": "por eso",
+      "ja": "だから・そのために",
+      "key": true
+    },
+    {
+      "t": "pediste permiso",
+      "ja": "許可を求めた・休みをもらった（pedir permiso）",
+      "key": true
+    },
+    {
+      "t": "muchas gracias",
+      "ja": "どうもありがとう"
+    },
+    {
+      "t": "el mes pasado",
+      "ja": "先月",
+      "key": true
+    },
+    {
+      "t": "el mío",
+      "ja": "私のもの（el mío＝mi monedero）",
+      "key": true
+    },
+    {
+      "t": "es para la suerte",
+      "ja": "縁起物だ（幸運のためのもの）",
+      "key": true
+    },
+    {
+      "t": "se regala",
+      "ja": "贈られる（受身の se）",
+      "key": true
+    }
+  ],
+  "words": {
+    "hola": {
+      "w": "hola",
+      "pos": "interj",
+      "ja": "やあ・こんにちは"
+    },
+    "cuándo": {
+      "w": "cuándo",
+      "pos": "int",
+      "ja": "いつ"
+    },
+    "volviste": {
+      "w": "volver",
+      "pos": "v",
+      "ja": "戻る・帰る",
+      "form": "volver の点過去・二人称単数（tú が戻った）",
+      "key": true
+    },
+    "anoche": {
+      "w": "anoche",
+      "pos": "adv",
+      "ja": "昨夜"
+    },
+    "eso": {
+      "w": "eso",
+      "pos": "pron",
+      "ja": "それ（a eso de＝〜ごろ／por eso＝だから）"
+    },
+    "once": {
+      "w": "once",
+      "pos": "num",
+      "ja": "11"
+    },
+    "tren": {
+      "w": "tren",
+      "pos": "n",
+      "g": "m",
+      "ja": "電車・列車"
+    },
+    "salió": {
+      "w": "salir",
+      "pos": "v",
+      "ja": "出る・出発する",
+      "form": "salir の点過去・三人称単数",
+      "key": true
+    },
+    "hora": {
+      "w": "hora",
+      "pos": "n",
+      "g": "f",
+      "ja": "時間（1時間など）"
+    },
+    "retraso": {
+      "w": "retraso",
+      "pos": "n",
+      "g": "m",
+      "ja": "遅れ",
+      "key": true
+    },
+    "llegué": {
+      "w": "llegar",
+      "pos": "v",
+      "ja": "着く",
+      "form": "llegar の点過去・一人称単数（g → gu）",
+      "key": true
+    },
+    "tarde": {
+      "w": "tarde",
+      "pos": "adv",
+      "ja": "遅く（muy tarde＝とても遅く）"
+    },
+    "casa": {
+      "w": "casa",
+      "pos": "n",
+      "g": "f",
+      "ja": "家（a casa＝家に）"
+    },
+    "pena": {
+      "w": "pena",
+      "pos": "n",
+      "g": "f",
+      "ja": "残念なこと・悲しみ（¡Qué pena!＝それは残念）",
+      "key": true
+    },
+    "tal": {
+      "w": "tal",
+      "pos": "adv",
+      "ja": "（qué tal で）どう"
+    },
+    "boda": {
+      "w": "boda",
+      "pos": "n",
+      "g": "f",
+      "ja": "結婚式",
+      "key": true
+    },
+    "hermana": {
+      "w": "hermana",
+      "pos": "n",
+      "g": "f",
+      "ja": "姉（妹も指す。hermano の女性形）",
+      "form": "hermano の女性形"
+    },
+    "bonita": {
+      "w": "bonito",
+      "pos": "adj",
+      "ja": "すてきな・きれいな",
+      "form": "bonito の女性形（boda にかかる）"
+    },
+    "se#4": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（再帰の se）自分たちを。se casaron＝結婚した（casarse の一部）"
+    },
+    "casaron": {
+      "w": "casarse",
+      "pos": "v",
+      "ja": "結婚する",
+      "form": "casarse の点過去・三人称複数（se casaron＝結婚した）",
+      "key": true
+    },
+    "anteayer": {
+      "w": "anteayer",
+      "pos": "adv",
+      "ja": "おととい",
+      "key": true
+    },
+    "iglesia": {
+      "w": "iglesia",
+      "pos": "n",
+      "g": "f",
+      "ja": "教会",
+      "key": true
+    },
+    "antigua": {
+      "w": "antiguo",
+      "pos": "adj",
+      "ja": "古い・古くからの",
+      "form": "antiguo の女性形（iglesia にかかる）"
+    },
+    "centro": {
+      "w": "centro",
+      "pos": "n",
+      "g": "m",
+      "ja": "街の中心・中心部"
+    },
+    "ah": {
+      "w": "ah",
+      "pos": "interj",
+      "ja": "ああ・へえ"
+    },
+    "sí": {
+      "w": "sí",
+      "pos": "adv",
+      "ja": "はい・そう（¿Ah, sí?＝へえ、そうなの？）"
+    },
+    "se": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（受身の se）〜される（se construyó＝建てられた／se regala＝贈られる）"
+    },
+    "se#6.2": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（再帰の se）自分たちを。se casaron＝結婚した（casarse の一部）"
+    },
+    "construyó": {
+      "w": "construir",
+      "pos": "v",
+      "ja": "建てる",
+      "form": "construir の点過去・三人称単数（se construyó＝建てられた）",
+      "key": true
+    },
+    "siglo": {
+      "w": "siglo",
+      "pos": "n",
+      "g": "m",
+      "ja": "世紀",
+      "key": true
+    },
+    "quince": {
+      "w": "quince",
+      "pos": "num",
+      "ja": "15"
+    },
+    "mis": {
+      "w": "mi",
+      "pos": "det",
+      "ja": "私の",
+      "form": "mi の複数形"
+    },
+    "abuelos": {
+      "w": "abuelo",
+      "pos": "n",
+      "g": "m",
+      "ja": "祖父母",
+      "form": "abuelo の複数形（男女まとめて祖父母）"
+    },
+    "también": {
+      "w": "también",
+      "pos": "adv",
+      "ja": "〜も"
+    },
+    "allí": {
+      "w": "allí",
+      "pos": "adv",
+      "ja": "そこ・あそこ（そこで）"
+    },
+    "mil": {
+      "w": "mil",
+      "pos": "num",
+      "ja": "1000（mil novecientos cuarenta＝1940）"
+    },
+    "novecientos": {
+      "w": "novecientos",
+      "pos": "num",
+      "ja": "900"
+    },
+    "cuarenta": {
+      "w": "cuarenta",
+      "pos": "num",
+      "ja": "40"
+    },
+    "justo": {
+      "w": "justo",
+      "pos": "adv",
+      "ja": "ちょうど・すぐ（justo después de＝〜のすぐ後に）",
+      "key": true
+    },
+    "justo#11": {
+      "w": "justo",
+      "pos": "adv",
+      "ja": "ちょうど（ちょうど先月）",
+      "key": true
+    },
+    "después": {
+      "w": "después",
+      "pos": "adv",
+      "ja": "後で（después de＝〜の後に）"
+    },
+    "guerra": {
+      "w": "guerra",
+      "pos": "n",
+      "g": "f",
+      "ja": "戦争",
+      "key": true
+    },
+    "fiesta": {
+      "w": "fiesta",
+      "pos": "n",
+      "g": "f",
+      "ja": "パーティー・祝宴"
+    },
+    "cuánto": {
+      "w": "cuánto",
+      "pos": "adv",
+      "ja": "どのくらい（cuánto duró＝どのくらい続いたか）"
+    },
+    "duró": {
+      "w": "durar",
+      "pos": "v",
+      "ja": "続く",
+      "form": "durar の点過去・三人称単数（¿Cuánto duró?＝どのくらい続いた？）",
+      "key": true
+    },
+    "hasta": {
+      "w": "hasta",
+      "pos": "prep",
+      "ja": "〜まで"
+    },
+    "cuatro": {
+      "w": "cuatro",
+      "pos": "num",
+      "ja": "4"
+    },
+    "mañana": {
+      "w": "mañana",
+      "pos": "adv",
+      "ja": "明日"
+    },
+    "mañana#8": {
+      "w": "mañana",
+      "pos": "n",
+      "g": "f",
+      "ja": "朝（de la mañana＝午前の）",
+      "form": "（hasta las cuatro de la mañana＝朝の4時まで）"
+    },
+    "anteanoche": {
+      "w": "anteanoche",
+      "pos": "adv",
+      "ja": "おとといの夜",
+      "key": true
+    },
+    "casi": {
+      "w": "casi",
+      "pos": "adv",
+      "ja": "ほとんど（casi no dormí＝ほとんど寝なかった）"
+    },
+    "dormí": {
+      "w": "dormir",
+      "pos": "v",
+      "ja": "眠る・寝る",
+      "form": "dormir の点過去・一人称単数"
+    },
+    "pediste": {
+      "w": "pedir",
+      "pos": "v",
+      "ja": "頼む・求める",
+      "form": "pedir の点過去・二人称単数（pedir permiso＝許可を求める）",
+      "key": true
+    },
+    "permiso": {
+      "w": "permiso",
+      "pos": "n",
+      "g": "m",
+      "ja": "許可",
+      "key": true
+    },
+    "para": {
+      "w": "para",
+      "pos": "prep",
+      "ja": "〜するために・〜のための（para no venir＝来ないために）"
+    },
+    "venir": {
+      "w": "venir",
+      "pos": "v",
+      "ja": "来る"
+    },
+    "viernes": {
+      "w": "viernes",
+      "pos": "n",
+      "g": "m",
+      "ja": "金曜日"
+    },
+    "jefe": {
+      "w": "jefe",
+      "pos": "n",
+      "g": "mf",
+      "ja": "上司・部長・ボス",
+      "key": true,
+      "note": "jefe de estación＝駅長のように、「長」にあたる人"
+    },
+    "dio": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "与える・くれる",
+      "form": "dar の点過去・三人称単数（me dio permiso＝許可してくれた）"
+    },
+    "enseguida": {
+      "w": "enseguida",
+      "pos": "adv",
+      "ja": "すぐに",
+      "key": true
+    },
+    "mira": {
+      "w": "mirar",
+      "pos": "interj",
+      "ja": "ほら・あ、そうだ（話しかけるとき）",
+      "form": "mirar の命令形（見て）→ 注意を引く言葉"
+    },
+    "compré": {
+      "w": "comprar",
+      "pos": "v",
+      "ja": "買う",
+      "form": "comprar の点過去・一人称単数（te compré＝君に買ってきた）"
+    },
+    "regalo": {
+      "w": "regalo",
+      "pos": "n",
+      "g": "m",
+      "ja": "プレゼント・お土産"
+    },
+    "monedero": {
+      "w": "monedero",
+      "pos": "n",
+      "g": "m",
+      "ja": "小銭入れ・財布",
+      "key": true
+    },
+    "perdí": {
+      "w": "perder",
+      "pos": "v",
+      "ja": "なくす",
+      "form": "perder の点過去・一人称単数",
+      "key": true
+    },
+    "pasado": {
+      "w": "pasado",
+      "pos": "adj",
+      "ja": "過去の・この前の（el mes pasado＝先月）"
+    },
+    "mío": {
+      "w": "mío",
+      "pos": "pron",
+      "ja": "私のもの（el mío＝私の小銭入れ）",
+      "key": true
+    },
+    "oye": {
+      "w": "oír",
+      "pos": "interj",
+      "ja": "ねえ・あれ（呼びかけ）",
+      "form": "oír の命令形（聞いて）→ 注意を引く言葉"
+    },
+    "moneda": {
+      "w": "moneda",
+      "pos": "n",
+      "g": "f",
+      "ja": "コイン・硬貨"
+    },
+    "suerte": {
+      "w": "suerte",
+      "pos": "n",
+      "g": "f",
+      "ja": "運・幸運（para la suerte＝縁起のために）",
+      "key": true
+    },
+    "nunca": {
+      "w": "nunca",
+      "pos": "adv",
+      "ja": "決して〜ない"
+    },
+    "regala": {
+      "w": "regalar",
+      "pos": "v",
+      "ja": "贈る・プレゼントする",
+      "form": "regalar の現在・三人称単数（se regala＝贈られる）",
+      "key": true
+    },
+    "vacío": {
+      "w": "vacío",
+      "pos": "adj",
+      "ja": "空の・からっぽの",
+      "key": true
+    }
+  }
+}

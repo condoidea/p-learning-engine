@@ -1,0 +1,120 @@
+{
+  "format": 1,
+  "id": "20261123-203325-f2bd",
+  "title": "L15-01 El pueblo de Carmen",
+  "scene": "Un pueblo pequeño de Castilla, un día tranquilo. Carmen lleva a su amigo Makoto, un estudiante japonés, al pueblo donde vivió de niña. Pasean por las calles y Carmen recuerda su infancia. Conversación natural, con un poco de nostalgia.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-23T11:34:44.825Z",
+  "audio": "audio.mp3",
+  "durationMs": 64991,
+  "speakers": [
+    {
+      "id": "MAKOTO",
+      "gender": "male",
+      "persona": "Makoto, unos 22 años, estudiante japonés en Madrid, curioso y amable"
+    },
+    {
+      "id": "CARMEN",
+      "gender": "female",
+      "persona": "Carmen, unos 22 años, española, alegre, habla de su infancia con cariño y algo de nostalgia"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "MAKOTO",
+      "text": "¿Es este tu pueblo?",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 2420
+    },
+    {
+      "index": 1,
+      "speaker": "CARMEN",
+      "text": "Sí. Aquí vivía yo cuando era pequeña. Aquella era nuestra casa. En aquel tiempo la vida en este pueblo era tranquila.",
+      "direction": "",
+      "startMs": 3356,
+      "endMs": 14530
+    },
+    {
+      "index": 2,
+      "speaker": "MAKOTO",
+      "text": "Aún ahora es muy tranquilo.",
+      "direction": "",
+      "startMs": 15478,
+      "endMs": 18468
+    },
+    {
+      "index": 3,
+      "speaker": "CARMEN",
+      "text": "Sí. Pero está muy cambiado.",
+      "direction": "",
+      "startMs": 19228,
+      "endMs": 21778
+    },
+    {
+      "index": 4,
+      "speaker": "MAKOTO",
+      "text": "Ibas a la escuela, ¿no?",
+      "direction": "",
+      "startMs": 22516,
+      "endMs": 24836
+    },
+    {
+      "index": 5,
+      "speaker": "CARMEN",
+      "text": "Sí, pero ya no está la escuela. Antes estaba en aquella esquina.",
+      "direction": "",
+      "startMs": 25860,
+      "endMs": 31800
+    },
+    {
+      "index": 6,
+      "speaker": "MAKOTO",
+      "text": "¿Estudiabas mucho?",
+      "direction": "",
+      "startMs": 32803,
+      "endMs": 34643
+    },
+    {
+      "index": 7,
+      "speaker": "CARMEN",
+      "text": "No mucho. Estudio más ahora que antes.",
+      "direction": "riéndose",
+      "startMs": 35710,
+      "endMs": 40410
+    },
+    {
+      "index": 8,
+      "speaker": "MAKOTO",
+      "text": "¿Qué hacías los fines de semana?",
+      "direction": "",
+      "startMs": 41267,
+      "endMs": 44727
+    },
+    {
+      "index": 9,
+      "speaker": "CARMEN",
+      "text": "Como yo pertenecía a un club de fútbol para niñas, jugaba al fútbol con mis compañeras los sábados por la mañana.",
+      "direction": "",
+      "startMs": 45791,
+      "endMs": 54901
+    },
+    {
+      "index": 10,
+      "speaker": "MAKOTO",
+      "text": "¿Hasta cuándo vivisteis aquí?",
+      "direction": "",
+      "startMs": 55919,
+      "endMs": 58449
+    },
+    {
+      "index": 11,
+      "speaker": "CARMEN",
+      "text": "Cuando tenía catorce años, nos trasladamos a Madrid.",
+      "direction": "",
+      "startMs": 59411,
+      "endMs": 63991
+    }
+  ]
+}

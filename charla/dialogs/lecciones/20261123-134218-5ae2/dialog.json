@@ -1,0 +1,112 @@
+{
+  "format": 1,
+  "id": "20261123-134218-5ae2",
+  "title": "L10-02 La temporada de lluvias",
+  "scene": "Una tarde de junio, en casa de Riku, en Tokio. Laura, una estudiante española de intercambio, está de visita. Fuera llueve mucho. Conversación natural entre amigos, con humor.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-23T08:24:58.649Z",
+  "audio": "audio.mp3",
+  "durationMs": 78749,
+  "speakers": [
+    {
+      "id": "LAURA",
+      "gender": "female",
+      "persona": "Laura, unos 21 años, española, alegre y habladora, un poco miedosa"
+    },
+    {
+      "id": "RIKU",
+      "gender": "male",
+      "persona": "Riku, unos 22 años, japonés, tranquilo, amable y aficionado a las historias de suspense"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "LAURA",
+      "text": "¡Qué lluvia! Llueve todos los días.",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 3650
+    },
+    {
+      "index": 1,
+      "speaker": "RIKU",
+      "text": "Es normal. Estamos en la temporada de lluvias. Dura más o menos un mes.",
+      "direction": "",
+      "startMs": 4386,
+      "endMs": 10736
+    },
+    {
+      "index": 2,
+      "speaker": "LAURA",
+      "text": "¡Un mes! Bueno, ¿y qué hacemos hoy?",
+      "direction": "",
+      "startMs": 11638,
+      "endMs": 15108
+    },
+    {
+      "index": 3,
+      "speaker": "RIKU",
+      "text": "Te propongo una cosa: vemos una película aquí. Tengo una de suspense muy buena.",
+      "direction": "",
+      "startMs": 16137,
+      "endMs": 23707
+    },
+    {
+      "index": 4,
+      "speaker": "LAURA",
+      "text": "Uf, las películas de suspense me dan miedo. Prefiero leer. Oye, ¿qué es ese libro?",
+      "direction": "",
+      "startMs": 24643,
+      "endMs": 31523
+    },
+    {
+      "index": 5,
+      "speaker": "RIKU",
+      "text": "Es una novela de suspense también, pero no da tanto miedo. ¿Te la presto?",
+      "direction": "",
+      "startMs": 32730,
+      "endMs": 39220
+    },
+    {
+      "index": 6,
+      "speaker": "LAURA",
+      "text": "Sí, por favor. Así esta noche tengo algo que hacer. Delante de mi casa hay obras y no puedo dormir con el ruido.",
+      "direction": "",
+      "startMs": 40495,
+      "endMs": 49105
+    },
+    {
+      "index": 7,
+      "speaker": "RIKU",
+      "text": "¿Ya te vas? Pero está lloviendo mucho. ¿No tienes paraguas?",
+      "direction": "",
+      "startMs": 50149,
+      "endMs": 55669
+    },
+    {
+      "index": 8,
+      "speaker": "LAURA",
+      "text": "No, se me olvidó en casa. ¿Me dejas uno?",
+      "direction": "",
+      "startMs": 56809,
+      "endMs": 60329
+    },
+    {
+      "index": 9,
+      "speaker": "RIKU",
+      "text": "Claro, te lo dejo. Pero es mi favorito. Mañana me lo devuelves, ¿vale?",
+      "direction": "",
+      "startMs": 61395,
+      "endMs": 68767
+    },
+    {
+      "index": 10,
+      "speaker": "LAURA",
+      "text": "Sí, mañana te lo devuelvo. Y si el libro me da mucho miedo, ¡también te lo devuelvo mañana!",
+      "direction": "al final, riéndose",
+      "startMs": 70030,
+      "endMs": 77749
+    }
+  ]
+}

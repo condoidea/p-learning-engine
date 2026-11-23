@@ -1,0 +1,112 @@
+{
+  "format": 1,
+  "id": "20261123-172658-1cf9",
+  "title": "L14-01 Las vacaciones en Barcelona",
+  "scene": "Madrid, después de las vacaciones. Carmen se encuentra por la calle con su amigo Makoto, un estudiante japonés, y le pregunta por su viaje a Barcelona. Conversación natural y alegre entre amigos.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-23T08:28:01.487Z",
+  "audio": "audio.mp3",
+  "durationMs": 59536,
+  "speakers": [
+    {
+      "id": "CARMEN",
+      "gender": "female",
+      "persona": "Carmen, unos 22 años, española, simpática y trabajadora, sueña con viajar"
+    },
+    {
+      "id": "MAKOTO",
+      "gender": "male",
+      "persona": "Makoto, unos 22 años, estudiante japonés en Madrid, amable, todavía emocionado por su viaje"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "CARMEN",
+      "text": "¡Makoto! ¡Cuánto tiempo sin verte!",
+      "direction": "sorprendida",
+      "startMs": 400,
+      "endMs": 3670
+    },
+    {
+      "index": 1,
+      "speaker": "MAKOTO",
+      "text": "¡Hola, Carmen! Me alegro de verte.",
+      "direction": "",
+      "startMs": 4406,
+      "endMs": 7132
+    },
+    {
+      "index": 2,
+      "speaker": "CARMEN",
+      "text": "¿Cómo te fueron las vacaciones?",
+      "direction": "",
+      "startMs": 7889,
+      "endMs": 10160
+    },
+    {
+      "index": 3,
+      "speaker": "MAKOTO",
+      "text": "Muy bien. Anoche vine de Barcelona en el AVE.",
+      "direction": "",
+      "startMs": 11142,
+      "endMs": 15012
+    },
+    {
+      "index": 4,
+      "speaker": "CARMEN",
+      "text": "¿Cuántos días estuviste en Barcelona?",
+      "direction": "",
+      "startMs": 15803,
+      "endMs": 18691
+    },
+    {
+      "index": 5,
+      "speaker": "MAKOTO",
+      "text": "Estuve seis días. Visité la Sagrada Familia, el Parque Güell y otras construcciones de Gaudí. ¡Me impresionaron mucho!",
+      "direction": "",
+      "startMs": 19738,
+      "endMs": 31378
+    },
+    {
+      "index": 6,
+      "speaker": "CARMEN",
+      "text": "Muy bien. ¿Compraste algún recuerdo de Barcelona?",
+      "direction": "",
+      "startMs": 32444,
+      "endMs": 37184
+    },
+    {
+      "index": 7,
+      "speaker": "MAKOTO",
+      "text": "Sí, compré un libro de la colección de las obras de Picasso. Y tú, ¿qué hiciste?",
+      "direction": "",
+      "startMs": 38367,
+      "endMs": 45437
+    },
+    {
+      "index": 8,
+      "speaker": "CARMEN",
+      "text": "Yo trabajé mucho en la librería de mi tío.",
+      "direction": "",
+      "startMs": 46639,
+      "endMs": 50026
+    },
+    {
+      "index": 9,
+      "speaker": "MAKOTO",
+      "text": "¿Trabajaste?",
+      "direction": "sorprendido",
+      "startMs": 50837,
+      "endMs": 51867
+    },
+    {
+      "index": 10,
+      "speaker": "CARMEN",
+      "text": "Sí, para ganar dinero. Porque algún día quiero viajar por Perú.",
+      "direction": "",
+      "startMs": 52876,
+      "endMs": 58536
+    }
+  ]
+}

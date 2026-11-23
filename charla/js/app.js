@@ -49,14 +49,16 @@
   function getJSON(url) { return fetch(url, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(r.status + ' ' + url); return r.json(); }); }
   function series(id) { return (window.CHARLA_SERIES || []).filter(function (s) { return s.id === id; })[0] || null; }
   function entry(id) { return (window.CHARLA_DIALOGS || []).filter(function (d) { return d.id === id; })[0] || null; }
-  /* シリーズの解説（guide.md）。なければ null */
-  function loadGuide(sid) {
-    var s = series(sid);
-    if (!s || !s.guide) return Promise.resolve(null);
-    if (!guides[sid]) guides[sid] = fetch('charla/dialogs/' + sid + '/' + s.guide, { cache: 'no-cache' })
+  /* 解説（guide.md）。シリーズに1つ（s.guide）か、話ごと（d.guide。レッスンは課ごとの解説で、その中の「会話 d.gno」）。なければ null */
+  function guideFile(sid, d) { var s = series(sid); return d && d.guide || s && s.guide || ''; }
+  function guideNo(d) { return d ? d.gno || d.no : null; }
+  function loadGuide(sid, d) {
+    var f = guideFile(sid, d), k = sid + '/' + f;
+    if (!f) return Promise.resolve(null);
+    if (!guides[k]) guides[k] = fetch('charla/dialogs/' + sid + '/' + f, { cache: 'no-cache' })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
-      .then(T.parseGuide).catch(function () { delete guides[sid]; return null; });
-    return guides[sid];
+      .then(T.parseGuide).catch(function () { delete guides[k]; return null; });
+    return guides[k];
   }
   /* 話の頭（### より前）から「あらすじ」と「聞き取りポイント」（箇条書き）を取り出す */
   function epPoints(ep) {
@@ -75,9 +77,9 @@
     var d = entry(id);
     if (!d) return Promise.reject(new Error('一覧にないダイアログ ' + id));
     var base = d.base, s = series(d.series);
-    return Promise.all([getJSON(base + 'dialog.json'), getJSON(base + 'notes.json').catch(function () { return { words: {}, phrases: [] }; }), loadGuide(d.series)])
+    return Promise.all([getJSON(base + 'dialog.json'), getJSON(base + 'notes.json').catch(function () { return { words: {}, phrases: [] }; }), loadGuide(d.series, d)])
       .then(function (r) {
-        var D = r[0], N = r[1], G = r[2], ep = G && G.eps[d.no] || null;
+        var D = r[0], N = r[1], G = r[2], ep = G && G.eps[guideNo(d)] || null;
         N.names = (N.names || []).concat(s && s.names || []);
         var dict = new T.Dict(N, window.ES_WORDS);
         /* 訳と ★ は解説の本文の表から（# の番号でそろえる。ト書きの行は飛ばす） */
@@ -150,16 +152,16 @@
    *  一覧から：シリーズの説明と、付録（ネタバレがあるので閉じておく）
    * ========================================================= */
   var gFrom = 'home';
-  function guideScreen(sid, no, from) {
+  function guideScreen(sid, d, from) {
     gFrom = from;
     stopAll();
-    var s = series(sid);
-    $('#gTitle').textContent = no ? '📘 第' + no + '話の解説' : '📘 ' + (s ? s.title : '解説');
+    var s = series(sid), no = guideNo(d);
+    $('#gTitle').textContent = d ? '📘 ' + (isNaN(+d.no) ? 'レッスン' + d.no : '第' + d.no + '話') + 'の解説' : '📘 ' + (s ? s.title : '解説');
     $('#gSub').textContent = no ? (C && C.d && C.d.titleJa || '') : (s && s.sub || '');
     $('#gBody').innerHTML = '<p class="hint">読み込み中…</p>';
     show('guide');
     $('#gBody').scrollTop = 0;
-    loadGuide(sid).then(function (G) {
+    loadGuide(sid, d).then(function (G) {
       if (!G) { $('#gBody').innerHTML = '<p class="hint">解説を読み込めませんでした</p>'; return; }
       var html = '';
       if (no) {
@@ -168,9 +170,12 @@
         html += '<div class="md">' + T.mdToHtml(ep.top) + '</div>';
         /* 文法ノートは項目ごとにたたむ（見出しの並びが目次になる）。慣用表現・語彙は1つずつ */
         /* 項目の中に「本文：セリフ8・10…」（タップでそのセリフへ） */
-        var gk = 0, uses = {}, cur = C && C.d && C.d.no === no ? C : null, other = false;
+        var gk = 0, uses = {}, cur = C && C.d === d ? C : null, other = false;
         if (cur) Object.keys(cur.gram).forEach(function (i) { cur.gram[i].forEach(function (h) { (uses[h.t] = uses[h.t] || []).push(+i); }); });
-        html += ep.secs.map(function (x) {
+        /* 「元のテキストから直したところ」「追加したセリフ」など教材づくりのメモは、最後に「教材のメモ」としてまとめる */
+        var MEMO = /^(元のテキスト|追加したセリフ|付録)/;
+        var memo = ep.secs.filter(function (x) { return MEMO.test(x.h); });
+        html += ep.secs.filter(function (x) { return !MEMO.test(x.h); }).map(function (x) {
           if (/^文法/.test(x.h)) {
             var tps = T.grammarTopics({ secs: [x] });
             if (tps.length) return '<h3 class="ghead">' + esc(x.h) + '<small>' + tps.length + '項目</small></h3>' +
@@ -184,6 +189,10 @@
           other = true;
           return hd + '<details class="gsec"><summary>' + esc(x.h) + '</summary><div class="md">' + T.mdToHtml(x.md) + '</div></details>';
         }).join('');
+        var tail = memo.map(function (x) { return '<details class="gsec"><summary>' + esc(x.h) + '</summary><div class="md">' + T.mdToHtml(x.md) + '</div></details>'; }).join('');
+        /* 話ごとの解説（レッスン）は、課の説明（最初の「## 会話」より前）も最後にたたんで出す */
+        if (d.guide && G.intro.trim()) tail += '<details class="gsec"><summary>このレッスンについて</summary><div class="md">' + T.mdToHtml(G.intro.replace(/^# .*\n/, '')) + '</div></details>';
+        if (tail) html += '<h3 class="ghead">教材のメモ</h3>' + tail;
         html += '<p class="hint">訳は「訳 あり」でセリフの下に。★＝くり返し練習したいセリフ（書き取り・シャドーイングで「★だけ」にできます）。</p>';
       } else {
         html += '<div class="md">' + T.mdToHtml(G.intro.replace(/^# .*\n/, '')) + '</div>';
@@ -202,7 +211,7 @@
     lineTap(i);
     var el = lineEl(i); if (el) el.scrollIntoView({ block: 'center' });
   });
-  $('#pGuide').addEventListener('click', function () { if (C && C.d) guideScreen(C.d.series, C.d.no, 'play'); });
+  $('#pGuide').addEventListener('click', function () { if (C && C.d) guideScreen(C.d.series, C.d, 'play'); });
   $('#hWords').addEventListener('click', function () { wScope = 'all'; wordsScreen('home'); });
 
   /* =========================================================
@@ -389,7 +398,7 @@
   }
   $('#gsheet').addEventListener('click', function (e) {
     if (e.target.id === 'gsheet' || e.target.closest('#gsClose')) { $('#gsheet').hidden = true; return; }
-    if (e.target.closest('#gsAll')) { $('#gsheet').hidden = true; if (C && C.d) guideScreen(C.d.series, C.d.no, 'play'); }
+    if (e.target.closest('#gsAll')) { $('#gsheet').hidden = true; if (C && C.d) guideScreen(C.d.series, C.d, 'play'); }
   });
   /* 話し手の表示：LUCIA → Lucia（大文字だけだと幅をとる） */
   function spName(id) { id = String(id || ''); return id.length > 2 && id === id.toUpperCase() ? id.charAt(0) + id.slice(1).toLowerCase() : id; }

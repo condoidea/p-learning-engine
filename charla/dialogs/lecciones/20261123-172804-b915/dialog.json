@@ -1,0 +1,120 @@
+{
+  "format": 1,
+  "id": "20261123-172804-b915",
+  "title": "L14-02 La nevera vacía",
+  "scene": "Domingo por la noche, en un piso compartido de Madrid. Daniel vuelve de un viaje de cuatro días por los Pirineos. Su compañera de piso, Sofía, lo espera en casa. Conversación natural entre amigos, con humor.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-23T08:29:50.577Z",
+  "audio": "audio.mp3",
+  "durationMs": 72499,
+  "speakers": [
+    {
+      "id": "SOFIA",
+      "gender": "female",
+      "persona": "Sofía, unos 26 años, española, directa y un poco quejica, pero cariñosa"
+    },
+    {
+      "id": "DANIEL",
+      "gender": "male",
+      "persona": "Daniel, unos 27 años, español, despistado y simpático, vuelve contento del viaje"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "DANIEL",
+      "text": "¡Hola, Sofía! Ya estoy en casa.",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 3480
+    },
+    {
+      "index": 1,
+      "speaker": "SOFIA",
+      "text": "¡Por fin! Ayer te llamé tres veces y nadie contestó. No supe nada de ti en todo el fin de semana.",
+      "direction": "",
+      "startMs": 4209,
+      "endMs": 12043
+    },
+    {
+      "index": 2,
+      "speaker": "DANIEL",
+      "text": "Lo siento. Quise llamarte, pero no pude. Estuve en un pueblo de los Pirineos y allí el móvil no funciona.",
+      "direction": "",
+      "startMs": 12991,
+      "endMs": 21673
+    },
+    {
+      "index": 3,
+      "speaker": "SOFIA",
+      "text": "¿Y qué tal el viaje? ¿Hiciste algo interesante?",
+      "direction": "",
+      "startMs": 22614,
+      "endMs": 26467
+    },
+    {
+      "index": 4,
+      "speaker": "DANIEL",
+      "text": "Sí, anduve mucho por la montaña. Fue estupendo.",
+      "direction": "",
+      "startMs": 27507,
+      "endMs": 32687
+    },
+    {
+      "index": 5,
+      "speaker": "SOFIA",
+      "text": "¡Qué bien! ¿Y me trajiste algún recuerdo?",
+      "direction": "",
+      "startMs": 33576,
+      "endMs": 36596
+    },
+    {
+      "index": 6,
+      "speaker": "DANIEL",
+      "text": "Pues… no, no te traje nada. Quise comprarte algo, pero en el pueblo no encontré nada bonito.",
+      "direction": "dudando",
+      "startMs": 37733,
+      "endMs": 45253
+    },
+    {
+      "index": 7,
+      "speaker": "SOFIA",
+      "text": "¿Nada? Bueno… ¿Tienes hambre? Porque en la nevera tampoco hay nada. No pude ir al supermercado.",
+      "direction": "",
+      "startMs": 46297,
+      "endMs": 54670
+    },
+    {
+      "index": 8,
+      "speaker": "DANIEL",
+      "text": "¿Nada? ¿Ni un yogur?",
+      "direction": "",
+      "startMs": 55639,
+      "endMs": 57457
+    },
+    {
+      "index": 9,
+      "speaker": "SOFIA",
+      "text": "Ninguno. Me los comí todos.",
+      "direction": "",
+      "startMs": 58455,
+      "endMs": 61295
+    },
+    {
+      "index": 10,
+      "speaker": "DANIEL",
+      "text": "Entonces, ¿damos una vuelta y cenamos fuera? Te invito yo.",
+      "direction": "",
+      "startMs": 62127,
+      "endMs": 67407
+    },
+    {
+      "index": 11,
+      "speaker": "SOFIA",
+      "text": "¡Vale! Eso es mejor que cualquier recuerdo.",
+      "direction": "contenta",
+      "startMs": 68229,
+      "endMs": 71499
+    }
+  ]
+}

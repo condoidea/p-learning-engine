@@ -1,0 +1,551 @@
+{
+  "format": 1,
+  "sceneJa": "☔ 6月の東京。留学中のスペイン人ラウラが、日本人の友だちリクの家で雨宿りをしながら、映画・本・傘の話をする",
+  "phrases": [
+    {
+      "t": "qué lluvia",
+      "ja": "すごい雨！（¡Qué＋名詞!＝なんて〜だ）",
+      "key": true
+    },
+    {
+      "t": "todos los días",
+      "ja": "毎日",
+      "key": true
+    },
+    {
+      "t": "la temporada de lluvias",
+      "ja": "梅雨（雨の時期）",
+      "key": true
+    },
+    {
+      "t": "más o menos",
+      "ja": "だいたい",
+      "key": true
+    },
+    {
+      "t": "te propongo una cosa",
+      "ja": "提案があるんだけど",
+      "key": true
+    },
+    {
+      "t": "tengo una de suspense",
+      "ja": "サスペンス映画を1本持っている（una＝una película）"
+    },
+    {
+      "t": "me dan miedo",
+      "ja": "私には怖い（dar miedo＝怖がらせる。主語は películas）",
+      "key": true
+    },
+    {
+      "t": "no da tanto miedo",
+      "ja": "そんなに怖くない（dar miedo）",
+      "key": true
+    },
+    {
+      "t": "me da mucho miedo",
+      "ja": "私にはとても怖い（dar miedo）",
+      "key": true
+    },
+    {
+      "t": "te la presto",
+      "ja": "君にそれを（小説を）貸そうか（prestar＋te＋la）",
+      "key": true
+    },
+    {
+      "t": "por favor",
+      "ja": "お願いします"
+    },
+    {
+      "t": "esta noche",
+      "ja": "今夜"
+    },
+    {
+      "t": "algo que hacer",
+      "ja": "することがある（tener algo que hacer）"
+    },
+    {
+      "t": "delante de",
+      "ja": "〜の前に",
+      "key": true
+    },
+    {
+      "t": "hay obras",
+      "ja": "工事をしている（obras＝工事）",
+      "key": true
+    },
+    {
+      "t": "ya te vas",
+      "ja": "もう帰るの？（irse＝帰る）",
+      "key": true
+    },
+    {
+      "t": "está lloviendo",
+      "ja": "（今）雨が降っている（estar＋現在分詞）",
+      "key": true
+    },
+    {
+      "t": "se me olvidó",
+      "ja": "（うっかり）忘れた。主語は忘れたもの（olvidarse＋人）",
+      "key": true
+    },
+    {
+      "t": "me dejas uno",
+      "ja": "1本貸してくれる？（dejar＝貸す）",
+      "key": true
+    },
+    {
+      "t": "te lo dejo",
+      "ja": "君にそれを（傘を）貸す（dejar＋te＋lo）",
+      "key": true
+    },
+    {
+      "t": "me lo devuelves",
+      "ja": "僕にそれを返す（devolver＋me＋lo）。現在形で軽く頼んでいる",
+      "key": true
+    },
+    {
+      "t": "te lo devuelvo",
+      "ja": "君にそれを返す（devolver＋te＋lo）",
+      "key": true
+    }
+  ],
+  "words": {
+    "lluvia": {
+      "w": "lluvia",
+      "pos": "n",
+      "g": "f",
+      "ja": "雨",
+      "key": true
+    },
+    "llueve": {
+      "w": "llover",
+      "pos": "v",
+      "ja": "雨が降る",
+      "form": "llover の現在・三人称単数（o → ue）"
+    },
+    "los": {
+      "w": "los",
+      "pos": "art",
+      "ja": "（男性複数の）その（todos los días＝毎日）"
+    },
+    "días": {
+      "w": "día",
+      "pos": "n",
+      "g": "m",
+      "ja": "日",
+      "form": "día の複数形（todos los días＝毎日）"
+    },
+    "normal": {
+      "w": "normal",
+      "pos": "adj",
+      "ja": "ふつうの"
+    },
+    "estamos": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "（〜の状態で）いる",
+      "form": "estar の現在・一人称複数（estamos en＝いまは〜の時期だ）"
+    },
+    "la#2": {
+      "w": "la",
+      "pos": "art",
+      "ja": "その（女性単数の名詞につく）"
+    },
+    "temporada": {
+      "w": "temporada",
+      "pos": "n",
+      "g": "f",
+      "ja": "時期・シーズン（temporada de lluvias＝梅雨）",
+      "key": true
+    },
+    "lluvias": {
+      "w": "lluvia",
+      "pos": "n",
+      "g": "f",
+      "ja": "雨",
+      "form": "lluvia の複数形（la temporada de lluvias＝梅雨）"
+    },
+    "dura": {
+      "w": "durar",
+      "pos": "v",
+      "ja": "続く",
+      "form": "durar の現在・三人称単数（一か月続く）",
+      "key": true
+    },
+    "más": {
+      "w": "más",
+      "pos": "adv",
+      "ja": "もっと（más o menos＝だいたい）"
+    },
+    "o": {
+      "w": "o",
+      "pos": "conj",
+      "ja": "または（más o menos＝だいたい）"
+    },
+    "menos": {
+      "w": "menos",
+      "pos": "adv",
+      "ja": "より少なく（más o menos＝だいたい）"
+    },
+    "bueno": {
+      "w": "bueno",
+      "pos": "interj",
+      "ja": "さて・じゃあ（話を切りかえる言葉）"
+    },
+    "y": {
+      "w": "y",
+      "pos": "conj",
+      "ja": "そして／（文頭で）それで・ところで"
+    },
+    "hacemos": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "する・やる",
+      "form": "hacer の現在・一人称複数（何をしようか）"
+    },
+    "te": {
+      "w": "te",
+      "pos": "pron",
+      "ja": "君に（間接目的語）"
+    },
+    "te#8": {
+      "w": "te",
+      "pos": "pron",
+      "ja": "（irse の）自分を。ya te vas＝もう行く・帰る"
+    },
+    "propongo": {
+      "w": "proponer",
+      "pos": "v",
+      "ja": "提案する",
+      "form": "proponer の現在・一人称単数（poner と同じ -go）",
+      "key": true
+    },
+    "una": {
+      "w": "una",
+      "pos": "art",
+      "ja": "ある・1つの",
+      "form": "un の女性形"
+    },
+    "una#4.3": {
+      "w": "una",
+      "pos": "pron",
+      "ja": "1本・1つ（ここでは una película＝映画1本）",
+      "form": "un の女性形（名詞を言わずに代わりをする）"
+    },
+    "cosa": {
+      "w": "cosa",
+      "pos": "n",
+      "g": "f",
+      "ja": "こと・もの（una cosa＝ひとつ話したいこと）"
+    },
+    "vemos": {
+      "w": "ver",
+      "pos": "v",
+      "ja": "見る",
+      "form": "ver の現在・一人称複数（見よう。現在形で軽く誘っている）"
+    },
+    "película": {
+      "w": "película",
+      "pos": "n",
+      "g": "f",
+      "ja": "映画"
+    },
+    "películas": {
+      "w": "película",
+      "pos": "n",
+      "g": "f",
+      "ja": "映画",
+      "form": "película の複数形"
+    },
+    "tengo": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持っている",
+      "form": "tener の現在・一人称単数（tener algo que hacer＝することがある）"
+    },
+    "suspense": {
+      "w": "suspense",
+      "pos": "n",
+      "g": "m",
+      "ja": "サスペンス（ハラハラする映画・小説）",
+      "key": true
+    },
+    "muy": {
+      "w": "muy",
+      "pos": "adv",
+      "ja": "とても"
+    },
+    "buena": {
+      "w": "bueno",
+      "pos": "adj",
+      "ja": "よい・おもしろい",
+      "form": "bueno の女性形（película にかかる）"
+    },
+    "uf": {
+      "w": "uf",
+      "pos": "interj",
+      "ja": "うーん・ふう（困ったときの声）"
+    },
+    "me": {
+      "w": "me",
+      "pos": "pron",
+      "ja": "私に（間接目的語）"
+    },
+    "dan": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "与える",
+      "form": "dar の現在・三人称複数（dar miedo＝怖がらせる。主語は películas）",
+      "key": true
+    },
+    "miedo": {
+      "w": "miedo",
+      "pos": "n",
+      "g": "m",
+      "ja": "恐怖・こわさ（dar miedo＝怖がらせる）",
+      "key": true
+    },
+    "prefiero": {
+      "w": "preferir",
+      "pos": "v",
+      "ja": "（〜のほうを）好む・〜するほうがいい",
+      "form": "preferir の現在・一人称単数（e → ie）",
+      "key": true
+    },
+    "leer": {
+      "w": "leer",
+      "pos": "v",
+      "ja": "読む"
+    },
+    "oye": {
+      "w": "oír",
+      "pos": "interj",
+      "ja": "ねえ、ちょっと（呼びかけ）",
+      "form": "oír の命令形（聞いて）→ 相手の注意を引く"
+    },
+    "ese": {
+      "w": "ese",
+      "pos": "det",
+      "ja": "その"
+    },
+    "novela": {
+      "w": "novela",
+      "pos": "n",
+      "g": "f",
+      "ja": "小説",
+      "key": true
+    },
+    "da": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "与える",
+      "form": "dar の現在・三人称単数（dar miedo＝怖がらせる。主語は la novela）",
+      "key": true
+    },
+    "tanto": {
+      "w": "tanto",
+      "pos": "adv",
+      "ja": "そんなに・それほど",
+      "form": "（no da tanto miedo＝そんなに怖くない）"
+    },
+    "la": {
+      "w": "la",
+      "pos": "pron",
+      "ja": "それを（la novela＝その小説を）"
+    },
+    "presto": {
+      "w": "prestar",
+      "pos": "v",
+      "ja": "貸す",
+      "form": "prestar の現在・一人称単数（te la presto＝君にそれを貸そうか）",
+      "key": true
+    },
+    "así": {
+      "w": "así",
+      "pos": "adv",
+      "ja": "これで・そうすれば（ここでは「これで今夜は〜」）"
+    },
+    "esta": {
+      "w": "este",
+      "pos": "det",
+      "ja": "この",
+      "form": "este の女性形（esta noche＝今夜）"
+    },
+    "algo": {
+      "w": "algo",
+      "pos": "pron",
+      "ja": "何か（algo que hacer＝することがある）"
+    },
+    "que": {
+      "w": "que",
+      "pos": "rel",
+      "ja": "（関係詞）〜する…（algo que hacer＝すること）"
+    },
+    "delante": {
+      "w": "delante",
+      "pos": "adv",
+      "ja": "前に（delante de＝〜の前に）",
+      "key": true
+    },
+    "hay": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "〜がある・いる",
+      "form": "haber の現在（hay＝ある）"
+    },
+    "obras": {
+      "w": "obra",
+      "pos": "n",
+      "g": "f",
+      "ja": "工事",
+      "form": "obra の複数形（hay obras＝工事をしている）",
+      "key": true
+    },
+    "puedo": {
+      "w": "poder",
+      "pos": "v",
+      "ja": "〜できる",
+      "form": "poder の現在・一人称単数（o → ue）。no puedo dormir＝眠れない"
+    },
+    "dormir": {
+      "w": "dormir",
+      "pos": "v",
+      "ja": "眠る"
+    },
+    "ruido": {
+      "w": "ruido",
+      "pos": "n",
+      "g": "m",
+      "ja": "騒音・物音",
+      "key": true
+    },
+    "ya": {
+      "w": "ya",
+      "pos": "adv",
+      "ja": "もう・すでに"
+    },
+    "vas": {
+      "w": "irse",
+      "pos": "v",
+      "ja": "行ってしまう・帰る",
+      "form": "irse の現在・二人称単数（ir の vas。ya te vas＝もう帰るの？）",
+      "key": true
+    },
+    "lloviendo": {
+      "w": "llover",
+      "pos": "v",
+      "ja": "雨が降る",
+      "form": "llover の現在分詞（está lloviendo＝今降っている）"
+    },
+    "mucho": {
+      "w": "mucho",
+      "pos": "adv",
+      "ja": "とても・ひどく",
+      "form": "（está lloviendo mucho＝雨がひどい）"
+    },
+    "tienes": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持っている",
+      "form": "tener の現在・二人称単数"
+    },
+    "paraguas": {
+      "w": "paraguas",
+      "pos": "n",
+      "g": "m",
+      "ja": "傘（単数も複数も同じ形）",
+      "key": true
+    },
+    "se": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（se me olvidó で）うっかり〜してしまった"
+    },
+    "olvidó": {
+      "w": "olvidar",
+      "pos": "v",
+      "ja": "忘れる",
+      "form": "olvidar の点過去・三人称単数（se me olvidó＝うっかり忘れてしまった。主語は paraguas）",
+      "key": true
+    },
+    "dejas": {
+      "w": "dejar",
+      "pos": "v",
+      "ja": "貸す（ここでは prestar と同じ）",
+      "form": "dejar の現在・二人称単数（me dejas uno＝1本貸してくれる？）",
+      "key": true,
+      "note": "dejar は「置いていく・残す」が基本。スペインの日常会話では「貸す」にもよく使う"
+    },
+    "uno": {
+      "w": "uno",
+      "pos": "pron",
+      "ja": "1本・ひとつ（ここでは un paraguas＝傘1本）"
+    },
+    "claro": {
+      "w": "claro",
+      "pos": "interj",
+      "ja": "もちろん"
+    },
+    "lo": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを（el paraguas／el libro）"
+    },
+    "dejo": {
+      "w": "dejar",
+      "pos": "v",
+      "ja": "貸す（ここでは prestar と同じ）",
+      "form": "dejar の現在・一人称単数（te lo dejo＝君にそれを貸す）",
+      "key": true
+    },
+    "favorito": {
+      "w": "favorito",
+      "pos": "adj",
+      "ja": "お気に入りの",
+      "key": true
+    },
+    "mañana": {
+      "w": "mañana",
+      "pos": "adv",
+      "ja": "明日"
+    },
+    "devuelves": {
+      "w": "devolver",
+      "pos": "v",
+      "ja": "返す",
+      "form": "devolver の現在・二人称単数（o → ue）",
+      "key": true
+    },
+    "vale": {
+      "w": "vale",
+      "pos": "interj",
+      "ja": "いいよ・わかった・（文末で）いいね？",
+      "form": "valer の三人称単数が間投詞になったもの（スペインの口語）",
+      "key": true,
+      "note": "¿vale? は「それでいい？」と相手に念を押す言い方"
+    },
+    "devuelvo": {
+      "w": "devolver",
+      "pos": "v",
+      "ja": "返す",
+      "form": "devolver の現在・一人称単数（o → ue）",
+      "key": true
+    },
+    "si": {
+      "w": "si",
+      "pos": "conj",
+      "ja": "もし〜なら"
+    },
+    "libro": {
+      "w": "libro",
+      "pos": "n",
+      "g": "m",
+      "ja": "本"
+    },
+    "también": {
+      "w": "también",
+      "pos": "adv",
+      "ja": "〜も（ここでは「本も返す」）"
+    }
+  }
+}

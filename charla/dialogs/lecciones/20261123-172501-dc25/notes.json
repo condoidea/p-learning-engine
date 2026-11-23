@@ -1,0 +1,386 @@
+{
+  "format": 1,
+  "sceneJa": "✈️ メキシコ市の会社。モンテレイ出張から戻った田中さんに、上司のガルシアさんが出張の様子をたずねる",
+  "phrases": [
+    {
+      "t": "a eso de las diez",
+      "ja": "10時ごろ",
+      "key": true
+    },
+    {
+      "t": "una hora atrasado",
+      "ja": "1時間遅れて（メキシコの言い方。スペインでは con una hora de retraso）",
+      "key": true
+    },
+    {
+      "t": "lo siento",
+      "ja": "それは残念です・お気の毒に",
+      "key": true
+    },
+    {
+      "t": "cómo le fue",
+      "ja": "〜はどうでしたか（usted に対して）",
+      "key": true
+    },
+    {
+      "t": "muy bien",
+      "ja": "とてもうまく（うまくいきました）"
+    },
+    {
+      "t": "lo felicito",
+      "ja": "おめでとうございます・よかったですね（usted に。tú なら te felicito）",
+      "key": true
+    },
+    {
+      "t": "se fundó",
+      "ja": "創立された（受身の se）",
+      "key": true
+    },
+    {
+      "t": "mil novecientos veinte",
+      "ja": "1920年（千・九百・二十と読む）",
+      "key": true
+    },
+    {
+      "t": "desde hace",
+      "ja": "〜前から（今も続いている）",
+      "key": true
+    },
+    {
+      "t": "hace catorce años que trabaja",
+      "ja": "働いて14年になる（hace＋期間＋que＋現在形）",
+      "key": true
+    },
+    {
+      "t": "hace dos años",
+      "ja": "2年前に（点過去といっしょに使う）",
+      "key": true
+    },
+    {
+      "t": "oficina principal",
+      "ja": "本店・本社",
+      "key": true
+    },
+    {
+      "t": "ciudad de méxico",
+      "ja": "メキシコ市"
+    },
+    {
+      "t": "lo nombraron gerente",
+      "ja": "（会社が）彼を支店長に任命した",
+      "key": true
+    }
+  ],
+  "words": {
+    "cuándo": {
+      "w": "cuándo",
+      "pos": "int",
+      "ja": "いつ"
+    },
+    "volvió": {
+      "w": "volver",
+      "pos": "v",
+      "ja": "戻る・帰る",
+      "form": "volver の点過去・三人称単数（usted が戻った）",
+      "key": true
+    },
+    "de": {
+      "w": "de",
+      "pos": "prep",
+      "ja": "〜の・〜から（volver de＝〜から戻る）"
+    },
+    "anoche": {
+      "w": "anoche",
+      "pos": "adv",
+      "ja": "昨夜"
+    },
+    "eso": {
+      "w": "eso",
+      "pos": "pron",
+      "ja": "それ（a eso de＝〜ごろ）"
+    },
+    "diez": {
+      "w": "diez",
+      "pos": "num",
+      "ja": "10"
+    },
+    "avión": {
+      "w": "avión",
+      "pos": "n",
+      "g": "m",
+      "ja": "飛行機"
+    },
+    "salió": {
+      "w": "salir",
+      "pos": "v",
+      "ja": "出る・出発する",
+      "form": "salir の点過去・三人称単数",
+      "key": true
+    },
+    "una": {
+      "w": "una",
+      "pos": "art",
+      "ja": "1つの・1（una hora＝1時間）",
+      "form": "un の女性形"
+    },
+    "hora": {
+      "w": "hora",
+      "pos": "n",
+      "g": "f",
+      "ja": "時間（1時間など）"
+    },
+    "atrasado": {
+      "w": "atrasado",
+      "pos": "adj",
+      "ja": "遅れた",
+      "form": "atrasado（遅れて）。メキシコでよく使う言い方",
+      "key": true
+    },
+    "aeropuerto": {
+      "w": "aeropuerto",
+      "pos": "n",
+      "g": "m",
+      "ja": "空港"
+    },
+    "llegué": {
+      "w": "llegar",
+      "pos": "v",
+      "ja": "着く",
+      "form": "llegar の点過去・一人称単数（g → gu）",
+      "key": true
+    },
+    "tarde": {
+      "w": "tarde",
+      "pos": "adv",
+      "ja": "遅く（muy tarde＝とても遅く）"
+    },
+    "lo": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "彼を・それを"
+    },
+    "lo#3": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを（lo siento＝それは残念です）"
+    },
+    "lo#5": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "あなたを（usted への lo。lo felicito＝あなたを祝福する）"
+    },
+    "lo#8": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "彼を（ロドリゲスさんを）"
+    },
+    "siento": {
+      "w": "sentir",
+      "pos": "v",
+      "ja": "残念に思う・気の毒に思う",
+      "form": "sentir の現在・一人称単数（lo siento＝残念です）",
+      "key": true
+    },
+    "cómo": {
+      "w": "cómo",
+      "pos": "int",
+      "ja": "どう・どのように"
+    },
+    "le": {
+      "w": "le",
+      "pos": "pron",
+      "ja": "あなたに（usted への le。cómo le fue＝あなたにとってどうでしたか）"
+    },
+    "fue": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "行く・（〜の結果に）なる",
+      "form": "ir の点過去・三人称単数（ser と同じ形。cómo le fue＝どうでしたか）",
+      "key": true
+    },
+    "reunión": {
+      "w": "reunión",
+      "pos": "n",
+      "g": "f",
+      "ja": "会議・打ち合わせ",
+      "key": true
+    },
+    "con": {
+      "w": "con",
+      "pos": "prep",
+      "ja": "〜と"
+    },
+    "señor": {
+      "w": "señor",
+      "pos": "n",
+      "g": "m",
+      "ja": "〜さん（男性への敬称）"
+    },
+    "bien": {
+      "w": "bien",
+      "pos": "adv",
+      "ja": "よく・うまく（muy bien＝とてもうまくいった）"
+    },
+    "me": {
+      "w": "me",
+      "pos": "pron",
+      "ja": "私を"
+    },
+    "recibió": {
+      "w": "recibir",
+      "pos": "v",
+      "ja": "出迎える・迎える",
+      "form": "recibir の点過去・三人称単数（空港で迎えてくれた）",
+      "key": true
+    },
+    "llevó": {
+      "w": "llevar",
+      "pos": "v",
+      "ja": "連れて行く",
+      "form": "llevar の点過去・三人称単数（me llevó a＝私を〜へ連れて行った）",
+      "key": true,
+      "note": "llevar は「身につけている」の意味もあるが、ここでは「連れて行く」"
+    },
+    "oficina": {
+      "w": "oficina",
+      "pos": "n",
+      "g": "f",
+      "ja": "事務所・オフィス"
+    },
+    "banco": {
+      "w": "banco",
+      "pos": "n",
+      "g": "m",
+      "ja": "銀行"
+    },
+    "felicito": {
+      "w": "felicitar",
+      "pos": "v",
+      "ja": "お祝いを言う",
+      "form": "felicitar の現在・一人称単数（lo felicito＝おめでとうございます）",
+      "key": true
+    },
+    "se": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（受身の se）〜される（se fundó＝創立された）"
+    },
+    "fundó": {
+      "w": "fundar",
+      "pos": "v",
+      "ja": "創立する・設立する",
+      "form": "fundar の点過去・三人称単数（se fundó＝創立された）",
+      "key": true
+    },
+    "mil": {
+      "w": "mil",
+      "pos": "num",
+      "ja": "1000（mil novecientos veinte＝1920）"
+    },
+    "novecientos": {
+      "w": "novecientos",
+      "pos": "num",
+      "ja": "900"
+    },
+    "veinte": {
+      "w": "veinte",
+      "pos": "num",
+      "ja": "20"
+    },
+    "trabaja": {
+      "w": "trabajar",
+      "pos": "v",
+      "ja": "働く",
+      "form": "trabajar の現在・三人称単数"
+    },
+    "desde": {
+      "w": "desde",
+      "pos": "prep",
+      "ja": "〜から（desde hace＝〜前から）"
+    },
+    "hace": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "（期間の前で）〜前・〜になる",
+      "form": "hacer の現在・三人称単数（hace＋期間＝〜前、hace＋期間＋que＝〜になる）"
+    },
+    "muchos": {
+      "w": "mucho",
+      "pos": "det",
+      "ja": "たくさんの・多くの",
+      "form": "mucho の男性複数形（muchos años＝何年も）"
+    },
+    "años": {
+      "w": "año",
+      "pos": "n",
+      "g": "m",
+      "ja": "年・〜年間",
+      "form": "año の複数形"
+    },
+    "catorce": {
+      "w": "catorce",
+      "pos": "num",
+      "ja": "14"
+    },
+    "vivió": {
+      "w": "vivir",
+      "pos": "v",
+      "ja": "住む",
+      "form": "vivir の点過去・三人称単数（3年間住んだ）",
+      "key": true
+    },
+    "tres": {
+      "w": "tres",
+      "pos": "num",
+      "ja": "3"
+    },
+    "ciudad": {
+      "w": "ciudad",
+      "pos": "n",
+      "g": "f",
+      "ja": "市・都市"
+    },
+    "para": {
+      "w": "para",
+      "pos": "prep",
+      "ja": "〜するために（para trabajar＝働くために）"
+    },
+    "trabajar": {
+      "w": "trabajar",
+      "pos": "v",
+      "ja": "働く"
+    },
+    "principal": {
+      "w": "principal",
+      "pos": "adj",
+      "ja": "主要な（oficina principal＝本店）",
+      "key": true
+    },
+    "nombraron": {
+      "w": "nombrar",
+      "pos": "v",
+      "ja": "任命する",
+      "form": "nombrar の点過去・三人称複数（誰かが任命した）",
+      "key": true
+    },
+    "gerente": {
+      "w": "gerente",
+      "pos": "n",
+      "g": "mf",
+      "ja": "支店長・支配人",
+      "key": true
+    },
+    "sucursal": {
+      "w": "sucursal",
+      "pos": "n",
+      "g": "f",
+      "ja": "支店",
+      "key": true
+    }
+  },
+  "names": [
+    "Rodríguez",
+    "ABC",
+    "México"
+  ]
+}

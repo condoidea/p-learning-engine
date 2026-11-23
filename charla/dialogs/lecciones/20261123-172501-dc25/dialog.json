@@ -1,0 +1,88 @@
+{
+  "format": 1,
+  "id": "20261123-172501-dc25",
+  "title": "L13-01 El viaje a Monterrey",
+  "scene": "Una oficina en la Ciudad de México, por la mañana. La señora García pregunta al señor Tanaka, un empleado japonés, por su viaje de trabajo a Monterrey. Conversación formal y amable, de usted.",
+  "accent": "es-MX",
+  "createdAt": "2026-11-23T08:25:46.451Z",
+  "audio": "audio.mp3",
+  "durationMs": 66747,
+  "speakers": [
+    {
+      "id": "GARCIA",
+      "gender": "female",
+      "persona": "señora García, unos 50 años, mexicana, jefa amable y atenta, trato de usted"
+    },
+    {
+      "id": "TANAKA",
+      "gender": "male",
+      "persona": "señor Tanaka, unos 40 años, empleado japonés, educado y serio, contento con el resultado del viaje"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "GARCIA",
+      "text": "¿Cuándo volvió de Monterrey?",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 2420
+    },
+    {
+      "index": 1,
+      "speaker": "TANAKA",
+      "text": "Anoche, a eso de las diez. El avión salió una hora atrasado del aeropuerto de Monterrey y llegué muy tarde.",
+      "direction": "",
+      "startMs": 3356,
+      "endMs": 13056
+    },
+    {
+      "index": 2,
+      "speaker": "GARCIA",
+      "text": "Lo siento. ¿Cómo le fue la reunión con el señor Rodríguez?",
+      "direction": "",
+      "startMs": 14004,
+      "endMs": 18974
+    },
+    {
+      "index": 3,
+      "speaker": "TANAKA",
+      "text": "¡Muy bien! El señor Rodríguez me recibió en el aeropuerto y me llevó a la oficina del Banco ABC.",
+      "direction": "contento",
+      "startMs": 20063,
+      "endMs": 28953
+    },
+    {
+      "index": 4,
+      "speaker": "GARCIA",
+      "text": "Lo felicito. ¿Cuándo se fundó el Banco ABC?",
+      "direction": "",
+      "startMs": 29889,
+      "endMs": 34199
+    },
+    {
+      "index": 5,
+      "speaker": "TANAKA",
+      "text": "Se fundó en mil novecientos veinte.",
+      "direction": "",
+      "startMs": 35303,
+      "endMs": 38683
+    },
+    {
+      "index": 6,
+      "speaker": "GARCIA",
+      "text": "¿Trabaja el señor Rodríguez en el banco desde hace muchos años?",
+      "direction": "",
+      "startMs": 39584,
+      "endMs": 45064
+    },
+    {
+      "index": 7,
+      "speaker": "TANAKA",
+      "text": "Sí. Hace catorce años que trabaja en el banco. Vivió tres años en la Ciudad de México para trabajar en la oficina principal del banco, y hace dos años lo nombraron gerente de la sucursal de Monterrey.",
+      "direction": "",
+      "startMs": 46277,
+      "endMs": 65747
+    }
+  ]
+}

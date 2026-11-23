@@ -1,0 +1,315 @@
+{
+  "format": 1,
+  "sceneJa": "🏡 カルメンが子どものころに住んでいた村。マコトを連れて、昔の家や学校のあった場所を歩く",
+  "phrases": [
+    {
+      "t": "cuando era pequeña",
+      "ja": "小さいころ（cuando ＋ 線過去）",
+      "key": true
+    },
+    {
+      "t": "en aquel tiempo",
+      "ja": "あのころ・当時",
+      "key": true
+    },
+    {
+      "t": "aún ahora",
+      "ja": "今でも",
+      "key": true
+    },
+    {
+      "t": "ya no",
+      "ja": "もう…ない",
+      "key": true
+    },
+    {
+      "t": "fines de semana",
+      "ja": "週末（fin de semana の複数形）",
+      "key": true
+    },
+    {
+      "t": "hasta cuándo",
+      "ja": "いつまで",
+      "key": true
+    },
+    {
+      "t": "jugaba al fútbol",
+      "ja": "サッカーをしていた（jugar al fútbol）",
+      "key": true
+    },
+    {
+      "t": "pertenecía a",
+      "ja": "〜に所属していた（pertenecer a）",
+      "key": true
+    },
+    {
+      "t": "por la mañana",
+      "ja": "朝に・午前中に"
+    },
+    {
+      "t": "estudio más ahora que antes",
+      "ja": "昔より今のほうが勉強している（比較級 más … que）"
+    }
+  ],
+  "words": {
+    "es": {
+      "w": "ser",
+      "pos": "v",
+      "ja": "〜である",
+      "form": "ser の現在・三人称単数"
+    },
+    "aquí": {
+      "w": "aquí",
+      "pos": "adv",
+      "ja": "ここ（aquí vivía yo＝ここに住んでいた）"
+    },
+    "vivía": {
+      "w": "vivir",
+      "pos": "v",
+      "ja": "住んでいた",
+      "form": "vivir の線過去・一人称単数（昔の習慣・状態）",
+      "key": true
+    },
+    "era": {
+      "w": "ser",
+      "pos": "v",
+      "ja": "〜だった",
+      "form": "ser の線過去・三人称単数（不規則。昔の様子・年齢）／cuando era pequeña＝小さいころ",
+      "key": true
+    },
+    "pequeña": {
+      "w": "pequeño",
+      "pos": "adj",
+      "ja": "小さい・幼い（cuando era pequeña＝小さいころ）",
+      "form": "pequeño の女性形"
+    },
+    "aquella": {
+      "w": "aquel",
+      "pos": "pron",
+      "ja": "あれ・あの家",
+      "form": "aquel の女性形（遠いもの）。Aquella era nuestra casa＝あれが私たちの家だった",
+      "key": true
+    },
+    "aquella#6": {
+      "w": "aquel",
+      "pos": "det",
+      "ja": "あの",
+      "form": "aquel の女性形（遠いもの）。aquella esquina＝あの角",
+      "key": true
+    },
+    "nuestra": {
+      "w": "nuestro",
+      "pos": "det",
+      "ja": "私たちの",
+      "form": "nuestro の女性形（nuestra casa＝私たちの家）"
+    },
+    "aquel": {
+      "w": "aquel",
+      "pos": "det",
+      "ja": "あの（遠い昔や遠い場所）",
+      "form": "aquel の男性形（aquel tiempo＝あのころ）",
+      "key": true
+    },
+    "tiempo": {
+      "w": "tiempo",
+      "pos": "n",
+      "g": "m",
+      "ja": "時・時代（en aquel tiempo＝あのころ）"
+    },
+    "vida": {
+      "w": "vida",
+      "pos": "n",
+      "g": "f",
+      "ja": "暮らし・生活・人生"
+    },
+    "tranquila": {
+      "w": "tranquilo",
+      "pos": "adj",
+      "ja": "のんびりした・静かな",
+      "form": "tranquilo の女性形"
+    },
+    "aún": {
+      "w": "aún",
+      "pos": "adv",
+      "ja": "今でもまだ",
+      "note": "アクセントなしの aun は「〜でさえ」",
+      "key": true
+    },
+    "cambiado": {
+      "w": "cambiado",
+      "pos": "adj",
+      "ja": "変わった（estar cambiado＝すっかり変わっている）",
+      "form": "cambiar の過去分詞（形容詞として）",
+      "key": true
+    },
+    "ibas": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "行っていた・通っていた",
+      "form": "ir の線過去・二人称単数（不規則）。ibas a la escuela＝学校に通っていた",
+      "key": true
+    },
+    "no#5": {
+      "w": "no",
+      "pos": "adv",
+      "ja": "（文末の ¿no? で）〜だよね？",
+      "note": "…, ¿no? ＝ 確認・同意を求める"
+    },
+    "esquina": {
+      "w": "esquina",
+      "pos": "n",
+      "g": "f",
+      "ja": "（道の）角",
+      "key": true
+    },
+    "antes": {
+      "w": "antes",
+      "pos": "adv",
+      "ja": "前は・昔は"
+    },
+    "estaba": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "あった・いた",
+      "form": "estar の線過去・三人称単数（Antes estaba en aquella esquina＝前はあの角にあった）"
+    },
+    "estudiabas": {
+      "w": "estudiar",
+      "pos": "v",
+      "ja": "勉強していた",
+      "form": "estudiar の線過去・二人称単数"
+    },
+    "mucho": {
+      "w": "mucho",
+      "pos": "adv",
+      "ja": "たくさん・よく"
+    },
+    "estudio": {
+      "w": "estudiar",
+      "pos": "v",
+      "ja": "勉強する",
+      "form": "estudiar の現在・一人称単数（estudio más ahora＝今のほうが勉強している）"
+    },
+    "más": {
+      "w": "más",
+      "pos": "adv",
+      "ja": "もっと（más … que＝〜よりも）"
+    },
+    "que": {
+      "w": "que",
+      "pos": "conj",
+      "ja": "〜より（más ahora que antes＝昔より今のほうが）"
+    },
+    "hacías": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "していた",
+      "form": "hacer の線過去・二人称単数。¿Qué hacías?＝何をしていたの？",
+      "key": true
+    },
+    "fines": {
+      "w": "fin",
+      "pos": "n",
+      "g": "m",
+      "ja": "終わり（fin de semana＝週末）",
+      "form": "複数形（los fines de semana＝毎週末）"
+    },
+    "como": {
+      "w": "como",
+      "pos": "conj",
+      "ja": "〜なので（文の頭で理由）",
+      "key": true
+    },
+    "pertenecía": {
+      "w": "pertenecer",
+      "pos": "v",
+      "ja": "所属していた",
+      "form": "pertenecer の線過去・一人称単数（pertenecer a ＝ 〜に所属する）",
+      "key": true
+    },
+    "club": {
+      "w": "club",
+      "pos": "n",
+      "g": "m",
+      "ja": "クラブ"
+    },
+    "niñas": {
+      "w": "niña",
+      "pos": "n",
+      "g": "f",
+      "ja": "女の子",
+      "form": "複数形"
+    },
+    "jugaba": {
+      "w": "jugar",
+      "pos": "v",
+      "ja": "（スポーツを）していた",
+      "form": "jugar の線過去・一人称単数（jugar al fútbol＝サッカーをする）",
+      "key": true
+    },
+    "al": {
+      "w": "al",
+      "pos": "prep",
+      "ja": "（jugar a ＋ el fútbol）サッカーを",
+      "note": "jugar a ＋ スポーツ名：al は a ＋ el"
+    },
+    "compañeras": {
+      "w": "compañera",
+      "pos": "n",
+      "g": "f",
+      "ja": "仲間・同級生（女性）",
+      "form": "複数形",
+      "key": true
+    },
+    "sábados": {
+      "w": "sábado",
+      "pos": "n",
+      "g": "m",
+      "ja": "土曜日",
+      "form": "複数形（los sábados＝毎週土曜日）"
+    },
+    "mañana": {
+      "w": "mañana",
+      "pos": "n",
+      "g": "f",
+      "ja": "朝・午前",
+      "note": "por la mañana＝朝に。（adv の mañana は「明日」）"
+    },
+    "cuándo": {
+      "w": "cuándo",
+      "pos": "int",
+      "ja": "いつ"
+    },
+    "vivisteis": {
+      "w": "vivir",
+      "pos": "v",
+      "ja": "住んでいた",
+      "form": "vivir の点過去・二人称複数（vosotros。終わった期間）"
+    },
+    "tenía": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "（〜歳）だった",
+      "form": "tener の線過去・一人称単数（tener … años＝…歳だ）",
+      "key": true
+    },
+    "catorce": {
+      "w": "catorce",
+      "pos": "num",
+      "ja": "14"
+    },
+    "nos": {
+      "w": "nos",
+      "pos": "pron",
+      "ja": "自分たちを（trasladarse の nos）",
+      "note": "nos trasladamos＝引っ越した"
+    },
+    "trasladamos": {
+      "w": "trasladarse",
+      "pos": "v",
+      "ja": "引っ越す・移る",
+      "form": "trasladarse の点過去・一人称複数（nos trasladamos a Madrid＝マドリードに引っ越した）",
+      "key": true
+    }
+  }
+}

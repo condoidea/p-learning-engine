@@ -1,0 +1,356 @@
+{
+  "format": 1,
+  "sceneJa": "📷 イレネとおじいちゃんが古いアルバムを見ている。橋の上に立つ男の子の写真から、昔話が始まる",
+  "phrases": [
+    {
+      "t": "a los diez años",
+      "ja": "10歳のとき（a ＋ los ＋ 年齢 ＋ años）",
+      "key": true
+    },
+    {
+      "t": "qué niño tan encantador",
+      "ja": "なんてすてきな男の子（¡Qué ＋ 名詞 ＋ tan ＋ 形容詞!）",
+      "key": true
+    },
+    {
+      "t": "todas las tardes",
+      "ja": "毎日午後に",
+      "key": true
+    },
+    {
+      "t": "un poco",
+      "ja": "少し",
+      "key": true
+    },
+    {
+      "t": "un día",
+      "ja": "ある日"
+    },
+    {
+      "t": "de repente",
+      "ja": "突然",
+      "key": true
+    },
+    {
+      "t": "qué pasó",
+      "ja": "何があった？・どうなった？（pasar の点過去）",
+      "key": true
+    },
+    {
+      "t": "después de eso",
+      "ja": "そのあと・それから"
+    },
+    {
+      "t": "volví a saltar",
+      "ja": "また飛び込んだ（volver a ＋ 不定詞＝また〜する）",
+      "key": true
+    },
+    {
+      "t": "nunca más",
+      "ja": "二度と…ない",
+      "key": true
+    },
+    {
+      "t": "por lo menos",
+      "ja": "少なくとも",
+      "key": true
+    },
+    {
+      "t": "en casa",
+      "ja": "家に（家にいる）"
+    }
+  ],
+  "words": {
+    "quién": {
+      "w": "quién",
+      "pos": "int",
+      "ja": "誰"
+    },
+    "niño": {
+      "w": "niño",
+      "pos": "n",
+      "g": "m",
+      "ja": "男の子・子ども"
+    },
+    "puente": {
+      "w": "puente",
+      "pos": "n",
+      "g": "m",
+      "ja": "橋",
+      "key": true
+    },
+    "soy": {
+      "w": "ser",
+      "pos": "v",
+      "ja": "〜である",
+      "form": "ser の現在・一人称単数（soy yo＝わしだよ）"
+    },
+    "entonces": {
+      "w": "entonces",
+      "pos": "adv",
+      "ja": "当時・そのころ",
+      "note": "「じゃあ」の意味もあるが、ここでは時を表す"
+    },
+    "vivíamos": {
+      "w": "vivir",
+      "pos": "v",
+      "ja": "住んでいた",
+      "form": "vivir の線過去・一人称複数（当時の暮らし）",
+      "key": true
+    },
+    "campo": {
+      "w": "campo",
+      "pos": "n",
+      "g": "m",
+      "ja": "いなか（en el campo＝いなかで）"
+    },
+    "tan": {
+      "w": "tan",
+      "pos": "adv",
+      "ja": "なんて・こんなに（¡Qué niño tan encantador!）",
+      "note": "¡Qué ＋ 名詞 ＋ tan ＋ 形容詞!＝なんて…な〜！"
+    },
+    "encantador": {
+      "w": "encantador",
+      "pos": "adj",
+      "ja": "かわいい・すてきな",
+      "key": true
+    },
+    "hacías": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "していた",
+      "form": "hacer の線過去・二人称単数。¿qué hacías?＝何をしていたの？",
+      "key": true
+    },
+    "verano": {
+      "w": "verano",
+      "pos": "n",
+      "g": "m",
+      "ja": "夏"
+    },
+    "saltábamos": {
+      "w": "saltar",
+      "pos": "v",
+      "ja": "飛び込んでいた・跳んでいた",
+      "form": "saltar の線過去・一人称複数（昔の習慣。-ar 動詞の nosotros は -ábamos）",
+      "key": true
+    },
+    "desde": {
+      "w": "desde",
+      "pos": "prep",
+      "ja": "〜から（desde el puente＝橋から）"
+    },
+    "río": {
+      "w": "río",
+      "pos": "n",
+      "g": "m",
+      "ja": "川",
+      "key": true
+    },
+    "lo": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを（前に言ったこと）",
+      "note": "Lo hacíamos＝それをしていた"
+    },
+    "hacíamos": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "していた",
+      "form": "hacer の線過去・一人称複数（習慣）"
+    },
+    "todas": {
+      "w": "todo",
+      "pos": "det",
+      "ja": "すべての（todas las tardes＝毎日午後）",
+      "form": "todo の女性複数形"
+    },
+    "tardes": {
+      "w": "tarde",
+      "pos": "n",
+      "g": "f",
+      "ja": "午後・夕方",
+      "form": "複数形（todas las tardes＝毎日午後に）"
+    },
+    "era": {
+      "w": "ser",
+      "pos": "v",
+      "ja": "〜だった",
+      "form": "ser の線過去・三人称単数（昔の様子）"
+    },
+    "peligroso": {
+      "w": "peligroso",
+      "pos": "adj",
+      "ja": "危険な・危ない",
+      "key": true
+    },
+    "poco": {
+      "w": "poco",
+      "pos": "adv",
+      "ja": "少し（un poco＝少し）"
+    },
+    "agua": {
+      "w": "agua",
+      "pos": "n",
+      "g": "f",
+      "ja": "水",
+      "note": "女性名詞だが el agua の形で使う"
+    },
+    "estaba": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "〜だった・いた",
+      "form": "estar の線過去・三人称単数（背景・状態。el agua estaba fría／mientras estaba en el puente）"
+    },
+    "fría": {
+      "w": "frío",
+      "pos": "adj",
+      "ja": "冷たい",
+      "form": "frío の女性形（el agua＝女性名詞）"
+    },
+    "bastante": {
+      "w": "bastante",
+      "pos": "adv",
+      "ja": "かなり",
+      "key": true
+    },
+    "profundo": {
+      "w": "profundo",
+      "pos": "adj",
+      "ja": "深い",
+      "key": true
+    },
+    "nos": {
+      "w": "nos",
+      "pos": "pron",
+      "ja": "私たちに（nos encantaba＝私たちは大好きだった）"
+    },
+    "encantaba": {
+      "w": "encantar",
+      "pos": "v",
+      "ja": "大好きである・とても気に入る",
+      "form": "encantar の線過去・三人称単数（gustar 型：nos encantaba＝私たちには大好きだった）",
+      "key": true
+    },
+    "tus": {
+      "w": "tu",
+      "pos": "det",
+      "ja": "君の",
+      "form": "tu の複数形"
+    },
+    "padres": {
+      "w": "padre",
+      "pos": "n",
+      "g": "m",
+      "ja": "両親",
+      "form": "複数形（padres＝父と母・両親）"
+    },
+    "sabían": {
+      "w": "saber",
+      "pos": "v",
+      "ja": "知っていた",
+      "form": "saber の線過去・三人称複数（知っている状態が続いていた。点過去の supe＝知った）",
+      "key": true
+    },
+    "día": {
+      "w": "día",
+      "pos": "n",
+      "g": "m",
+      "ja": "日（un día＝ある日）"
+    },
+    "mientras": {
+      "w": "mientras",
+      "pos": "conj",
+      "ja": "〜している間に",
+      "key": true
+    },
+    "repente": {
+      "w": "repente",
+      "pos": "n",
+      "g": "m",
+      "ja": "（de repente で）突然"
+    },
+    "apareció": {
+      "w": "aparecer",
+      "pos": "v",
+      "ja": "現れる",
+      "form": "aparecer の点過去・三人称単数（突然の出来事）",
+      "key": true
+    },
+    "pasó": {
+      "w": "pasar",
+      "pos": "v",
+      "ja": "起こる",
+      "form": "pasar の点過去・三人称単数（¿qué pasó?＝何があった？）"
+    },
+    "se": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "自分を（enfadarse の se）",
+      "note": "se enfadó＝怒った"
+    },
+    "enfadó": {
+      "w": "enfadarse",
+      "pos": "v",
+      "ja": "怒る",
+      "form": "enfadarse の点過去・三人称単数（se enfadó＝怒った）",
+      "key": true
+    },
+    "muchísimo": {
+      "w": "muchísimo",
+      "pos": "adv",
+      "ja": "ものすごく",
+      "form": "mucho の強調形（-ísimo＝非常に）"
+    },
+    "después": {
+      "w": "después",
+      "pos": "adv",
+      "ja": "あとで・それから（después de eso＝そのあと）"
+    },
+    "eso": {
+      "w": "eso",
+      "pos": "pron",
+      "ja": "それ",
+      "form": "ese の中性形（そのこと）"
+    },
+    "volví": {
+      "w": "volver",
+      "pos": "v",
+      "ja": "戻る・（volver a ＋ 不定詞で）また〜する",
+      "form": "volver の点過去・一人称単数（no volví a saltar＝もう飛び込まなかった）",
+      "key": true
+    },
+    "a#10": {
+      "w": "a",
+      "pos": "prep",
+      "ja": "（volver a ＋ 不定詞）また〜する"
+    },
+    "saltar": {
+      "w": "saltar",
+      "pos": "v",
+      "ja": "飛び込む・跳ぶ",
+      "key": true
+    },
+    "nunca": {
+      "w": "nunca",
+      "pos": "adv",
+      "ja": "一度も〜ない（nunca más＝二度と）"
+    },
+    "más": {
+      "w": "más",
+      "pos": "adv",
+      "ja": "もっと（nunca más＝二度と…ない）"
+    },
+    "menos": {
+      "w": "menos",
+      "pos": "adv",
+      "ja": "少なく（por lo menos＝少なくとも）"
+    },
+    "ella": {
+      "w": "ella",
+      "pos": "pron",
+      "ja": "彼女（ここでは母）"
+    }
+  }
+}

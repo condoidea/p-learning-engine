@@ -1,0 +1,350 @@
+{
+  "format": 1,
+  "sceneJa": "🎁 マドリード。留学中のマコトが、スペイン人の友だちカルメンに妹の誕生日プレゼントを相談し、デパートで財布を選ぶ",
+  "phrases": [
+    {
+      "t": "por correo",
+      "ja": "郵便で",
+      "key": true
+    },
+    {
+      "t": "por qué no",
+      "ja": "〜したら？（提案）／どうして〜しないの",
+      "key": true
+    },
+    {
+      "t": "buena idea",
+      "ja": "いいね、いい考えだ",
+      "key": true
+    },
+    {
+      "t": "me enseñas a",
+      "ja": "〜の仕方を教えてくれる？（enseñar a＋不定詞）",
+      "key": true
+    },
+    {
+      "t": "no sé cómo se hace",
+      "ja": "やり方がわからない",
+      "key": true
+    },
+    {
+      "t": "se lo entregan",
+      "ja": "（誰かが）それを（妹に）届ける。le → se の形",
+      "key": true
+    },
+    {
+      "t": "esta semana",
+      "ja": "今週"
+    },
+    {
+      "t": "qué tal",
+      "ja": "〜はどう？（¿Qué tal…?）",
+      "key": true
+    },
+    {
+      "t": "voy a comprársela",
+      "ja": "（妹に）それを買うつもりだ（comprar＋se＋la）",
+      "key": true
+    },
+    {
+      "t": "para mí",
+      "ja": "自分用に",
+      "key": true
+    },
+    {
+      "t": "voy a regalártela",
+      "ja": "（君に）それをプレゼントするつもりだ（regalar＋te＋la）",
+      "key": true
+    },
+    {
+      "t": "tengo que",
+      "ja": "〜しなければならない（tener que＋不定詞）",
+      "key": true
+    },
+    {
+      "t": "correos",
+      "ja": "（スペインの郵便局の名前）コレオス。郵便局",
+      "key": true
+    },
+    {
+      "t": "el día de tu cumpleaños",
+      "ja": "誕生日の日に"
+    }
+  ],
+  "words": {
+    "por": {
+      "w": "por",
+      "pos": "prep",
+      "ja": "〜で（por correo＝郵便で）・（por qué＝なぜ）"
+    },
+    "que": {
+      "w": "que",
+      "pos": "conj",
+      "ja": "（tener que＋不定詞で）〜しなければならない"
+    },
+    "el": {
+      "w": "el",
+      "pos": "art",
+      "ja": "（男性単数の名詞につく）その。日付では el veinticuatro＝24日"
+    },
+    "veinticuatro": {
+      "w": "veinticuatro",
+      "pos": "num",
+      "ja": "24"
+    },
+    "mayo": {
+      "w": "mayo",
+      "pos": "n",
+      "g": "m",
+      "ja": "5月"
+    },
+    "cumpleaños": {
+      "w": "cumpleaños",
+      "pos": "n",
+      "g": "m",
+      "ja": "誕生日"
+    },
+    "hermana": {
+      "w": "hermana",
+      "pos": "n",
+      "g": "f",
+      "ja": "妹（姉も指す。hermano の女性形）",
+      "form": "hermano の女性形"
+    },
+    "enviarle": {
+      "w": "enviar",
+      "pos": "v",
+      "ja": "送る",
+      "form": "enviar＋le（彼女に＝妹に）。不定詞に代名詞がついた形",
+      "key": true
+    },
+    "enviar": {
+      "w": "enviar",
+      "pos": "v",
+      "ja": "送る",
+      "key": true
+    },
+    "correo": {
+      "w": "correo",
+      "pos": "n",
+      "g": "m",
+      "ja": "郵便"
+    },
+    "le": {
+      "w": "le",
+      "pos": "pron",
+      "ja": "（その人）に。ここでは妹に（lo・la の前では se になる）"
+    },
+    "cartera": {
+      "w": "cartera",
+      "pos": "n",
+      "g": "f",
+      "ja": "財布",
+      "key": true,
+      "note": "郵便配達の女性という意味もあるが、ここでは財布"
+    },
+    "buena": {
+      "w": "bueno",
+      "pos": "adj",
+      "ja": "よい",
+      "form": "bueno の女性形（idea は女性名詞）"
+    },
+    "idea": {
+      "w": "idea",
+      "pos": "n",
+      "g": "f",
+      "ja": "考え・アイデア"
+    },
+    "oye": {
+      "w": "oír",
+      "pos": "interj",
+      "ja": "ねえ、ちょっと（呼びかけ）",
+      "form": "oír の命令形（聞いて）→ 相手の注意を引く"
+    },
+    "me": {
+      "w": "me",
+      "pos": "pron",
+      "ja": "私に（間接目的語）"
+    },
+    "enseñas": {
+      "w": "enseñar",
+      "pos": "v",
+      "ja": "教える",
+      "form": "enseñar の現在・二人称単数（君は教える）",
+      "key": true
+    },
+    "paquete": {
+      "w": "paquete",
+      "pos": "n",
+      "g": "m",
+      "ja": "小包",
+      "key": true
+    },
+    "a": {
+      "w": "a",
+      "pos": "prep",
+      "ja": "〜へ・〜に（ir a＋不定詞＝〜するつもり／enseñar a＝〜の仕方を教える／acompañar a＝〜へ一緒に行く）"
+    },
+    "sé": {
+      "w": "saber",
+      "pos": "v",
+      "ja": "知っている・わかる",
+      "form": "saber の現在・一人称単数（アクセントで se と区別）"
+    },
+    "se": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（se hace で）人は〜する・〜される（無人称・受身の se）"
+    },
+    "se#4": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "彼女に（＝妹に）。le が lo の前で se に変わった形"
+    },
+    "hace": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "する・やる",
+      "form": "hacer の現在・三人称単数（se hace＝行われる）"
+    },
+    "claro": {
+      "w": "claro",
+      "pos": "interj",
+      "ja": "もちろん"
+    },
+    "mañana": {
+      "w": "mañana",
+      "pos": "adv",
+      "ja": "明日"
+    },
+    "te": {
+      "w": "te",
+      "pos": "pron",
+      "ja": "君を（acompañar の直接目的語）"
+    },
+    "acompaño": {
+      "w": "acompañar",
+      "pos": "v",
+      "ja": "一緒に行く・付き添う",
+      "form": "acompañar の現在・一人称単数",
+      "key": true
+    },
+    "correos#4": {
+      "w": "Correos",
+      "pos": "n",
+      "g": "m",
+      "ja": "郵便局（スペインの郵便の会社名。大文字で書く）",
+      "key": true
+    },
+    "si": {
+      "w": "si",
+      "pos": "conj",
+      "ja": "もし〜なら"
+    },
+    "lo": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを（直接目的語。el paquete や、言われたことを指す）"
+    },
+    "envías": {
+      "w": "enviar",
+      "pos": "v",
+      "ja": "送る",
+      "form": "enviar の現在・二人称単数（君が送る）",
+      "key": true
+    },
+    "esta": {
+      "w": "este",
+      "pos": "det",
+      "ja": "この",
+      "form": "este の女性形"
+    },
+    "entregan": {
+      "w": "entregar",
+      "pos": "v",
+      "ja": "届ける・渡す",
+      "form": "entregar の現在・三人称複数（誰かが届ける。郵便局側を指す）",
+      "key": true
+    },
+    "antes": {
+      "w": "antes",
+      "pos": "adv",
+      "ja": "前に（antes de〜＝〜より前に）"
+    },
+    "tal": {
+      "w": "tal",
+      "pos": "adv",
+      "ja": "（qué tal で）どう"
+    },
+    "graciosa": {
+      "w": "gracioso",
+      "pos": "adj",
+      "ja": "かわいい・おもしろい",
+      "form": "gracioso の女性形（cartera にかかる）",
+      "key": true,
+      "note": "ここでは「おもしろい」ではなく「かわいい」"
+    },
+    "azul": {
+      "w": "azul",
+      "pos": "adj",
+      "ja": "青い"
+    },
+    "comprársela": {
+      "w": "comprar",
+      "pos": "v",
+      "ja": "買う",
+      "form": "comprar＋se（妹に）＋la（財布を）。アクセント記号がつく形",
+      "key": true
+    },
+    "negra": {
+      "w": "negro",
+      "pos": "adj",
+      "ja": "黒い",
+      "form": "negro の女性形"
+    },
+    "mí": {
+      "w": "mí",
+      "pos": "pron",
+      "ja": "私（前置詞のあと。para mí＝私用に）"
+    },
+    "cuándo": {
+      "w": "cuándo",
+      "pos": "int",
+      "ja": "いつ"
+    },
+    "regalártela": {
+      "w": "regalar",
+      "pos": "v",
+      "ja": "贈る・プレゼントする",
+      "form": "regalar＋te（君に）＋la（それを）。アクセント記号がつく形",
+      "key": true
+    },
+    "olvidar": {
+      "w": "olvidar",
+      "pos": "v",
+      "ja": "忘れる"
+    },
+    "esperar": {
+      "w": "esperar",
+      "pos": "v",
+      "ja": "待つ"
+    },
+    "casi": {
+      "w": "casi",
+      "pos": "adv",
+      "ja": "ほとんど・〜近く"
+    },
+    "año": {
+      "w": "año",
+      "pos": "n",
+      "g": "m",
+      "ja": "年"
+    },
+    "abril": {
+      "w": "abril",
+      "pos": "n",
+      "g": "m",
+      "ja": "4月"
+    }
+  }
+}

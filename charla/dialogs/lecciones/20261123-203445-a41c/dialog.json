@@ -1,0 +1,104 @@
+{
+  "format": 1,
+  "id": "20261123-203445-a41c",
+  "title": "L15-02 El niño del puente",
+  "scene": "Una tarde tranquila en casa del abuelo, en Madrid. Irene y su abuelo Andrés miran un álbum de fotos antiguas. El abuelo le cuenta cosas de su infancia en el campo. Conversación cariñosa entre abuelo y nieta, con humor.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-23T11:35:52.948Z",
+  "audio": "audio.mp3",
+  "durationMs": 72081,
+  "speakers": [
+    {
+      "id": "IRENE",
+      "gender": "female",
+      "persona": "Irene, unos 20 años, nieta curiosa y alegre, le encanta escuchar las historias de su abuelo"
+    },
+    {
+      "id": "ABUELO",
+      "gender": "male",
+      "persona": "el abuelo Andrés, unos 80 años, tranquilo, cariñoso y con sentido del humor, habla despacio"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "IRENE",
+      "text": "Abuelo, ¿quién es este niño del puente?",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 3616
+    },
+    {
+      "index": 1,
+      "speaker": "ABUELO",
+      "text": "Soy yo, a los diez años. Entonces vivíamos en el campo, en un pueblo muy pequeño.",
+      "direction": "",
+      "startMs": 4600,
+      "endMs": 14360
+    },
+    {
+      "index": 2,
+      "speaker": "IRENE",
+      "text": "¡Qué niño tan encantador! ¿Y qué hacías en el puente?",
+      "direction": "",
+      "startMs": 15308,
+      "endMs": 19608
+    },
+    {
+      "index": 3,
+      "speaker": "ABUELO",
+      "text": "En verano, mis amigos y yo saltábamos desde el puente al río. Lo hacíamos todas las tardes.",
+      "direction": "",
+      "startMs": 20671,
+      "endMs": 32351
+    },
+    {
+      "index": 4,
+      "speaker": "IRENE",
+      "text": "¿No era peligroso?",
+      "direction": "",
+      "startMs": 33287,
+      "endMs": 34877
+    },
+    {
+      "index": 5,
+      "speaker": "ABUELO",
+      "text": "Un poco. El agua estaba muy fría y el río era bastante profundo. Pero nos encantaba.",
+      "direction": "",
+      "startMs": 35872,
+      "endMs": 45792
+    },
+    {
+      "index": 6,
+      "speaker": "IRENE",
+      "text": "¿Y tus padres lo sabían?",
+      "direction": "",
+      "startMs": 46858,
+      "endMs": 49018
+    },
+    {
+      "index": 7,
+      "speaker": "ABUELO",
+      "text": "No. Pero un día, mientras estaba en el puente, de repente apareció mi madre.",
+      "direction": "",
+      "startMs": 50098,
+      "endMs": 57988
+    },
+    {
+      "index": 8,
+      "speaker": "IRENE",
+      "text": "¿Y qué pasó?",
+      "direction": "riéndose",
+      "startMs": 58957,
+      "endMs": 59917
+    },
+    {
+      "index": 9,
+      "speaker": "ABUELO",
+      "text": "Se enfadó muchísimo. Después de eso, no volví a saltar nunca más… por lo menos, cuando ella estaba en casa.",
+      "direction": "",
+      "startMs": 60881,
+      "endMs": 71081
+    }
+  ]
+}
