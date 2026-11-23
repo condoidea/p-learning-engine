@@ -68,6 +68,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 #script { padding-top: 4px; }
 .ln { display: grid; grid-template-columns: 50px 1fr auto; gap: 8px; padding: 10px 6px 10px 0; border-radius: 12px; border-left: 3px solid transparent; margin: 2px 0; }
 .ln .who { align-self: start; width: 50px; padding: 4px 0; display: grid; justify-items: center; line-height: 1.1; font-family: var(--es); font-weight: 600; font-size: 15px; color: var(--c); }
+.ln .who.long { font-size: 13.5px; letter-spacing: -.01em; }
+.splegend { margin: 6px 4px 4px; color: var(--tx2); font-size: 13px; }
+.splegend b { color: var(--tx); font-family: var(--es); }
 .ln .who small { font-family: var(--ja); font-weight: 400; font-size: 11px; color: var(--tx3); }
 .ln.sp0 { --c: var(--a0); }
 .ln.sp1 { --c: var(--a1); }

@@ -344,12 +344,12 @@
     return false;
   }
   function renderScript() {
-    var L = C.D.lines, sp = {};
+    var L = C.D.lines, sp = {}, short = spShort();
     (C.D.speakers || []).forEach(function (s, k) { sp[s.id] = k; });
-    $('#script').innerHTML = ptsHTML() + L.map(function (l, i) {
+    $('#script').innerHTML = spLegendHTML(short) + ptsHTML() + L.map(function (l, i) {
       var hid = lineHidden(i), off = stepMode() && onlyStar() && !l.star;
       return '<div class="ln sp' + (sp[l.speaker] || 0) + (hid ? ' hid' : '') + (off ? ' off' : '') + '" data-i="' + i + '">' +
-        '<button class="who" data-act="line" aria-label="セリフ' + (i + 1) + 'から">' + esc(spName(l.speaker)) + '<small>' + (l.star ? '<b class="star">★</b>' : '') + (i + 1) + '</small></button>' +
+        '<button class="who' + ((short[l.speaker] || '').length >= 6 ? ' long' : '') + '" data-act="line" aria-label="' + esc(spName(l.speaker)) + '・セリフ' + (i + 1) + 'から">' + esc(short[l.speaker] || spName(l.speaker)) + '<small>' + (l.star ? '<b class="star">★</b>' : '') + (i + 1) + '</small></button>' +
         '<div class="body"><p class="es" lang="es">' + (hid ? hiddenHTML(l) : tokHTML(l.toks, i)) + '</p>' +
         (S.set.ja && !hid ? '<p class="ja">' + esc(l.ja) + '</p>' : '') +
         '<div class="turn" hidden><i></i><span></span></div>' +
@@ -393,6 +393,31 @@
   });
   /* 話し手の表示：LUCIA → Lucia（大文字だけだと幅をとる） */
   function spName(id) { id = String(id || ''); return id.length > 2 && id === id.toUpperCase() ? id.charAt(0) + id.slice(1).toLowerCase() : id; }
+  /* 台本の左の列（50px）に入らない長い名前（Dependiente など）は略して「Dep.」。台本の頭に凡例を1行出す */
+  var SP_MAX = 7;
+  var ROLE_JA = { dependiente: '店員', dependienta: '店員', camarero: 'ウェイター', camarera: 'ウェイトレス', recepcionista: '受付係', recepción: '受付',
+    profesor: '先生', profesora: '先生', médico: '医者', médica: '医者', farmacéutico: '薬剤師', farmacéutica: '薬剤師', policía: '警察官',
+    taxista: 'タクシー運転手', conductor: '運転手', vendedor: '売り手', vendedora: '売り手', cliente: '客', clienta: '客', locutor: 'アナウンサー', locutora: 'アナウンサー', entrevistador: 'インタビュアー', entrevistadora: 'インタビュアー' };
+  function spShort() {
+    var out = {}, used = {};
+    (C.D.speakers || []).forEach(function (s) {
+      var n = spName(s.id);
+      if (n.length <= SP_MAX) { out[s.id] = n; used[n.toLowerCase()] = 1; return; }
+      var k = 3, a;
+      do { a = n.slice(0, k++) + '.'; } while (used[a.toLowerCase()] && k < n.length);
+      used[a.toLowerCase()] = 1;
+      out[s.id] = a;
+    });
+    return out;
+  }
+  function spLegendHTML(short) {
+    var items = (C.D.speakers || []).filter(function (s) { return short[s.id] !== spName(s.id); }).map(function (s) {
+      var n = spName(s.id), g = null, ja = ROLE_JA[n.toLowerCase()] || '';
+      if (!ja) { try { g = C.dict.word(n.toLowerCase()); } catch (e) { /* */ } if (g && g.ja && !g.name) ja = String(g.ja).split(/[・、]/)[0]; }
+      return '<span><b>' + esc(short[s.id]) + '</b> ＝ <span lang="es">' + esc(n) + '</span>' + (ja ? '（' + esc(ja) + '）' : '') + '</span>';
+    });
+    return items.length ? '<p class="splegend">' + items.join('　') + '</p>' : '';
+  }
   function lineEl(i) { return $('#script .ln[data-i="' + i + '"]'); }
 
   $('#script').addEventListener('click', function (e) {
