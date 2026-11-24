@@ -1255,30 +1255,10 @@
   /* =========================================================
    * 🗺 命令の地図
    *  命令の形の出発点は3つ（tú の形・yo の形・原形）。きまりを習うたびに枝が1本ずつ書きこまれる。
-   *  データは MQ.map（lessons.js）。まだ無いときは下の既定を使う。
+   *  データは MQ.map（lessons.js）。
    *  動かすのは「いまここ」の札（hi）だけ。ほかは動かさない（opacity だけのパルス）。
    * ========================================================= */
-  var MAP = D.map || {
-    starts: [
-      { id: 's-tu', ti: 'tú の形', ex: 'hablas', sub: '君は〜する' },
-      { id: 's-yo', ti: 'yo の形', ex: 'hablo', sub: '私は〜する' },
-      { id: 's-inf', ti: '原形', ex: 'hablar', sub: '辞書の形' }
-    ],
-    nodes: [
-      { id: 'tu', from: 's-tu', L: 1, who: 'tú（1人・仲よし）', op: 's を取る', ex: '{habla}', ja: '話せ' },
-      { id: 'tu4a', from: 'tu', L: 3, kind: 'ex', ti: '例外：原形の最後の2文字を取る4つ', ex: '{ven}・{ten}・{pon}・{sal}' },
-      { id: 'tu4b', from: 'tu', L: 4, kind: 'ex', ti: '例外：覚える4つ', ex: '{haz}・{di}・{ve}・{sé}' },
-      { id: 'usted', from: 's-yo', L: 5, who: 'usted（1人・ていねい）', op: 'o を取って、-ar は e／-er・-ir は a', ex: '{hable}・{coma}', ja: '話してください' },
-      { id: 'oy4', from: 'usted', L: 7, kind: 'ex', ti: '例外：yo の形が -oy の4つ', ex: '{vaya}・{sea}・{esté}・{dé}' },
-      { id: 'spell', from: 'usted', L: 12, kind: 'ex', ti: 'e の前のつづりの書きかえ', ex: '{busque}・{llegue}・{empiece}' },
-      { id: 'ustedes', from: 'usted', L: 7, who: 'ustedes（何人も・ていねい）', op: '＋ n', ex: '{hablen}' },
-      { id: 'no-tu', from: 'usted', L: 10, who: 'tú に「〜するな」', op: 'no ＋ usted の命令 ＋ s', ex: 'no {hables}' },
-      { id: 'no-usted', from: 'usted', L: 10, who: 'usted に「〜しないで」', op: 'no ＋ usted の命令', ex: 'no {hable}' },
-      { id: 'nos', from: 'usted', L: 14, who: 'nosotros「〜しよう」', op: '＋ mos', ex: '{hablemos}' },
-      { id: 'no-vos', from: 'usted', L: 14, who: 'vosotros に「〜するな」', op: 'no ＋ 最後の e・a を éis・áis に', ex: 'no {habléis}' },
-      { id: 'vos', from: 's-inf', L: 8, who: 'vosotros（何人も・仲よし）', op: 'r を d に', ex: '{hablad}' }
-    ]
-  };
+  var MAP = D.map || { starts: [], nodes: [] };
   /* 形の問題（k:'form'）の相手 → その相手の枝 */
   var PMAP = { 'tú': 'tu', 'usted': 'usted', 'vosotros': 'vos', 'ustedes': 'ustedes', 'no-tú': 'no-tu', 'no-usted': 'no-usted', 'nosotros': 'nos', 'no-vosotros': 'no-vos' };
   function mapOpenN() { return MAP.nodes.filter(function (n) { return lessonDone(n.L); }).length; }
@@ -1375,7 +1355,7 @@
   /* =========================================================
    * 🔨 鍛冶場：地図を自分でたどって、命令の形を作る（6問）
    *  毎回「どの形から出発して、何をするか」を自分で選ぶ。ルールは1つの形に1つだけ。
-   *   手1 出発点（tú の形・yo の形・原形・例外）→ 手2 何をする（例外は形を選ぶ。書きかえは手2のあとにもう1手）→ 手3 usted の命令から足し算（ustedes・〜するな・〜しよう）
+   *   手1 出発点（tú の形・yo の形・原形・例外）→ 手2 何をする（例外は形を選ぶ。書きかえは手2のあとにもう1手）→ 手3 接続法の形のうち、この相手・この場面の形を選ぶ（使い分け）
    *  手を正解するたびに、上の語がその場で変わる（動かすのはそこだけ）。まちがえたら、その手の正解と地図の枝を見せ、同じ枝の別の動詞を最後に1問足す。
    *  形の計算と「どの枝にどの動詞を出してよいか」は MQ.forge（forge.js）。ここでは、地図の枝が開いているかだけを見る。
    * ========================================================= */
@@ -1383,8 +1363,7 @@
   var FG_ASK = { 'tu': 'tú（1人・仲よし）への命令に', 'usted': 'usted（1人・ていねい）への命令に', 'ustedes': 'ustedes（何人も・ていねい）への命令に', 'vos': 'vosotros（何人も・仲よし）への命令に',
     'no-tu': 'tú への「〜するな」に', 'no-usted': 'usted への「〜しないで」に', 'nos': 'nosotros の「〜しよう」に', 'no-vos': 'vosotros への「〜するな」に' };
   var FG_WHOIS = { 'ustedes': 'ustedes（何人も・ていねい）', 'no-tu': 'tú に「〜するな」', 'no-usted': 'usted に「〜しないで」', 'nos': 'nosotros「〜しよう」', 'no-vos': 'vosotros に「〜するな」' };
-  var FG_OP3 = { 'ustedes': '＋ n', 'no-tu': 'no ＋ s', 'no-usted': 'no だけ', 'nos': '＋ mos', 'no-vos': 'no ＋ éis・áis' };
-  var FG_FILL = ['＋ r', '＋ d', '＋ le'];
+  var FG_WHY3 = { 'ustedes': 'ustedes の形', 'no-tu': 'no ＋ tú の形', 'no-usted': 'no ＋ usted の形', 'nos': 'nosotros の形', 'no-vos': 'no ＋ vosotros の形' };
   var fgTok = 0, fgAnsI = -1, fgGrow = null;
   function fgOpen(id) { var n = MAP.nodes.filter(function (x) { return x.id === id; })[0]; return !!n && lessonDone(n.L); }
   /* 出せる「枝 → 動詞」：開いている枝、クリア済みの神託の動詞、その枝で形が作れて、必要な例外の枝が開いているもの */
@@ -1504,17 +1483,14 @@
       }, 250);
       later(function () { if (alive()) finish(true); }, 1000);
     }
-    /* 手3：usted の命令からの足し算 */
+    /* 手3：接続法の形の中から、この相手・この場面の形を選ぶ（使い分け）。まちがいの選択肢は、よくある取りちがえ */
     function h3() {
-      var ops = FG.DERIVED.filter(function (w) { return fgOpen(w) || w === who; });
-      var items = ops.map(function (w) { return { label: FG_OP3[w], ok: w === who }; });
-      FG_FILL.forEach(function (f) { if (items.length < 3) items.push({ label: f }); });
-      var base = u.slice(0, -1), steps = {
-        'ustedes': [u + '^n^'], 'no-usted': ['^no^ ' + u], 'no-tu': ['^no^ ' + u, '^no^ ' + u + '^s^'], 'nos': [u + '^mos^'],
-        'no-vos': ['^no^ ' + base + '^_^', '^no^ ' + base + '^' + (/e$/.test(u) ? 'éis' : 'áis') + '^']
-      }[who];
-      hand('usted の命令 <b>' + esc(u) + '</b> から、' + esc(FG_WHOIS[who]) + 'は？', items, { nodes: [who] },
-        'usted の命令 ' + esc(u) + ' に「' + esc(FG_OP3[who]) + '」をして、' + esc(form) + '。', function () { seq(steps, complete); }, true);
+      var T = u + 's', N = u + 'n', M = u + 'mos', V = FG.form(v, 'no-vos').slice(3), ti = FG.form(v, 'tu'), vi = FG.form(v, 'vos');
+      var cand = { 'ustedes': [N, u, vi], 'nos': [M, N, u], 'no-tu': ['no ' + T, 'no ' + ti, 'no ' + u], 'no-usted': ['no ' + u, 'no ' + T, 'no ' + ti], 'no-vos': ['no ' + V, 'no ' + vi, 'no ' + T] }[who];
+      var seen = {}, items = [];
+      cand.forEach(function (x, i) { if (!seen[x]) { seen[x] = 1; items.push({ label: x, ok: i === 0 }); } });
+      hand('接続法 <b>' + esc(u) + '</b> の仲間から、' + esc(FG_WHOIS[who]) + 'は？', items, { nodes: [who] },
+        esc(FG_WHOIS[who]) + 'は、' + esc(FG_WHY3[who]) + '。→ ' + esc(form), function () { seq(['^' + form + '^'], complete); });
     }
     function after2() { derived ? h3() : complete(); }
     /* つづりの書きかえ（llegue・busque・empiece） */
@@ -1526,7 +1502,7 @@
     function h2() {
       if (exc) {
         var cor = who === 'tu' ? v.tuCmd : u, bad1 = who === 'tu' ? v.tu.slice(0, -1) : v.yo + 'e', bad2 = who === 'tu' ? v.tu : v.el;
-        return hand('例外：この動詞の命令は？', [{ label: cor, ok: true }, { label: bad1 }, { label: bad2 }], { nodes: [exNode] },
+        return hand(who === 'tu' ? '例外：この動詞の命令は？' : '例外：この動詞の接続法は？', [{ label: cor, ok: true }, { label: bad1 }, { label: bad2 }], { nodes: [exNode] },
           '覚えた形は「' + esc(cor) + '」。ふつうの作り方だと「' + esc(bad1) + '」になってしまう。', function () { seq(['^' + cor + '^'], after2); });
       }
       if (startK === 'tu') {
@@ -1540,7 +1516,7 @@
           '原形（' + esc(v.inf) + '）の最後の r を d に → ' + esc(form), function () { seq([si + '^_^', si + '^d^'], complete); });
       }
       var sy = v.yo.slice(0, -1), vow = ar ? 'e' : 'a';
-      hand('何をする？', [{ label: 'o を取って ' + vow, ok: true }, { label: 'o を取って ' + (ar ? 'a' : 'e') }, { label: 's を取る' }], { nodes: ['usted'] },
+      hand('何をする？', [{ label: 'o を取って ' + vow, ok: true }, { label: 'o を取って ' + (ar ? 'a' : 'e') }, { label: 's を取る' }], { nodes: ['sub'] },
         'yo の形（' + esc(v.yo) + '）の o を取って、' + (ar ? '-ar だから e' : '-er・-ir だから a') + ' → ' + esc(sy + vow),
         function () { seq([sy + '^_^', sy + '^' + vow + '^'], v.ex === 'spell' ? h2s : after2); });
     }
@@ -1548,8 +1524,8 @@
     var why1 = exc ? (who === 'tu' ? '「' + esc(v.tuCmd) + '」は覚えた形。tú の形から s を取ると「' + esc(v.tu.slice(0, -1)) + '」になってしまう。' : '「' + esc(u) + '」は覚えた形。yo の形（' + esc(v.yo) + '）からは作れない。')
       : startK === 'tu' ? 'tú への命令は、tú の形（' + esc(v.tu) + '）から作る。'
       : startK === 'inf' ? 'vosotros への命令は、原形（' + esc(v.inf) + '）から作る。'
-      : (derived ? 'ここは usted の命令から足し算。その usted の命令は、yo の形（' + esc(v.yo) + '）から作る。' : 'usted への命令は、yo の形（' + esc(v.yo) + '）から作る。');
-    var hi1 = exc ? { nodes: [exNode] } : startK === 'tu' ? { nodes: ['tu'], start: 's-tu' } : startK === 'inf' ? { nodes: ['vos'], start: 's-inf' } : { nodes: derived ? ['usted', who] : ['usted'], start: 's-yo' };
+      : '接続法の形は、yo の形（' + esc(v.yo) + '）から作る。';
+    var hi1 = exc ? { nodes: [exNode] } : startK === 'tu' ? { nodes: ['tu'], start: 's-tu' } : startK === 'inf' ? { nodes: ['vos'], start: 's-inf' } : { nodes: [who], start: 's-yo' };
     var items1 = [{ label: 'tú の形　' + v.tu, ok: !exc && startK === 'tu' }, { label: 'yo の形　' + v.yo, ok: !exc && startK === 'yo' }, { label: '原形　' + v.inf, ok: !exc && startK === 'inf' }];
     if (exc || fgOpen('tu4a') || fgOpen('tu4b') || fgOpen('oy4')) items1.push({ label: '例外（覚えた形）', ok: exc });
     hand('出発点は？', items1, hi1, why1, function () {

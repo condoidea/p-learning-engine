@@ -10,7 +10,7 @@
  *    ex     'oy'＝yo の形が -oy の4つ（usted の枝 oy4 が開くまで usted の仲間に出さない）
  *           'spell'＝e の前でつづりが変わる（枝 spell が開くまで出さない）
  *    irr    true＝nosotros・vosotros「〜するな」の形が不規則（語幹がまた変わる）→ nos・no-vos には出さない
- *    only   'usted'＝usted の枝だけに出す（アクセント記号つきで、足し算の形が変わる）
+ *    only   'usted'＝usted の枝だけに出す（dé・esté は、ほかの人の形でアクセント記号が変わる）
  *    noNos  true＝nosotros「〜しよう」に出さない（ir は vamos が特別）
  *    el     '-oy' の4つだけ：「彼は〜する」の形（まちがいの選択肢に使う）
  *
@@ -50,9 +50,9 @@ MQ.forge = {
   /* ---------- 形の計算（app.js・tests/check-manda.js で共通）---------- */
   /* 形のある枝（MQ.map の枝 id と同じ） */
   WHO: ['tu', 'usted', 'ustedes', 'no-tu', 'no-usted', 'nos', 'no-vos', 'vos'],
-  /* usted の命令から足し算で作る枝 */
+  /* 接続法の形（usted の形の仲間）から、相手・場面に合う形を選ぶ枝 */
   DERIVED: ['ustedes', 'no-tu', 'no-usted', 'nos', 'no-vos'],
-  /* usted の命令：例外・書きかえは usted、無ければ yo の最後の o を取り、-ar は e、-er・-ir は a */
+  /* 接続法の usted の形：例外・書きかえは usted、無ければ yo の最後の o を取り、-ar は e、-er・-ir は a */
   usted: function (v) { return v.usted || v.yo.slice(0, -1) + (/ar$/.test(v.inf) ? 'e' : 'a'); },
   /* 枝ごとの正解の形 */
   form: function (v, who) {
