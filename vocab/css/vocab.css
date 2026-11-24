@@ -347,9 +347,6 @@ mark { background: var(--mark); color: inherit; padding: 0 3px; border-radius: 4
 .interlude.want .big-t { font-size: 21px; line-height: 1.4; }
 .fam { margin: 8px 0 0; padding-top: 8px; border-top: 1px dashed var(--line-strong); font-size: 13px; text-align: left; }
 .famb { display: inline-block; margin-right: 6px; padding: 1px 10px; border-radius: 999px; background: var(--clue-bg); font-weight: 900; }
-.fam .mates { display: block; margin-top: 4px; font-family: var(--f-es); font-size: 13px; color: var(--muted); }
-.fam .mates i { font-style: normal; margin-right: 4px; opacity: .55; }
-.fam .mates i.met { opacity: 1; color: var(--ink); font-weight: 700; }
 .fpips { display: flex; gap: 2px; justify-content: center; margin: 2px 0 1px; }
 .fpips i { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--tc); opacity: .5; }
 .fpips i.on { background: var(--tc); opacity: 1; }

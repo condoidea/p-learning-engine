@@ -39,7 +39,9 @@
         if (!S.settings.speak || !syn || !(voice || find())) return;
         try {
           syn.cancel();
-          var u = new SpeechSynthesisUtterance(String(text).replace(/[{}]/g, ''));
+          /* 男女同形の名詞は「el/la estudiante」と出すが、続けて読むと聞き分けられないので「el estudiante, la estudiante」と読む */
+          var t = String(text).replace(/[{}]/g, '').replace(/\b(el|los)\/(la|las) (\S+)/g, '$1 $3, $2 $3');
+          var u = new SpeechSynthesisUtterance(t);
           u.voice = voice; u.lang = voice.lang; u.rate = slow ? 0.7 : 0.9;
           syn.speak(u);
         } catch (e) { /* 読み上げできない */ }
@@ -1521,9 +1523,8 @@
   }
   function famHtml(w) {
     var f = famOf(w); if (!f) return '';
-    var mates = D.words.filter(function (x) { return x !== w && famOf(x) === f; });
-    return '<p class="fam"><span class="famb">' + FAM[f].ico + ' ' + FAM[f].name + '</span>' + esc(FAM[f].desc) +
-      (mates.length ? '<span class="mates">仲間：' + mates.map(function (x) { return '<i class="' + (V.card(x.id) ? 'met' : '') + '">' + esc(x.w) + '</i>'; }).join(' ') + '</span>' : '') + '</p>';
+    /* 同じ族の動詞の一覧（仲間：…）は、語が増えると長くなりすぎるので出さない。族の名前と説明（例つき）だけ */
+    return '<p class="fam"><span class="famb">' + FAM[f].ico + ' ' + FAM[f].name + '</span>' + esc(FAM[f].desc) + '</p>';
   }
   /* フォルムの印（カード用の小さな点・シート用の札） */
   function pipsHtml(w) {
