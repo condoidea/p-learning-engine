@@ -1,0 +1,288 @@
+{
+  "format": 1,
+  "sceneJa": "🖼️ マドリードで、カルメンとマコトが美術館とピカソの「ゲルニカ」の話をする",
+  "names": [
+    "Guernica",
+    "Picasso"
+  ],
+  "phrases": [
+    {
+      "t": "centro de arte reina sofía",
+      "ja": "ソフィア王妃芸術センター（美術館の名前）"
+    },
+    {
+      "t": "así es",
+      "ja": "そのとおり",
+      "key": true
+    },
+    {
+      "t": "qué significa",
+      "ja": "〜はどういう意味？（¿Qué significa…?）",
+      "key": true
+    },
+    {
+      "t": "puso el nombre",
+      "ja": "名前をつけた（poner el nombre de…）",
+      "key": true
+    },
+    {
+      "t": "protestar contra",
+      "ja": "〜に抗議する",
+      "key": true
+    }
+  ],
+  "words": {
+    "has": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（助動詞）〜した・〜したことがある（haber ＋ 過去分詞で現在完了）",
+      "form": "haber の現在形・二人称単数（has ido＝行ったことがある）",
+      "key": true
+    },
+    "he": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（助動詞）〜した・〜したことがある（haber ＋ 過去分詞で現在完了）",
+      "form": "haber の現在形・一人称単数（no he ido＝行ったことがない／lo he visto＝見たことがある）",
+      "key": true
+    },
+    "ido": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "行く",
+      "form": "ir の過去分詞（has ido＝行ったことがある）",
+      "key": true
+    },
+    "centro": {
+      "w": "centro",
+      "pos": "n",
+      "g": "m",
+      "ja": "センター（施設の名前）",
+      "note": "本来は「中心」。ここは Centro de Arte Reina Sofía（美術館）"
+    },
+    "reina": {
+      "w": "reina",
+      "pos": "n",
+      "g": "f",
+      "ja": "王妃・女王",
+      "note": "Reina Sofía＝ソフィア王妃（美術館の名前の一部）"
+    },
+    "aún": {
+      "w": "aún",
+      "pos": "adv",
+      "ja": "まだ",
+      "note": "aún no＝まだ…ない（todavía no と同じ）",
+      "key": true
+    },
+    "cuadro": {
+      "w": "cuadro",
+      "pos": "n",
+      "g": "m",
+      "ja": "絵画",
+      "key": true
+    },
+    "verdad": {
+      "w": "verdad",
+      "pos": "n",
+      "g": "f",
+      "ja": "（文末で）…だよね？／本当のこと",
+      "note": "¿…, verdad?＝…だよね？（確認）",
+      "key": true
+    },
+    "así": {
+      "w": "así",
+      "pos": "adv",
+      "ja": "そう・このように",
+      "note": "así es＝そのとおり",
+      "key": true
+    },
+    "fui": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "行く",
+      "form": "ir の点過去・一人称単数（fui al Centro＝行った）。ser の点過去と同じ形",
+      "key": true
+    },
+    "para": {
+      "w": "para",
+      "pos": "prep",
+      "ja": "〜するために",
+      "note": "para ＋ 不定詞＝目的（para ver＝見るために）"
+    },
+    "significa": {
+      "w": "significar",
+      "pos": "v",
+      "ja": "意味する",
+      "form": "significar の現在・三人称単数（¿Qué significa…?＝…はどういう意味？）",
+      "key": true
+    },
+    "nombre": {
+      "w": "nombre",
+      "pos": "n",
+      "g": "m",
+      "ja": "名前"
+    },
+    "vasco": {
+      "w": "vasco",
+      "pos": "adj",
+      "ja": "バスクの",
+      "form": "男性単数形",
+      "note": "バスク＝スペイン北部の地方",
+      "key": true
+    },
+    "fue": {
+      "w": "ser",
+      "pos": "v",
+      "ja": "〜である",
+      "form": "ser の点過去・三人称単数（Fue bombardeado＝爆撃された。ser ＋ 過去分詞の受け身）"
+    },
+    "bombardeado": {
+      "w": "bombardear",
+      "pos": "v",
+      "ja": "爆撃する",
+      "form": "過去分詞（fue bombardeado＝爆撃された）",
+      "key": true
+    },
+    "pintó": {
+      "w": "pintar",
+      "pos": "v",
+      "ja": "描く",
+      "form": "pintar の点過去・三人称単数（pintó un cuadro＝絵を描いた）"
+    },
+    "le#5": {
+      "w": "le",
+      "pos": "pron",
+      "ja": "それに（その絵に）",
+      "note": "le puso el nombre＝その絵に名前をつけた"
+    },
+    "puso": {
+      "w": "poner",
+      "pos": "v",
+      "ja": "置く・（名前を）つける",
+      "form": "poner の点過去・三人称単数（不規則）",
+      "key": true
+    },
+    "lo#6": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを（el Guernica を）",
+      "note": "直接目的語。lo he visto＝それを見たことがある"
+    },
+    "lo#7": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを（el cuadro を）",
+      "note": "直接目的語。lo pintó＝それを描いた"
+    },
+    "lo": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを"
+    },
+    "visto": {
+      "w": "ver",
+      "pos": "v",
+      "ja": "見る",
+      "form": "ver の過去分詞・不規則（lo he visto＝見たことがある）",
+      "key": true
+    },
+    "colección": {
+      "w": "colección",
+      "pos": "n",
+      "g": "f",
+      "ja": "作品集・コレクション"
+    },
+    "obras": {
+      "w": "obra",
+      "pos": "n",
+      "g": "f",
+      "ja": "作品",
+      "form": "複数形（las obras de Picasso＝ピカソの作品）"
+    },
+    "están": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "〜の状態である・〜にある",
+      "form": "estar の現在・三人称複数（están pintados＝描かれている。estar ＋ 過去分詞）"
+    },
+    "pintados": {
+      "w": "pintar",
+      "pos": "v",
+      "ja": "描く",
+      "form": "過去分詞・男性複数（están pintados＝描かれている）"
+    },
+    "edificios": {
+      "w": "edificio",
+      "pos": "n",
+      "g": "m",
+      "ja": "建物",
+      "form": "複数形"
+    },
+    "destrozados": {
+      "w": "destrozar",
+      "pos": "v",
+      "ja": "破壊する",
+      "form": "過去分詞・男性複数（edificios destrozados＝壊された建物）",
+      "key": true
+    },
+    "por": {
+      "w": "por",
+      "pos": "prep",
+      "ja": "〜によって・〜で（原因）",
+      "note": "destrozados por el bombardeo＝爆撃で壊された"
+    },
+    "bombardeo": {
+      "w": "bombardeo",
+      "pos": "n",
+      "g": "m",
+      "ja": "爆撃",
+      "key": true
+    },
+    "protestar": {
+      "w": "protestar",
+      "pos": "v",
+      "ja": "抗議する",
+      "key": true
+    },
+    "contra": {
+      "w": "contra",
+      "pos": "prep",
+      "ja": "〜に反対して・〜に対して",
+      "note": "protestar contra＝〜に抗議する",
+      "key": true
+    },
+    "guerra": {
+      "w": "guerra",
+      "pos": "n",
+      "g": "f",
+      "ja": "戦争"
+    },
+    "violencia": {
+      "w": "violencia",
+      "pos": "n",
+      "g": "f",
+      "ja": "暴力",
+      "key": true
+    },
+    "representa": {
+      "w": "representar",
+      "pos": "v",
+      "ja": "表す・表現する",
+      "form": "representar の現在・三人称単数",
+      "key": true
+    },
+    "inhumanidad": {
+      "w": "inhumanidad",
+      "pos": "n",
+      "g": "f",
+      "ja": "非人間性・非人道的なこと"
+    },
+    "crueldad": {
+      "w": "crueldad",
+      "pos": "n",
+      "g": "f",
+      "ja": "残酷さ",
+      "key": true
+    }
+  }
+}

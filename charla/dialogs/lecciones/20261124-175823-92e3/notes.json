@@ -1,0 +1,498 @@
+{
+  "format": 1,
+  "sceneJa": "🏯 月曜日、マルタとヒロの会話。ヒロは週末にグラナダへ行ってきた",
+  "names": [
+    "Granada",
+    "San",
+    "Nicolás",
+    "Alhambra"
+  ],
+  "phrases": [
+    {
+      "t": "qué tal",
+      "ja": "〜はどう（だった）？（¿Qué tal…?）",
+      "key": true
+    },
+    {
+      "t": "tan hermosa como dicen",
+      "ja": "言われているほど美しい（tan … como＝〜と同じくらい…）",
+      "key": true
+    },
+    {
+      "t": "se habían agotado",
+      "ja": "売り切れていた（agotarse の過去完了）",
+      "key": true
+    },
+    {
+      "t": "habías comprado",
+      "ja": "買っていた（過去完了）",
+      "key": true
+    },
+    {
+      "t": "con el que",
+      "ja": "〜と（いっしょに）…した（前置詞 con ＋ el que。先行詞は un chico）",
+      "key": true
+    },
+    {
+      "t": "suelen agotarse",
+      "ja": "ふつうは売り切れる（soler ＋ 不定詞）",
+      "key": true
+    },
+    {
+      "t": "un mes antes",
+      "ja": "1か月前に（そのときより前に）"
+    },
+    {
+      "t": "por internet",
+      "ja": "ネットで・インターネットで"
+    },
+    {
+      "t": "qué pena",
+      "ja": "残念！（¡Qué pena!）",
+      "key": true
+    },
+    {
+      "t": "de lujo",
+      "ja": "高級な・ぜいたくな",
+      "key": true
+    },
+    {
+      "t": "qué bien",
+      "ja": "いいね！・よかったね！"
+    },
+    {
+      "t": "en la que",
+      "ja": "その中で〜した（前置詞 en ＋ la que。先行詞は la habitación）",
+      "key": true
+    },
+    {
+      "t": "daba a",
+      "ja": "〜に面していた（dar a…）",
+      "key": true
+    },
+    {
+      "t": "lo que me dijo",
+      "ja": "〜が私に言ったこと（lo que＝〜こと）",
+      "key": true
+    },
+    {
+      "t": "desde donde",
+      "ja": "そこから（場所を表す donde）"
+    },
+    {
+      "t": "mirador de san nicolás",
+      "ja": "サン・ニコラスの展望台（グラナダの名所）"
+    },
+    {
+      "t": "lo más hermoso que he visto",
+      "ja": "今まで見た中でいちばんきれいなもの（lo más ＋ 形容詞 ＋ que）",
+      "key": true
+    },
+    {
+      "t": "en mi vida",
+      "ja": "人生で・今までに",
+      "key": true
+    },
+    {
+      "t": "al final",
+      "ja": "結局・最後には",
+      "key": true
+    },
+    {
+      "t": "desde fuera",
+      "ja": "外から",
+      "key": true
+    },
+    {
+      "t": "el mes que viene",
+      "ja": "来月",
+      "key": true
+    },
+    {
+      "t": "esta vez",
+      "ja": "今度は",
+      "key": true
+    }
+  ],
+  "words": {
+    "cuándo": {
+      "w": "cuándo",
+      "pos": "adv",
+      "ja": "いつ（疑問詞）"
+    },
+    "regresaste": {
+      "w": "regresar",
+      "pos": "v",
+      "ja": "戻る・帰る",
+      "form": "regresar の点過去・二人称単数（regresaste de＝〜から戻った）",
+      "key": true
+    },
+    "llegué": {
+      "w": "llegar",
+      "pos": "v",
+      "ja": "着く・到着する",
+      "form": "llegar の点過去・一人称単数（llegué＝着いた）"
+    },
+    "tal": {
+      "w": "tal",
+      "pos": "adv",
+      "ja": "（qué tal＝どう）",
+      "note": "¿Qué tal…? で「〜はどう？」"
+    },
+    "hermosa": {
+      "w": "hermoso",
+      "pos": "adj",
+      "ja": "美しい・きれいな",
+      "form": "hermoso の女性形",
+      "key": true
+    },
+    "como": {
+      "w": "como",
+      "pos": "conj",
+      "ja": "〜ほど・〜のように（tan … como＝〜と同じくらい…）"
+    },
+    "dicen": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う",
+      "form": "decir の現在・三人称複数（dicen＝人々が言う）"
+    },
+    "lo": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを（中性。No lo sé＝それを知らない）"
+    },
+    "sé": {
+      "w": "saber",
+      "pos": "v",
+      "ja": "知っている",
+      "form": "saber の現在・一人称単数（sé＝知っている）"
+    },
+    "se": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（agotarse の se）品切れになる，という動詞の一部"
+    },
+    "habían": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去完了を作る助動詞）〜していた",
+      "form": "haber の線過去・三人称複数（habían ＋ 過去分詞＝過去完了）"
+    },
+    "agotado": {
+      "w": "agotarse",
+      "pos": "v",
+      "ja": "品切れになる・売り切れる",
+      "form": "agotarse の過去分詞（se habían agotado＝売り切れていた）",
+      "key": true
+    },
+    "entradas": {
+      "w": "entrada",
+      "pos": "n",
+      "g": "f",
+      "ja": "入場券・チケット",
+      "form": "複数形",
+      "key": true
+    },
+    "las": {
+      "w": "las",
+      "pos": "art",
+      "ja": "（女性複数の）その（las entradas）"
+    },
+    "las#5": {
+      "w": "las",
+      "pos": "pron",
+      "ja": "それらを（＝las entradas）",
+      "note": "代名詞は haber の前に置く：las habías comprado"
+    },
+    "habías": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去完了を作る助動詞）〜していた",
+      "form": "haber の線過去・二人称単数（habías comprado＝買っていた）"
+    },
+    "comprado": {
+      "w": "comprar",
+      "pos": "v",
+      "ja": "買う",
+      "form": "comprar の過去分詞"
+    },
+    "internet": {
+      "w": "internet",
+      "pos": "n",
+      "g": "m",
+      "ja": "インターネット・ネット"
+    },
+    "sabía": {
+      "w": "saber",
+      "pos": "v",
+      "ja": "知っている",
+      "form": "saber の線過去・一人称単数（no sabía＝知らなかった）"
+    },
+    "necesario": {
+      "w": "necesario",
+      "pos": "adj",
+      "ja": "必要な"
+    },
+    "cola": {
+      "w": "cola",
+      "pos": "n",
+      "g": "f",
+      "ja": "列・行列（hacer cola＝列に並ぶ）",
+      "key": true
+    },
+    "dijo": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う・教える",
+      "form": "decir の点過去・三人称単数（dijo＝言った）"
+    },
+    "suelen": {
+      "w": "soler",
+      "pos": "v",
+      "ja": "いつも〜する・〜するのが普通だ（soler ＋ 不定詞）",
+      "form": "soler の現在・三人称複数",
+      "key": true
+    },
+    "agotarse": {
+      "w": "agotarse",
+      "pos": "v",
+      "ja": "品切れになる・売り切れる",
+      "form": "不定詞（suelen agotarse＝ふつう売り切れる）",
+      "key": true
+    },
+    "antes": {
+      "w": "antes",
+      "pos": "adv",
+      "ja": "前に・以前に（un mes antes＝1か月前に）"
+    },
+    "pena": {
+      "w": "pena",
+      "pos": "n",
+      "g": "f",
+      "ja": "残念・悲しみ（¡Qué pena!＝残念！）"
+    },
+    "te": {
+      "w": "te",
+      "pos": "pron",
+      "ja": "君自身を（alojarse の再帰代名詞）"
+    },
+    "alojaste": {
+      "w": "alojarse",
+      "pos": "v",
+      "ja": "泊まる・宿泊する",
+      "form": "alojarse の点過去・二人称単数（te alojaste＝泊まった）",
+      "key": true
+    },
+    "lujo": {
+      "w": "lujo",
+      "pos": "n",
+      "g": "m",
+      "ja": "豪華・ぜいたく（de lujo＝高級な）",
+      "key": true
+    },
+    "había": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去完了を作る助動詞）〜していた",
+      "form": "haber の線過去・三人称単数（había recomendado／había oscurecido）"
+    },
+    "recomendado": {
+      "w": "recomendar",
+      "pos": "v",
+      "ja": "勧める・推薦する",
+      "form": "recomendar の過去分詞（me había recomendado＝私に勧めていた）"
+    },
+    "bien#9": {
+      "w": "bien",
+      "pos": "adv",
+      "ja": "いいね・よかった（¡Qué bien!）"
+    },
+    "bueno": {
+      "w": "bueno",
+      "pos": "interj",
+      "ja": "うーん・まあ（言いよどみ）"
+    },
+    "dormí": {
+      "w": "dormir",
+      "pos": "v",
+      "ja": "寝る・泊まる",
+      "form": "dormir の点過去・一人称単数（dormí＝寝た）"
+    },
+    "pequeña": {
+      "w": "pequeño",
+      "pos": "adj",
+      "ja": "小さい・狭い",
+      "form": "pequeño の女性形（la habitación が主語）"
+    },
+    "daba": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "（dar a で）〜に面している",
+      "form": "dar の線過去・三人称単数（daba a＝面していた）",
+      "key": true
+    },
+    "pared": {
+      "w": "pared",
+      "pos": "n",
+      "g": "f",
+      "ja": "壁",
+      "key": true
+    },
+    "hiciste": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "する・行う",
+      "form": "hacer の点過去・二人称単数（¿qué hiciste?＝何をした？）"
+    },
+    "después": {
+      "w": "después",
+      "pos": "adv",
+      "ja": "そのあと・あとで"
+    },
+    "recepcionista": {
+      "w": "recepcionista",
+      "pos": "n",
+      "g": "mf",
+      "ja": "受付係・フロント係",
+      "key": true
+    },
+    "subí": {
+      "w": "subir",
+      "pos": "v",
+      "ja": "登る・上がる",
+      "form": "subir の点過去・一人称単数（subí a＝〜に登った）"
+    },
+    "al": {
+      "w": "al",
+      "pos": "prep",
+      "ja": "a ＋ el（al Mirador＝展望台へ／al final＝結局）"
+    },
+    "mirador": {
+      "w": "mirador",
+      "pos": "n",
+      "g": "m",
+      "ja": "展望台",
+      "key": true
+    },
+    "se#12": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（受身）〜が見える（se ve＝見える）"
+    },
+    "ve": {
+      "w": "ver",
+      "pos": "v",
+      "ja": "見る",
+      "form": "ver の現在・三人称単数（se ve＝見える）"
+    },
+    "iluminada": {
+      "w": "iluminado",
+      "pos": "adj",
+      "ja": "ライトアップされた・照らされた",
+      "form": "iluminado の女性形",
+      "key": true
+    },
+    "lo#12": {
+      "w": "lo",
+      "pos": "art",
+      "ja": "〜こと（lo que＝〜こと）"
+    },
+    "lo#12.2": {
+      "w": "lo",
+      "pos": "art",
+      "ja": "〜なもの（lo más hermoso＝いちばん美しいもの）"
+    },
+    "toda": {
+      "w": "todo",
+      "pos": "det",
+      "ja": "全部の・すべての",
+      "form": "todo の女性単数形（toda la Alhambra＝アルハンブラ全体／toda iluminada＝全体が）"
+    },
+    "oscurecido": {
+      "w": "oscurecer",
+      "pos": "v",
+      "ja": "暗くなる・日が暮れる",
+      "form": "oscurecer の過去分詞（había oscurecido＝暗くなっていた）",
+      "key": true
+    },
+    "era": {
+      "w": "ser",
+      "pos": "v",
+      "ja": "〜である",
+      "form": "ser の線過去・三人称単数（era＝〜だった）"
+    },
+    "hermoso": {
+      "w": "hermoso",
+      "pos": "adj",
+      "ja": "美しい・きれいな",
+      "form": "男性形（lo más hermoso＝いちばんきれいなもの）",
+      "key": true
+    },
+    "he": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（現在完了を作る助動詞）〜した・〜したことがある",
+      "form": "haber の現在・一人称単数（he visto／he comprado）"
+    },
+    "visto": {
+      "w": "ver",
+      "pos": "v",
+      "ja": "見る",
+      "form": "ver の過去分詞（he visto＝見たことがある）"
+    },
+    "vida": {
+      "w": "vida",
+      "pos": "n",
+      "g": "f",
+      "ja": "人生・生活（en mi vida＝今までに）"
+    },
+    "ves": {
+      "w": "ver",
+      "pos": "v",
+      "ja": "見る・わかる（¿Ves?＝ほらね）",
+      "form": "ver の現在・二人称単数"
+    },
+    "final": {
+      "w": "final",
+      "pos": "n",
+      "g": "m",
+      "ja": "終わり・最後（al final＝結局）",
+      "key": true
+    },
+    "la#13": {
+      "w": "la",
+      "pos": "pron",
+      "ja": "それを（＝la Alhambra）"
+    },
+    "viste": {
+      "w": "ver",
+      "pos": "v",
+      "ja": "見る",
+      "form": "ver の点過去・二人称単数（la viste＝それを見た）"
+    },
+    "fuera": {
+      "w": "fuera",
+      "pos": "adv",
+      "ja": "外に・外から（desde fuera＝外から）"
+    },
+    "viene": {
+      "w": "venir",
+      "pos": "v",
+      "ja": "来る",
+      "form": "venir の現在・三人称単数（el mes que viene＝来る月＝来月）"
+    },
+    "vuelvo": {
+      "w": "volver",
+      "pos": "v",
+      "ja": "戻る・また行く",
+      "form": "volver の現在・一人称単数（vuelvo＝また行く）"
+    },
+    "vez": {
+      "w": "vez",
+      "pos": "n",
+      "g": "f",
+      "ja": "回・度（esta vez＝今度は）"
+    }
+  }
+}

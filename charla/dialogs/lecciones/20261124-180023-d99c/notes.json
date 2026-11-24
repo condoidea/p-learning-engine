@@ -1,0 +1,351 @@
+{
+  "format": 1,
+  "sceneJa": "💼 月曜の朝、マドリードの会社。ソフィアとアンドレスが今日の会議について話す",
+  "phrases": [
+    {
+      "t": "qué pronto",
+      "ja": "なんて早く（¡Qué pronto has llegado!）"
+    },
+    {
+      "t": "has llegado",
+      "ja": "着いた（現在完了）"
+    },
+    {
+      "t": "en la que",
+      "ja": "その中で〜する（前置詞 en ＋ la que。先行詞は la reunión）",
+      "key": true
+    },
+    {
+      "t": "qué tal",
+      "ja": "〜はどう？（¿Qué tal…?）",
+      "key": true
+    },
+    {
+      "t": "lo que ya sabíamos",
+      "ja": "もう分かっていたこと（lo que＝〜こと）",
+      "key": true
+    },
+    {
+      "t": "en quien",
+      "ja": "その人を〜に（前置詞 en ＋ quien。tener confianza en＝〜を信頼する）",
+      "key": true
+    },
+    {
+      "t": "tiene mucha confianza",
+      "ja": "とても信頼している（tener confianza en…）",
+      "key": true
+    },
+    {
+      "t": "cuyo nombre",
+      "ja": "その名前が（cuyo＝〜の。持たれる nombre に合わせる）",
+      "key": true
+    },
+    {
+      "t": "por qué",
+      "ja": "なぜ・どうして"
+    },
+    {
+      "t": "del que",
+      "ja": "（それ）について〜する（前置詞 de ＋ el ＋ que。hablar de un asunto）",
+      "key": true
+    },
+    {
+      "t": "hace unos años",
+      "ja": "何年か前に",
+      "key": true
+    },
+    {
+      "t": "de verdad",
+      "ja": "本当に・本当？"
+    },
+    {
+      "t": "esa misma",
+      "ja": "まさにそれ",
+      "key": true
+    }
+  ],
+  "words": {
+    "jefe": {
+      "w": "jefe",
+      "pos": "n",
+      "g": "m",
+      "ja": "上司・部長・ボス",
+      "form": "（jefe／jefa）"
+    },
+    "unos": {
+      "w": "uno",
+      "pos": "det",
+      "ja": "いくつかの・〜ほどの（hace unos años＝何年か前に）",
+      "form": "uno の男性複数形"
+    },
+    "hace": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "（hace ＋ 期間）〜前に",
+      "form": "hacer の現在・三人称単数（hace unos años＝何年か前に）"
+    },
+    "lo": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを（No lo sé＝それを知らない）"
+    },
+    "lo#4": {
+      "w": "lo",
+      "pos": "art",
+      "ja": "〜こと（lo que＝〜こと）"
+    },
+    "sé": {
+      "w": "saber",
+      "pos": "v",
+      "ja": "知っている",
+      "form": "saber の現在・一人称単数（sé＝知っている）"
+    },
+    "mucha": {
+      "w": "mucho",
+      "pos": "det",
+      "ja": "たくさんの・強い（mucha confianza＝強い信頼）",
+      "form": "mucho の女性形"
+    },
+    "pronto": {
+      "w": "pronto",
+      "pos": "adv",
+      "ja": "早く・すぐ"
+    },
+    "has": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（現在完了を作る助動詞）〜した",
+      "form": "haber の現在・二人称単数（has llegado／has madrugado）"
+    },
+    "llegado": {
+      "w": "llegar",
+      "pos": "v",
+      "ja": "着く・来る",
+      "form": "llegar の過去分詞（has llegado＝着いた）"
+    },
+    "madrugado": {
+      "w": "madrugar",
+      "pos": "v",
+      "ja": "早起きする",
+      "form": "madrugar の過去分詞（has madrugado＝早起きした）",
+      "key": true
+    },
+    "reunión": {
+      "w": "reunión",
+      "pos": "n",
+      "g": "f",
+      "ja": "会議・集まり",
+      "key": true
+    },
+    "tenemos": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持っている・ある",
+      "form": "tener の現在・一人称複数（tenemos la reunión＝会議がある）"
+    },
+    "discutir": {
+      "w": "discutir",
+      "pos": "v",
+      "ja": "議論する・話し合う",
+      "form": "不定詞（vamos a discutir＝話し合うつもりだ）",
+      "key": true
+    },
+    "ventas": {
+      "w": "venta",
+      "pos": "n",
+      "g": "f",
+      "ja": "販売・売り上げ",
+      "form": "複数形（las ventas＝売り上げ）",
+      "key": true
+    },
+    "trimestre": {
+      "w": "trimestre",
+      "pos": "n",
+      "g": "m",
+      "ja": "四半期（3か月）",
+      "key": true
+    },
+    "tal": {
+      "w": "tal",
+      "pos": "adv",
+      "ja": "（qué tal＝どう）",
+      "note": "¿Qué tal…? で「〜はどう？」"
+    },
+    "mal": {
+      "w": "mal",
+      "pos": "adv",
+      "ja": "悪く・よくない"
+    },
+    "números": {
+      "w": "número",
+      "pos": "n",
+      "g": "m",
+      "ja": "数・数字",
+      "form": "複数形"
+    },
+    "reflejan": {
+      "w": "reflejar",
+      "pos": "v",
+      "ja": "反映する・表す",
+      "form": "reflejar の現在・三人称複数（los números reflejan＝数字が表している）",
+      "key": true
+    },
+    "sabíamos": {
+      "w": "saber",
+      "pos": "v",
+      "ja": "知っている・分かっている",
+      "form": "saber の線過去・一人称複数（ya sabíamos＝もう分かっていた）"
+    },
+    "necesitamos": {
+      "w": "necesitar",
+      "pos": "v",
+      "ja": "必要とする",
+      "form": "necesitar の現在・一人称複数（necesitamos una estrategia＝戦略が必要だ）"
+    },
+    "estrategia": {
+      "w": "estrategia",
+      "pos": "n",
+      "g": "f",
+      "ja": "戦略",
+      "key": true
+    },
+    "quién": {
+      "w": "quién",
+      "pos": "pron",
+      "ja": "誰（疑問詞）"
+    },
+    "la#5": {
+      "w": "la",
+      "pos": "pron",
+      "ja": "それを（＝la estrategia）"
+    },
+    "presentar": {
+      "w": "presentar",
+      "pos": "v",
+      "ja": "発表する・紹介する",
+      "form": "不定詞（va a presentar＝発表する予定だ）"
+    },
+    "consultor": {
+      "w": "consultor",
+      "pos": "n",
+      "g": "m",
+      "ja": "コンサルタント",
+      "key": true
+    },
+    "confianza": {
+      "w": "confianza",
+      "pos": "n",
+      "g": "f",
+      "ja": "信頼",
+      "key": true
+    },
+    "trabajaba": {
+      "w": "trabajar",
+      "pos": "v",
+      "ja": "働く",
+      "form": "trabajar の線過去・三人称単数（trabajaba＝働いていた）"
+    },
+    "empresa": {
+      "w": "empresa",
+      "pos": "n",
+      "g": "f",
+      "ja": "会社・企業",
+      "key": true
+    },
+    "conocida": {
+      "w": "conocido",
+      "pos": "adj",
+      "ja": "有名な",
+      "form": "conocido の女性形（una empresa muy conocida＝とても有名な会社）",
+      "key": true
+    },
+    "nombre": {
+      "w": "nombre",
+      "pos": "n",
+      "g": "m",
+      "ja": "名前"
+    },
+    "secreto": {
+      "w": "secreto",
+      "pos": "n",
+      "g": "m",
+      "ja": "秘密",
+      "key": true
+    },
+    "antes#6": {
+      "w": "antes",
+      "pos": "adv",
+      "ja": "以前・前は"
+    },
+    "pues": {
+      "w": "pues",
+      "pos": "interj",
+      "ja": "じゃあ・実は（話の切り出し）",
+      "note": "Pues yo lo sé＝（それなら）僕は知ってるよ"
+    },
+    "asunto": {
+      "w": "asunto",
+      "pos": "n",
+      "g": "m",
+      "ja": "こと・件・問題",
+      "key": true
+    },
+    "equipo": {
+      "w": "equipo",
+      "pos": "n",
+      "g": "m",
+      "ja": "チーム",
+      "key": true
+    },
+    "trabajó": {
+      "w": "trabajar",
+      "pos": "v",
+      "ja": "働く・仕事をする",
+      "form": "trabajar の点過去・三人称単数（trabajó con él＝彼と仕事をした）"
+    },
+    "hombre": {
+      "w": "hombre",
+      "pos": "n",
+      "g": "m",
+      "ja": "男の人"
+    },
+    "diseñó": {
+      "w": "diseñar",
+      "pos": "v",
+      "ja": "設計する・考え出す",
+      "form": "diseñar の点過去・三人称単数（diseñó la estrategia＝戦略を作った）",
+      "key": true
+    },
+    "tenemos#11": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持っている・ある",
+      "form": "tener の現在・一人称複数（la estrategia que tenemos ahora＝今ある戦略）"
+    },
+    "la#12": {
+      "w": "la",
+      "pos": "art",
+      "ja": "（la estrategia を指す）〜のもの（la que＝〜するもの）",
+      "note": "名詞をくり返さないための la que"
+    },
+    "funciona": {
+      "w": "funcionar",
+      "pos": "v",
+      "ja": "機能する・うまくいく",
+      "form": "funcionar の現在・三人称単数（no funciona＝うまくいっていない）",
+      "key": true
+    },
+    "esa": {
+      "w": "ese",
+      "pos": "pron",
+      "ja": "それ",
+      "form": "ese の女性形（esa misma＝まさにそれ）"
+    },
+    "misma": {
+      "w": "mismo",
+      "pos": "adj",
+      "ja": "同じ・まさに〜",
+      "form": "mismo の女性形（esa misma＝まさにそれ）"
+    }
+  }
+}

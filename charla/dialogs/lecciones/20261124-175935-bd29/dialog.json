@@ -1,0 +1,80 @@
+{
+  "format": 1,
+  "id": "20261124-175935-bd29",
+  "title": "L18-01 Una visita para el señor Tanaka",
+  "scene": "Ciudad de México, en una oficina. La señora García le avisa al señor Tanaka de que una joven ha venido a verlo. Él ya le había hablado de ella el día anterior. Conversación educada entre compañeros de trabajo, tratándose de usted.",
+  "accent": "es-MX",
+  "createdAt": "2026-11-24T09:00:21.637Z",
+  "audio": "audio.mp3",
+  "durationMs": 62729,
+  "speakers": [
+    {
+      "id": "GARCIA",
+      "gender": "female",
+      "persona": "Sra. García, unos 45 años, mexicana, amable y habladora, trata de usted a su compañero"
+    },
+    {
+      "id": "TANAKA",
+      "gender": "male",
+      "persona": "Sr. Tanaka, unos 40 años, japonés que trabaja en México, educado, un poco despistado con los nombres"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "GARCIA",
+      "text": "Señor Tanaka, lo busca a usted una señorita que se llama Juana Rodríguez.",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 6760
+    },
+    {
+      "index": 1,
+      "speaker": "TANAKA",
+      "text": "¿Juana Rodríguez? Ah, sí. Es la chica de quien le hablé ayer.",
+      "direction": "",
+      "startMs": 7620,
+      "endMs": 13760
+    },
+    {
+      "index": 2,
+      "speaker": "GARCIA",
+      "text": "Ah, sí, es la hija del señor Rodríguez y quiere trabajar en alguna compañía japonesa, ¿verdad?",
+      "direction": "",
+      "startMs": 14653,
+      "endMs": 23313
+    },
+    {
+      "index": 3,
+      "speaker": "TANAKA",
+      "text": "Sí. Estudia economía en la universidad… la universidad… Oh, no recuerdo el nombre de la universidad. ¿Cómo se llama la que está al sur de la ciudad?",
+      "direction": "",
+      "startMs": 24504,
+      "endMs": 41114
+    },
+    {
+      "index": 4,
+      "speaker": "GARCIA",
+      "text": "Es la Universidad Nacional Autónoma de México. La llaman UNAM.",
+      "direction": "",
+      "startMs": 42300,
+      "endMs": 49000
+    },
+    {
+      "index": 5,
+      "speaker": "TANAKA",
+      "text": "Sí, sí, eso. UNAM. ¿Es buena la UNAM?",
+      "direction": "",
+      "startMs": 49949,
+      "endMs": 55809
+    },
+    {
+      "index": 6,
+      "speaker": "GARCIA",
+      "text": "Sí, es una de las mejores que hay en nuestro país.",
+      "direction": "orgullosa",
+      "startMs": 57059,
+      "endMs": 61729
+    }
+  ]
+}

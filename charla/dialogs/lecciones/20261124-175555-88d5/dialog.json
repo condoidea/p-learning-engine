@@ -1,0 +1,128 @@
+{
+  "format": 1,
+  "id": "20261124-175555-88d5",
+  "title": "L16-03 El ladrón del museo",
+  "scene": "Por la mañana, en la cocina de un piso compartido. Pedro lee las noticias en el móvil mientras desayuna y se las cuenta a su compañera de piso, Lola. Conversación natural entre amigos, con humor.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-24T08:57:23.357Z",
+  "audio": "audio.mp3",
+  "durationMs": 72829,
+  "speakers": [
+    {
+      "id": "PEDRO",
+      "gender": "male",
+      "persona": "Pedro, unos 25 años, le gusta leer las noticias y contarlas con detalle, simpático"
+    },
+    {
+      "id": "LOLA",
+      "gender": "female",
+      "persona": "Lola, unos 25 años, compañera de piso, medio dormida al principio, luego muy interesada"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "PEDRO",
+      "text": "¿Has leído las noticias de hoy?",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 2670
+    },
+    {
+      "index": 1,
+      "speaker": "LOLA",
+      "text": "No, todavía no. ¿Ha pasado algo?",
+      "direction": "",
+      "startMs": 3616,
+      "endMs": 6786
+    },
+    {
+      "index": 2,
+      "speaker": "PEDRO",
+      "text": "Sí. El ladrón que robó dos cuadros del museo de la ciudad ha sido detenido.",
+      "direction": "",
+      "startMs": 7811,
+      "endMs": 14261
+    },
+    {
+      "index": 3,
+      "speaker": "LOLA",
+      "text": "¡Por fin! ¿Dónde lo han encontrado?",
+      "direction": "",
+      "startMs": 15160,
+      "endMs": 17630
+    },
+    {
+      "index": 4,
+      "speaker": "PEDRO",
+      "text": "En un café. Estaba sentado tranquilamente, leyendo el periódico… con su foto en la primera página.",
+      "direction": "",
+      "startMs": 18615,
+      "endMs": 27867
+    },
+    {
+      "index": 5,
+      "speaker": "LOLA",
+      "text": "¡No me digas! ¿Y los cuadros?",
+      "direction": "riéndose",
+      "startMs": 28848,
+      "endMs": 31268
+    },
+    {
+      "index": 6,
+      "speaker": "PEDRO",
+      "text": "Estaban en su casa, cubiertos con una sábana. Por suerte, no están rotos.",
+      "direction": "",
+      "startMs": 32381,
+      "endMs": 38205
+    },
+    {
+      "index": 7,
+      "speaker": "LOLA",
+      "text": "Menos mal. ¿Y quién es? ¿Un ladrón famoso?",
+      "direction": "",
+      "startMs": 39182,
+      "endMs": 43152
+    },
+    {
+      "index": 8,
+      "speaker": "PEDRO",
+      "text": "Dicen que es el líder de una banda internacional. La policía lo ha buscado durante tres años.",
+      "direction": "",
+      "startMs": 44230,
+      "endMs": 51858
+    },
+    {
+      "index": 9,
+      "speaker": "LOLA",
+      "text": "¿Y qué le va a pasar ahora?",
+      "direction": "",
+      "startMs": 52833,
+      "endMs": 54954
+    },
+    {
+      "index": 10,
+      "speaker": "PEDRO",
+      "text": "Muchos años de cárcel. El mes pasado el congreso aprobó una ley nueva contra los robos de arte.",
+      "direction": "",
+      "startMs": 56007,
+      "endMs": 63387
+    },
+    {
+      "index": 11,
+      "speaker": "LOLA",
+      "text": "Pues no es un ladrón muy listo, ¿no?",
+      "direction": "",
+      "startMs": 64293,
+      "endMs": 67133
+    },
+    {
+      "index": 12,
+      "speaker": "PEDRO",
+      "text": "No. Lo han detenido por leer el periódico.",
+      "direction": "riéndose",
+      "startMs": 68168,
+      "endMs": 71829
+    }
+  ]
+}

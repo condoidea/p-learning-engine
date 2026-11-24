@@ -1,0 +1,120 @@
+{
+  "format": 1,
+  "id": "20261124-180144-5e81",
+  "title": "L18-03 La caja de la azotea",
+  "scene": "Una casa antigua en un pueblo de España. Dani, un chico de unos quince años, ayuda a su abuela Rosa a ordenar la casa y baja de la azotea con una caja vieja. Conversación cariñosa entre nieto y abuela, con humor al final.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-24T09:05:46.407Z",
+  "audio": "audio.mp3",
+  "durationMs": 74564,
+  "speakers": [
+    {
+      "id": "DANI",
+      "gender": "male",
+      "persona": "Dani, unos 15 años, curioso y simpático, hace muchas preguntas"
+    },
+    {
+      "id": "ABUELA",
+      "gender": "female",
+      "persona": "Abuela Rosa, unos 75 años, alegre, le gusta contar historias de su niñez"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "DANI",
+      "text": "Abuela, mira lo que he encontrado en la azotea.",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 3941
+    },
+    {
+      "index": 1,
+      "speaker": "ABUELA",
+      "text": "¡Ay, mi caja! Ahí guardaba los juguetes de mi niñez. Hacía años que no la veía.",
+      "direction": "",
+      "startMs": 4688,
+      "endMs": 12348
+    },
+    {
+      "index": 2,
+      "speaker": "DANI",
+      "text": "¿Jugabas en la azotea?",
+      "direction": "",
+      "startMs": 13296,
+      "endMs": 15656
+    },
+    {
+      "index": 3,
+      "speaker": "ABUELA",
+      "text": "Sí, era el lugar donde jugaba con mis amigos. Desde allí se veía la casa del alcalde, a la que todos llamábamos «el palacio».",
+      "direction": "",
+      "startMs": 16641,
+      "endMs": 27491
+    },
+    {
+      "index": 4,
+      "speaker": "DANI",
+      "text": "¿Y este anillo? ¿Es una joya?",
+      "direction": "abre la caja",
+      "startMs": 28427,
+      "endMs": 31947
+    },
+    {
+      "index": 5,
+      "speaker": "ABUELA",
+      "text": "¡El anillo! Me lo dio un chico cuyo padre era el alcalde. Yo tenía diez años.",
+      "direction": "",
+      "startMs": 33019,
+      "endMs": 41569
+    },
+    {
+      "index": 6,
+      "speaker": "DANI",
+      "text": "¿El hijo del alcalde? ¡Entonces es de oro!",
+      "direction": "",
+      "startMs": 42635,
+      "endMs": 47055
+    },
+    {
+      "index": 7,
+      "speaker": "ABUELA",
+      "text": "Eso me dijo él. Durante años lo guardé como un tesoro.",
+      "direction": "",
+      "startMs": 47976,
+      "endMs": 53656
+    },
+    {
+      "index": 8,
+      "speaker": "DANI",
+      "text": "¿Y no lo era?",
+      "direction": "",
+      "startMs": 54553,
+      "endMs": 55773
+    },
+    {
+      "index": 9,
+      "speaker": "ABUELA",
+      "text": "No. Un día lo vi en la tienda donde vendían juguetes. Costaba diez pesetas.",
+      "direction": "",
+      "startMs": 56747,
+      "endMs": 64427
+    },
+    {
+      "index": 10,
+      "speaker": "DANI",
+      "text": "¡Te engañó!",
+      "direction": "riéndose",
+      "startMs": 65445,
+      "endMs": 67405
+    },
+    {
+      "index": 11,
+      "speaker": "ABUELA",
+      "text": "Sí… pero me casé con él de todos modos. ¡Es tu abuelo!",
+      "direction": "",
+      "startMs": 68094,
+      "endMs": 73564
+    }
+  ]
+}

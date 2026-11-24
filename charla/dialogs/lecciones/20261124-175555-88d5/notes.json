@@ -1,0 +1,445 @@
+{
+  "format": 1,
+  "sceneJa": "📰 朝、ペドロが朝食を食べながらスマホでニュースを読み、ルームメイトのロラに話す",
+  "phrases": [
+    {
+      "t": "ha pasado algo",
+      "ja": "何かあったの？",
+      "key": true
+    },
+    {
+      "t": "ha sido detenido",
+      "ja": "逮捕された（現在完了の受け身）",
+      "key": true
+    },
+    {
+      "t": "por fin",
+      "ja": "やっと",
+      "key": true
+    },
+    {
+      "t": "primera página",
+      "ja": "一面（新聞の）"
+    },
+    {
+      "t": "no me digas",
+      "ja": "うそでしょ・まさか",
+      "key": true
+    },
+    {
+      "t": "por suerte",
+      "ja": "運よく",
+      "key": true
+    },
+    {
+      "t": "menos mal",
+      "ja": "よかった・助かった",
+      "key": true
+    },
+    {
+      "t": "dicen que",
+      "ja": "…らしい・…だそうだ",
+      "key": true
+    },
+    {
+      "t": "qué le va a pasar",
+      "ja": "（彼は）どうなるの？"
+    },
+    {
+      "t": "el mes pasado",
+      "ja": "先月",
+      "key": true
+    },
+    {
+      "t": "robos de arte",
+      "ja": "美術品の盗難"
+    },
+    {
+      "t": "por leer",
+      "ja": "読んだせいで（por ＋ 不定詞）",
+      "key": true
+    }
+  ],
+  "words": {
+    "has": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（助動詞）〜した・〜したことがある（haber ＋ 過去分詞で現在完了）",
+      "form": "haber の現在形・二人称単数（¿Has leído…?＝読んだ？）",
+      "key": true
+    },
+    "ha": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（助動詞）〜した・〜したことがある（haber ＋ 過去分詞で現在完了）",
+      "form": "haber の現在形・三人称単数（ha pasado／ha sido detenido／ha buscado）",
+      "key": true
+    },
+    "han": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（助動詞）〜した・〜したことがある（haber ＋ 過去分詞で現在完了）",
+      "form": "haber の現在形・三人称複数（lo han encontrado＝見つかった）",
+      "key": true
+    },
+    "leído": {
+      "w": "leer",
+      "pos": "v",
+      "ja": "読む",
+      "form": "leer の過去分詞（アクセント記号が付く。has leído＝読んだ）",
+      "key": true
+    },
+    "noticias": {
+      "w": "noticia",
+      "pos": "n",
+      "g": "f",
+      "ja": "ニュース",
+      "form": "複数形（las noticias＝ニュース）",
+      "key": true
+    },
+    "pasado": {
+      "w": "pasar",
+      "pos": "v",
+      "ja": "起こる",
+      "form": "過去分詞（ha pasado algo＝何かあった）"
+    },
+    "pasado#11": {
+      "w": "pasado",
+      "pos": "adj",
+      "ja": "過ぎた・先の",
+      "form": "男性単数形",
+      "note": "el mes pasado＝先月"
+    },
+    "ladrón": {
+      "w": "ladrón",
+      "pos": "n",
+      "g": "m",
+      "ja": "泥棒",
+      "key": true
+    },
+    "que": {
+      "w": "que",
+      "pos": "pron",
+      "ja": "〜する（関係代名詞）",
+      "note": "el ladrón que robó…＝…を盗んだ泥棒"
+    },
+    "que#9": {
+      "w": "que",
+      "pos": "conj",
+      "ja": "〜ということ",
+      "note": "dicen que…＝…だそうだ"
+    },
+    "robó": {
+      "w": "robar",
+      "pos": "v",
+      "ja": "盗む",
+      "form": "robar の点過去・三人称単数（robó dos cuadros＝絵を2枚盗んだ）",
+      "key": true
+    },
+    "museo": {
+      "w": "museo",
+      "pos": "n",
+      "g": "m",
+      "ja": "美術館・博物館"
+    },
+    "sido": {
+      "w": "ser",
+      "pos": "v",
+      "ja": "〜である",
+      "form": "ser の過去分詞（ha sido detenido＝逮捕された。受け身）",
+      "key": true
+    },
+    "detenido": {
+      "w": "detener",
+      "pos": "v",
+      "ja": "逮捕する",
+      "form": "過去分詞（ha sido detenido＝逮捕された／lo han detenido＝彼を逮捕した）",
+      "key": true
+    },
+    "por": {
+      "w": "por",
+      "pos": "prep",
+      "ja": "〜のために・〜によって"
+    },
+    "fin": {
+      "w": "fin",
+      "pos": "n",
+      "g": "m",
+      "ja": "終わり",
+      "note": "por fin＝やっと"
+    },
+    "lo#4": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "彼を（泥棒を）",
+      "note": "直接目的語。lo han encontrado＝（彼が）見つかった"
+    },
+    "lo#9": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "彼を（泥棒を）",
+      "note": "直接目的語。lo ha buscado＝彼を追ってきた"
+    },
+    "lo#13": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "彼を（泥棒を）",
+      "note": "直接目的語。lo han detenido＝彼を逮捕した"
+    },
+    "lo": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "彼を・それを"
+    },
+    "encontrado": {
+      "w": "encontrar",
+      "pos": "v",
+      "ja": "見つける",
+      "form": "過去分詞（lo han encontrado＝見つかった）"
+    },
+    "estaba": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "〜の状態だ・いる",
+      "form": "estar の線過去・三人称単数（estaba sentado＝座っていた）"
+    },
+    "sentado": {
+      "w": "sentado",
+      "pos": "adj",
+      "ja": "座っている",
+      "form": "男性単数形（sentarse の過去分詞）",
+      "note": "estar sentado＝座っている（状態）。sentarse＝座る（動作）",
+      "key": true
+    },
+    "leyendo": {
+      "w": "leer",
+      "pos": "v",
+      "ja": "読む",
+      "form": "現在分詞（leyendo＝読みながら）",
+      "key": true
+    },
+    "primera": {
+      "w": "primero",
+      "pos": "adj",
+      "ja": "最初の",
+      "form": "女性形（la primera página＝一面）"
+    },
+    "página": {
+      "w": "página",
+      "pos": "n",
+      "g": "f",
+      "ja": "（新聞・本の）ページ・面"
+    },
+    "digas": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う",
+      "form": "decir の否定命令・tú（No me digas＝まさか・うそでしょ）"
+    },
+    "estaban": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "ある・〜の状態だ",
+      "form": "estar の線過去・三人称複数（estaban en su casa＝家にあった）"
+    },
+    "cubiertos": {
+      "w": "cubrir",
+      "pos": "v",
+      "ja": "覆う",
+      "form": "過去分詞・男性複数・不規則（cubiertos con una sábana＝シーツをかけられて）",
+      "key": true
+    },
+    "sábana": {
+      "w": "sábana",
+      "pos": "n",
+      "g": "f",
+      "ja": "シーツ",
+      "key": true
+    },
+    "suerte": {
+      "w": "suerte",
+      "pos": "n",
+      "g": "f",
+      "ja": "運",
+      "note": "por suerte＝運よく"
+    },
+    "están": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "〜の状態だ",
+      "form": "estar の現在・三人称複数（no están rotos＝壊れていない。estar ＋ 過去分詞）"
+    },
+    "rotos": {
+      "w": "roto",
+      "pos": "adj",
+      "ja": "壊れた",
+      "form": "男性複数形（romper の過去分詞 roto）",
+      "key": true
+    },
+    "menos": {
+      "w": "menos",
+      "pos": "adv",
+      "ja": "（menos mal で）〜より少なく",
+      "note": "menos mal＝よかった・助かった（ひとまとまりで覚える）"
+    },
+    "mal": {
+      "w": "mal",
+      "pos": "adv",
+      "ja": "悪く",
+      "note": "menos mal＝よかった・助かった"
+    },
+    "quién": {
+      "w": "quién",
+      "pos": "int",
+      "ja": "誰",
+      "note": "疑問詞。¿quién es?＝誰なの？"
+    },
+    "dicen": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う",
+      "form": "decir の現在・三人称複数（Dicen que…＝…らしい・…だそうだ。主語を言わない複数）",
+      "key": true
+    },
+    "líder": {
+      "w": "líder",
+      "pos": "n",
+      "g": "mf",
+      "ja": "リーダー",
+      "key": true
+    },
+    "banda": {
+      "w": "banda",
+      "pos": "n",
+      "g": "f",
+      "ja": "一味・グループ",
+      "note": "una banda internacional＝国際的な窃盗団",
+      "key": true
+    },
+    "policía": {
+      "w": "policía",
+      "pos": "n",
+      "g": "f",
+      "ja": "警察",
+      "note": "la policía＝警察（el policía＝警察官）"
+    },
+    "buscado": {
+      "w": "buscar",
+      "pos": "v",
+      "ja": "捜す・追う",
+      "form": "過去分詞（lo ha buscado＝彼を追ってきた）"
+    },
+    "durante": {
+      "w": "durante",
+      "pos": "prep",
+      "ja": "〜のあいだ",
+      "note": "durante tres años＝3年間",
+      "key": true
+    },
+    "años": {
+      "w": "año",
+      "pos": "n",
+      "g": "m",
+      "ja": "年",
+      "form": "複数形（tres años＝3年間／muchos años＝何年も）"
+    },
+    "va": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "行く",
+      "form": "ir の現在・三人称単数（va a pasar＝起こるだろう。ir a ＋ 不定詞）"
+    },
+    "a#10": {
+      "w": "a",
+      "pos": "prep",
+      "ja": "（ir a ＋ 不定詞の a）〜しに・〜するつもり",
+      "note": "va a pasar＝起こるだろう"
+    },
+    "por#13": {
+      "w": "por",
+      "pos": "prep",
+      "ja": "〜したせいで・〜したために",
+      "note": "por ＋ 不定詞＝〜したせいで（por leer＝読んでいたせいで）"
+    },
+    "le": {
+      "w": "le",
+      "pos": "pron",
+      "ja": "彼に",
+      "note": "qué le va a pasar＝彼の身に何が起こるか（泥棒に）"
+    },
+    "pasar": {
+      "w": "pasar",
+      "pos": "v",
+      "ja": "起こる",
+      "note": "¿Qué le va a pasar?＝（彼は）どうなるの？"
+    },
+    "cárcel": {
+      "w": "cárcel",
+      "pos": "n",
+      "g": "f",
+      "ja": "刑務所",
+      "note": "muchos años de cárcel＝何年もの刑務所暮らし",
+      "key": true
+    },
+    "congreso": {
+      "w": "congreso",
+      "pos": "n",
+      "g": "m",
+      "ja": "国会・議会",
+      "key": true
+    },
+    "aprobó": {
+      "w": "aprobar",
+      "pos": "v",
+      "ja": "承認する・（法律を）可決する",
+      "form": "aprobar の点過去・三人称単数（aprobó una ley＝法律を可決した）",
+      "key": true
+    },
+    "ley": {
+      "w": "ley",
+      "pos": "n",
+      "g": "f",
+      "ja": "法律",
+      "key": true
+    },
+    "contra": {
+      "w": "contra",
+      "pos": "prep",
+      "ja": "〜に対する・〜を取り締まる",
+      "note": "una ley contra los robos＝盗難を取り締まる法律"
+    },
+    "robos": {
+      "w": "robo",
+      "pos": "n",
+      "g": "m",
+      "ja": "盗難・窃盗",
+      "form": "複数形"
+    },
+    "pues": {
+      "w": "pues",
+      "pos": "interj",
+      "ja": "でも・それにしても",
+      "note": "話のつなぎ・反応の言葉"
+    },
+    "listo": {
+      "w": "listo",
+      "pos": "adj",
+      "ja": "頭のいい",
+      "form": "男性単数形",
+      "note": "ser listo＝頭がいい／estar listo＝準備ができている",
+      "key": true
+    },
+    "no#12.2": {
+      "w": "no",
+      "pos": "adv",
+      "ja": "（文末で）…でしょ？",
+      "note": "¿…, no?＝…だよね？（確認）"
+    },
+    "no#13": {
+      "w": "no",
+      "pos": "adv",
+      "ja": "いや・そうだね",
+      "note": "相手の否定的な見方に同意して「そうだね」"
+    }
+  }
+}

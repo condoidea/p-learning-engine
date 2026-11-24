@@ -1,0 +1,273 @@
+{
+  "format": 1,
+  "sceneJa": "🇲🇽 メキシコの職場。同僚のガルシアさんが、日本人の田中さんのスペイン語をほめる",
+  "phrases": [
+    {
+      "t": "ya casi",
+      "ja": "もうほとんど",
+      "key": true
+    },
+    {
+      "t": "antes de venir",
+      "ja": "来る前に（antes de ＋ 不定詞）",
+      "key": true
+    },
+    {
+      "t": "antes de llegar",
+      "ja": "着く前に（antes de ＋ 不定詞）",
+      "key": true
+    },
+    {
+      "t": "ya había estudiado",
+      "ja": "もう勉強していた（過去完了）",
+      "key": true
+    },
+    {
+      "t": "cerca de",
+      "ja": "〜の近くに",
+      "key": true
+    },
+    {
+      "t": "por eso",
+      "ja": "だから",
+      "key": true
+    },
+    {
+      "t": "tiene acento mexicano",
+      "ja": "メキシコのなまりがある（tener acento ＋ 形容詞）",
+      "key": true
+    },
+    {
+      "t": "una vez",
+      "ja": "一度・あるとき",
+      "key": true
+    },
+    {
+      "t": "familiarizado con",
+      "ja": "〜になじんでいた（familiarizarse con…）",
+      "key": true
+    }
+  ],
+  "words": {
+    "señor": {
+      "w": "señor",
+      "pos": "n",
+      "g": "m",
+      "ja": "〜さん・男の人",
+      "note": "Señor Tanaka＝田中さん"
+    },
+    "casi": {
+      "w": "casi",
+      "pos": "adv",
+      "ja": "ほとんど",
+      "note": "ya casi＝もうほとんど"
+    },
+    "domina": {
+      "w": "dominar",
+      "pos": "v",
+      "ja": "習得する・マスターする",
+      "form": "dominar の現在・三人称単数（usted domina＝あなたはマスターしている）",
+      "key": true
+    },
+    "sí#2": {
+      "w": "sí",
+      "pos": "adv",
+      "ja": "そうですか？",
+      "note": "文頭の ¿Sí?＝（ほめられて）そうですか？"
+    },
+    "que": {
+      "w": "que",
+      "pos": "pron",
+      "ja": "〜する（関係代名詞）",
+      "note": "señora que vivía…／restaurante que me había recomendado…",
+      "key": true
+    },
+    "enseñan": {
+      "w": "enseñar",
+      "pos": "v",
+      "ja": "教える",
+      "form": "enseñar の現在・三人称複数（los profesores que me enseñan＝私に教えてくれる先生たち）",
+      "key": true
+    },
+    "eficientes": {
+      "w": "eficiente",
+      "pos": "adj",
+      "ja": "有能な・効率のよい",
+      "form": "複数形",
+      "key": true
+    },
+    "había": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（助動詞）〜していた",
+      "form": "haber の線過去・三人称単数（había estudiado＝勉強していた。過去完了）",
+      "key": true
+    },
+    "estudiado": {
+      "w": "estudiar",
+      "pos": "v",
+      "ja": "勉強する",
+      "form": "過去分詞（había estudiado＝勉強していた）",
+      "key": true
+    },
+    "antes": {
+      "w": "antes",
+      "pos": "adv",
+      "ja": "前に",
+      "note": "antes de ＋ 不定詞＝〜する前に"
+    },
+    "verdad": {
+      "w": "verdad",
+      "pos": "n",
+      "g": "f",
+      "ja": "（文末で）…ですよね？／本当のこと",
+      "note": "¿…, verdad?＝…だよね？（確認）",
+      "key": true
+    },
+    "meses": {
+      "w": "mes",
+      "pos": "n",
+      "g": "m",
+      "ja": "（期間の）月",
+      "form": "複数形（seis meses＝6か月・半年）"
+    },
+    "estudió": {
+      "w": "estudiar",
+      "pos": "v",
+      "ja": "勉強する・習う",
+      "form": "estudiar の点過去・三人称単数（usted に対して。¿Estudió con…?＝…に習いましたか）"
+    },
+    "españoles": {
+      "w": "español",
+      "pos": "adj",
+      "ja": "スペインの・スペイン人の",
+      "form": "男性複数形（profesores españoles＝スペイン人の先生）"
+    },
+    "estudié": {
+      "w": "estudiar",
+      "pos": "v",
+      "ja": "勉強する・習う",
+      "form": "estudiar の点過去・一人称単数（Estudié español con…＝…に習った）"
+    },
+    "señora": {
+      "w": "señora",
+      "pos": "n",
+      "g": "f",
+      "ja": "女性・婦人",
+      "form": "señor の女性形",
+      "note": "una señora mexicana＝メキシコ人の女性"
+    },
+    "mexicana": {
+      "w": "mexicano",
+      "pos": "adj",
+      "ja": "メキシコの・メキシコ人の",
+      "form": "女性形（comida mexicana＝メキシコ料理／señora mexicana）"
+    },
+    "mexicano": {
+      "w": "mexicano",
+      "pos": "adj",
+      "ja": "メキシコの",
+      "form": "男性単数形（acento mexicano＝メキシコのなまり）"
+    },
+    "vivía": {
+      "w": "vivir",
+      "pos": "v",
+      "ja": "住む",
+      "form": "vivir の線過去・三人称単数（vivía cerca de mi casa＝家の近くに住んでいた）"
+    },
+    "cerca": {
+      "w": "cerca",
+      "pos": "adv",
+      "ja": "近くに",
+      "note": "cerca de＝〜の近くに"
+    },
+    "eso": {
+      "w": "eso",
+      "pos": "pron",
+      "ja": "それ",
+      "note": "por eso＝だから"
+    },
+    "tiene": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持っている",
+      "form": "tener の現在・三人称単数（usted tiene acento＝あなたはなまりがある）"
+    },
+    "acento": {
+      "w": "acento",
+      "pos": "n",
+      "g": "m",
+      "ja": "なまり",
+      "note": "アクセント記号・強勢の意味もある",
+      "key": true
+    },
+    "probado": {
+      "w": "probar",
+      "pos": "v",
+      "ja": "試す・食べてみる",
+      "form": "過去分詞（había probado＝食べたことがあった）",
+      "key": true
+    },
+    "comida": {
+      "w": "comida",
+      "pos": "n",
+      "g": "f",
+      "ja": "料理・食べ物",
+      "note": "comida mexicana＝メキシコ料理"
+    },
+    "vez": {
+      "w": "vez",
+      "pos": "n",
+      "g": "f",
+      "ja": "回・度",
+      "note": "una vez＝一度・あるとき"
+    },
+    "fui": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "行く",
+      "form": "ir の点過去・一人称単数（fui a un restaurante＝レストランに行った）。ser の点過去と同じ形"
+    },
+    "recomendado": {
+      "w": "recomendar",
+      "pos": "v",
+      "ja": "勧める",
+      "form": "過去分詞（me había recomendado un amigo＝友だちが勧めてくれていた）",
+      "key": true
+    },
+    "probé": {
+      "w": "probar",
+      "pos": "v",
+      "ja": "試す・食べてみる",
+      "form": "probar の点過去・一人称単数（probé la margarita＝マルガリータを飲んでみた）"
+    },
+    "margarita": {
+      "w": "margarita",
+      "pos": "n",
+      "g": "f",
+      "ja": "マルガリータ（カクテル）",
+      "note": "ヒナギク（花）も la margarita"
+    },
+    "tacos": {
+      "w": "taco",
+      "pos": "n",
+      "g": "m",
+      "ja": "タコス",
+      "form": "複数形"
+    },
+    "se": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "自分を（再帰）",
+      "note": "familiarizarse の se。haber の前に置く（se había familiarizado）"
+    },
+    "familiarizado": {
+      "w": "familiarizarse",
+      "pos": "v",
+      "ja": "なじむ・慣れ親しむ",
+      "form": "過去分詞（se había familiarizado con…＝〜になじんでいた）",
+      "note": "familiarizarse con…＝〜になじむ",
+      "key": true
+    }
+  }
+}

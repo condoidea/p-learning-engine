@@ -1,0 +1,378 @@
+{
+  "format": 1,
+  "sceneJa": "🏠 田舎の古い家。ダニとおばあちゃんが、屋上で見つけた古い箱を開ける",
+  "phrases": [
+    {
+      "t": "lo que he encontrado",
+      "ja": "私が見つけたもの（lo que＝〜もの）",
+      "key": true
+    },
+    {
+      "t": "hacía años que",
+      "ja": "何年も前から〜（hacer ＋ 時間 ＋ que。過去の基準点から見て hacía）",
+      "key": true
+    },
+    {
+      "t": "el lugar donde",
+      "ja": "〜した場所（donde＝その場所で）"
+    },
+    {
+      "t": "a la que",
+      "ja": "それを〜（前置詞 a ＋ la que。llamar a algo＝〜を…と呼ぶ）",
+      "key": true
+    },
+    {
+      "t": "cuyo padre",
+      "ja": "その父親が（cuyo＝〜の。padre に合わせる）",
+      "key": true
+    },
+    {
+      "t": "tenía diez años",
+      "ja": "10歳だった",
+      "key": true
+    },
+    {
+      "t": "es de oro",
+      "ja": "金でできている（ser de ＋ 材料）",
+      "key": true
+    },
+    {
+      "t": "como un tesoro",
+      "ja": "宝物のように",
+      "key": true
+    },
+    {
+      "t": "un día",
+      "ja": "ある日"
+    },
+    {
+      "t": "donde vendían",
+      "ja": "売っていた（donde＝その店で）"
+    },
+    {
+      "t": "de todos modos",
+      "ja": "とにかく・それでも・結局",
+      "key": true
+    },
+    {
+      "t": "casé con él",
+      "ja": "彼と結婚した（casarse con…）",
+      "key": true
+    }
+  ],
+  "words": {
+    "abuela": {
+      "w": "abuela",
+      "pos": "n",
+      "g": "f",
+      "ja": "おばあちゃん・祖母",
+      "note": "呼びかけにも使う"
+    },
+    "mira": {
+      "w": "mirar",
+      "pos": "v",
+      "ja": "見る",
+      "form": "mirar の命令形（tú）（mira＝見て）"
+    },
+    "encontrado": {
+      "w": "encontrar",
+      "pos": "v",
+      "ja": "見つける",
+      "form": "encontrar の過去分詞（he encontrado＝見つけた）"
+    },
+    "he": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（現在完了を作る助動詞）〜した",
+      "form": "haber の現在・一人称単数（he encontrado＝見つけた）"
+    },
+    "lo#1": {
+      "w": "lo",
+      "pos": "art",
+      "ja": "〜もの・こと（lo que he encontrado＝私が見つけたもの）"
+    },
+    "dijo": {
+      "w": "decir",
+      "pos": "v",
+      "ja": "言う",
+      "form": "decir の点過去・三人称単数（me dijo＝私に言った）"
+    },
+    "caja": {
+      "w": "caja",
+      "pos": "n",
+      "g": "f",
+      "ja": "箱",
+      "key": true
+    },
+    "azotea": {
+      "w": "azotea",
+      "pos": "n",
+      "g": "f",
+      "ja": "屋上",
+      "key": true
+    },
+    "ay": {
+      "w": "ay",
+      "pos": "interj",
+      "ja": "あら・まあ"
+    },
+    "ahí": {
+      "w": "ahí",
+      "pos": "adv",
+      "ja": "そこに・そこで"
+    },
+    "guardaba": {
+      "w": "guardar",
+      "pos": "v",
+      "ja": "しまう・取っておく",
+      "form": "guardar の線過去・一人称単数（guardaba＝しまっていた）",
+      "key": true
+    },
+    "juguetes": {
+      "w": "juguete",
+      "pos": "n",
+      "g": "m",
+      "ja": "おもちゃ",
+      "form": "複数形",
+      "key": true
+    },
+    "niñez": {
+      "w": "niñez",
+      "pos": "n",
+      "g": "f",
+      "ja": "子どものころ・幼少時代",
+      "key": true
+    },
+    "hacía": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "（hacer ＋ 時間 ＋ que）〜前から",
+      "form": "hacer の線過去・三人称単数（hacía años que no la veía＝何年も見ていなかった）",
+      "key": true
+    },
+    "años": {
+      "w": "año",
+      "pos": "n",
+      "g": "m",
+      "ja": "年（años＝何年も）",
+      "form": "複数形（hacía años＝何年も／diez años＝10歳）"
+    },
+    "veía": {
+      "w": "ver",
+      "pos": "v",
+      "ja": "見る・会う",
+      "form": "ver の線過去（no la veía＝見ていなかった／se veía＝見えた）"
+    },
+    "la#2": {
+      "w": "la",
+      "pos": "pron",
+      "ja": "それを（＝la caja）"
+    },
+    "jugabas": {
+      "w": "jugar",
+      "pos": "v",
+      "ja": "遊ぶ",
+      "form": "jugar の線過去・二人称単数（jugabas＝遊んでいた）"
+    },
+    "jugaba": {
+      "w": "jugar",
+      "pos": "v",
+      "ja": "遊ぶ",
+      "form": "jugar の線過去・一人称単数（jugaba con mis amigos＝友だちと遊んでいた）"
+    },
+    "lugar": {
+      "w": "lugar",
+      "pos": "n",
+      "g": "m",
+      "ja": "場所",
+      "key": true
+    },
+    "alcalde": {
+      "w": "alcalde",
+      "pos": "n",
+      "g": "m",
+      "ja": "村長・市長",
+      "key": true
+    },
+    "se#4": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（受身）〜が見える（se veía＝見えた）"
+    },
+    "llamábamos": {
+      "w": "llamar",
+      "pos": "v",
+      "ja": "呼ぶ",
+      "form": "llamar の線過去・一人称複数（llamábamos a la casa «el palacio»＝その家を「宮殿」と呼んでいた）"
+    },
+    "palacio": {
+      "w": "palacio",
+      "pos": "n",
+      "g": "m",
+      "ja": "宮殿",
+      "key": true
+    },
+    "anillo": {
+      "w": "anillo",
+      "pos": "n",
+      "g": "m",
+      "ja": "指輪",
+      "key": true
+    },
+    "este": {
+      "w": "este",
+      "pos": "det",
+      "ja": "この"
+    },
+    "joya": {
+      "w": "joya",
+      "pos": "n",
+      "g": "f",
+      "ja": "宝石・アクセサリー",
+      "key": true
+    },
+    "lo#6": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを（＝el anillo）"
+    },
+    "dio": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "あげる・くれる",
+      "form": "dar の点過去・三人称単数（me lo dio＝それを私にくれた）"
+    },
+    "chico": {
+      "w": "chico",
+      "pos": "n",
+      "g": "m",
+      "ja": "男の子"
+    },
+    "entonces": {
+      "w": "entonces",
+      "pos": "adv",
+      "ja": "じゃあ・それなら"
+    },
+    "oro": {
+      "w": "oro",
+      "pos": "n",
+      "g": "m",
+      "ja": "金（きん）",
+      "key": true
+    },
+    "eso": {
+      "w": "eso",
+      "pos": "pron",
+      "ja": "それ（中性）・そう"
+    },
+    "durante": {
+      "w": "durante",
+      "pos": "prep",
+      "ja": "〜のあいだ（durante años＝何年も）",
+      "key": true
+    },
+    "lo#8": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを（＝el anillo）"
+    },
+    "guardé": {
+      "w": "guardar",
+      "pos": "v",
+      "ja": "しまう・大事にとっておく",
+      "form": "guardar の点過去・一人称単数（lo guardé＝それをしまっておいた）"
+    },
+    "como": {
+      "w": "como",
+      "pos": "prep",
+      "ja": "〜のように（como un tesoro＝宝物のように）"
+    },
+    "tesoro": {
+      "w": "tesoro",
+      "pos": "n",
+      "g": "m",
+      "ja": "宝物",
+      "key": true
+    },
+    "lo#9": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それ（＝金だということ。ser の補語になる lo）",
+      "note": "¿Y no lo era?＝「そうじゃなかったの？」"
+    },
+    "vi": {
+      "w": "ver",
+      "pos": "v",
+      "ja": "見る・見かける",
+      "form": "ver の点過去・一人称単数（lo vi＝それを見かけた）"
+    },
+    "lo#10": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを（＝el anillo）"
+    },
+    "tienda": {
+      "w": "tienda",
+      "pos": "n",
+      "g": "f",
+      "ja": "店"
+    },
+    "vendían": {
+      "w": "vender",
+      "pos": "v",
+      "ja": "売る",
+      "form": "vender の線過去・三人称複数（vendían＝売っていた）"
+    },
+    "costaba": {
+      "w": "costar",
+      "pos": "v",
+      "ja": "（値段が）〜する",
+      "form": "costar の線過去・三人称単数（costaba diez pesetas＝10ペセタだった）"
+    },
+    "pesetas": {
+      "w": "peseta",
+      "pos": "n",
+      "g": "f",
+      "ja": "ペセタ（ユーロの前のスペインのお金）",
+      "form": "複数形",
+      "key": true
+    },
+    "engañó": {
+      "w": "engañar",
+      "pos": "v",
+      "ja": "だます",
+      "form": "engañar の点過去・三人称単数（te engañó＝君をだました）",
+      "key": true
+    },
+    "te": {
+      "w": "te",
+      "pos": "pron",
+      "ja": "君を"
+    },
+    "casé": {
+      "w": "casarse",
+      "pos": "v",
+      "ja": "結婚する（casarse con…＝〜と結婚する）",
+      "form": "casarse の点過去・一人称単数（me casé＝結婚した）",
+      "key": true
+    },
+    "me#12": {
+      "w": "me",
+      "pos": "pron",
+      "ja": "（casarse の再帰代名詞）自分を"
+    },
+    "modos": {
+      "w": "modo",
+      "pos": "n",
+      "g": "m",
+      "ja": "方法・やり方（de todos modos＝とにかく）",
+      "form": "複数形"
+    },
+    "abuelo": {
+      "w": "abuelo",
+      "pos": "n",
+      "g": "m",
+      "ja": "おじいちゃん・祖父"
+    }
+  }
+}

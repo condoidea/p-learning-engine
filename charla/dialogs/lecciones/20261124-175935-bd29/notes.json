@@ -1,0 +1,278 @@
+{
+  "format": 1,
+  "sceneJa": "🏢 メキシコの会社。ガルシアさんが田中さんに来客を知らせる",
+  "names": [
+    "Juana",
+    "Rodríguez",
+    "México"
+  ],
+  "phrases": [
+    {
+      "t": "lo busca a usted",
+      "ja": "あなたを訪ねてきている（lo ＝ a usted を重ねた言い方）",
+      "key": true
+    },
+    {
+      "t": "que se llama",
+      "ja": "〜という名前の",
+      "key": true
+    },
+    {
+      "t": "de quien",
+      "ja": "〜について…した（前置詞 de ＋ quien。先行詞は la chica で、人だけに使う）",
+      "key": true
+    },
+    {
+      "t": "la hija del señor rodríguez",
+      "ja": "ロドリゲスさんの娘さん"
+    },
+    {
+      "t": "la que",
+      "ja": "〜するもの・〜するほう（la universidad の代わり。la que está＝…にある大学）",
+      "key": true
+    },
+    {
+      "t": "al sur de",
+      "ja": "〜の南に",
+      "key": true
+    },
+    {
+      "t": "la llaman",
+      "ja": "それは〜と呼ばれている（llamar ＋ 人々が。UNAM と呼ばれる）",
+      "key": true
+    },
+    {
+      "t": "universidad nacional autónoma de méxico",
+      "ja": "メキシコ国立自治大学（UNAM）"
+    },
+    {
+      "t": "una de las mejores que hay",
+      "ja": "〜にある中で最も優れたものの一つ（una de las ＋ 最上級 ＋ que hay）",
+      "key": true
+    }
+  ],
+  "words": {
+    "señor": {
+      "w": "señor",
+      "pos": "n",
+      "g": "m",
+      "ja": "〜さん（男性への敬称）・男の人"
+    },
+    "lo": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "あなたを（usted を指す。lo busca a usted＝あなたを訪ねている）"
+    },
+    "busca": {
+      "w": "buscar",
+      "pos": "v",
+      "ja": "探す・（人を）訪ねる",
+      "form": "buscar の現在・三人称単数（lo busca＝あなたを訪ねてきている）"
+    },
+    "a": {
+      "w": "a",
+      "pos": "prep",
+      "ja": "（直接目的語の人を示す a）〜を"
+    },
+    "señorita": {
+      "w": "señorita",
+      "pos": "n",
+      "g": "f",
+      "ja": "若い女性・お嬢さん",
+      "key": true
+    },
+    "llama": {
+      "w": "llamarse",
+      "pos": "v",
+      "ja": "〜という名前である",
+      "form": "llamarse の現在・三人称単数（se llama＝〜という名前だ）",
+      "key": true
+    },
+    "se": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（llamarse の se）自分を〜と呼ぶ"
+    },
+    "chica": {
+      "w": "chica",
+      "pos": "n",
+      "g": "f",
+      "ja": "女の子・若い女性",
+      "form": "chico の女性形"
+    },
+    "quien": {
+      "w": "quien",
+      "pos": "pron",
+      "ja": "〜する人（関係代名詞。人だけに使う）"
+    },
+    "le": {
+      "w": "le",
+      "pos": "pron",
+      "ja": "あなたに（usted を指す）"
+    },
+    "hablé": {
+      "w": "hablar",
+      "pos": "v",
+      "ja": "話す",
+      "form": "hablar の点過去・一人称単数（le hablé＝あなたに話した）"
+    },
+    "hija": {
+      "w": "hija",
+      "pos": "n",
+      "g": "f",
+      "ja": "娘",
+      "form": "hijo の女性形"
+    },
+    "quiere": {
+      "w": "querer",
+      "pos": "v",
+      "ja": "〜したい・ほしい",
+      "form": "querer の現在・三人称単数（quiere trabajar＝働きたい）"
+    },
+    "alguna": {
+      "w": "algún",
+      "pos": "det",
+      "ja": "どこかの・ある",
+      "form": "algún の女性形"
+    },
+    "compañía": {
+      "w": "compañía",
+      "pos": "n",
+      "g": "f",
+      "ja": "会社",
+      "key": true
+    },
+    "japonesa": {
+      "w": "japonés",
+      "pos": "adj",
+      "ja": "日本の",
+      "form": "japonés の女性形"
+    },
+    "verdad": {
+      "w": "verdad",
+      "pos": "n",
+      "g": "f",
+      "ja": "（文末の ¿verdad?）〜ですよね？",
+      "note": "¿verdad? は「〜ですよね？」と確かめる言い方"
+    },
+    "estudia": {
+      "w": "estudiar",
+      "pos": "v",
+      "ja": "勉強する",
+      "form": "estudiar の現在・三人称単数（主語は Juana）"
+    },
+    "economía": {
+      "w": "economía",
+      "pos": "n",
+      "g": "f",
+      "ja": "経済・経済学",
+      "key": true
+    },
+    "oh": {
+      "w": "oh",
+      "pos": "interj",
+      "ja": "ああ（思い出そうとして）"
+    },
+    "recuerdo": {
+      "w": "recordar",
+      "pos": "v",
+      "ja": "思い出す・覚えている",
+      "form": "recordar の現在・一人称単数（no recuerdo＝思い出せない）",
+      "key": true
+    },
+    "nombre": {
+      "w": "nombre",
+      "pos": "n",
+      "g": "m",
+      "ja": "名前"
+    },
+    "cómo": {
+      "w": "cómo",
+      "pos": "int",
+      "ja": "どう・どのように（¿Cómo se llama?＝何という名前？）"
+    },
+    "la#5.2": {
+      "w": "la",
+      "pos": "pron",
+      "ja": "それを（＝la Universidad Nacional Autónoma de México）"
+    },
+    "está": {
+      "w": "estar",
+      "pos": "v",
+      "ja": "（〜に）ある",
+      "form": "estar の現在・三人称単数（está al sur＝南にある）"
+    },
+    "al": {
+      "w": "al",
+      "pos": "prep",
+      "ja": "a ＋ el（al sur＝南に）"
+    },
+    "sur": {
+      "w": "sur",
+      "pos": "n",
+      "g": "m",
+      "ja": "南",
+      "key": true
+    },
+    "nacional": {
+      "w": "nacional",
+      "pos": "adj",
+      "ja": "国立の・国の"
+    },
+    "autónoma": {
+      "w": "autónomo",
+      "pos": "adj",
+      "ja": "自治の・自立した",
+      "form": "autónomo の女性形（Universidad Nacional Autónoma＝国立自治大学）",
+      "key": true
+    },
+    "méxico": {
+      "w": "México",
+      "pos": "n",
+      "g": "m",
+      "ja": "メキシコ"
+    },
+    "llaman": {
+      "w": "llamar",
+      "pos": "v",
+      "ja": "呼ぶ",
+      "form": "llamar の現在・三人称複数（la llaman UNAM＝それを UNAM と呼ぶ。人々が）"
+    },
+    "unam": {
+      "w": "UNAM",
+      "pos": "n",
+      "g": "f",
+      "ja": "メキシコ国立自治大学の略称（ウナム）"
+    },
+    "eso": {
+      "w": "eso",
+      "pos": "pron",
+      "ja": "それ（中性。「そうそう、それ」）"
+    },
+    "buena": {
+      "w": "bueno",
+      "pos": "adj",
+      "ja": "よい・すぐれた",
+      "form": "bueno の女性形（la UNAM が主語）"
+    },
+    "mejores": {
+      "w": "mejor",
+      "pos": "adj",
+      "ja": "最もすぐれた・いちばんよい",
+      "form": "mejor の複数形（una de las mejores＝最も優れたものの一つ）",
+      "key": true
+    },
+    "hay": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（hay で）〜がある",
+      "form": "haber の現在・三人称単数（que hay＝ある〜のうち）"
+    },
+    "país": {
+      "w": "país",
+      "pos": "n",
+      "g": "m",
+      "ja": "国"
+    }
+  }
+}

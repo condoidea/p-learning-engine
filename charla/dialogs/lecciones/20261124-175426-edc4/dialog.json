@@ -1,0 +1,112 @@
+{
+  "format": 1,
+  "id": "20261124-175426-edc4",
+  "title": "L16-02 La maleta rota",
+  "scene": "Sábado temprano por la mañana, en el piso de Clara y Óscar, una pareja joven de Madrid. Se van de viaje a la montaña en tren y repasan si lo tienen todo preparado. Conversación rápida y natural de pareja, con humor.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-24T08:55:52.441Z",
+  "audio": "audio.mp3",
+  "durationMs": 67608,
+  "speakers": [
+    {
+      "id": "CLARA",
+      "gender": "female",
+      "persona": "Clara, unos 30 años, organizada, rápida y un poco nerviosa antes de los viajes"
+    },
+    {
+      "id": "OSCAR",
+      "gender": "male",
+      "persona": "Óscar, unos 31 años, tranquilo, un poco torpe pero buena persona"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "CLARA",
+      "text": "Óscar, ¿has hecho ya la maleta? El tren sale a las nueve.",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 4915
+    },
+    {
+      "index": 1,
+      "speaker": "OSCAR",
+      "text": "Sí, ya la he hecho. Pero mira: la rueda está rota.",
+      "direction": "",
+      "startMs": 5701,
+      "endMs": 10588
+    },
+    {
+      "index": 2,
+      "speaker": "CLARA",
+      "text": "¿Rota? ¿Qué has hecho?",
+      "direction": "",
+      "startMs": 11431,
+      "endMs": 13579
+    },
+    {
+      "index": 3,
+      "speaker": "OSCAR",
+      "text": "Nada. La he bajado por la escalera y… ¡crac!",
+      "direction": "",
+      "startMs": 14556,
+      "endMs": 18676
+    },
+    {
+      "index": 4,
+      "speaker": "CLARA",
+      "text": "Bueno, llevamos la mía. ¿Has impreso los billetes?",
+      "direction": "suspira",
+      "startMs": 19477,
+      "endMs": 23450
+    },
+    {
+      "index": 5,
+      "speaker": "OSCAR",
+      "text": "Sí, aquí están. Solo los de ida. La vuelta la compramos allí.",
+      "direction": "",
+      "startMs": 24540,
+      "endMs": 30424
+    },
+    {
+      "index": 6,
+      "speaker": "CLARA",
+      "text": "Vale. ¿Y has cerrado todas las ventanas?",
+      "direction": "",
+      "startMs": 31425,
+      "endMs": 34925
+    },
+    {
+      "index": 7,
+      "speaker": "OSCAR",
+      "text": "Sí, y he puesto la comida del gato en la cocina. Tu hermana va a cuidarlo, ¿verdad?",
+      "direction": "",
+      "startMs": 36059,
+      "endMs": 42912
+    },
+    {
+      "index": 8,
+      "speaker": "CLARA",
+      "text": "Sí, ya se lo he dicho. Y le he escrito una nota con todo.",
+      "direction": "",
+      "startMs": 44105,
+      "endMs": 48769
+    },
+    {
+      "index": 9,
+      "speaker": "OSCAR",
+      "text": "Perfecto. Oye, ¿ha llegado el pedido de la tienda? Tus botas nuevas están dentro.",
+      "direction": "",
+      "startMs": 49631,
+      "endMs": 56202
+    },
+    {
+      "index": 10,
+      "speaker": "CLARA",
+      "text": "No, todavía no. Ayer vino el repartidor, pero no había nadie en casa… ¡Ese es el timbre! ¡El repartidor ha vuelto!",
+      "direction": "al final, contenta",
+      "startMs": 57183,
+      "endMs": 66608
+    }
+  ]
+}

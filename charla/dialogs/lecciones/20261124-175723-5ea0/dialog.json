@@ -1,0 +1,96 @@
+{
+  "format": 1,
+  "id": "20261124-175723-5ea0",
+  "title": "L17-01 El español del señor Tanaka",
+  "scene": "Ciudad de México, en una oficina. La señora García, compañera de trabajo mexicana, felicita al señor Tanaka, un empleado japonés que vive en México, por su buen español. Conversación educada y amable, tratándose de usted.",
+  "accent": "es-MX",
+  "createdAt": "2026-11-24T08:58:22.987Z",
+  "audio": "audio.mp3",
+  "durationMs": 68135,
+  "speakers": [
+    {
+      "id": "GARCIA",
+      "gender": "female",
+      "persona": "Sra. García, unos 45 años, mexicana, amable y habladora, trata de usted a su compañero"
+    },
+    {
+      "id": "TANAKA",
+      "gender": "male",
+      "persona": "Sr. Tanaka, unos 40 años, japonés que trabaja en México, educado y un poco tímido"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "GARCIA",
+      "text": "Señor Tanaka, usted ya casi domina el español.",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 4890
+    },
+    {
+      "index": 1,
+      "speaker": "TANAKA",
+      "text": "¿Sí? Gracias. Los profesores que me enseñan español son eficientes.",
+      "direction": "",
+      "startMs": 5675,
+      "endMs": 14505
+    },
+    {
+      "index": 2,
+      "speaker": "GARCIA",
+      "text": "Había estudiado español antes de venir a México, ¿verdad?",
+      "direction": "",
+      "startMs": 15453,
+      "endMs": 19997
+    },
+    {
+      "index": 3,
+      "speaker": "TANAKA",
+      "text": "Sí, ya había estudiado español seis meses.",
+      "direction": "",
+      "startMs": 21069,
+      "endMs": 26109
+    },
+    {
+      "index": 4,
+      "speaker": "GARCIA",
+      "text": "¿Estudió con profesores españoles?",
+      "direction": "",
+      "startMs": 26946,
+      "endMs": 30166
+    },
+    {
+      "index": 5,
+      "speaker": "TANAKA",
+      "text": "No. Estudié español con una señora mexicana que vivía cerca de mi casa.",
+      "direction": "",
+      "startMs": 31226,
+      "endMs": 38166
+    },
+    {
+      "index": 6,
+      "speaker": "GARCIA",
+      "text": "Ah, por eso usted tiene acento mexicano. ¿Había probado comida mexicana en Japón?",
+      "direction": "",
+      "startMs": 39209,
+      "endMs": 47199
+    },
+    {
+      "index": 7,
+      "speaker": "TANAKA",
+      "text": "Sí, una vez fui a un restaurante de comida mexicana en Tokio que me había recomendado un amigo. Allí probé la margarita y los tacos.",
+      "direction": "",
+      "startMs": 48493,
+      "endMs": 61413
+    },
+    {
+      "index": 8,
+      "speaker": "GARCIA",
+      "text": "Usted ya se había familiarizado con México antes de llegar.",
+      "direction": "sonriendo",
+      "startMs": 62382,
+      "endMs": 67135
+    }
+  ]
+}

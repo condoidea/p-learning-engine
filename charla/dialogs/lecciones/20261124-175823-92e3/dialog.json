@@ -1,0 +1,136 @@
+{
+  "format": 1,
+  "id": "20261124-175823-92e3",
+  "title": "L17-02 La Alhambra desde fuera",
+  "scene": "Lunes por la mañana, en la cafetería de una universidad de Madrid. Hiro, un estudiante japonés, acaba de regresar de un fin de semana en Granada y se lo cuenta a su amiga Marta. Conversación natural entre amigos, con humor.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-24T08:59:34.949Z",
+  "audio": "audio.mp3",
+  "durationMs": 89962,
+  "speakers": [
+    {
+      "id": "MARTA",
+      "gender": "female",
+      "persona": "Marta, unos 21 años, española, alegre y curiosa, hace muchas preguntas"
+    },
+    {
+      "id": "HIRO",
+      "gender": "male",
+      "persona": "Hiro, unos 22 años, estudiante japonés en Madrid, simpático, un poco despistado"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "MARTA",
+      "text": "¡Hiro! ¿Cuándo regresaste de Granada?",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 4042
+    },
+    {
+      "index": 1,
+      "speaker": "HIRO",
+      "text": "Anoche. Llegué muy tarde.",
+      "direction": "",
+      "startMs": 5043,
+      "endMs": 7713
+    },
+    {
+      "index": 2,
+      "speaker": "MARTA",
+      "text": "¿Y qué tal la Alhambra? ¿Es tan hermosa como dicen?",
+      "direction": "",
+      "startMs": 8468,
+      "endMs": 12708
+    },
+    {
+      "index": 3,
+      "speaker": "HIRO",
+      "text": "No lo sé. Cuando llegué, ya se habían agotado las entradas.",
+      "direction": "",
+      "startMs": 13768,
+      "endMs": 18528
+    },
+    {
+      "index": 4,
+      "speaker": "MARTA",
+      "text": "¡No! ¿No las habías comprado por internet?",
+      "direction": "",
+      "startMs": 19354,
+      "endMs": 23294
+    },
+    {
+      "index": 5,
+      "speaker": "HIRO",
+      "text": "No. No sabía que era necesario. Un chico con el que hablé en la cola me dijo que suelen agotarse un mes antes.",
+      "direction": "",
+      "startMs": 24383,
+      "endMs": 33655
+    },
+    {
+      "index": 6,
+      "speaker": "MARTA",
+      "text": "¡Qué pena! ¿Y dónde te alojaste?",
+      "direction": "",
+      "startMs": 34721,
+      "endMs": 38191
+    },
+    {
+      "index": 7,
+      "speaker": "HIRO",
+      "text": "En un hotel de lujo que me había recomendado mi profesor.",
+      "direction": "",
+      "startMs": 39324,
+      "endMs": 44634
+    },
+    {
+      "index": 8,
+      "speaker": "MARTA",
+      "text": "¿De lujo? ¡Qué bien!",
+      "direction": "",
+      "startMs": 45516,
+      "endMs": 47736
+    },
+    {
+      "index": 9,
+      "speaker": "HIRO",
+      "text": "Bueno… la habitación en la que dormí era muy pequeña, y la ventana daba a una pared.",
+      "direction": "",
+      "startMs": 48500,
+      "endMs": 57020
+    },
+    {
+      "index": 10,
+      "speaker": "MARTA",
+      "text": "¿Y qué hiciste después?",
+      "direction": "riéndose",
+      "startMs": 58038,
+      "endMs": 59908
+    },
+    {
+      "index": 11,
+      "speaker": "HIRO",
+      "text": "Lo que me dijo el recepcionista: subí al Mirador de San Nicolás, desde donde se ve toda la Alhambra. Ya había oscurecido, pero estaba toda iluminada. Era lo más hermoso que he visto en mi vida.",
+      "direction": "",
+      "startMs": 60844,
+      "endMs": 77364
+    },
+    {
+      "index": 12,
+      "speaker": "MARTA",
+      "text": "¿Ves? Al final la viste.",
+      "direction": "",
+      "startMs": 78336,
+      "endMs": 80926
+    },
+    {
+      "index": 13,
+      "speaker": "HIRO",
+      "text": "Sí… desde fuera. Pero el mes que viene vuelvo. Esta vez ya he comprado la entrada.",
+      "direction": "riéndose",
+      "startMs": 81712,
+      "endMs": 88962
+    }
+  ]
+}

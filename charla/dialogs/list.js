@@ -39,7 +39,7 @@ window.CHARLA_SERIES = [
     /* レッスン：課ごとの短い会話。dialog.json の題は「L11-01 Título」→ no は「11-1」（課-何番目）。
      *  解説は課ごとに1ファイル（guide-11.md。「## 会話1」「## 会話2」）→ 話ごとに guide と gno（その中の会話の番号） */
     id: 'lecciones', title: 'レッスン', sub: '課ごとの短い会話',
-    names: ['Makoto', 'Elena', 'Yuki', 'Carlos', 'Tomás', 'Lucía', 'Pablo', 'Tokio', 'Kioto', 'Carmen', 'Laura', 'Riku', 'García', 'Tanaka', 'Ana', 'Kenji', 'Sofía', 'Daniel', 'Irene', 'Monterrey', 'Sevilla', 'Barcelona'],
+    names: ['Makoto', 'Elena', 'Yuki', 'Carlos', 'Tomás', 'Lucía', 'Pablo', 'Tokio', 'Kioto', 'Carmen', 'Laura', 'Riku', 'García', 'Tanaka', 'Ana', 'Kenji', 'Sofía', 'Daniel', 'Irene', 'Monterrey', 'Sevilla', 'Barcelona', 'Clara', 'Óscar', 'Pedro', 'Lola', 'Marta', 'Hiro', 'Andrés', 'Dani'],
     dialogs: [
       { id: '20261123-134134-663e', no: '10-1', guide: 'guide-10.md', gno: 1, title: 'El regalo de cumpleaños', titleJa: '誕生日のプレゼント' },
       { id: '20261123-134218-5ae2', no: '10-2', guide: 'guide-10.md', gno: 2, title: 'La temporada de lluvias', titleJa: '梅雨' },
@@ -52,7 +52,15 @@ window.CHARLA_SERIES = [
       { id: '20261123-172658-1cf9', no: '14-1', guide: 'guide-14.md', gno: 1, title: 'Las vacaciones en Barcelona', titleJa: 'バルセロナの休暇' },
       { id: '20261123-172804-b915', no: '14-2', guide: 'guide-14.md', gno: 2, title: 'La nevera vacía', titleJa: '空っぽの冷蔵庫' },
       { id: '20261123-203325-f2bd', no: '15-1', guide: 'guide-15.md', gno: 1, title: 'El pueblo de Carmen', titleJa: 'カルメンの村' },
-      { id: '20261123-203445-a41c', no: '15-2', guide: 'guide-15.md', gno: 2, title: 'El niño del puente', titleJa: '橋の上の男の子' }
+      { id: '20261123-203445-a41c', no: '15-2', guide: 'guide-15.md', gno: 2, title: 'El niño del puente', titleJa: '橋の上の男の子' },
+      { id: '20261124-175354-c62f', no: '16-1', guide: 'guide-16.md', gno: 1, title: 'El Guernica', titleJa: 'ゲルニカ' },
+      { id: '20261124-175426-edc4', no: '16-2', guide: 'guide-16.md', gno: 2, title: 'La maleta rota', titleJa: '壊れたスーツケース' },
+      { id: '20261124-175555-88d5', no: '16-3', guide: 'guide-16.md', gno: 3, title: 'El ladrón del museo', titleJa: '美術館の泥棒' },
+      { id: '20261124-175723-5ea0', no: '17-1', guide: 'guide-17.md', gno: 1, title: 'El español del señor Tanaka', titleJa: '田中さんのスペイン語' },
+      { id: '20261124-175823-92e3', no: '17-2', guide: 'guide-17.md', gno: 2, title: 'La Alhambra desde fuera', titleJa: '外から見たアルハンブラ' },
+      { id: '20261124-175935-bd29', no: '18-1', guide: 'guide-18.md', gno: 1, title: 'Una visita para el señor Tanaka', titleJa: '田中さんへの来客' },
+      { id: '20261124-180023-d99c', no: '18-2', guide: 'guide-18.md', gno: 2, title: 'La nueva estrategia', titleJa: '新しい戦略' },
+      { id: '20261124-180144-5e81', no: '18-3', guide: 'guide-18.md', gno: 3, title: 'La caja de la azotea', titleJa: '屋上の箱' }
     ]
   }
 ];

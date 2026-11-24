@@ -1,0 +1,128 @@
+{
+  "format": 1,
+  "id": "20261124-180023-d99c",
+  "title": "L18-02 La nueva estrategia",
+  "scene": "Lunes, muy temprano, en la oficina de una empresa de Madrid. Sofía ha llegado antes de lo normal y su compañero Andrés le pregunta por qué. Conversación natural entre compañeros de trabajo que se tutean, con humor.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-24T09:01:41.555Z",
+  "audio": "audio.mp3",
+  "durationMs": 68223,
+  "speakers": [
+    {
+      "id": "ANDRES",
+      "gender": "male",
+      "persona": "Andrés, unos 35 años, tranquilo, irónico, lleva muchos años en la empresa"
+    },
+    {
+      "id": "SOFIA",
+      "gender": "female",
+      "persona": "Sofía, unos 30 años, trabajadora y responsable, un poco nerviosa por la reunión"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "ANDRES",
+      "text": "Sofía, ¡qué pronto has llegado hoy! ¿Has madrugado?",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 5045
+    },
+    {
+      "index": 1,
+      "speaker": "SOFIA",
+      "text": "Sí. A las nueve tenemos la reunión en la que vamos a discutir las ventas del trimestre.",
+      "direction": "",
+      "startMs": 6087,
+      "endMs": 13757
+    },
+    {
+      "index": 2,
+      "speaker": "ANDRES",
+      "text": "¿Y qué tal las ventas?",
+      "direction": "",
+      "startMs": 14705,
+      "endMs": 16455
+    },
+    {
+      "index": 3,
+      "speaker": "SOFIA",
+      "text": "Mal. Los números reflejan lo que ya sabíamos: necesitamos una estrategia nueva.",
+      "direction": "",
+      "startMs": 17416,
+      "endMs": 24387
+    },
+    {
+      "index": 4,
+      "speaker": "ANDRES",
+      "text": "¿Y quién la va a presentar?",
+      "direction": "",
+      "startMs": 25302,
+      "endMs": 27372
+    },
+    {
+      "index": 5,
+      "speaker": "SOFIA",
+      "text": "Un consultor en quien el jefe tiene mucha confianza. Antes trabajaba en una empresa muy conocida, cuyo nombre es un secreto.",
+      "direction": "",
+      "startMs": 28386,
+      "endMs": 38538
+    },
+    {
+      "index": 6,
+      "speaker": "ANDRES",
+      "text": "¿Un secreto? ¿Por qué?",
+      "direction": "",
+      "startMs": 39604,
+      "endMs": 42254
+    },
+    {
+      "index": 7,
+      "speaker": "SOFIA",
+      "text": "No lo sé. Es un asunto del que el jefe no quiere hablar.",
+      "direction": "",
+      "startMs": 43354,
+      "endMs": 47994
+    },
+    {
+      "index": 8,
+      "speaker": "ANDRES",
+      "text": "Pues yo lo sé. Mi equipo trabajó con él hace unos años.",
+      "direction": "",
+      "startMs": 48849,
+      "endMs": 53101
+    },
+    {
+      "index": 9,
+      "speaker": "SOFIA",
+      "text": "¿De verdad? ¿Y dónde trabajaba?",
+      "direction": "",
+      "startMs": 53946,
+      "endMs": 56922
+    },
+    {
+      "index": 10,
+      "speaker": "ANDRES",
+      "text": "Aquí. Es el hombre que diseñó la estrategia que tenemos ahora.",
+      "direction": "",
+      "startMs": 58009,
+      "endMs": 62869
+    },
+    {
+      "index": 11,
+      "speaker": "SOFIA",
+      "text": "¿La que no funciona?",
+      "direction": "",
+      "startMs": 63674,
+      "endMs": 65104
+    },
+    {
+      "index": 12,
+      "speaker": "ANDRES",
+      "text": "Esa misma.",
+      "direction": "riéndose",
+      "startMs": 66083,
+      "endMs": 67223
+    }
+  ]
+}

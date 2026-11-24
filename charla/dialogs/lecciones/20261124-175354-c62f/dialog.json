@@ -1,0 +1,80 @@
+{
+  "format": 1,
+  "id": "20261124-175354-c62f",
+  "title": "L16-01 El Guernica",
+  "scene": "Madrid, en una cafetería. Carmen le pregunta a su amigo Makoto, un estudiante japonés, si ya ha visitado el museo Reina Sofía, donde está el Guernica de Picasso. Conversación tranquila entre amigos, con un tono algo serio al final.",
+  "accent": "es-ES",
+  "createdAt": "2026-11-24T08:54:24.996Z",
+  "audio": "audio.mp3",
+  "durationMs": 59903,
+  "speakers": [
+    {
+      "id": "CARMEN",
+      "gender": "female",
+      "persona": "Carmen, unos 22 años, española, culta y simpática, habla del cuadro con interés"
+    },
+    {
+      "id": "MAKOTO",
+      "gender": "male",
+      "persona": "Makoto, unos 22 años, estudiante japonés en Madrid, curioso, le interesa el arte"
+    }
+  ],
+  "lines": [
+    {
+      "index": 0,
+      "speaker": "CARMEN",
+      "text": "Makoto, ¿has ido al Centro de Arte Reina Sofía?",
+      "direction": "",
+      "startMs": 400,
+      "endMs": 4910
+    },
+    {
+      "index": 1,
+      "speaker": "MAKOTO",
+      "text": "No, aún no he ido. Allí está el famoso cuadro Guernica de Picasso, ¿verdad?",
+      "direction": "",
+      "startMs": 5946,
+      "endMs": 12926
+    },
+    {
+      "index": 2,
+      "speaker": "CARMEN",
+      "text": "Sí, así es. Yo fui al Centro para ver el Guernica ayer.",
+      "direction": "",
+      "startMs": 14103,
+      "endMs": 19493
+    },
+    {
+      "index": 3,
+      "speaker": "MAKOTO",
+      "text": "¿Qué significa «Guernica»?",
+      "direction": "",
+      "startMs": 20349,
+      "endMs": 22729
+    },
+    {
+      "index": 4,
+      "speaker": "CARMEN",
+      "text": "Es el nombre de un pueblo vasco. Fue bombardeado. Picasso pintó un cuadro y le puso el nombre del pueblo.",
+      "direction": "",
+      "startMs": 23710,
+      "endMs": 32150
+    },
+    {
+      "index": 5,
+      "speaker": "MAKOTO",
+      "text": "Ah, sí. Yo lo he visto en el libro de la colección de las obras de Picasso. En el cuadro están pintados personas, animales y edificios destrozados por el bombardeo.",
+      "direction": "",
+      "startMs": 33131,
+      "endMs": 47061
+    },
+    {
+      "index": 6,
+      "speaker": "CARMEN",
+      "text": "Sí. Picasso lo pintó para protestar contra la guerra y la violencia. Este cuadro representa la inhumanidad y la crueldad de la guerra.",
+      "direction": "seria",
+      "startMs": 48127,
+      "endMs": 58903
+    }
+  ]
+}
