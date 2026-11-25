@@ -49,8 +49,8 @@ MQ.people = {
 MQ.days = [
   { d: 1, ti: 'はじまりの島', x: 'tú に「〜しろ」・不規則な8つ ＋ ボス' },
   { d: 2, ti: '女神と港', x: 'usted・ustedes・vosotros（接続法の形）＋ ボス' },
-  { d: 3, ti: '決戦の前夜', x: '「〜するな」・代名詞・〜しよう' },
-  { d: 4, ti: '創世の日', x: 'ラスボス ＋ 🎓 西検チャレンジ' }
+  { d: 3, ti: '決戦の前夜', x: '「〜するな」・代名詞' },
+  { d: 4, ti: '創世の日', x: '〜しよう ＋ ラスボス ＋ 🎓 西検チャレンジ' }
 ]
 
 /* 命令の地図（ボードに出す全体図）。starts＝出発点、nodes＝枝。from は出発点か別の枝の id、L はその枝を教えるレッスン番号（no）。
@@ -103,7 +103,7 @@ MQ.lessons = [
       { t: 'map', hi: ['tu'], x: '地図に書きこもう。出発は tú の形。' },
       { t: 'tip', id: 't-tu-s', ti: 'tú に「〜しろ」＝ tú の形から s を取る', x: '`hablas` → `{habla}`\n`comes` → `{come}`\n`abres` → `{abre}`' },
       { t: 'enter', who: 'lola' },
-      { t: 'say', who: 'lola', x: 'はじめまして、神さま！\nわたしはロラ。ペペのお姉ちゃんだよ。' },
+      { t: 'say', who: 'lola', x: 'はじめまして、神さま！\nわたしはロラ。ペペのお姉ちゃんだよ。\nもうすぐ、はじめての夜が来るよ。' },
       { t: 'show', cap: 'dormir（寝る）の今の形', tbl: [['yo', 'd^ue^rmo'], ['tú', 'd^ue^rmes'], ['nosotros（私たち）', 'dormimos']] },
       { t: 'ask', pred: true, q: '「君は寝る」は `duermes`。\n「寝ろ」の命令は？', o: ['dorme', 'duerme', 'duermes'], a: 1, r: '`{duerme}`！\n`duermes` から s を取るだけ。\nue は、そのまま残るよ。' },
       { t: 'cast', who: 'pepe', need: 'ねむい…\nでも、まっくらでこわくて眠れない…', o: ['Duerme, Pepe.', 'Dorme, Pepe.', 'Duermes, Pepe.'], a: 0, out: '{Duerme}, [Pepe].', ja: '寝なさい、ペペ。', fx: { e: '😴', mood: '💤', world: 'moon' }, why: '`duermes` から s を取って `{duerme}`。名前は命令のあとに置いてもいい（コンマで区切る）。' },
@@ -119,6 +119,8 @@ MQ.lessons = [
     ev: { who: 'pepe', line: '神さま、寒いよ。あったかいものがほしい…' },
     actors: ['pepe', 'lola'],
     steps: [
+      { t: 'say', who: 'pepe', x: '神さま、夜は寒いよ…\nあったかいものがほしい。' },
+      { t: 'say', x: 'よし、神さまの火をさずけよう🔥\nその前に、特別な命令を覚えるよ。' },
       { t: 'ask', pred: true, q: '`venir`（来る）。「君は来る」は `vienes`。\n「来い！」はどうなると思う？', o: ['viene', 'ven', 'vienes'], a: 1, r: '正解は `{ven}`！\ns を取る形にはならない。\nこういう動詞が、全部で8つある。' },
       { t: 'show', cap: 'まず4つ（原形の最後の2文字を取った形）', tbl: [['venir（来る）', '{ven}'], ['tener（持つ）', '{ten}'], ['poner（置く）', '{pon}'], ['salir（出る）', '{sal}']] },
       { t: 'map', hi: ['tu4a'], x: '地図に書きこもう。tú の枝の例外。' },
@@ -161,7 +163,7 @@ MQ.lessons = [
       { t: 'cast', who: 'marina', need: 'そろそろ帰りますわ。\nまた来てもいいかしら？', o: ['Vuelva pronto.', 'Vuelve pronto.', 'Volva pronto.'], a: 0, out: '{Vuelva} pronto.', ja: 'また近いうちに来てください。', fx: { e: '⛵', mood: '👋' }, why: '`volver`（帰る）の yo の形は vuelvo → `{vuelva}`。ue も残る。`vuelve` は tú への命令。' },
       { t: 'tip', id: 't-yo', ti: 'yo の形が特別でも、作り方は同じ', x: '`tengo` → `{tenga}`　`hago` → `{haga}`\n`vuelvo` → `{vuelva}`\nyo の形の g・ue は残る' },
       { t: 'enter', who: 'paco' },
-      { t: 'say', who: 'paco', x: 'いらっしゃい！ 商人のパコだよ。\n島に足りないものは、何でもそろえるよ。' },
+      { t: 'say', who: 'paco', x: 'マリーナさまの船で来た、商人のパコだよ。\n島に足りないものは、何でもそろえるよ。' },
       { t: 'say', x: 'はじめて会う人だから、`usted` で話そう。\nyo の形にクセがあっても、作り方は同じ。' },
       { t: 'show', cap: 'yo の形にクセがある動詞', tbl: [['oír（聞く）：yo oi^go^', '{oig^a^}'], ['traer（持ってくる）：yo trai^go^', '{traig^a^}'], ['conocer（知る）：yo cono^zc^o', '{conozc^a^}'], ['pedir（頼む）：yo p^i^do', '{pid^a^}']] },
       { t: 'cast', who: 'paco', need: '市場がにぎやかで、\nパコさんがこっちに気づいてくれない。\n呼びかけよう', o: ['¡Oiga, por favor!', '¡Oye, por favor!', '¡Oigo, por favor!'], a: 0, out: '¡{Oiga}, por favor!', ja: 'すみません！（聞いてください）', fx: { e: '👂', mood: '😮' }, why: '`oye` は tú への呼びかけ。はじめて会う人には `{oiga}`。「すみません！」の決まった言い方。' },
@@ -175,7 +177,7 @@ MQ.lessons = [
   {
     id: 'L4', no: 4, day: 2, icon: '⚓', ti: '港の祭り', sub: '-oy の4つ・ustedes・vosotros・だれに言う？',
     ev: { who: 'viaje', line: 'こんにちは！ 大陸から船で来ました！' },
-    actors: ['viaje', 'marina'],
+    actors: ['viaje'],
     steps: [
       { t: 'say', x: '港に、大陸から旅の一行が来た！\nみんな、はじめて会うお客さまだよ。' },
       { t: 'show', cap: 'yo の形が -oy の4つ（そのまま覚える）', tbl: [['ir（行く）：yo v^oy^', '{vaya}'], ['ser（〜である）：yo s^oy^', '{sea}'], ['estar（いる）：yo est^oy^', '{esté}'], ['dar（あげる）：yo d^oy^', '{dé}']] },
@@ -190,7 +192,8 @@ MQ.lessons = [
       { t: 'tip', id: 't-ustedes', ti: '-oy の4つ ／ ustedes の形', x: '`{vaya}`（ir）・`{sea}`（ser）・`{esté}`（estar）・`{dé}`（dar）\nustedes：`{hablen}`・`{coman}`・`{vayan}`' },
       { t: 'enter', who: 'pueblo' },
       { t: 'enter', who: 'pepe' },
-      { t: 'say', x: '今夜は島のお祭り！\n仲よしの何人もの相手（村のみんな）は\n`vosotros`（君たち）。', more: 'vosotros を使うのはスペインだけ。中南米では、仲よしの何人もの相手にも ustedes を使う。西検は両方出るので、どちらも分かるようにしておこう。' },
+      { t: 'enter', who: 'marina' },
+      { t: 'say', x: '今夜は島のお祭り！ マリーナさまも来た。\n仲よしの何人もの相手（村のみんな）は\n`vosotros`（君たち）。', more: 'vosotros を使うのはスペインだけ。中南米では、仲よしの何人もの相手にも ustedes を使う。西検は両方出るので、どちらも分かるようにしておこう。' },
       { t: 'show', cap: 'vosotros に「〜しろ」', tbl: [['hablar', '{habla^d^}'], ['comer', '{come^d^}'], ['abrir', '{abri^d^}']] },
       { t: 'ask', pred: true, q: '左が原形、右が vosotros への命令。\nどう変わった？', o: ['最後の r が d になった', '最後に d がついた', '最後に n がついた'], a: 0, r: 'そのとおり！\n**原形の r を d に**するだけ。' },
       { t: 'map', hi: ['vos'], x: '地図に書きこもう。出発は原形。' },
@@ -232,17 +235,19 @@ MQ.lessons = [
   },
   {
     id: 'L6', no: 6, day: 3, icon: '🍷', ti: '神々の宴', sub: '代名詞（「〜しろ」は後ろ・「〜するな」は前・2つのとき）',
-    ev: { who: 'marina', line: 'わたしたちも、いっしょに戦いますわ' },
-    actors: ['pepe', 'lola', 'marina'],
+    ev: { who: 'lola', line: '決戦は明日だって。今夜は、みんなで宴をしようよ' },
+    actors: ['pepe', 'lola'],
     steps: [
+      { t: 'say', x: '決戦の前の日。\n夜は、神々の宴があるよ。\nまずは、島の朝から。' },
       { t: 'show', cap: '「それを・私に」の言葉', tbl: [['lo（それを・男性の物）', 'la（それを・女性の物）'], ['me（私に・私を）', 'te（君に・君を）']] },
       { t: 'say', x: 'ふつうの文では、動詞の**前**に置く。\n`Lo como.`（私はそれを食べる）' },
       { t: 'ask', pred: true, q: 'では命令では？\n「それを食べろ」はどっちだと思う？', o: ['Lo come.', 'Cómelo.'], a: 1, r: '正解は `{Cómelo}`！\n「〜しろ」では、動詞の**後ろ**に\nくっつけて1語にする。\n強く読む「コ」に ´ がつくよ。', more: '`Lo come.` は「彼はそれを食べる」の文になる。´ は、くっつけて長くなっても、もとの命令と同じ所を強く読むための印。' },
       { t: 'cast', who: 'pepe', need: '朝ごはんのくだもの、\n食べていいのかな…？', o: ['Cómela.', 'La come.', 'Comela.'], a: 0, out: '{Cómela}, [Pepe].', ja: 'それを食べなさい、ペペ。', fx: { e: '🍎', mood: '😋' }, why: 'くだもの（la fruta）は女性の物なので la。後ろにくっつけて `{cómela}`。' },
-      { t: 'cast', who: 'lola', need: '宴のごちそうで、なにがいちばんおいしかった？\nロラに聞いてみよう', o: ['Dime, Lola.', 'Me di, Lola.', 'Díme, Lola.'], a: 0, out: '{Dime}, [Lola].', ja: '教えて、ロラ。', fx: { e: '💬', mood: '😆' }, why: '`di` ＋ me で `{dime}`。短い命令は、くっつけても ´ は要らない。' },
+      { t: 'cast', who: 'lola', need: 'ロラが、今夜の宴の準備をしている。\n何を作るのか、聞いてみよう', o: ['Dime, Lola.', 'Me di, Lola.', 'Díme, Lola.'], a: 0, out: '{Dime}, [Lola].', ja: '教えて、ロラ。', fx: { e: '💬', mood: '😆' }, why: '`di` ＋ me で `{dime}`。短い命令は、くっつけても ´ は要らない。' },
       { t: 'say', x: '「起きる」は `levantarse`（自分を起こす）。\ntú への命令なら、\n`te`（君自身を）をくっつけて `{levántate}`。' },
-      { t: 'cast', who: 'pepe', need: 'もう、お日さまが高いのに…\nペペがまだ寝てる', o: ['¡Levántate, Pepe!', '¡Te levanta, Pepe!', '¡Levantate, Pepe!'], a: 0, out: '¡{Levántate}, [Pepe]!', ja: '起きなさい、ペペ！', fx: { e: '⏰', mood: '😵‍💫', world: 'morning' }, why: '`levanta` ＋ te で `{levántate}`。強く読む所に ´。' },
-      { t: 'cast', who: 'marina', need: 'マリーナさまが、また遊びに来てくれた。\nいすをすすめよう', o: ['Siéntese, por favor.', 'Siéntate, por favor.', 'Se siente, por favor.'], a: 0, out: '{Siéntese}, por favor.', ja: 'どうぞ、おすわりください。', fx: { e: '🪑', mood: '😊' }, why: 'usted の「自分を」は se。usted の命令 siente（siento から）＋ se で `{siéntese}`。`siéntate` は tú への命令。' },
+      { t: 'cast', who: 'pepe', need: 'おなかいっぱいで、ペペがまた寝ちゃった。\n宴の準備があるのに…', o: ['¡Levántate, Pepe!', '¡Te levanta, Pepe!', '¡Levantate, Pepe!'], a: 0, out: '¡{Levántate}, [Pepe]!', ja: '起きなさい、ペペ！', fx: { e: '⏰', mood: '😵‍💫', world: 'morning' }, why: '`levanta` ＋ te で `{levántate}`。強く読む所に ´。' },
+      { t: 'enter', who: 'marina' },
+      { t: 'cast', who: 'marina', need: '夜になって、宴にマリーナさまが来てくれた。\nいすをすすめよう', o: ['Siéntese, por favor.', 'Siéntate, por favor.', 'Se siente, por favor.'], a: 0, out: '{Siéntese}, por favor.', ja: 'どうぞ、おすわりください。', fx: { e: '🪑', mood: '😊' }, why: 'usted の「自分を」は se。usted の命令 siente（siento から）＋ se で `{siéntese}`。`siéntate` は tú への命令。' },
       { t: 'tip', id: 't-attach', ti: '「〜しろ」には lo・la・me・te・se を後ろにくっつける', x: '`{come}` ＋ lo → `{cómelo}`\n`{di}` ＋ me → `{dime}`\n`{levanta}` ＋ te → `{levántate}`\nもとの命令で強く読んだ所に ´（短い命令ならなし）' },
       { t: 'show', cap: '「だれに」と「何を」', tbl: [['「だれに」', 'me（私に）・te（君に）・le（彼・彼女・あなたに）'], ['「何を」', 'lo（それを・男性の物）・la（それを・女性の物）']] },
       { t: 'say', x: '2つ使うときは、\n**「だれに」→「何を」の順**。\n`Me lo das.`（君は私にそれをくれる）' },
@@ -258,7 +263,7 @@ MQ.lessons = [
     ]
   },
   {
-    id: 'L7', no: 7, day: 3, icon: '🤝', ti: 'みんなで行こう', sub: '〜しよう・vosotros に「〜するな」・使い分けの表',
+    id: 'L7', no: 7, day: 4, icon: '🤝', ti: 'みんなで行こう', sub: '〜しよう・vosotros に「〜するな」・使い分けの表',
     ev: { who: 'pueblo', line: '神さま、わしらも いっしょに戦うぞ！' },
     actors: ['pepe', 'lola', 'pueblo'],
     steps: [
