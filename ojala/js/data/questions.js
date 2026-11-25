@@ -121,6 +121,8 @@ OQ.questions = [
   { id: 'l4-19', L: 4, k: 'form', v: 'abrir', p: 'ellos', o: ['abren', 'abran', 'abráis'], a: 1, why: '`abro` → `abra`、ellos は `{abran}`。' },
   { id: 'l4-20', L: 4, k: 'pick', s: 'Es importante que usted ___ a tiempo.', o: ['llega', 'llegue', 'llegues'], a: 1, ja: 'あなたが時間どおりに着くことが大事です。', why: '`es importante que` → 接続法。usted は él と同じ `{llegue}`。' },
   { id: 'l4-21', L: 4, k: 'pick', s: 'Es posible que la harina ___ tarde.', o: ['llega', 'llegue', 'llegues'], a: 1, ja: '小麦粉は遅れて届くかもしれない。', why: '`es posible que`（〜かもしれない）は、本当かどうか分からない → 接続法。主語は la harina なので `{llegue}`。' },
+  { id: 'l4-22', L: 4, k: 'pick', s: 'Quizá ___ mañana.', o: ['llueve', 'llueva', 'lloverá'], a: 1, ja: '明日は雨かもしれない。', why: '`quizá`（たぶん）は確かでないこと → 接続法 `{llueva}`。`llueve` はいつもの形。' },
+  { id: 'l4-23', L: 4, k: 'pick', s: 'Tal vez ___ hoy el barco.', o: ['viene', 'venga', 'vengas'], a: 1, ja: 'たぶん今日、船が来る。', why: '`tal vez` も確かでないこと → 接続法。主語は el barco なので `{venga}`。`viene` はいつもの形、`vengas` は tú。' },
 
   /* ================= L5 cuando（これから／いつも）・antes de que・para que ================= */
   { id: 'l5-01', L: 5, k: 'pick', s: 'Mañana, cuando ___ a casa, te llamo.', o: ['llego', 'llegue', 'llegaré'], a: 1, ja: '明日、家に着いたら電話するね。', why: 'これからのこと（明日）の cuando → 接続法 `{llegue}`。cuando のあとに未来の形は使わない。' },

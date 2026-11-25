@@ -978,6 +978,8 @@
   F('salir', 'salen, salimos');
   F('ser', 'seré, sois');
   F('venir', 'venís');
+  W('quizá', 'たぶん・〜かもしれない（あとは接続法が多い）', 'adv', 4, 'quizás');
+  W('tal', '（tal vez で）たぶん・〜かもしれない', 'adj', 4);
   F('pensar', 'piense, pienses, pensemos, penséis, piensen');
   F('pedir', 'pidamos, pidáis');
   F('dormir', 'durmamos, durmáis');
