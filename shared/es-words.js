@@ -922,12 +922,66 @@
   W('frutería', '果物屋（店）', 'n', 4);
   W('librería', '本屋（店）', 'n', 4);
   W('peluquería', '美容院', 'n', 4);
+  /* ---------- ¡OJALÁ!（接続法現在アプリ ojala/）で足した語と形 ---------- */
+  W('descansar', '休む', 'v', 4, 'descanso, descansa, descansas, descanse, descanses, descansemos, descanséis, descansen');
+  W('regresar', '帰る・もどる', 'v', 4, 'regreso, regresa, regresas, regrese, regreses, regresemos, regreséis, regresen');
+  W('alegrarse', '（alegrarse de que で）〜がうれしい', 'v', 4, 'alegro, alegra');
+  W('dudar', '疑う・〜とは思えない', 'v', 4, 'dudo, duda');
+  W('ojalá', '〜だといいなあ（あとは接続法）', 'phr', 4);
+  W('alguien', 'だれか', 'pron', 4);
+  W('barco', '船', 'n', 5);
+  W('boda', '結婚式', 'n', 4);
+  W('concierto', 'コンサート', 'n', 4);
+  W('dirección', '住所', 'n', 4);
+  W('enfermo', '病気の', 'adj', 4, 'enferma');
+  W('harina', '小麦粉', 'n', 4);
+  W('inglés', '英語', 'n', 5);
+  W('lejos', '遠くに', 'adv', 5);
+  W('letra', '文字', 'n', 4, 'letras');
+  W('mamá', 'お母さん', 'n', 5);
+  W('necesario', '必要な', 'adj', 4);
+  W('suerte', '運（tener suerte＝運がいい）', 'n', 4);
+  F('trabajar', 'trabajas, trabajes, trabajéis, trabajen');
+  F('llamar', 'llame, llames, llamemos, llaméis, llamen');
+  F('escuchar', 'escuchan, escuches, escuchemos, escuchéis, escuchen');
+  F('cantar', 'cantáis, cantes, cantéis, canten');
+  F('bailar', 'bailo, bailes, bailéis, bailen');
+  F('ayudar', 'ayudo, ayudas, ayude, ayudes, ayudemos, ayudéis, ayuden');
+  F('vivir', 'viva, vivas, vivamos, viváis, vivan');
+  F('escribir', 'escribes, escriba, escribas, escribamos, escribáis, escriban');
+  F('leer', 'lea, leas, leamos, leáis, lean');
+  F('estar', 'estés, estemos, estéis');
+  F('dar', 'des, demos, deis');
+  F('haber', 'haya, hayas, hayamos, hayáis, hayan');
+  F('saber', 'sabe, saben, sabes, sepa, sepas, sepamos, sepáis, sepan');
+  F('buscar', 'buscamos, busques, busquemos, busquéis, busquen');
+  F('pagar', 'pagues, paguemos, paguéis, paguen');
+  F('empezar', 'empecemos, empecéis');
+  F('querer', 'quiera, quieras, queramos, queráis, quieran');
+  F('poder', 'puedo, pueda, puedas, podamos, podáis, puedan');
+  F('volver', 'vuelven, volváis');
+  F('terminar', 'termino, terminas, termine, termines, terminemos, terminéis, terminen');
+  F('necesitar', 'necesitamos, necesite, necesites, necesitemos, necesitéis, necesiten');
+  F('cerrar', 'cierran');
+  F('cocinar', 'cocine, cocinen');
+  F('decir', 'dile');
+  F('esperar', 'esperamos');
+  F('estudiar', 'estudies');
+  F('feliz', 'felices');
+  F('llover', 'llueva');
+  F('mirar', 'miro');
+  F('problema', 'problemas');
+  F('recordar', 'recuerdes');
+  F('salir', 'salen, salimos');
+  F('ser', 'seré, sois');
+  F('venir', 'venís');
+  W('（接続法アプリのひっかけ）', '（実在しない形）', 'bad', 0, 'comi, busces, llege, esten, empieze, volvas');
   /* わざとまちがえた形（ひっかけの選択肢。バルーン・復習には出ない） */
   W('（時制アプリのひっかけ）', '（実在しない形）', 'bad', 0, 'duermirás, duermiré, duermás, sabé, saberé, saberás, saberán, poderé, poderás, poderemos, poderéis, poderán, poderá, poderías, quererá, quereremos, haberá, tenerás, teneré, tenerán, tenerías, tenería, tenremos, teneremos, tenré, salré, saliré, saliremos, salirá, salirían, salremos, venirá, venirás, veniréis, venrás, venríamos, ponerán, ponrán, deciré, decirá, decirías, decería, dicé, hacerá, hacería, haceremos, hacido, volvido, vivado, vivando, deciendo, dicendo, dormiendo, pediendo, leiendo, leido, veído');
 
   window.ES_WORDS = {
     words: words,
     /* 人名・地名（単語として数えない・バルーンなし） */
-    names: ['Ana', 'Pablo', 'Carlos', 'Madrid', 'Sevilla', 'Barcelona', 'Japón', 'Tokio', 'Kioto', 'Osaka', 'Perú', 'Chile', 'México', 'París', 'Corea', 'Pepe', 'Lola', 'Tomás', 'Marina', 'Paco', 'Coco', 'Nico', 'Mimí', 'Pavón', 'Nacho', 'Lupe', 'Pata', 'Lili', 'Tito', 'Mateo', 'Pancho', 'Hilda', 'Beni', 'Gil', 'Lucía', 'Rosa', 'Vela', 'Pedro', 'Luis', 'Rocío', 'Elena', 'Nuria', 'Sebastián', 'Serrano', 'Carmen', 'España', 'Italia', 'Marta', 'Hugo', 'Inés', 'Paz', 'Juan', 'Sara', 'Ruiz', 'Costa', 'Luna', 'Mar', 'Beto', 'Duda']
+    names: ['Ana', 'Pablo', 'Carlos', 'Madrid', 'Sevilla', 'Barcelona', 'Japón', 'Tokio', 'Kioto', 'Osaka', 'Perú', 'Chile', 'México', 'París', 'Corea', 'Pepe', 'Lola', 'Tomás', 'Marina', 'Paco', 'Coco', 'Nico', 'Mimí', 'Pavón', 'Nacho', 'Lupe', 'Pata', 'Lili', 'Tito', 'Mateo', 'Pancho', 'Hilda', 'Beni', 'Gil', 'Lucía', 'Rosa', 'Vela', 'Pedro', 'Luis', 'Rocío', 'Elena', 'Nuria', 'Sebastián', 'Serrano', 'Carmen', 'España', 'Italia', 'Marta', 'Hugo', 'Inés', 'Paz', 'Juan', 'Sara', 'Ruiz', 'Costa', 'Luna', 'Mar', 'Beto', 'Duda', 'Anselmo', 'Félix', 'Marco', 'Teo', 'Luz']
   };
 })();

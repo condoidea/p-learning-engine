@@ -49,6 +49,13 @@ window.LE_COURSES = [
     desc: 'ちび神さまになって、島の人たちに命令！ tú・usted・vosotros・ustedes、不規則な形、つづりの書きかえ、代名詞2つ、「〜するな」、nosotros の「〜しよう」まで西検4級の命令をぜんぶ。まちがえた所は🩹おさらい、仕上げは🎓西検チャレンジ。',
     color: '#ffcf4a', color2: '#6a4cff', lessons: 7
   },
+  /* ¡OJALÁ!（ojala/）：接続法現在の独立アプリ。進み具合は lessons[id].done を数える（7つの依頼。ボスは数えない） */
+  {
+    id: 'ojala', entry: 'ojala.html', storageKey: 'ojala.v1',
+    title: 'スペイン語 接続法現在', brand: '¡OJALÁ!', icon: '🕊️',
+    desc: '港町の手紙の代書屋になって、que のあとを 🔵 本当のこと／🔴 頭の中のこと で封をする。形は「yo の o を反対の母音に」の1つだけ。🖋 形の工房で人ごとの形を反復、仕上げは🎓西検チャレンジ。',
+    color: '#ffcf6a', color2: '#d8343f', lessons: 7
+  },
   /* ¡PROTESTO!（protesto/）：比較の法廷推理もの。独立アプリ。進み具合は lessons[id].done を数える（6つの事件） */
   {
     id: 'protesto', entry: 'protesto.html', storageKey: 'protesto.v1',
