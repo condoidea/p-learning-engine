@@ -96,6 +96,8 @@ OQ.questions = [
   { id: 'l3-19', L: 3, k: 'ng', s: '___ que tengas trabajo.', o: ['Me alegro de', 'Espero', 'Sé'], a: 2, fit: 0, ja: '仕事があってうれしい。／仕事があるといいな。', why: '`sé que` のあとは本当のこと（`tienes`）。接続法の `tengas` とは合わない。' },
   { id: 'l3-20', L: 3, k: 'pick', s: 'Ojalá ___ una carta de Félix.', o: ['llega', 'llegue', 'llege', 'llegará'], a: 1, ja: 'フェリクスから手紙が届くといいなあ。', why: '`ojalá` → 接続法。`llego` → `{llegue}`（u を入れる）。' },
   { id: 'l3-21', L: 3, k: 'pick', s: 'Quiero que el concierto ___ a las ocho.', o: ['empieza', 'empiece', 'empieze'], a: 1, ja: 'コンサートを8時に始めてほしい。', why: '願い → 接続法。`empiezo` → z は e の前で c に書きかえて `{empiece}`。' },
+  { id: 'l3-22', L: 3, k: 'form', v: 'poder', p: 'nosotros', o: ['podamos', 'puedamos', 'podemos'], a: 0, why: 'ie・ue になる動詞も yo の形から（`pueda`）。ただ nosotros・vosotros だけは原形の芯 pod- にもどって `{podamos}`。`podemos` はいつもの形。' },
+  { id: 'l3-23', L: 3, k: 'form', v: 'dar', p: 'tú', o: ['des', 'dés', 'das'], a: 0, why: 'dar の接続法で ´ がつくのは `{dé}` だけ。tú は `{des}`（´ なし）。`das` はいつもの形。' },
 
   /* ================= L4 疑い・必要（赤）と本当だと思う（青） ================= */
   { id: 'l4-01', L: 4, k: 'pick', s: 'No creo que Inés ___ hijos.', o: ['tiene', 'tenga', 'tendría', 'tengo'], a: 1, ja: 'イネスに子どもがいるとは思わない。', why: '`no creo que`（疑い）→ 接続法 `{tenga}`。' },
@@ -118,6 +120,7 @@ OQ.questions = [
   { id: 'l4-18', L: 4, k: 'build', s: 'No creo que venga hoy.', d: ['viene'], ja: '（彼が）今日来るとは思わない。' },
   { id: 'l4-19', L: 4, k: 'form', v: 'abrir', p: 'ellos', o: ['abren', 'abran', 'abráis'], a: 1, why: '`abro` → `abra`、ellos は `{abran}`。' },
   { id: 'l4-20', L: 4, k: 'pick', s: 'Es importante que usted ___ a tiempo.', o: ['llega', 'llegue', 'llegues'], a: 1, ja: 'あなたが時間どおりに着くことが大事です。', why: '`es importante que` → 接続法。usted は él と同じ `{llegue}`。' },
+  { id: 'l4-21', L: 4, k: 'pick', s: 'Es posible que la harina ___ tarde.', o: ['llega', 'llegue', 'llegues'], a: 1, ja: '小麦粉は遅れて届くかもしれない。', why: '`es posible que`（〜かもしれない）は、本当かどうか分からない → 接続法。主語は la harina なので `{llegue}`。' },
 
   /* ================= L5 cuando（これから／いつも）・antes de que・para que ================= */
   { id: 'l5-01', L: 5, k: 'pick', s: 'Mañana, cuando ___ a casa, te llamo.', o: ['llego', 'llegue', 'llegaré'], a: 1, ja: '明日、家に着いたら電話するね。', why: 'これからのこと（明日）の cuando → 接続法 `{llegue}`。cuando のあとに未来の形は使わない。' },

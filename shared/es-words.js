@@ -978,7 +978,10 @@
   F('salir', 'salen, salimos');
   F('ser', 'seré, sois');
   F('venir', 'venís');
-  W('（接続法アプリのひっかけ）', '（実在しない形）', 'bad', 0, 'comi, busces, llege, esten, empieze, volvas');
+  F('pensar', 'piense, pienses, pensemos, penséis, piensen');
+  F('pedir', 'pidamos, pidáis');
+  F('dormir', 'durmamos, durmáis');
+  W('（接続法アプリのひっかけ）', '（実在しない形）', 'bad', 0, 'comi, busces, llege, esten, empieze, volvas, puedamos, dés');
   /* わざとまちがえた形（ひっかけの選択肢。バルーン・復習には出ない） */
   W('（時制アプリのひっかけ）', '（実在しない形）', 'bad', 0, 'duermirás, duermiré, duermás, sabé, saberé, saberás, saberán, poderé, poderás, poderemos, poderéis, poderán, poderá, poderías, quererá, quereremos, haberá, tenerás, teneré, tenerán, tenerías, tenería, tenremos, teneremos, tenré, salré, saliré, saliremos, salirá, salirían, salremos, venirá, venirás, veniréis, venrás, venríamos, ponerán, ponrán, deciré, decirá, decirías, decería, dicé, hacerá, hacería, haceremos, hacido, volvido, vivado, vivando, deciendo, dicendo, dormiendo, pediendo, leiendo, leido, veído');
 

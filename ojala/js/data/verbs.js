@@ -9,7 +9,7 @@
  *           'spell' -car・-gar・-zar（e の前のつづりの書きかえ）
  *    forms  6つの形（yo・tú・él・nosotros・vosotros・ellos）。書いていなければ OQ.subForms が作る
  *    el     例外の動詞の「él の形（直説法）」：まちがいの選択肢に使う
- *    nv     false なら nosotros・vosotros を出さない（ie・ue になる動詞：nosotros・vosotros だけ芯が原形にもどるので）
+ *    nv     false なら nosotros・vosotros を出さない（ie・ue になる動詞：nosotros・vosotros だけ芯が変わるので。-ar・-er は原形にもどる podamos、-ir は e→i・o→u の pidamos・durmamos）
  *
  *  作り方は1つだけ：yo の形の o を反対の母音に（-ar は e、-er・-ir は a）＋ 人ごとのいつもの語尾。
  * ========================================================= */

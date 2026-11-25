@@ -54,3 +54,10 @@
 
 - L2 の ojalá の封蝋は、母さんあての手紙なので tú の `vengas` に直した（前は `venga`。手紙にまとめたら主語がずれて見えた）
 - 手紙の書き出し・結び（querido・estimado・atentamente）を共通の単語帳に足した（es-words.js?v=14）。`check-ojala.js` は letter の文も単語帳と照らし、行ごとに {形} と訳があるかを見る
+
+## 説明の手直し（中身の確認を受けて）
+
+- L3 の why「nosotros・vosotros だけは原形の芯にもどる」は -ir の動詞では成り立たない（pedir → pidamos、dormir → durmamos）。-ar・-er は原形にもどる（podamos・pensemos）、-ir は e → i・o → u、に直した。データに -ir の語幹変化動詞の nosotros 形はなかった（工房・問題・単語帳とも、podamos・queramos・volvamos・empecemos は正しい）
+- quiera・pueda・vuelva・piense は試験によく出るので、why だけでなく L3 に表（＋ nosotros は芯がもどる1行）と予想ではない ask（poder の nosotros）を足した。作り方のルールは1つのまま
+- `es posible que`（〜かもしれない）を L4 の疑いの表・Tips・地図・問題（l4-21）に。dar は ´ が dé だけ（des・demos・den）を例外の表に1行、問題 l3-23（ひっかけ dés）
+- `quizá(s)`・`tal vez` は、西検4級の範囲（casa-esp.com）が証明書エラーで読めず確かめられなかったので、足していない
