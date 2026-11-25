@@ -209,7 +209,7 @@ OQ.lessons = [
       { t: 'ask', pred: true, q: '`creo que` は青、`no creo que` は赤。\nどうしてだと思う？', o: ['「本当かどうか分からない」と思っているから', '「no」がある文は、いつも接続法だから', '明日のことだから'], a: 0, r: '`creo que` は「本当だ」と思っている。\n`no creo que` は「本当じゃないかも」。\n**疑い**の que は 🔴 赤。' },
       { t: 'show', cap: '本当？ 疑い？', tbl: [['🔵 本当だと思う', 'creo que・sé que・es verdad que'], ['🔴 本当かどうか分からない', 'no creo que・dudo que・es posible que'], ['Es posible que la harina {llegue} tarde.', '小麦粉は遅れて届くかもしれない']] },
       { t: 'show', cap: '文の頭の「たぶん」', tbl: [['Quizá {llueva} mañana.', '明日は雨かもしれない'], ['Tal vez {venga} el barco.', 'たぶん船が来る']] },
-      { t: 'say', x: '`quizá`・`tal vez` も、確かでないこと。\n🔴 赤。ojalá と同じ、文の頭に置く。\n((確かめたい気持ちが弱いと青も使う。試験では赤を選べばいい))' },
+      { t: 'say', x: '`quizá`・`tal vez` も、確かでないこと。\n🔴 赤。ojalá と同じ、文の頭に置く。\n((わりと確かだと思うときは青も使う。試験では赤を選べばいい))' },
       { t: 'seal', who: 'ines', need: '役所に「明日届くとは思えません」と書いて。', es: 'No creo que la harina ___ mañana.', v: 'llegar', mood: 'sub', o: ['llega', 'llegue', 'llegues'], a: 1, out: 'No creo que la harina {llegue} mañana.', ja: '明日小麦粉が届くとは思えません。',
         mis: '役所の返事：「届くのは分かっていて、思わないだけ？ どういう意味ですか？」', why: '`no creo que` は疑い → 接続法。`llego` → `{llegue}`（él の形。主語は la harina）。' },
       { t: 'seal', who: 'ines', need: '「みなさんが忙しいのは、分かっています」と書いて。', es: 'Sé que ustedes ___ mucho trabajo.', v: 'tener', mood: 'ind', o: ['tienen', 'tengan', 'tenga'], a: 0, out: 'Sé que ustedes {tienen} mucho trabajo.', ja: 'みなさんにお仕事がたくさんあるのは分かっています。',

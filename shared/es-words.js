@@ -971,7 +971,7 @@
   F('esperar', 'esperamos');
   F('estudiar', 'estudies');
   F('feliz', 'felices');
-  F('llover', 'llueva');
+  F('llover', 'llueva, llueves');
   F('mirar', 'miro');
   F('problema', 'problemas');
   F('recordar', 'recuerdes');

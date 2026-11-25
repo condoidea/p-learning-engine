@@ -60,4 +60,4 @@
 - L3 の why「nosotros・vosotros だけは原形の芯にもどる」は -ir の動詞では成り立たない（pedir → pidamos、dormir → durmamos）。-ar・-er は原形にもどる（podamos・pensemos）、-ir は e → i・o → u、に直した。データに -ir の語幹変化動詞の nosotros 形はなかった（工房・問題・単語帳とも、podamos・queramos・volvamos・empecemos は正しい）
 - quiera・pueda・vuelva・piense は試験によく出るので、why だけでなく L3 に表（＋ nosotros は芯がもどる1行）と予想ではない ask（poder の nosotros）を足した。作り方のルールは1つのまま
 - `es posible que`（〜かもしれない）を L4 の疑いの表・Tips・地図・問題（l4-21）に。dar は ´ が dé だけ（des・demos・den）を例外の表に1行、問題 l3-23（ひっかけ dés）
-- `quizá`・`tal vez` は、西検4級の公式ページ（https://casa-esp.com/?page_id=1798 。www をつけると証明書エラー）で接続法現在が範囲に入っていることを確かめ（語ごとの名指しはない）、ojalá と同じ「文の頭の接続法」の基本として L4 に表と1行・注意書き（確かめたい気持ちが弱いと直説法も使う。試験では接続法）・問題 l4-22・l4-23（ひっかけは直説法）を足した。地図の doubt にも
+- `quizá`・`tal vez` は、西検4級の公式ページ（https://casa-esp.com/?page_id=1798 。www をつけると証明書エラー）で接続法現在が範囲に入っていることを確かめ（語ごとの名指しはない）、ojalá と同じ「文の頭の接続法」の基本として L4 に表と1行・注意書き（わりと確かだと思うときは直説法も使う。試験では接続法）・問題 l4-22・l4-23（ひっかけは直説法）を足した。地図の doubt にも
