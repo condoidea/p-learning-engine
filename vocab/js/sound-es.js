@@ -12,8 +12,8 @@
 
   /* スペインらしい音階（フリジア旋法：ミ・ファ・ソ#・ラ・シ・ド・レ） */
   var SCALE = [0, 1, 4, 5, 7, 8, 10, 12, 13, 16, 17, 19, 20, 22, 24];
-  var E3 = 164.81;
-  function f(semi) { return E3 * Math.pow(2, semi / 12); }
+  var E3 = 164.81, KEY = 0;   /* KEY：ゲームごとに調をずらす（Snd.key）。同じ音のくり返しで飽きないように */
+  function f(semi) { return E3 * Math.pow(2, (semi + KEY) / 12); }
 
   /* ギターの弦をはじく音 */
   var cache = {};
@@ -93,6 +93,55 @@
     },
     /* 野生に戻りかけたカードを取り返した */
     back: function () { R.play(function (t) { [12, 16, 19, 24].forEach(function (s, i) { pluck(t + i * 0.09, f(s), 0.3, 1.4); }); }); },
-    finish: function () { R.play(function (t) { strum(t, CH_A, 0.03); strum(t + 0.4, CH_E, 0.05, 0.4); }); }
+    finish: function () { R.play(function (t) { strum(t, CH_A, 0.03); strum(t + 0.4, CH_E, 0.05, 0.4); }); },
+    /* ---- あそび場用 ---- */
+    /* 調を変える（ゲームの始めに、ランダムに。終わったら 0 に戻す） */
+    key: function (k) { KEY = k || 0; },
+    /* ビンゴのマスにスタンプ：コンボで上がる2音＋ポンという打音。3種類から */
+    stamp: function (combo) {
+      R.buzz(combo >= 5 ? [12, 30, 12] : 12);
+      R.play(function (t) {
+        var i = Math.min(SCALE.length - 3, combo || 0), a = f(SCALE[i] + 12), b = f(SCALE[i + 2] + 12);
+        castanet(t, 0.05);
+        pick([
+          function () { pluck(t + 0.01, a, 0.4, 1); pluck(t + 0.07, b, 0.35, 1.2); },
+          function () { pluck(t + 0.01, b, 0.36, 1); pluck(t + 0.08, a, 0.32, 1.2); },
+          function () { pluck(t + 0.01, a, 0.36, 0.9); pluck(t + 0.05, f(SCALE[i + 1] + 12), 0.3, 0.9); pluck(t + 0.1, b, 0.32, 1.2); }
+        ])();
+        if (combo && combo % 5 === 0) [0, 0.14, 0.28].forEach(function (d) { palma(t + 0.2 + d); });
+      });
+    },
+    /* ¡BINGO!：3種類から */
+    bingo: function () {
+      R.buzz([20, 40, 20, 40, 80]);
+      R.play(pick([
+        function (t) { strum(t, CH_F, 0.012, 0.35); strum(t + 0.22, CH_F, 0.012, 0.3); strum(t + 0.5, CH_E, 0.02, 0.4); [0.8, 0.95, 1.1].forEach(function (d) { palma(t + d, 0.4); }); },
+        function (t) { [0, 4, 7, 12].forEach(function (s, i) { pluck(t + i * 0.08, f(s + 12), 0.32, 1.2); }); strum(t + 0.4, CH_E, 0.02, 0.38); [0.4, 0.52, 0.64, 0.76].forEach(function (d) { castanet(t + d, 0.07); }); },
+        function (t) { strum(t, CH_A, 0.02, 0.32); strum(t + 0.25, CH_F, 0.02, 0.32); strum(t + 0.55, CH_E, 0.025, 0.4); palma(t + 0.55, 0.4); palma(t + 0.75, 0.4); }
+      ]));
+    },
+    /* 体当たり：ドンという低い音＋コンボで上がる音。big（押しこまれているとき）は和音も */
+    hit: function (combo, big) {
+      R.buzz(big ? [20, 30, 30] : 18);
+      R.play(function (t) {
+        var i = Math.min(SCALE.length - 3, combo || 0);
+        R.tone(110, t, 0.16, 'sine', 0.4, 45); R.noise(t, 0.07, 0.28, 900, 200);
+        pick([
+          function () { pluck(t + 0.03, f(SCALE[i] + 12), 0.36, 1); pluck(t + 0.1, f(SCALE[i + 2] + 12), 0.32, 1.2); },
+          function () { castanet(t + 0.04, 0.06); pluck(t + 0.07, f(SCALE[i + 1] + 12), 0.38, 1.2); },
+          function () { pluck(t + 0.03, f(SCALE[i + 2] + 12), 0.34, 1); pluck(t + 0.09, f(SCALE[i] + 24), 0.26, 1.2); }
+        ])();
+        if (big) strum(t + 0.12, CH_E.slice(2), 0.015, 0.2);
+      });
+    },
+    /* おしかえした！：3種類から */
+    clear: function () {
+      R.buzz([20, 40, 20, 40, 80]);
+      R.play(pick([
+        function (t) { strum(t, CH_F, 0.012, 0.35); strum(t + 0.3, CH_E, 0.02, 0.42); [0.6, 0.72, 0.84, 1.0].forEach(function (d) { castanet(t + d, 0.07); }); },
+        function (t) { [0, 4, 7, 12, 16, 19, 24].forEach(function (s, i) { pluck(t + i * 0.05, f(s + 12), 0.26, 1.5); }); palma(t + 0.45, 0.4); palma(t + 0.6, 0.4); },
+        function (t) { strum(t, CH_A, 0.02, 0.32); strum(t + 0.2, CH_A, 0.02, 0.28); strum(t + 0.45, CH_E, 0.03, 0.42); [0.75, 0.9, 1.05].forEach(function (d) { palma(t + d, 0.4); }); }
+      ]));
+    }
   };
 })();

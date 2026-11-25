@@ -126,11 +126,11 @@
   var T = D.lang === 'en' ? {
     praise: ['Nice!', 'Great!', 'Awesome!', 'Perfect!', 'Brilliant!', 'Outstanding!'], cap: 'Got it!', evo: ['LEVEL UP!', 'BRAVO!', 'SWEET!'],
     hi: 'Hi!', yes: 'Yes!', newForm: 'NEW FORM!', mark: 'MILESTONE!', titleA: 'Great job!', titleB: 'Nice work!', inLang: '英語では？',
-    bingo: 'BINGO!', fest: 'Happy day!', friend: 'Friends!', deco: 'Looking good!', pls: 'Help me!'
+    bingo: 'BINGO!', push: 'Pushed back!', fest: 'Happy day!', friend: 'Friends!', deco: 'Looking good!', pls: 'Help me!'
   } : {
     praise: ['¡Bien!', '¡Muy bien!', '¡Eso es!', '¡Perfecto!', '¡Olé!', '¡Genial!'], cap: '¡Capturado!', evo: ['¡EVOLUCIÓN!', '¡OLÉ!', '¡ARRIBA!'],
     hi: '¡Hola!', yes: '¡Sí!', newForm: '¡NUEVA FORMA!', mark: '¡LOGRO!', titleA: '¡Muy bien!', titleB: '¡Buen trabajo!', inLang: 'スペイン語では？',
-    bingo: '¡BINGO!', fest: '¡Felicidades!', friend: '¡Amigos!', deco: '¡Qué guapo!', pls: '¡Ayúdame!'
+    bingo: '¡BINGO!', push: '¡FUERA!', fest: '¡Felicidades!', friend: '¡Amigos!', deco: '¡Qué guapo!', pls: '¡Ayúdame!'
   };
   var PRAISE = T.praise;
   if (window.SndPacks && SndPacks[D.sound]) window.Snd = SndPacks[D.sound];
@@ -269,7 +269,7 @@
       { id: 'care', ico: '🤝', name: 'なつかせる', sub: soon ? 'もうすぐしおれる子 ' + soon + '体（しおれる前に会う）' : 'いまは大丈夫', off: !soon },
       { id: 'exfill', ico: '📝', name: '文で使う', sub: exReady() ? '応用：例文の中で単語を使う' : 'もう少し育つと遊べる', off: !exReady(), hide: !D.words.some(hasCloze) },
       { id: 'conj', ico: '🔁', name: '活用', sub: conjSub(), hide: !CU || !D.words.some(function (w) { return w.pos === 'v'; }) },
-      { id: 'play', ico: '🎈', name: 'あそび場', sub: bngReady() ? '🎯 思い出しビンゴ' : 'あと少し集めると遊べる', off: !bngReady() },
+      { id: 'play', ico: '🎈', name: 'あそび場', sub: bngReady() ? '🎯 ビンゴ・🛡 おしかえせ' : pshReady() ? '🛡 おしかえせ' : 'あと少し集めると遊べる', off: !bngReady() && !pshReady() },
       { id: 'dex', ico: '📖', name: '図鑑', sub: got + '枚' }
     ];
     $('#alacarte').innerHTML = tiles.filter(function (t) { return !t.hide; }).map(function (t) {
@@ -2201,7 +2201,8 @@
     $('#sheet').hidden = false;
     tw($('#sheet .sh'), { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' });
   }
-  function closeSheet() { $('#sheet').hidden = true; $('#sheet .sh').classList.remove('nite'); document.body.classList.remove('hot-typing'); }
+  var sheetThen = null;   /* シートを閉じたあとにすること（あそび場の「まちがえた語」→ 結果） */
+  function closeSheet() { $('#sheet').hidden = true; $('#sheet .sh').classList.remove('nite', 'miss-rv'); document.body.classList.remove('hot-typing'); if (sheetThen) { var f = sheetThen; sheetThen = null; f(); } }
 
   function toast(t, sub) {
     var el = document.createElement('div'); el.className = 'toast'; el.innerHTML = '<b>' + esc(t) + '</b><small>' + esc(sub || '') + '</small>';
@@ -2226,10 +2227,10 @@
   var BNG = null;
   function isDebug() { return /[?&]debug\b/.test(location.search); }
   /* 盤に入れる9語（足りなければ 9語に満たない配列を返す）。lenient：?debug のとき、足りない分は図鑑にない語で埋める */
-  function bngPick(lenient) {
-    var out = [], sp = {}, jj = {};
+  function bngPick(lenient, max) {
+    var out = [], sp = {}, jj = {}, N = max || 9;
     function add(w) {
-      if (!w || out.length >= 9) return;
+      if (!w || out.length >= N) return;
       var k = String(w.w).toLowerCase(), j = String(w.ja);
       if (sp[k] || jj[j]) return;
       sp[k] = jj[j] = 1; out.push(w);
@@ -2240,7 +2241,7 @@
     V.wildList().forEach(function (w) { pri[w.id] = 1; });
     have.forEach(function (id) { if (V.hot(id)) pri[id] = 1; });
     shuffle(have.filter(function (id) { return pri[id]; })).concat(shuffle(have.filter(function (id) { return !pri[id]; }))).forEach(function (id) { add(V.word(id)); });
-    if (lenient && out.length < 9) shuffle(D.words.filter(function (w) { return !V.card(w.id); })).forEach(add);
+    if (lenient && out.length < N) shuffle(D.words.filter(function (w) { return !V.card(w.id); })).forEach(add);
     return out;
   }
   function bngReady() { return bngPick(isDebug()).length >= 9; }
@@ -2249,8 +2250,9 @@
     var box = $('#sheetBody'), ok = bngReady();
     box.innerHTML = '<p class="u-title">🎈 あそび場</p><p class="note bng-note">いつもの流れ（出会い・野生戦）とは別の、あそびの時間。やらなくても、何も失わない</p>' +
       '<div class="bng-game"><b>🎯 思い出しビンゴ</b><p>集めた子9人を、3×3のマスにならべて遊ぶ。呼ばれたものに合うマスをタップ。時間制限も、負けもなし。</p>' +
-      (ok ? '<button class="next" id="bngGo">はじめる ▶</button>' : '<p class="note">あと少し集めると遊べる</p>') + '</div>';
+      (ok ? '<button class="next" id="bngGo">はじめる ▶</button>' : '<p class="note">あと少し集めると遊べる</p>') + '</div>' + pshOpenHtml();
     if (ok) $('#bngGo', box).addEventListener('click', function () { closeSheet(); startBingo(true); });
+    if ($('#pshGo', box)) $('#pshGo', box).addEventListener('click', function () { closeSheet(); startPush(0); });
     $('#sheet').hidden = false;
     tw($('#sheet .sh'), { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' });
   }
@@ -2289,11 +2291,14 @@
   function bngCall(html, cls) { var c = $('#bngCall'); c.className = 'bng-call' + (cls ? ' ' + cls : ''); c.innerHTML = html; fitCall(); }
   function bngLater(fn, ms) { var B = BNG; setTimeout(function () { if (BNG === B) fn(); }, ms); }
 
+  /* あそび場は、遊ぶたびに音の調を変える（同じ音のくり返しで飽きないように。終わったら元の調） */
+  function sndKey() { if (window.Snd && Snd.key) Snd.key([-3, -2, 0, 2, 3, 5][Math.floor(Math.random() * 6)]); }
   function startBingo(force, fixed) {
     var words = fixed && fixed.length >= 9 ? fixed : bngPick(force && isDebug());
     if (words.length < 9) { toast('あと少し集めると、遊べるよ', ''); return; }
     if (window.Sfx) Sfx.unlock();
     S.bngN = (S.bngN || 0) + 1; V.save();   /* 遊ぶたびに、盤と呼び出しの向きを入れかえる */
+    sndKey();
     ses = { grads: [], wants0: [], plan: [], bi: 0, label: 'ビンゴ', caught: [], ups: [], exp: 0, ok: 0, ng: 0, combo: 0, backs: 0, backIds: [], met: [], fixed: 0, shiny: 0, hotNew: 0, hotGrad: 0, miss: {}, hotSeen: {}, saved: {}, rescueId: '', bingo: true };
     BNG = { dir: S.bngN % 2 ? 'A' : 'B', words: shuffle(words), filled: [], free: -1, queue: [], cur: null, cell: -1, phase: 'free', busy: false, missed: {}, lines: {}, nLines: 0, asked: false, stamped: [], audio: false };
     for (var i = 0; i < 9; i++) BNG.filled.push(false);
@@ -2344,7 +2349,7 @@
     if (r.back || r.relearn) ses.saved[w.id] = 1;
     if (r.relearn) ses.fixed++;
     var el = bngSetCell(i, 'pop');
-    if (window.Snd) Snd.ok(ses.combo);
+    if (window.Snd) (Snd.stamp || Snd.ok)(ses.combo);
     FX.burst(el, null, 10);
     if (B.dir === 'B') Speech.say(V.head(w));
     var nl = [];
@@ -2365,7 +2370,7 @@
     var cells = [];
     lines.forEach(function (l) { l.forEach(function (c) { if (cells.indexOf(c) < 0) cells.push(c); }); });
     cells.forEach(function (c) { cellEl(c).classList.add('hop'); });
-    if (window.Snd) Snd.levelUp(2);
+    if (window.Snd) (Snd.bingo ? Snd.bingo() : Snd.levelUp(2));
     FX.slam(T.bingo, BNG.nLines + '列 そろった');
   }
   function bngWrong(i) {
@@ -2378,6 +2383,7 @@
       if (r.hotNew) { ses.hotNew++; ses.hotSeen[w.id] = 1; }
     }
     V.mixed(w.id, o.id);   /* とりちがえた相手。次からその語の選択肢に入る */
+    (ses.mix = ses.mix || {})[w.id] = o.id;   /* 終わりの「まちがえた語」で見せる */
     var el = cellEl(i), good = cellEl(B.cell);
     if (window.Snd) Snd.ng();
     el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
@@ -2394,13 +2400,33 @@
     bngCall('<p class="bng-lead">🎉 ぜんぶ ならんだ！</p><button class="next" id="bngRes">けっかへ ▶</button>', 'fbk');
     $('#bngRes').addEventListener('click', bngEnd);
   }
+  /* あそび場の終わり：まちがえた語を、結果の前に見られる（とばしてもいい）。
+   *  1語ずつ「語 🔊 ＝ 意味」と、とりちがえた相手（「えらんだのは ○○ ＝ …」）。見る → 結果へ の順。閉じても結果へ進む */
+  function missReview(then) {
+    var ids = Object.keys(ses.miss).filter(function (id) { return V.word(id); });
+    if (!ids.length) return then();
+    var mix = ses.mix || {}, box = $('#sheetBody');
+    box.innerHTML = '<div class="mrv"><p class="mrv-h">🔁 まちがえた語 <b>' + ids.length + '</b><button class="ghost mrv-skip" id="mrvSkip">とばす</button></p><ul class="mrv-list">' +
+      ids.map(function (id) {
+        var w = V.word(id), o = mix[id] && V.word(mix[id]);
+        return '<li><span class="mrv-ch">' + cs(w, { mood: 'happy' }) + '</span><div class="mrv-t"><p class="mrv-w"><b>' + headHtml(w) + '</b>' + sayBtn(V.head(w)) + '</p><p class="mrv-ja">＝ ' + jaHtml(w.ja) + '</p>' +
+          (o ? '<p class="mrv-o">えらんだのは <b>' + esc(V.head(o)) + '</b> ＝ ' + jaHtml(o.ja) + '</p>' : '') + '</div></li>';
+      }).join('') + '</ul><p class="note">この子たちは、次の野生戦でもう一度会える</p><button class="next" id="mrvGo">けっかへ ▶</button></div>';
+    sheetThen = then;
+    $('#mrvSkip', box).addEventListener('click', closeSheet);
+    $('#mrvGo', box).addEventListener('click', closeSheet);
+    $('#sheet .sh').classList.add('miss-rv');
+    $('#sheet').hidden = false;
+    tw($('#sheet .sh'), { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' });
+  }
   function bngEnd() {
     var B = BNG; if (!B) return go('home');
     BNG = null;
     if (window.VUI) VUI.cur = null;
     if (window.speechSynthesis) { try { speechSynthesis.cancel(); } catch (e) { /* 読み上げを止められない */ } }
+    if (window.Snd && Snd.key) Snd.key(0);
     if (!ses.ok && !ses.ng) return go('home');
-    bngResult(B);
+    missReview(function () { bngResult(B); });
   }
   /* 結果：そろった列の数、会えた子（mini カード）、まちがえた子は「次の野生戦でもう一度」。総数や点数の比較は出さない */
   function bngResult(B) {
@@ -2430,6 +2456,295 @@
     var nb = $('#dNite'); nb.hidden = !niteIds.length; nb.disabled = false; nb.textContent = '🌙 おやすみ前に、' + niteIds.length + '体だけ顔を見る';
     if (G) G.fromTo('#done .anim, #dCards .mini', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.06, ease: 'back.out(1.6)' });
     if (n || nm.length) FX.rain();
+  }
+
+  /* =========================================================
+   * 🎈 あそび場 → 🛡 おしかえせ！（縦の押し合い）
+   *  ・上から「わすれんぼう（もやもや）」がプラカードを持って下りてくる。プラカードに合う味方（下の6人）をタップすると、
+   *    その子が飛んでいって体当たり → もやもやは上へはね返る。下の線（ここを守る）まで来られたら、そのステージはやり直し
+   *  ・ステージ3つ。もやもやは上の線（クリアの線）より少し下から歩きはじめ、上の線まで押し返したらクリア（最初の1発でクリアにならないように）
+   *  ・ゲームとしての肝は「1問考えるあいだに歩く量」と「1回のはね返り」の差。PSH_ST の数字で決める（下の表）
+   *  ・連続で当てるほど強く押し返す（まちがえると勢いが半分に）。押し込まれているほど1発が大きい（逆転できる）。
+   *    ピンチの知らせは守る線のそばに静かに出すだけ（画面を光らせない：プラカードから目がそれないように）
+   *    1：プラカード＝語・味方＝意味（es2ja）／2：プラカード＝意味・味方＝語（ja2es）／3：1と同じ向きで、少し速い
+   *  ・当てずっぽうに押す手を封じる：まちがえると、もやもやが少し前に出る（ほかの罰はなし）。正しい子が光る
+   *  ・正解の記録は V.answer（ふだんの復習と同じ計算）。まちがえた語は、その回は1度だけ ✕ に数え、少しあとでもう一度出す
+   *  ・正解のあと：語を読み上げ、プラカードに「語 ＝ 意味」を少し出す（このあいだ、もやもやは止まる）
+   *  ・やり直しでも何も失わない（答えた分は記録ずみ）。動きは transform と opacity だけ（iPhone で固まらないように）
+   * ========================================================= */
+  var PSH = null;
+  /* つりあい（実機で遊んでから調整する）。位置は 0＝上のクリアの線、1＝下の守る線
+   *    sec：上から下まで歩ききる秒数（問いを出しているあいだだけ歩く。正解のあとの約1秒は止まる）
+   *    kb ：1発目で押し返す量。連続で当てるたびに +30%（4連続まで）
+   *    pinch：押し込まれたときの上乗せ。位置 0.45 から下へ行くほど大きく、守る線の手前で kb ×(1＋pinch)
+   *  試算（1問を何秒で答えるか）：テンポよく2〜3秒なら 4〜6問でクリア。4秒で 5〜7問、6秒で 6〜13問。
+   *    はじめにもたついて押し込まれても、そこから3秒ずつ答えれば 6〜7問で逆転クリア。
+   *    3問に1回まちがえると、ステージ2・3はなかなか終わらない（負けはしない。覚えきれていない語がある目安） */
+  var PSH_ST = [
+    { dir: 'A', sec: 45, kb: 0.11, pinch: 1.5 },
+    { dir: 'B', sec: 38, kb: 0.105, pinch: 1.5 },
+    { dir: 'A', sec: 32, kb: 0.1, pinch: 1.6 }
+  ];
+  var PSH_START = 0.35, PSH_NG = 0.08, PSH_HAND = 6, PSH_PINCH = 0.45;
+  function pshKb(P) {
+    var S0 = PSH_ST[P.st], c = Math.min(P.combo, 4);
+    return S0.kb * (1 + 0.3 * c) * (1 + S0.pinch * Math.max(0, (P.p - PSH_PINCH) / (1 - PSH_PINCH)));
+  }
+  function pshPick() { return bngPick(isDebug(), 18); }
+  function pshReady() { return pshPick().length >= PSH_HAND + 1; }
+  function pshLater(fn, ms) { var P = PSH; setTimeout(function () { if (PSH === P) fn(); }, ms); }
+  /* もやもや（わすれんぼう）：このアプリの敵キャラ。単語キャラとは別の、灰むらさきの雲 */
+  function pshFoeSvg() {
+    return '<svg class="psh-mob" viewBox="0 0 100 80" aria-hidden="true">' +
+      '<path d="M18 62 C4 62 4 42 18 40 C14 24 34 16 44 26 C50 10 74 12 76 28 C92 26 98 46 84 54 C90 66 74 70 66 64 C58 72 40 72 34 64 C28 68 20 68 18 62Z" fill="#8b7fa3" stroke="#4f4566" stroke-width="3" stroke-linejoin="round"/>' +
+      '<circle cx="40" cy="44" r="5" fill="#2b2438"/><circle cx="62" cy="44" r="5" fill="#2b2438"/>' +
+      '<circle cx="41.5" cy="42.5" r="1.6" fill="#fff"/><circle cx="63.5" cy="42.5" r="1.6" fill="#fff"/>' +
+      '<path d="M44 55 Q51 51 58 55" fill="none" stroke="#2b2438" stroke-width="3" stroke-linecap="round"/>' +
+      '<path d="M30 68 l-4 9 M46 70 l0 9 M58 70 l2 9 M72 66 l5 8" stroke="#4f4566" stroke-width="4" stroke-linecap="round"/></svg>';
+  }
+  function pshOpenHtml() {
+    var ok = pshReady();
+    return '<div class="bng-game"><b>🛡 おしかえせ！</b><p>上から、わすれんぼうがプラカードを持って下りてくる。合う味方をタップすると、体当たりで押し返す。下の線まで来られても、何も失わない（もう一回できる）。</p>' +
+      (ok ? '<button class="next" id="pshGo">はじめる ▶</button>' : '<p class="note">あと少し集めると遊べる</p>') + '</div>';
+  }
+
+  function startPush(stage) {
+    var pool = pshPick();
+    if (pool.length < PSH_HAND + 1) { toast('あと少し集めると、遊べるよ', ''); return; }
+    if (window.Sfx) Sfx.unlock();
+    var keep = PSH && stage ? PSH : null;
+    sndKey();
+    if (!keep) ses = { grads: [], wants0: [], plan: [], bi: 0, label: 'おしかえせ', caught: [], ups: [], exp: 0, ok: 0, ng: 0, combo: 0, backs: 0, backIds: [], met: [], fixed: 0, shiny: 0, hotNew: 0, hotGrad: 0, miss: {}, hotSeen: {}, saved: {}, rescueId: '', push: true };
+    var st = stage || 0;
+    PSH = { st: st, pool: shuffle(pool), hand: [], age: {}, round: 0, cur: null, phase: 'ask', p: PSH_START, combo: 0, missed: keep ? keep.missed : {}, wrongNow: false,
+      redo: [], stamped: keep ? keep.stamped : [], cleared: keep ? keep.cleared : 0, last: 0, raf: 0, kb: null, travel: 0 };
+    go('push');
+    $('#pshStage').textContent = 'ステージ ' + (st + 1) + ' / ' + PSH_ST.length;
+    $('#pshMe').innerHTML = Chara.me({ mood: 'happy' });
+    $('#pshFoe').innerHTML = '<div class="psh-sign"><div class="psh-card" id="pshCard"></div><i class="psh-pole"></i></div>' + pshFoeSvg();
+    $('#pshFoe').className = 'psh-foe';
+    for (var i = 0; i < PSH_HAND; i++) PSH.hand.push(pshDraw());
+    pshDrawHand();
+    pshMeasure();
+    pshPlace();
+    pshAsk();
+    PSH.last = 0;
+    PSH.raf = requestAnimationFrame(pshTick);
+  }
+  /* 補充する1人：まちがえた語（もう一度）を先に、なければ山から。山が尽きたら、いま手にいない子をもう一度混ぜる */
+  function pshDraw() {
+    var P = PSH, inHand = function (w) { return P.hand.indexOf(w) >= 0; };
+    var r = P.redo.filter(function (x) { return !inHand(x.w); })[0];
+    if (r) { r.inAt = P.round; return r.w; }
+    if (!P.pool.length) P.pool = shuffle(pshPick().filter(function (w) { return !inHand(w) && w !== P.cur; }));
+    var w = P.pool.shift() || pshPick().filter(function (x) { return !inHand(x); })[0];
+    P.age[w.id] = P.round;
+    return w;
+  }
+  function pshHandHtml(w, i) {
+    var A = PSH_ST[PSH.st].dir === 'A';
+    return '<button class="psh-ally' + (A ? '' : ' es') + gcls(w) + '" data-i="' + i + '"><span class="psh-ch">' + cs(w, { mood: 'happy' }) + '</span><span class="psh-t">' + (A ? jaHtml(w.ja) : headHtml(w)) + '</span></button>';
+  }
+  function pshDrawHand() {
+    $('#pshHand').innerHTML = PSH.hand.map(pshHandHtml).join('');
+    $$('#pshHand .psh-t').forEach(function (t) { fitEl(t, [15, 14, 13, 12], t.parentNode.classList.contains('es') ? [2, 3] : [2, 3]); });
+  }
+  function pshAlly(i) { return $$('#pshHand .psh-ally')[i]; }
+  /* 次のプラカード：もう一度の語が手にあれば、それを（2問以上あけてから）。なければ、手に長くいる子から */
+  function pshAsk() {
+    var P = PSH; P.round++; P.wrongNow = false; P.phase = 'ask';
+    $$('#pshHand .psh-ally').forEach(function (b) { b.classList.remove('hint', 'shake'); });
+    pshMsg('<p class="psh-lead">' + (PSH_ST[P.st].dir === 'A' ? 'プラカードの単語の <b>意味</b> の子をタップ' : 'プラカードの意味の <b>単語</b> の子をタップ') + '</p>');
+    var due = P.redo.filter(function (x) { return P.hand.indexOf(x.w) >= 0 && P.round - (x.inAt || 0) >= 2; })[0];
+    var w;
+    if (due) { w = due.w; P.redo.splice(P.redo.indexOf(due), 1); }
+    else {
+      var old = P.hand.slice().sort(function (a, b) { return (P.age[a.id] || 0) - (P.age[b.id] || 0); }).slice(0, 3);
+      w = pick(old);
+    }
+    P.cur = w;
+    var A = PSH_ST[P.st].dir === 'A';
+    $('#pshCard').className = 'psh-card' + (A ? ' es' + gcls(w) : '');
+    $('#pshCard').innerHTML = A ? '<span class="psh-word">' + headHtml(w) + '</span>' : '<span class="psh-ja">' + jaHtml(w.ja) + '</span>';
+    pshFitCard();
+    if (window.VUI) VUI.cur = { id: w.id, push: true, ally: P.hand.indexOf(w), dir: PSH_ST[P.st].dir };
+    if (A) pshLater(function () { if (PSH.cur === w) Speech.say(V.head(w)); }, 200);
+  }
+  function pshFitCard() {
+    $$('#pshCard .psh-word').forEach(function (t) { fitEl(t, [26, 23, 20, 18, 16], [1, 2]); });
+    $$('#pshCard .psh-ja').forEach(function (t) { fitEl(t, [20, 18, 16, 15], [2, 3]); });
+  }
+  function pshMsg(html) { $('#pshMsg').innerHTML = html; }
+
+  /* ---- 動き：もやもやの位置 p（0＝上の陣地、1＝守る線）。歩くのは問いを出しているあいだだけ ---- */
+  function pshMeasure() {
+    var f = $('#pshField'), m = $('#pshFoe');
+    if (!f || !m) return;
+    PSH.travel = Math.max(60, f.clientHeight - m.offsetHeight - 6 - 38);   /* 上の余白 6px・下の守る線の帯 38px */
+  }
+  function pshPlace() {
+    var m = $('#pshFoe'); if (m) m.style.transform = 'translate3d(-50%,' + Math.round(PSH.p * PSH.travel) + 'px,0)';
+    var pin = PSH.p >= 0.6 && PSH.phase !== 'lose', f = $('#pshField');   /* ピンチ：守る線のそばに静かに出すだけ */
+    if (f && f.classList.contains('pinch') !== pin) f.classList.toggle('pinch', pin);
+  }
+  function pshTick(t) {
+    var P = PSH; if (!P) return;
+    var dt = P.last ? Math.min(0.1, (t - P.last) / 1000) : 0; P.last = t;
+    if (P.kb) {   /* はね返り（またはまちがえたときの前進）：短い時間でなめらかに */
+      P.kb.t += dt;
+      var k = Math.min(1, P.kb.t / P.kb.d), e = 1 - Math.pow(1 - k, 3);
+      P.p = P.kb.from + (P.kb.to - P.kb.from) * e;
+      if (k >= 1) P.kb = null;
+    } else if (P.phase === 'ask' && !document.hidden) {
+      P.p += dt / PSH_ST[P.st].sec;
+    }
+    if (P.p >= 1 && P.phase === 'ask') { P.p = 1; pshPlace(); return pshLose(); }
+    pshPlace();
+    P.raf = requestAnimationFrame(pshTick);
+  }
+  function pshMove(to, d) { PSH.kb = { from: PSH.p, to: Math.max(0, Math.min(1, to)), t: 0, d: d }; }
+
+  function pshTap(i) {
+    var P = PSH; if (!P || P.phase !== 'ask') return;
+    var w = P.hand[i]; if (!w) return;
+    if (w === P.cur) pshRight(i); else pshWrong(i);
+  }
+  function pshRight(i) {
+    var P = PSH, w = P.cur, ty = PSH_ST[P.st].dir === 'A' ? 'es2ja' : 'ja2es';
+    P.phase = 'hit';
+    if (!P.wrongNow) {   /* まちがえたあとの正解は記録しない（その語は、あとでもう一度出る） */
+      var r = V.answer(w.id, true, ty);
+      ses.ok++; ses.combo++; ses.exp += r.exp;
+      if (r.up && ses.ups.indexOf(w.id) < 0) ses.ups.push(w.id);
+      if (r.back) { ses.backs++; ses.backIds.push(w.id); }
+      if (r.grad) ses.grads.push(w.id);
+      if (r.hotGrad) ses.hotGrad++;
+      if (r.back || r.relearn) ses.saved[w.id] = 1;
+      if (r.relearn) ses.fixed++;
+      if (P.stamped.indexOf(w.id) < 0) P.stamped.push(w.id);
+    }
+    var b = pshAlly(i), foe = $('#pshFoe'), field = $('#push');
+    b.classList.add('gone');
+    /* 味方が飛んでいく：ボタンの位置から、もやもやの位置へ */
+    var fly = document.createElement('div');
+    fly.className = 'psh-fly'; fly.innerHTML = cs(w, { mood: 'happy' });
+    field.appendChild(fly);
+    var R0 = field.getBoundingClientRect(), rb = b.getBoundingClientRect(), rf = foe.getBoundingClientRect();
+    var x0 = rb.left + rb.width / 2 - R0.left - 28, y0 = rb.top - R0.top, x1 = rf.left + rf.width / 2 - R0.left - 28, y1 = rf.bottom - R0.top - 70;
+    var fin = function () {
+      if (PSH !== P) return;
+      fly.remove();
+      pshHit(w, i);
+    };
+    if (fly.animate) {
+      var a = fly.animate([{ transform: 'translate3d(' + x0 + 'px,' + y0 + 'px,0) scale(.8)' }, { transform: 'translate3d(' + x1 + 'px,' + y1 + 'px,0) scale(1.25)' }],
+        { duration: 300, easing: 'cubic-bezier(.3,.1,.6,1)', fill: 'forwards' });
+      a.onfinish = fin;
+    } else fin();
+  }
+  /* 体当たり：はね返す・音・読み上げ・「語＝意味」をプラカードに */
+  function pshHit(w, i) {
+    var P = PSH, foe = $('#pshFoe'), kb = pshKb(P) * (P.wrongNow ? 0.5 : 1);   /* まちがえたあとの正解は、半分だけ押し返す */
+    if (!P.wrongNow) P.combo++;
+    var won = P.p - kb <= 0.001;
+    pshMove(P.p - kb, 0.35);
+    foe.classList.remove('bump'); void foe.offsetWidth; foe.classList.add('bump');
+    if (window.Snd) (Snd.hit ? Snd.hit(P.combo, P.p >= 0.6) : Snd.ok(ses.combo));
+    FX.burst($('.psh-mob', foe), null, 10);
+    Speech.say(V.head(w));
+    $('#pshCard').className = 'psh-card pair';
+    $('#pshCard').innerHTML = '<span class="psh-pw">' + headHtml(w) + '</span><span class="psh-pj">＝ ' + jaHtml(w.ja) + '</span>';
+    if (won) return pshLater(pshWin, 500);
+    /* 味方を1人補充（入れかわった子だけ、下から現れる） */
+    pshLater(function () {
+      P.hand[i] = pshDraw();
+      var old = pshAlly(i), tmp = document.createElement('div');
+      tmp.innerHTML = pshHandHtml(P.hand[i], i);
+      var n = tmp.firstChild; n.classList.add('in');
+      old.parentNode.replaceChild(n, old);
+      fitEl($('.psh-t', n), [15, 14, 13, 12], [2, 3]);
+    }, 350);
+    pshLater(pshAsk, 1100);
+  }
+  function pshWrong(i) {
+    var P = PSH, w = P.cur, o = P.hand[i], ty = PSH_ST[P.st].dir === 'A' ? 'es2ja' : 'ja2es';
+    if (!P.missed[w.id]) {   /* その語につき、1回のゲームで最初の1度だけ数える */
+      P.missed[w.id] = 1;
+      if (V.hot(w.id)) ses.hotSeen[w.id] = 1;
+      var r = V.answer(w.id, false, ty);
+      ses.ng++; ses.combo = 0; ses.miss[w.id] = 1;
+      if (r.hotNew) { ses.hotNew++; ses.hotSeen[w.id] = 1; }
+    }
+    if (!P.wrongNow) { P.wrongNow = true; P.redo.push({ w: w, inAt: 0 }); P.combo = Math.floor(P.combo / 2); }
+    V.mixed(w.id, o.id);
+    (ses.mix = ses.mix || {})[w.id] = o.id;
+    if (window.Snd) Snd.ng();
+    var b = pshAlly(i), good = pshAlly(P.hand.indexOf(w));
+    b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+    good.classList.add('hint');
+    pshMove(P.p + PSH_NG, 0.25);
+    pshMsg('<p class="bng-ng">✕ その子は <b>' + esc(V.head(o)) + '</b> ＝ <b>' + esc(o.ja) + '</b></p>');
+  }
+  function pshWin() {
+    var P = PSH; if (!P) return;
+    P.phase = 'win'; P.cleared = Math.max(P.cleared, P.st + 1);
+    var foe = $('#pshFoe');
+    foe.classList.add('flee');
+    if (window.Snd) (Snd.clear ? Snd.clear() : Snd.levelUp(2));
+    FX.slam(T.push, 'ステージ ' + (P.st + 1) + ' クリア');
+    var more = P.st + 1 < PSH_ST.length;
+    pshLater(function () {
+      pshMsg('<p class="psh-lead">🛡 おしかえした！</p><div class="bng-btns">' + (more ? '<button class="next" id="pshNext">ステージ ' + (P.st + 2) + ' へ ▶</button><button class="ghost" id="pshStop">ここで終わる</button>' : '<button class="next" id="pshStop">けっかへ ▶</button>') + '</div>');
+      if (more) $('#pshNext').addEventListener('click', function () { cancelAnimationFrame(P.raf); startPush(P.st + 1); });
+      $('#pshStop').addEventListener('click', pshEnd);
+    }, 900);
+  }
+  /* 守る線まで来られた：そのステージをやり直せる。何も失わない */
+  function pshLose() {
+    var P = PSH; P.phase = 'lose';
+    $('#pshMe').classList.add('shake');
+    if (window.Snd) Snd.flip();
+    pshMsg('<p class="psh-lead">とおされちゃった…</p><p class="bng-sub">答えた分は、ちゃんと記録されているよ</p><div class="bng-btns"><button class="next" id="pshAgain">もう一回（ステージ ' + (P.st + 1) + '）▶</button><button class="ghost" id="pshStop">ここで終わる</button></div>');
+    $('#pshAgain').addEventListener('click', function () { $('#pshMe').classList.remove('shake'); startPush(P.st); });
+    $('#pshStop').addEventListener('click', pshEnd);
+  }
+  function pshEnd() {
+    var P = PSH; if (!P) return go('home');
+    cancelAnimationFrame(P.raf);
+    PSH = null;
+    if (window.VUI) VUI.cur = null;
+    if (window.speechSynthesis) { try { speechSynthesis.cancel(); } catch (e) { /* 読み上げを止められない */ } }
+    if (window.Snd && Snd.key) Snd.key(0);
+    if (!ses.ok && !ses.ng) return go('home');
+    missReview(function () { pshResult(P); });
+  }
+  function pshResult(P) {
+    if (window.Snd) Snd.finish();
+    go('done');
+    var n = P.cleared, lines = [], missIds = Object.keys(ses.miss).filter(function (id) { return V.word(id); });
+    $('#dTitle').textContent = n ? T.push : T.titleB;
+    lines.push(n ? '🛡 おしかえした ステージ <b>' + n + '</b> / ' + PSH_ST.length : '🛡 またこんど、おしかえそう');
+    if (ses.ups.length) lines.push('✨ <b>' + ses.ups.length + '枚</b> が進化');
+    if (ses.grads.length) lines.push('🎓 <b>' + ses.grads.length + '体</b> が卒業（もう野生に出ない）');
+    if (ses.backs) lines.push('🤝 野生から <b>' + ses.backs + '枚</b> 取り返した');
+    if (ses.fixed) lines.push('🔁 まちがえた子を、もう一度で <b>' + ses.fixed + '体</b> 取り返した');
+    if (ses.hotNew) lines.push('🌶 手ごわい子が <b>' + ses.hotNew + '体</b>。次はちがう聞き方で会える');
+    if (ses.hotGrad) lines.push('🎓 手ごわい子を <b>' + ses.hotGrad + '体</b>、卒業させた');
+    lines.push('⭐ <b>+' + ses.exp + ' EXP</b>（今日 +' + S.day.exp + '）');
+    var skl = streakLine(); if (skl) lines.push(skl);
+    if (V.cameDays()) lines.push('📅 会いに来た日　通算 <b>' + V.cameDays() + '日</b>');
+    var nm = newMarks();
+    $('#dLines').innerHTML = nm.map(function (m) { return '<li class="mark-new">🏅 あしあと　<b>' + m.ico + ' ' + esc(m.text) + '</b></li>'; }).join('') + lines.map(function (l) { return '<li>' + l + '</li>'; }).join('');
+    if (nm.length) setTimeout(function () { if (window.Snd) Snd.levelUp(2); FX.slam(T.mark, nm[nm.length - 1].text); }, 500);
+    $('#dCards').innerHTML = P.stamped.map(function (id) { return miniCard(V.word(id)); }).join('');
+    $('#dNext').innerHTML = missIds.length
+      ? '🔁 まちがえた子（' + missIds.map(function (id) { return '<b>' + esc(V.word(id).w) + '</b>'; }).join('・') + '）は、<b>次の野生戦で、もう一度会える</b>'
+      : '🎈 また、あそぼう';
+    $('#dMore').textContent = 'もう一回 ▶';
+    niteIds = niteCands();
+    var nb = $('#dNite'); nb.hidden = !niteIds.length; nb.disabled = false; nb.textContent = '🌙 おやすみ前に、' + niteIds.length + '体だけ顔を見る';
+    if (G) G.fromTo('#done .anim, #dCards .mini', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.06, ease: 'back.out(1.6)' });
+    if (n === PSH_ST.length || nm.length) FX.rain();
   }
 
   /* =========================================================
@@ -2660,7 +2975,7 @@
     });
     $('#quit').addEventListener('click', function () { if (window.speechSynthesis) speechSynthesis.cancel(); finish(); });
     $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { go(b.dataset.go); }); });
-    $('#dMore').addEventListener('click', function () { if (ses && ses.bingo) return startBingo(true); if (wildAll().length) start([{ type: 'wild', n: chunkSize() }], 'ひと区切り'); else start(makePlan(5), '5分'); });
+    $('#dMore').addEventListener('click', function () { if (ses && ses.bingo) return startBingo(true); if (ses && ses.push) return startPush(0); if (wildAll().length) start([{ type: 'wild', n: chunkSize() }], 'ひと区切り'); else start(makePlan(5), '5分'); });
     $('#hRange').addEventListener('click', openRange);
     $('#hBoss').addEventListener('click', function () { var b = todaysBoss(); if (b && !b.won) startBoss(); });
     $('#hDeck').addEventListener('click', function () { openDecks(); });
@@ -2682,6 +2997,9 @@
       var m = e.target.closest('.p-bud'); if (m) openSheet(m.dataset.id);
     });
     $('#bngQuit').addEventListener('click', function () { bngEnd(); });
+    $('#pshQuit').addEventListener('click', function () { pshEnd(); });
+    $('#pshHand').addEventListener('click', function (e) { var b = e.target.closest('.psh-ally'); if (b && !b.classList.contains('gone')) pshTap(+b.dataset.i); });
+    window.addEventListener('resize', function () { if (PSH) { pshMeasure(); pshPlace(); } });
     $('#bngBoard').addEventListener('click', function (e) { var c = e.target.closest('.bng-cell'); if (c) bngTap(+c.dataset.i); });
     $('#xBody').addEventListener('click', function (e) {
       var m = e.target.closest('.mini'); if (m) return openSheet(m.dataset.id);
@@ -2714,6 +3032,10 @@
     },
     /* ビンゴを始める（?debug のときは、集めた語が足りなくても遊べる）。VUI.cur ＝ { id, cell, dir, audio }：いま呼ばれている語の id と、正解のマスの番号 */
     bingo: function (ids) { startBingo(true, isDebug() && ids && ids.length >= 9 ? ids.map(function (id) { return V.word(id); }).filter(Boolean).slice(0, 9) : null); return !!BNG; },   /* ids：盤の語を指定（?debug のときだけ） */
+    /* おしかえせ！を始める（?debug のときは、集めた語が足りなくても遊べる）。VUI.cur ＝ { id, push, ally：正しい味方の番号, dir }。
+     *  VUI.pushP(p)：もやもやの位置を変える（?debug のときだけ。0＝クリアの線、1＝守る線） */
+    push: function (stage) { startPush(stage || 0); return !!PSH; },
+    pushP: function (p) { if (!isDebug() || !PSH) return false; PSH.p = p; pshPlace(); return PSH.p; },
     /* ふれあいイベントを、条件を無視して始める（?debug のときだけ）。kind：'anniv' | 'intro' | 'ask' */
     event: function (kind, id) {
       if (!isDebug() || EV_KINDS.indexOf(kind) < 0) return false;

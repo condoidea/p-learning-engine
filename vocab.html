@@ -28,7 +28,7 @@
 </script>
 <script src="shared/smooth-fonts.js?v=1"></script>
 <script src="shared/speech-fix.js?v=2"></script>
-<link rel="stylesheet" href="vocab/css/vocab.css?v=46">
+<link rel="stylesheet" href="vocab/css/vocab.css?v=47">
 <link rel="stylesheet" href="vocab/css/skin-espana.css?v=37">
 <link rel="stylesheet" href="vocab/css/skin-avenue.css?v=37">
 </head>
@@ -83,6 +83,17 @@
     <header class="bng-head"><button class="bng-quit" id="bngQuit" aria-label="やめる">✕</button><b>🎯 思い出しビンゴ</b></header>
     <div id="bngCall" class="bng-call"></div>
     <div id="bngBoard" class="bng-board"></div>
+  </section>
+
+  <section id="push" class="screen" hidden>
+    <header class="bng-head"><button class="bng-quit" id="pshQuit" aria-label="やめる">✕</button><b>🛡 おしかえせ！</b><small id="pshStage" class="psh-stage"></small></header>
+    <div id="pshField" class="psh-field">
+      <div class="psh-goal"><span>ここまで おしかえす</span></div>
+      <div id="pshFoe" class="psh-foe"></div>
+      <div class="psh-line"><span class="psh-pin">💪 おしかえしパワー UP</span><span id="pshMe" class="psh-me"></span><span class="psh-ltx">ここを まもる</span></div>
+    </div>
+    <div id="pshMsg" class="psh-msg"></div>
+    <div id="pshHand" class="psh-hand"></div>
   </section>
 
   <!-- ============ ボス戦 ============ -->
@@ -146,9 +157,9 @@
 <script src="vocab/js/core.js?v=43"></script>
 <script src="vocab/js/chara.js?v=38"></script>
 <script src="engine/js/audio.js?v=39"></script>
-<script src="vocab/js/sound-es.js?v=39"></script>
-<script src="vocab/js/sound-us.js?v=37"></script>
-<script src="vocab/js/ui.js?v=52"></script>
+<script src="vocab/js/sound-es.js?v=40"></script>
+<script src="vocab/js/sound-us.js?v=38"></script>
+<script src="vocab/js/ui.js?v=53"></script>
 <script src="shared/perf-meter.js?v=1"></script>
 <script src="news/news.js?v=4"></script>
 </body>

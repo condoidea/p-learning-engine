@@ -10,8 +10,8 @@
   window.SndPacks = window.SndPacks || {};
   if (!R) return;
 
-  var C3 = 130.81;
-  function f(semi) { return C3 * Math.pow(2, semi / 12); }
+  var C3 = 130.81, KEY = 0;   /* KEY：ゲームごとに調をずらす（Snd.key）。同じ音のくり返しで飽きないように */
+  function f(semi) { return C3 * Math.pow(2, (semi + KEY) / 12); }
   /* メジャー・ペンタトニック＋ブルーノート（コンボで上がっていく） */
   var SCALE = [12, 14, 16, 19, 21, 24, 26, 27, 28, 31, 33, 36, 38, 40, 43];
 
@@ -78,6 +78,50 @@
       });
     },
     back: function () { R.play(function (t) { [12, 16, 19, 23, 26].forEach(function (s, i) { pluck(t + i * 0.08, f(s), 0.28, 1.5); }); }); },
-    finish: function () { R.play(function (t) { strum(t, FMAJ7, 0.04, 0.26); strum(t + 0.5, CMAJ9, 0.06, 0.34); brush(t + 0.5, 0.07); }); }
+    finish: function () { R.play(function (t) { strum(t, FMAJ7, 0.04, 0.26); strum(t + 0.5, CMAJ9, 0.06, 0.34); brush(t + 0.5, 0.07); }); },
+    /* ---- あそび場用（sound-es.js と同じ名前） ---- */
+    key: function (k) { KEY = k || 0; },
+    stamp: function (combo) {
+      R.buzz(combo >= 5 ? [12, 30, 12] : 12);
+      R.play(function (t) {
+        var i = Math.min(SCALE.length - 3, combo || 0), a = f(SCALE[i]), b = f(SCALE[i + 2]);
+        snap(t, 0.22);
+        pick([
+          function () { pluck(t + 0.01, a, 0.38, 1.1); pluck(t + 0.07, b, 0.32, 1.3); },
+          function () { pluck(t + 0.01, b, 0.34, 1.1); pluck(t + 0.08, a, 0.3, 1.3); },
+          function () { pluck(t + 0.01, a, 0.34, 1); pluck(t + 0.05, f(SCALE[i + 1]), 0.28, 1); pluck(t + 0.1, b, 0.3, 1.3); }
+        ])();
+        if (combo && combo % 5 === 0) [0.2, 0.5].forEach(function (d) { snap(t + d); });
+      });
+    },
+    bingo: function () {
+      R.buzz([20, 40, 20, 40, 80]);
+      R.play(pick([
+        function (t) { strum(t, DM9, 0.02, 0.3); strum(t + 0.35, G13, 0.02, 0.3); strum(t + 0.75, CMAJ9, 0.03, 0.36); [0.35, 0.75, 1.1].forEach(function (d) { snap(t + d, 0.3); }); },
+        function (t) { [0, 4, 7, 11, 14].forEach(function (s, i) { pluck(t + i * 0.07, f(s + 12), 0.3, 1.4); }); strum(t + 0.45, CMAJ9, 0.03, 0.34); brush(t + 0.45, 0.08); snap(t + 0.8); },
+        function (t) { strum(t, FMAJ7, 0.025, 0.3); strum(t + 0.3, E7S9, 0.02, 0.28); strum(t + 0.65, AM9, 0.03, 0.34); snap(t + 0.65); snap(t + 0.95); }
+      ]));
+    },
+    hit: function (combo, big) {
+      R.buzz(big ? [20, 30, 30] : 18);
+      R.play(function (t) {
+        var i = Math.min(SCALE.length - 3, combo || 0);
+        R.tone(98, t, 0.16, 'sine', 0.4, 42); brush(t, 0.12);
+        pick([
+          function () { pluck(t + 0.03, f(SCALE[i]), 0.36, 1.1); pluck(t + 0.1, f(SCALE[i + 2]), 0.3, 1.3); },
+          function () { snap(t + 0.04, 0.26); pluck(t + 0.07, f(SCALE[i + 1]), 0.36, 1.3); },
+          function () { pluck(t + 0.03, f(SCALE[i + 2]), 0.32, 1.1); pluck(t + 0.09, f(SCALE[i] + 12), 0.24, 1.3); }
+        ])();
+        if (big) strum(t + 0.12, CMAJ9.slice(1), 0.015, 0.2);
+      });
+    },
+    clear: function () {
+      R.buzz([20, 40, 20, 40, 80]);
+      R.play(pick([
+        function (t) { strum(t, G13, 0.02, 0.3); strum(t + 0.35, CMAJ9, 0.03, 0.38); [0.7, 0.95].forEach(function (d) { snap(t + d, 0.3); }); },
+        function (t) { [0, 4, 7, 11, 14, 16, 19, 23].forEach(function (s, i) { pluck(t + i * 0.05, f(s + 12), 0.24, 1.6); }); brush(t + 0.45, 0.08); snap(t + 0.6); },
+        function (t) { strum(t, DM9, 0.02, 0.28); strum(t + 0.25, G13, 0.02, 0.28); strum(t + 0.5, FMAJ7, 0.03, 0.3); strum(t + 0.8, CMAJ9, 0.04, 0.36); }
+      ]));
+    }
   };
 })();

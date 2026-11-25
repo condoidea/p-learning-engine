@@ -704,3 +704,66 @@ body.hot-typing #stage, body.hot-typing .sh { padding-bottom: 42vh; }   /* キ�
 .exq-tiles { padding: 0 2px; }
 .exq-cmp:empty { display: none; }
 .exq-cmp .cmp { margin: 0; }
+
+/* =========================================================
+ * 🛡 おしかえせ！（psh-）：縦の押し合い。iPhone の使える高さ（550〜660px）で、上の線〜下の守る線〜味方6人が1画面に収まる。
+ *  ずっと動くのは transform と opacity だけ（filter・top を動かさない）
+ * ========================================================= */
+#push { position: relative; display: flex; flex-direction: column; gap: 6px; height: calc(100dvh - max(14px, env(safe-area-inset-top)) - 12px); min-height: 470px; margin-bottom: -16px; }
+.psh-stage { margin-left: auto; font-size: 14px; color: var(--muted); }
+.psh-field { position: relative; flex: 1 1 auto; min-height: 220px; overflow: hidden; border-radius: 18px; border: 1px solid var(--line); background: linear-gradient(180deg, var(--ok-bg), var(--card) 35%, var(--card) 70%, var(--ng-bg)); }
+.psh-goal { position: absolute; top: 0; left: 0; right: 0; height: 0; border-top: 3px dashed var(--ok); }
+.psh-goal span { position: absolute; right: 8px; top: 2px; font-size: 12px; font-weight: 700; color: var(--ok); }
+.psh-foe { position: absolute; top: 6px; left: 50%; width: min(300px, 90%); display: flex; flex-direction: column; align-items: center; will-change: transform; z-index: 2; }
+.psh-sign { width: 100%; display: flex; flex-direction: column; align-items: center; }
+.psh-card { width: 100%; min-height: 44px; padding: 4px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 10px; border: 3px solid #6b4f3a; background: #fffdf6; color: #2b2320; box-shadow: 0 3px 0 rgba(0, 0, 0, .15); text-align: center; }
+.psh-card.pair { border-color: var(--ok); }
+.psh-word { display: block; max-width: 100%; font-family: var(--f-es); font-weight: 800; font-size: 26px; line-height: 1.2; }
+.psh-word .art { font-size: inherit; }
+.psh-ja { display: block; max-width: 100%; font-size: 20px; font-weight: 900; line-height: 1.3; word-break: keep-all; }
+.psh-pw { display: block; font-family: var(--f-es); font-weight: 800; font-size: 20px; line-height: 1.25; }
+.psh-pj { display: block; font-size: 15px; line-height: 1.35; }
+.psh-pole { display: block; width: 6px; height: 6px; background: #8a6a4e; }
+.psh-mob { display: block; width: 58px; height: 46px; animation: psh-walk .55s ease-in-out infinite alternate; }
+.psh-foe.bump .psh-mob { animation: psh-bump .35s ease-out; }
+.psh-foe.flee .psh-sign, .psh-foe.flee .psh-mob { animation: psh-flee .7s ease-in forwards; }
+.psh-line { position: absolute; left: 0; right: 0; bottom: 0; height: 38px; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; border-top: 3px dashed var(--ng); }
+.psh-me { display: block; width: 32px; height: 32px; }
+.psh-me.shake { animation: bng-shake .38s ease-in-out 2; }
+.psh-ltx { font-size: 12px; font-weight: 700; color: var(--ng); }
+.psh-pin { position: absolute; left: 50%; top: -30px; transform: translateX(-50%); padding: 2px 12px; border-radius: 999px; background: var(--card); border: 1px solid var(--line-strong); font-size: 14px; font-weight: 900; color: var(--accent); white-space: nowrap; opacity: 0; transition: opacity .3s; pointer-events: none; }
+.psh-field.pinch .psh-pin { opacity: 1; }
+.psh-msg { min-height: 30px; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+.psh-msg p { margin: 0; }
+.psh-lead { font-size: 15px; font-weight: 700; text-align: center; }
+.psh-msg .bng-ng { font-size: 15px; padding: 3px 10px; }
+.psh-hand { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.psh-ally { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; min-height: 58px; padding: 3px 4px; border-radius: 14px; border: 2px solid var(--line-strong); background: var(--card); box-shadow: 0 3px 0 var(--line-strong); text-align: center; min-width: 0; }
+.psh-ally:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--line-strong); }
+.psh-ch { display: block; width: 24px; height: 24px; flex: none; }
+.psh-t { display: block; max-width: 100%; font-size: 15px; font-weight: 700; line-height: 1.25; word-break: keep-all; }   /* 日本語は「・」「（」の所でだけ折る（入らなければ fitEl が字を小さく） */
+.psh-ally.es .psh-t { font-family: var(--f-es); font-weight: 600; font-size: 17px; }
+.psh-ally.gone { opacity: .25; }
+.psh-ally.in { animation: psh-in .3s ease-out; }
+.psh-ally.hint { border-color: var(--ok); box-shadow: 0 0 0 4px var(--ok); animation: bng-glow .8s ease-in-out infinite alternate; }
+.psh-ally.shake { animation: bng-shake .38s ease-in-out; }
+.psh-fly { position: absolute; left: 0; top: 0; width: 56px; height: 56px; pointer-events: none; z-index: 5; will-change: transform; }
+@keyframes psh-walk { from { transform: translateY(0); } to { transform: translateY(-3px); } }
+@keyframes psh-bump { 30% { transform: translateY(-6px) scale(1.12, .88); } }
+@keyframes psh-flee { to { transform: translateY(-160px); opacity: 0; } }
+@keyframes psh-in { from { transform: translateY(14px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* あそび場の終わり：まちがえた語 */
+.mrv-h { display: flex; align-items: center; gap: 8px; margin: 0 36px 10px 0; font-weight: 700; font-size: 17px; }
+.mrv-skip { margin-left: auto; padding: 6px 14px; font-size: 14px; }
+.mrv-list { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 8px; }
+.mrv-list li { display: flex; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 14px; background: var(--card, #fff); box-shadow: 0 1px 0 rgba(0,0,0,.06); }
+.mrv-ch { flex: none; width: 44px; height: 44px; }
+.mrv-ch svg { width: 100%; height: 100%; }
+.mrv-t { min-width: 0; }
+.mrv-t p { margin: 0; }
+.mrv-w { display: flex; align-items: center; gap: 6px; font-family: var(--f-es); font-size: 21px; }
+.mrv-w .say { flex: none; }
+.mrv-ja { font-size: 16px; word-break: keep-all; overflow-wrap: anywhere; }
+.mrv-o { margin-top: 2px !important; font-size: 13px; opacity: .75; word-break: keep-all; overflow-wrap: anywhere; }
+#sheet .sh.miss-rv .next { width: 100%; }
