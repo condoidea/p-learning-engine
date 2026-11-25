@@ -12,6 +12,8 @@
  *     （updated があるお知らせ＝「アップデートしたよ」は逆に、前に開いたことがあって、updated のあとにはまだ開いていない人だけ）
  *   ・exclude に入っていないアプリ（お知らせ先のアプリ自身でも出さない）
  *   ・until（あれば）の日付をすぎていない
+ *   ・after（あれば）のお知らせを、この端末のどこかのアプリで、もう出している
+ *   ・app（あれば）＝お知らせ先のアプリそのもの（単語アプリはデッキつき）では出さない
  *  同時に出せるのは1件だけ（ITEMS の上にあるものから）。閉じるのは「閉じる」ボタンだけ。
  *
  *  「開いたか」の記録：このファイルを読み込んだアプリは、開いたときに le.news.visited.<ファイル名> を残す
@@ -27,7 +29,11 @@
    *  exclude  このお知らせを出さないアプリ（ファイル名）
    *  until    この日まで出す（'2026-12-31' の形。なければずっと）
  *  updated  アップデートのお知らせにする（'2026-11-04T16:00' の形）。一度も開いていない人には出さない（新しいアプリのお知らせのほうを出す）
-   *  face     先生の絵（'molmo' ＝ モルモ先生。なければ絵なし）
+   *  feature  アプリの中の新しいもののお知らせにする。前に開いたことがあるかどうかは見ない（url はファイル名だけ。開く先は href）
+   *  href     「▶」のリンク先（なければ url）。単語アプリのデッキは 'vocab.html?deck=…'
+   *  app      お知らせ先のアプリの見分け（'vocab.html#juku-1009' の形）。そのアプリでは出さない
+   *  after    このお知らせ（id）を出したあとでだけ出す
+   *  face     先生の絵（'molmo' ＝ モルモ先生、'push' ＝ わすれんぼう。なければ絵なし）
    *  tag / title / sub / body / go   表示する文（body は HTML）
    * ========================================================= */
   var ITEMS = [
@@ -55,6 +61,21 @@
       sub: '🧪 化学基礎・物質量（モル）',
       body: '「みがく」でまちがえた問題は、その場で<b>📖 要点</b>を見られるようになったよ。<br>あとで<b>🩹 おさらい</b>すると、大事なところだけ回り直して、まちがえた問題にリベンジできるの！',
       go: '▶ モル教室をひらく'
+    },
+    {
+      id: 'vocab-push',
+      url: 'vocab.html',
+      href: 'vocab.html?deck=juku-1009',
+      app: 'vocab.html#juku-1009',
+      feature: true,
+      after: 'mole-review',
+      exclude: ['relativo.html', 'manda.html', 'protesto.html', 'quien.html'],
+      face: 'push',
+      tag: 'NEW GAME!',
+      title: '英単語アプリに<br>新しいゲームができたよ！',
+      sub: '🔤 WORD AVENUE・🎈 あそび場',
+      body: '<b>🛡 おしかえせ！</b><br>上から「わすれんぼう」がプラカードを持っておりてくるよ。合う単語の子をタップして、体当たりでおし返そう。<br>集めた単語が 7つ になったら遊べるよ。',
+      go: '▶ 英単語アプリであそぶ'
     }
   ];
 
@@ -78,9 +99,17 @@
   function due(it) {
     if (it.url === file || (it.exclude || []).indexOf(file) >= 0) return false;
     if (it.until && new Date() > new Date(it.until + 'T23:59:59')) return false;
+    if (it.app && it.app === appKey) return false;
+    if (it.after && !seenAnywhere(it.after)) return false;
     if (get('le.news.' + it.id + '.seen.' + appKey)) return false;
     if (it.updated) return openedTarget(it) && (+get('le.news.visited.' + it.url) || 0) < new Date(it.updated).getTime();
+    if (it.feature) return true;
     return !openedTarget(it);
+  }
+  function seenAnywhere(id) {
+    var pre = 'le.news.' + id + '.seen.';
+    try { for (var i = 0; i < localStorage.length; i++) if ((localStorage.key(i) || '').indexOf(pre) === 0) return true; } catch (e) { /* 読めない環境 */ }
+    return false;
   }
   var item = ITEMS.filter(due)[0];
   if (!item) return;
@@ -118,7 +147,14 @@
       '<path d="M30 53 q6 -8 12 0 M58 53 q6 -8 12 0" stroke="#2b1d16" stroke-width="3.2" fill="none" stroke-linecap="round"/>' +
       '<ellipse cx="26" cy="62" rx="6" ry="3.6" fill="#ff8fa3" opacity=".55"/><ellipse cx="74" cy="62" rx="6" ry="3.6" fill="#ff8fa3" opacity=".55"/>' +
       '<path d="M46.5 60 h7 q-3.5 5 -3.5 5 q0 0 -3.5 -5z" fill="#ff8fa3"/><path d="M43 67 q7 10 14 0 z" fill="#c2455a"/>' +
-      '<path d="M84 22 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2z" fill="#ffd23f"/><path d="M12 30 l1.4 4 4 1.4 -4 1.4 -1.4 4 -1.4 -4 -4 -1.4 4 -1.4z" fill="#ffd23f"/></svg>'
+      '<path d="M84 22 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2z" fill="#ffd23f"/><path d="M12 30 l1.4 4 4 1.4 -4 1.4 -1.4 4 -1.4 -4 -4 -1.4 4 -1.4z" fill="#ffd23f"/></svg>',
+    /* 単語アプリ「おしかえせ！」のわすれんぼう（vocab/js/ui.js の pshFoeSvg と同じ絵） */
+    push: '<svg class="le-news-face" viewBox="0 0 100 80" aria-hidden="true">' +
+      '<path d="M18 62 C4 62 4 42 18 40 C14 24 34 16 44 26 C50 10 74 12 76 28 C92 26 98 46 84 54 C90 66 74 70 66 64 C58 72 40 72 34 64 C28 68 20 68 18 62Z" fill="#8b7fa3" stroke="#4f4566" stroke-width="3" stroke-linejoin="round"/>' +
+      '<circle cx="40" cy="44" r="5" fill="#2b2438"/><circle cx="62" cy="44" r="5" fill="#2b2438"/>' +
+      '<circle cx="41.5" cy="42.5" r="1.6" fill="#fff"/><circle cx="63.5" cy="42.5" r="1.6" fill="#fff"/>' +
+      '<path d="M44 55 Q51 51 58 55" fill="none" stroke="#2b2438" stroke-width="3" stroke-linecap="round"/>' +
+      '<path d="M30 68 l-4 9 M46 70 l0 9 M58 70 l2 9 M72 66 l5 8" stroke="#4f4566" stroke-width="4" stroke-linecap="round"/></svg>'
   };
 
   function show() {
@@ -134,7 +170,7 @@
       '<h2 id="le-news-title">' + item.title + '</h2>' +
       (item.sub ? '<p class="le-news-sub">' + item.sub + '</p>' : '') +
       (item.body ? '<p class="le-news-bub">' + item.body + '</p>' : '') +
-      '<a class="le-news-go" href="' + item.url + '">' + (item.go || '▶ ひらいてみる') + '</a>' +
+      '<a class="le-news-go" href="' + (item.href || item.url) + '">' + (item.go || '▶ ひらいてみる') + '</a>' +
       '<button type="button" class="le-news-close">閉じる</button></div>';
     document.body.appendChild(bg);
     /* 出した時点で、このアプリでは「出した」ことにする（アプリごとに1回だけ） */
