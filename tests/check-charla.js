@@ -94,7 +94,7 @@ W.CHARLA_DIALOGS.forEach(function (it) {
         if (x.t !== 'w') return;
         if (!x.g) { unknown[x.k] = (unknown[x.k] || 0) + 1; return; }
         if (x.g.name || x.g.src !== 'notes' || ['art', 'prep'].indexOf(x.g.pos) >= 0) return;
-        var r = T.toVocab({ kind: 'w', w: x.g.w, pos: x.g.pos, g: x.g.g, ja: x.g.ja, surf: x.s, line: i, form: x.g.form, note: x.g.note, clue: x.g.clue, cj: x.g.cj }, D, N);
+        var r = T.toVocab({ kind: 'w', w: x.g.w, pos: x.g.pos, g: x.g.g, ja: x.g.ja, surf: x.s, line: i, form: x.g.form, note: x.g.note, clue: x.g.clue, cj: x.g.cj, reg: x.g.reg }, D, N);
         if (r.word) addWord(r.word); else E('セリフ' + (i + 1), '「' + x.s + '」を単語アプリに送れない：' + r.why);
       });
     });

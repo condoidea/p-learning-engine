@@ -106,12 +106,14 @@
     "prométeme": {
       "w": "prometer",
       "pos": "v",
+      "reg": true,
       "ja": "約束する",
       "form": "prometer の命令（君に）＋ me（私に）"
     },
     "enfadar": {
       "w": "enfadarse",
       "pos": "v",
+      "reg": true,
       "ja": "怒る",
       "form": "enfadarse の不定詞（te が付いて「君が」）"
     },
@@ -129,6 +131,7 @@
     "levanté": {
       "w": "levantarse",
       "pos": "v",
+      "reg": true,
       "ja": "起きる",
       "form": "levantarse の「私は」（点過去）"
     },
@@ -159,6 +162,7 @@
     "tardé": {
       "w": "tardar",
       "pos": "v",
+      "reg": true,
       "ja": "（時間が）かかる",
       "key": true,
       "form": "tardar の「私は」（点過去）",
@@ -178,6 +182,7 @@
     "prepararla": {
       "w": "preparar",
       "pos": "v",
+      "reg": true,
       "ja": "準備する・作る",
       "form": "preparar（作る）＋ la（それを＝パエリア）"
     },
@@ -207,6 +212,7 @@
     "dejé": {
       "w": "dejar",
       "pos": "v",
+      "reg": true,
       "ja": "置く・置いておく",
       "form": "dejar の「私は」（点過去）"
     },
@@ -230,6 +236,7 @@
     "duchaba": {
       "w": "ducharse",
       "pos": "v",
+      "reg": true,
       "ja": "シャワーを浴びる",
       "form": "ducharse の「私は」（線過去）"
     },
@@ -391,12 +398,14 @@
     "pregunté": {
       "w": "preguntar",
       "pos": "v",
+      "reg": true,
       "ja": "たずねる・質問する",
       "form": "preguntar の「私は」（点過去）"
     },
     "miró": {
       "w": "mirar",
       "pos": "v",
+      "reg": true,
       "ja": "見る",
       "form": "mirar の「彼は」（点過去）"
     },
@@ -415,6 +424,7 @@
     "queda": {
       "w": "quedar",
       "pos": "v",
+      "reg": true,
       "ja": "残っている・残る",
       "form": "quedar の「それは」（現在）"
     },
@@ -458,6 +468,7 @@
     "imaginaba": {
       "w": "imaginar",
       "pos": "v",
+      "reg": true,
       "ja": "想像する",
       "form": "imaginar の「私は」（線過去）"
     },
@@ -550,6 +561,7 @@
     "encanta": {
       "w": "encantar",
       "pos": "v",
+      "reg": true,
       "ja": "大好きである・とても気に入る",
       "form": "encantar の「それは」（現在）",
       "note": "me/te/le encanta ＋ 好きなもの（gustar と同じ形）"
@@ -683,6 +695,7 @@
     "pasado#3": {
       "w": "pasar",
       "pos": "v",
+      "reg": true,
       "ja": "起こる",
       "form": "pasar の過去分詞（ha pasado＝起こった）"
     },

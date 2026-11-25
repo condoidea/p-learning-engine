@@ -274,6 +274,7 @@
     "marcó": {
       "w": "marcar",
       "pos": "v",
+      "reg": true,
       "ja": "点を決める・印をつける",
       "form": "marcar の点過去・三人称単数（marcó el gol＝ゴールを決めた）",
       "key": true
@@ -292,6 +293,7 @@
     "salvó": {
       "w": "salvar",
       "pos": "v",
+      "reg": true,
       "ja": "救う",
       "form": "salvar の点過去・三人称単数（salvó a su equipo＝チームを救った）"
     },
@@ -316,6 +318,7 @@
     "invitarme": {
       "w": "invitar",
       "pos": "v",
+      "reg": true,
       "ja": "招待する・呼ぶ",
       "form": "不定詞 ＋ me（私を）"
     },
@@ -349,6 +352,7 @@
     "pasado": {
       "w": "pasar",
       "pos": "v",
+      "reg": true,
       "ja": "過ぎる・起こる",
       "form": "pasar の過去分詞（han pasado＝過ぎた・ha pasado＝起こった）"
     },
@@ -472,12 +476,14 @@
     "necesitaba": {
       "w": "necesitar",
       "pos": "v",
+      "reg": true,
       "ja": "必要とする",
       "form": "necesitar の線過去・三人称単数（necesitaba ganar＝勝つ必要があった）"
     },
     "bajar": {
       "w": "bajar",
       "pos": "v",
+      "reg": true,
       "ja": "下がる・降りる",
       "note": "bajar de categoría＝降格する"
     },
@@ -530,6 +536,7 @@
     "entra": {
       "w": "entrar",
       "pos": "v",
+      "reg": true,
       "ja": "入る",
       "form": "entrar の三人称単数・現在（el balón entra＝ボールが入る）"
     },
@@ -544,6 +551,7 @@
     "rebota": {
       "w": "rebotar",
       "pos": "v",
+      "reg": true,
       "ja": "跳ね返る",
       "form": "rebotar の三人称単数・現在（rebota en varios jugadores＝何人もの選手に当たって跳ね返る）",
       "key": true
@@ -627,12 +635,14 @@
     "practicado": {
       "w": "practicar",
       "pos": "v",
+      "reg": true,
       "ja": "練習する",
       "form": "practicar の過去分詞（había practicado＝練習していた）"
     },
     "practicaste": {
       "w": "practicar",
       "pos": "v",
+      "reg": true,
       "ja": "練習する",
       "form": "practicar の点過去・二人称単数（¿practicaste?＝練習したの？）"
     },
@@ -722,6 +732,7 @@
     "háblanos": {
       "w": "hablar",
       "pos": "v",
+      "reg": true,
       "ja": "話す",
       "form": "hablar の tú への命令 habla ＋ nos（私たちに）。háblanos de ti＝私たちに君のことを話して"
     },
@@ -786,6 +797,7 @@
     "enfadaba": {
       "w": "enfadarse",
       "pos": "v",
+      "reg": true,
       "ja": "怒る",
       "form": "enfadarse の線過去・三人称単数（no se enfadaba＝怒らなかった）",
       "key": true
@@ -819,6 +831,7 @@
     "proteger": {
       "w": "proteger",
       "pos": "v",
+      "reg": true,
       "ja": "守る・保護する"
     },
     "cuándo": {
@@ -918,12 +931,14 @@
     "llamaba": {
       "w": "llamar",
       "pos": "v",
+      "reg": true,
       "ja": "電話する・呼ぶ",
       "form": "llamar の線過去・一人称単数（llamaba a casa＝家に電話していた）"
     },
     "lloraba": {
       "w": "llorar",
       "pos": "v",
+      "reg": true,
       "ja": "泣く",
       "form": "llorar の線過去・一人称単数",
       "key": true
@@ -946,6 +961,7 @@
     "luchar": {
       "w": "luchar",
       "pos": "v",
+      "reg": true,
       "ja": "戦う",
       "key": true,
       "note": "luchar por ＋ もの＝〜のために戦う"
@@ -1077,6 +1093,7 @@
     "entro": {
       "w": "entrar",
       "pos": "v",
+      "reg": true,
       "ja": "入る",
       "form": "entrar の一人称単数・現在（entro en el campo＝ピッチに入る）"
     },
@@ -1109,6 +1126,7 @@
     "lavas": {
       "w": "lavar",
       "pos": "v",
+      "reg": true,
       "ja": "洗う",
       "form": "lavar の二人称単数・現在"
     },
@@ -1139,6 +1157,7 @@
     "hablemos": {
       "w": "hablar",
       "pos": "v",
+      "reg": true,
       "ja": "話す",
       "form": "hablar の「私たちが」（勧誘・接続法現在）。hablemos de＝〜について話しましょう"
     },
@@ -1200,12 +1219,14 @@
     "operaron": {
       "w": "operar",
       "pos": "v",
+      "reg": true,
       "ja": "手術する",
       "form": "operar の点過去・三人称複数（me operaron＝手術を受けた）"
     },
     "caminar": {
       "w": "caminar",
       "pos": "v",
+      "reg": true,
       "ja": "歩く"
     },
     "hubo": {
@@ -1226,6 +1247,7 @@
     "dejar": {
       "w": "dejar",
       "pos": "v",
+      "reg": true,
       "ja": "やめる・置く・させておく",
       "note": "dejar el fútbol＝サッカーをやめる"
     },
@@ -1269,6 +1291,7 @@
     "curan": {
       "w": "curar",
       "pos": "v",
+      "reg": true,
       "ja": "治す",
       "form": "curar の三人称複数・現在（lo curan todo＝何でも治す）"
     },
@@ -1306,6 +1329,7 @@
     "ficharte": {
       "w": "fichar",
       "pos": "v",
+      "reg": true,
       "ja": "獲得する・契約する",
       "form": "不定詞 ＋ te（君を）",
       "key": true
@@ -1324,6 +1348,7 @@
     "descansar": {
       "w": "descansar",
       "pos": "v",
+      "reg": true,
       "ja": "休む"
     },
     "irme": {
@@ -1348,6 +1373,7 @@
     "escucharé": {
       "w": "escuchar",
       "pos": "v",
+      "reg": true,
       "ja": "聞く",
       "form": "escuchar の未来・一人称単数（lo escucharé＝その話を聞くよ）"
     },
@@ -1372,6 +1398,7 @@
     "gustaría": {
       "w": "gustar",
       "pos": "v",
+      "reg": true,
       "ja": "気に入る・〜したい（丁寧）",
       "form": "gustar の過去未来・三人称単数（me gustaría＝〜したいのですが）"
     },
@@ -1407,6 +1434,7 @@
     "retire": {
       "w": "retirarse",
       "pos": "v",
+      "reg": true,
       "ja": "引退する",
       "form": "retirarse の一人称単数・接続法現在（cuando me retire＝引退したら）",
       "key": true
@@ -1420,6 +1448,7 @@
     "acaba": {
       "w": "acabarse",
       "pos": "v",
+      "reg": true,
       "ja": "なくなる・終わる",
       "form": "acabar の三人称単数・現在（se nos acaba el tiempo＝時間がなくなる）"
     },
@@ -1482,6 +1511,7 @@
     "concentrando": {
       "w": "concentrarse",
       "pos": "v",
+      "reg": true,
       "ja": "集中する",
       "form": "concentrar の現在分詞（me estaba concentrando＝集中していた）"
     },
@@ -1495,6 +1525,7 @@
     "atando": {
       "w": "atar",
       "pos": "v",
+      "reg": true,
       "ja": "結ぶ",
       "form": "atar の現在分詞（te estabas atando la bota＝スパイクのひもを結んでいた）"
     },
@@ -1521,6 +1552,7 @@
     "mirando": {
       "w": "mirar",
       "pos": "v",
+      "reg": true,
       "ja": "見る",
       "form": "mirar の現在分詞（estás mirando＝見ている）"
     },
@@ -1545,6 +1577,7 @@
     "escuchando": {
       "w": "escuchar",
       "pos": "v",
+      "reg": true,
       "ja": "聞く",
       "form": "escuchar の現在分詞（nos está escuchando＝聞いている）"
     },
@@ -1557,6 +1590,7 @@
     "hablaremos": {
       "w": "hablar",
       "pos": "v",
+      "reg": true,
       "ja": "話す",
       "form": "hablar の未来・一人称複数（hablaremos con＝〜と話す）"
     },
@@ -1604,12 +1638,14 @@
     "debió": {
       "w": "deber",
       "pos": "v",
+      "reg": true,
       "ja": "〜にちがいない（deber de）・〜すべきだ",
       "form": "deber の点過去・三人称単数（debió de ser＝〜だったに違いない）"
     },
     "echaba": {
       "w": "echar",
       "pos": "v",
+      "reg": true,
       "ja": "恋しく思う（echar de menos）・投げる",
       "form": "echar の線過去・一人称単数（echaba de menos＝恋しかった）",
       "note": "echar de menos＝〜がいなくて寂しい"

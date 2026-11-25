@@ -70,6 +70,7 @@
     "gusta": {
       "w": "gustar",
       "pos": "v",
+      "reg": true,
       "ja": "好きだ・気に入る（me gusta＝私は〜が好き）",
       "form": "gustar の現在・三人称単数（主語は好きなもの：Este me gusta＝これが好き）",
       "key": true
@@ -158,6 +159,7 @@
     "gastar": {
       "w": "gastar",
       "pos": "v",
+      "reg": true,
       "ja": "（お金を）使う・費やす",
       "key": true
     },
@@ -193,6 +195,7 @@
     "compramos": {
       "w": "comprar",
       "pos": "v",
+      "reg": true,
       "ja": "買う",
       "form": "comprar の現在・一人称複数（¿por qué no compramos…?＝買ってはどう？）"
     },

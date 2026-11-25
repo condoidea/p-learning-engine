@@ -167,6 +167,7 @@
     "brilla": {
       "w": "brillar",
       "pos": "v",
+      "reg": true,
       "ja": "光る・輝く",
       "form": "brillar の三人称単数・現在",
       "key": true,
@@ -211,6 +212,7 @@
     "quito": {
       "w": "quitar",
       "pos": "v",
+      "reg": true,
       "ja": "取り除く・取り上げる",
       "form": "quitar の一人称単数・現在（se lo quito＝（彼から）それを取る）",
       "key": true
@@ -218,6 +220,7 @@
     "guardado": {
       "w": "guardar",
       "pos": "v",
+      "reg": true,
       "ja": "しまう・保管する",
       "form": "guardar の過去分詞（lo había guardado＝過去完了）",
       "key": true
@@ -250,6 +253,7 @@
     "cuidar": {
       "w": "cuidar",
       "pos": "v",
+      "reg": true,
       "ja": "世話をする・大事にする",
       "note": "cuidar a 〜＝〜の世話をする"
     },
@@ -315,6 +319,7 @@
     "canta": {
       "w": "cantar",
       "pos": "v",
+      "reg": true,
       "ja": "歌う",
       "form": "cantar の三人称単数・現在"
     },
@@ -363,6 +368,7 @@
     "habléis": {
       "w": "hablar",
       "pos": "v",
+      "reg": true,
       "ja": "話す",
       "form": "hablar の接続法・現在・二人称複数 vosotros（no habléis＝話さないで）"
     },
@@ -400,6 +406,7 @@
     "pásame": {
       "w": "pasar",
       "pos": "v",
+      "reg": true,
       "ja": "渡す・手渡す",
       "form": "pasar の tú への命令 pasa ＋ me（私に）"
     },
@@ -424,6 +431,7 @@
     "cállate": {
       "w": "callarse",
       "pos": "v",
+      "reg": true,
       "ja": "黙る",
       "form": "callarse の tú への命令 calla ＋ te"
     },
@@ -442,6 +450,7 @@
     "casarte": {
       "w": "casarse",
       "pos": "v",
+      "reg": true,
       "ja": "結婚する",
       "form": "casarse ＋ te（君が）。¿quieres casarte conmigo?＝僕と結婚してくれる？"
     },
@@ -454,18 +463,21 @@
     "practicado": {
       "w": "practicar",
       "pos": "v",
+      "reg": true,
       "ja": "練習する",
       "form": "practicar の過去分詞（he practicado＝現在完了）"
     },
     "practicando": {
       "w": "practicar",
       "pos": "v",
+      "reg": true,
       "ja": "練習する",
       "form": "practicar の現在分詞（has estado practicando＝ずっと練習していた）"
     },
     "practicar": {
       "w": "practicar",
       "pos": "v",
+      "reg": true,
       "ja": "練習する"
     },
     "espejo": {
@@ -502,6 +514,7 @@
     "saqué": {
       "w": "sacar",
       "pos": "v",
+      "reg": true,
       "ja": "取り出す",
       "form": "sacar の点過去・一人称単数（c → qu）"
     },
@@ -553,6 +566,7 @@
     "déjalo": {
       "w": "dejar",
       "pos": "v",
+      "reg": true,
       "ja": "放っておく・やめる",
       "form": "dejar の tú への命令 deja ＋ lo（それを）。déjalo＝いいから放っておいて"
     },
@@ -564,12 +578,14 @@
     "preguntes": {
       "w": "preguntar",
       "pos": "v",
+      "reg": true,
       "ja": "たずねる",
       "form": "preguntar の接続法・二人称単数（quiero que me lo preguntes＝あなたの口から聞きたい）"
     },
     "mirándome": {
       "w": "mirar",
       "pos": "v",
+      "reg": true,
       "ja": "見る",
       "form": "mirar の現在分詞 mirando ＋ me（私を）"
     },
@@ -602,12 +618,14 @@
     "aprendido": {
       "w": "aprender",
       "pos": "v",
+      "reg": true,
       "ja": "覚える・学ぶ",
       "form": "aprender の過去分詞（ha aprendido＝現在完了）"
     },
     "aprende": {
       "w": "aprender",
       "pos": "v",
+      "reg": true,
       "ja": "覚える・学ぶ",
       "form": "aprender の三人称単数・現在"
     },
@@ -626,6 +644,7 @@
     "dejado": {
       "w": "dejar",
       "pos": "v",
+      "reg": true,
       "ja": "置く・残す",
       "form": "dejar の過去分詞（nos ha dejado una nota＝現在完了）"
     },
@@ -658,6 +677,7 @@
     "quedé": {
       "w": "quedarse",
       "pos": "v",
+      "reg": true,
       "ja": "とどまる・残る",
       "form": "quedarse の点過去・一人称単数（me quedé＝私は残った）"
     },
@@ -670,12 +690,14 @@
     "acabamos": {
       "w": "acabar",
       "pos": "v",
+      "reg": true,
       "ja": "終える",
       "form": "acabar の一人称複数・現在（acabamos de llegar＝着いたばかりだ）"
     },
     "acaba": {
       "w": "acabar",
       "pos": "v",
+      "reg": true,
       "ja": "終える",
       "form": "acabar の三人称単数・現在（acaba de decir＝言ったばかりだ）"
     },
@@ -688,6 +710,7 @@
     "toma": {
       "w": "tomar",
       "pos": "v",
+      "reg": true,
       "ja": "取る・受け取る",
       "form": "tomar の tú への命令（toma＝はい、どうぞ）"
     },

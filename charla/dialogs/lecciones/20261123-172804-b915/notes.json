@@ -128,12 +128,14 @@
     "llamé": {
       "w": "llamar",
       "pos": "v",
+      "reg": true,
       "ja": "電話する",
       "form": "llamar の点過去・一人称単数（te llamé＝君に電話した）"
     },
     "contestó": {
       "w": "contestar",
       "pos": "v",
+      "reg": true,
       "ja": "答える・電話に出る",
       "form": "contestar の点過去・三人称単数（nadie contestó＝誰も出なかった）",
       "key": true
@@ -183,6 +185,7 @@
     "llamarte": {
       "w": "llamar",
       "pos": "v",
+      "reg": true,
       "ja": "電話する（llamar ＋ te＝君に電話する）",
       "form": "llamar の不定詞に te（君に）がついた形"
     },
@@ -221,6 +224,7 @@
     "funciona": {
       "w": "funcionar",
       "pos": "v",
+      "reg": true,
       "ja": "（機械が）動く・機能する",
       "form": "funcionar の現在・三人称単数（el móvil no funciona＝携帯がつながらない）",
       "key": true
@@ -337,6 +341,7 @@
     "comprarte": {
       "w": "comprar",
       "pos": "v",
+      "reg": true,
       "ja": "買う（comprar ＋ te＝君に買う）",
       "form": "comprar の不定詞に te（君に）がついた形"
     },
@@ -428,6 +433,7 @@
     "comí": {
       "w": "comerse",
       "pos": "v",
+      "reg": true,
       "ja": "全部食べてしまう",
       "form": "comer の点過去・一人称単数（comerse＝残らず食べる）",
       "key": true
@@ -459,6 +465,7 @@
     "cenamos": {
       "w": "cenar",
       "pos": "v",
+      "reg": true,
       "ja": "晩ごはんを食べる",
       "form": "cenar の現在・一人称複数（¿cenamos fuera?＝外で食べない？）"
     },
@@ -470,6 +477,7 @@
     "invito": {
       "w": "invitar",
       "pos": "v",
+      "reg": true,
       "ja": "おごる・招待する",
       "form": "invitar の現在・一人称単数（te invito＝君におごる）",
       "key": true

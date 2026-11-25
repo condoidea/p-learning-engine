@@ -66,6 +66,7 @@
     "busca": {
       "w": "buscar",
       "pos": "v",
+      "reg": true,
       "ja": "探す・（人を）訪ねる",
       "form": "buscar の現在・三人称単数（lo busca＝あなたを訪ねてきている）"
     },
@@ -84,6 +85,7 @@
     "llama": {
       "w": "llamarse",
       "pos": "v",
+      "reg": true,
       "ja": "〜という名前である",
       "form": "llamarse の現在・三人称単数（se llama＝〜という名前だ）",
       "key": true
@@ -113,6 +115,7 @@
     "hablé": {
       "w": "hablar",
       "pos": "v",
+      "reg": true,
       "ja": "話す",
       "form": "hablar の点過去・一人称単数（le hablé＝あなたに話した）"
     },
@@ -158,6 +161,7 @@
     "estudia": {
       "w": "estudiar",
       "pos": "v",
+      "reg": true,
       "ja": "勉強する",
       "form": "estudiar の現在・三人称単数（主語は Juana）"
     },
@@ -235,6 +239,7 @@
     "llaman": {
       "w": "llamar",
       "pos": "v",
+      "reg": true,
       "ja": "呼ぶ",
       "form": "llamar の現在・三人称複数（la llaman UNAM＝それを UNAM と呼ぶ。人々が）"
     },

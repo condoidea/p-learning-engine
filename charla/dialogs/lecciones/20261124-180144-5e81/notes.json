@@ -71,6 +71,7 @@
     "mira": {
       "w": "mirar",
       "pos": "v",
+      "reg": true,
       "ja": "見る",
       "form": "mirar の命令形（tú）（mira＝見て）"
     },
@@ -124,6 +125,7 @@
     "guardaba": {
       "w": "guardar",
       "pos": "v",
+      "reg": true,
       "ja": "しまう・取っておく",
       "form": "guardar の線過去・一人称単数（guardaba＝しまっていた）",
       "key": true
@@ -202,6 +204,7 @@
     "llamábamos": {
       "w": "llamar",
       "pos": "v",
+      "reg": true,
       "ja": "呼ぶ",
       "form": "llamar の線過去・一人称複数（llamábamos a la casa «el palacio»＝その家を「宮殿」と呼んでいた）"
     },
@@ -279,6 +282,7 @@
     "guardé": {
       "w": "guardar",
       "pos": "v",
+      "reg": true,
       "ja": "しまう・大事にとっておく",
       "form": "guardar の点過去・一人称単数（lo guardé＝それをしまっておいた）"
     },
@@ -320,6 +324,7 @@
     "vendían": {
       "w": "vender",
       "pos": "v",
+      "reg": true,
       "ja": "売る",
       "form": "vender の線過去・三人称複数（vendían＝売っていた）"
     },
@@ -340,6 +345,7 @@
     "engañó": {
       "w": "engañar",
       "pos": "v",
+      "reg": true,
       "ja": "だます",
       "form": "engañar の点過去・三人称単数（te engañó＝君をだました）",
       "key": true
@@ -352,6 +358,7 @@
     "casé": {
       "w": "casarse",
       "pos": "v",
+      "reg": true,
       "ja": "結婚する（casarse con…＝〜と結婚する）",
       "form": "casarse の点過去・一人称単数（me casé＝結婚した）",
       "key": true

@@ -247,7 +247,8 @@
     var soon = careAll().length;
     var total = D.words.length, got = V.caughtCount(), wild = V.wildList().length, face = V.faceList().length, meet = V.meetList().length;
     $('#hBrand').textContent = D.brand;
-    $('#hDeck').innerHTML = '📚 デッキ：<b>' + esc(deckName()) + '</b><small>切りかえ・読み込み ›</small>';
+    var vq = myDeck() ? verbIssues(D).length : 0;
+    $('#hDeck').innerHTML = '📚 デッキ：<b>' + esc(deckName()) + '</b><small>' + (vq ? '🔍 動詞の確認 ' + vq + '・' : '') + '切りかえ・読み込み ›</small>';
     $('#hSub').textContent = D.sub;
     $('#hDex').textContent = got + ' / ' + total;
     var rc = V.rankCounts();
@@ -1663,7 +1664,9 @@
     var item = function (id, name, sub, href) {
       return '<a class="deck-item' + (id === cur ? ' cur' : '') + '" href="' + href + '"><b>' + esc(name) + '</b><small>' + esc(sub) + '</small>' + (id === cur ? '<span class="dcur">いま使っている</span>' : '') + '</a>';
     };
+    var vq = myDeck() ? verbIssues(D) : null;
     box.innerHTML = '<p class="u-title">📚 デッキ</p>' +
+      (vq ? '<button class="' + (vq.length ? 'next' : 'ghost') + '" id="dkVerb">🔍 動詞の活用チェック' + (vq.length ? '（確かめる動詞 ' + vq.length + '語）' : '（確かめる動詞はありません）') + '</button>' : '') +
       builtin.map(function (b) { return item(b.id, b.brand + '　' + b.title, 'アプリに入っている単語（' + b.sub + '・' + b.words + '語）', 'vocab.html?deck=' + b.id); }).join('') +
       list.map(function (d) { return item(d.id, d.brand + '　' + d.title, /^charla/.test(d.id) ? '💬 会話アプリ CHARLA で調べた語・' + d.words + '語（ダイアログごとの区間）' : (d.book ? '📗 ' + d.book + '・' : '') + d.words + '語（この端末に読み込んだデッキ）', 'vocab.html?deck=' + encodeURIComponent(d.id)); }).join('') +
       '<div class="deck-imp"><p class="u-cap"><b>＋ 参考書のデッキを読み込む</b></p>' +
@@ -1672,6 +1675,7 @@
       '<details><summary>テキストを貼りつける（少しのとき）</summary><textarea id="dkText" rows="5" placeholder="{ &quot;id&quot;: &quot;...&quot;, &quot;words&quot;: [ ... ] }"></textarea><button class="ghost" id="dkPaste">読み込む</button></details>' +
       '<div class="dk-msg" id="dkMsg">' + (msg || '') + '</div></div>';
     $('#dkFile', box).addEventListener('click', function () { $('#deckFile').click(); });
+    if ($('#dkVerb', box)) $('#dkVerb', box).addEventListener('click', openVerbCheck);
     $('#dkPaste', box).addEventListener('click', function () { importDeck($('#dkText', box).value); });
     $('#sheet').hidden = false;
     tw($('#sheet .sh'), { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' });
@@ -1716,8 +1720,12 @@
     if (window.Conj && Array.isArray(N.words)) N.words.forEach(function (w) { if (w && w.pos === 'v' && w.cj && !Conj.checkIrr(w.cj).length) Conj.addIrr(w.w, w.cj); });
     var r = window.DeckCheck ? DeckCheck.check(N, window.Conj) : { errors: [], warnings: [] };
     if (r.errors.length) return dkMsg('<p>✖ 直してから読み込んでください（' + r.errors.length + '件）</p><ul class="dk-list">' + r.errors.slice(0, 8).map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') + '</ul>');
-    if (r.warnings.length && !force) {
-      dkMsg('<p>⚠ 注意が ' + r.warnings.length + ' 件あります（読み込みはできます）</p><ul class="dk-list">' + r.warnings.slice(0, 5).map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') + '</ul><button class="next" id="dkGo">このまま読み込む</button>');
+    /* 活用の注意は、下の「動詞の活用チェック」の一覧にまとめて出す（その場で直せる） */
+    var other = r.warnings.filter(function (e) { return !/活用形として作れない|"reg": true/.test(e); }), vq = verbIssues(N);
+    if ((other.length || vq.length) && !force) {
+      dkMsg((other.length ? '<p>⚠ 注意が ' + other.length + ' 件あります（読み込みはできます）</p><ul class="dk-list">' + other.slice(0, 5).map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') + '</ul>' : '') +
+        (vq.length ? '<div id="dkVq"></div>' : '') + '<button class="next" id="dkGo">読み込む</button>');
+      if (vq.length) verbCheckList($('#dkVq'), N, vq, null);
       $('#dkGo').addEventListener('click', function () { finishImport(N, done, true); });
       return;
     }
@@ -1726,6 +1734,108 @@
     setTimeout(function () { location.href = 'vocab.html?deck=' + encodeURIComponent(N.id); }, 900);
   }
 
+
+  /* =========================================================
+   * 🔍 動詞の活用チェック（読み込むとき・読み込んだあと）
+   *  アプリが知らない動詞（表にも、つづりの決まりにもなく、cj もない）は規則動詞として活用する。
+   *  語幹が変わる動詞などがまぎれていると、まちがった形で練習してしまう。形を並べて見せ、その場で直せるようにする。
+   *  対象：① 規則動詞として活用する動詞（まだ確かめていないもの） ② 例文の { } の形が活用から作れない動詞
+   *  確かめた印：「規則でOK」→ w.reg = true ／ 語幹の変化を選ぶ → w.cj = { stem, ir }
+   * ========================================================= */
+  function myDeck() { return !!(D.lang === 'es' && window.Conj && window.DeckCheck && window.VocabDecks && VocabDecks.get(D.id)); }
+  function verbIssues(deck) {
+    if (!window.Conj || !window.DeckCheck) return [];
+    var out = [];
+    (deck.words || []).forEach(function (w) {
+      if (!w || w.pos !== 'v' || !w.w || !/(ar|er|ir|ír)(se)?$/.test(w.w)) return;
+      var m = w.ex && typeof w.ex[0] === 'string' && w.ex[0].match(/\{([^{}]+)\}/), f = m ? m[1] : null;
+      var bad = f && !DeckCheck.isFormOf(f, DeckCheck.formsOf(w.w, Conj));
+      if (bad || (!w.cj && !w.reg && !Conj.known(w.w))) out.push({ w: w, f: bad ? f : null });
+    });
+    return out;
+  }
+  var VK_SNAP = {};   /* 直す前のくせ（やり直すときに戻す） */
+  function vkForms(w) {
+    var F = function (t, p) { var f = Conj.form(w.w, t, p); return f ? String(f).replace(/^(me|te|se|nos|os) /, '') : '−'; };
+    return '<span class="vk-t">現在</span>' + [F('pres', 0), F('pres', 1), F('pres', 3)].join('・') +
+      '<span class="vk-t">点過去</span>' + F('pret', 2) + '<span class="vk-t">接続法</span>' + F('subj', 0);
+  }
+  function vkFree(w) { return !VK_SNAP[w.id] && !Conj.known(w.w) && !w.cj; }   /* 「規則でOK」を出せる（アプリもデッキもくせを知らない） */
+  function vkRow(it, done) {
+    var w = it.w, v = Conj.parse(w.w);
+    var ST = [['ie', 'e→ie'], ['ue', /u[^aeiou]*$/.test(v.stem) && !/o[^aeiou]*$/.test(v.stem) ? 'u→ue' : 'o→ue']];
+    if (v.cls === 'ir') ST.push(['i', 'e→i']);   /* e→i は -ir 動詞だけ */
+    return '<li class="vk' + (done ? ' done' : '') + '" data-id="' + esc(w.id) + '">' +
+      '<p class="vk-h"><b>' + esc(w.w) + '</b><small>' + esc(w.ja || '') + '</small></p>' +
+      (it.f && !done ? '<p class="vk-warn">⚠ 例文の <b>' + esc(it.f) + '</b> が、この活用から作れない</p>' : '') +
+      '<p class="vk-f">' + vkForms(w) + '</p>' +
+      (done ? '<p class="vk-ok">✔ ' + esc(done) + '<button class="vk-undo">やり直す</button></p>' :
+        '<div class="vk-b">' + (vkFree(w) ? '<button class="vk-reg">規則でOK</button>' : '') +
+        ST.map(function (x) { return '<button class="vk-st" data-st="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div>') +
+      '</li>';
+  }
+  /* 一覧を box に出す。save(w)：1語を直したら呼ぶ（読み込み前は null：読み込むときに一緒に保存される） */
+  function verbCheckList(box, deck, items, save) {
+    var DONE = {};
+    function draw() {
+      var rest = items.filter(function (it) { return !DONE[it.w.id] && !it.f && vkFree(it.w); });
+      box.innerHTML = '<p class="vk-lead">🔍 <b>確かめる動詞 ' + items.length + '語</b>　アプリが知らない動詞は、規則動詞として活用します。形がちがっていたら、語幹の変わり方をえらんでください。' +
+        (items.some(function (it) { return it.f; }) ? '<br>⚠ は例文の形が作れない動詞です（例文の書きまちがいのことも）。' : '') +
+        '<br><small>ほかの不規則（yo だけ不規則など）は、ファイルに cj を書いて読み込み直してください。</small></p>' +
+        '<ul class="vk-list">' + items.map(function (it) { return vkRow(it, DONE[it.w.id]); }).join('') + '</ul>' +
+        (rest.length > 1 ? '<button class="ghost" id="vkAll">残り ' + rest.length + '語は全部 規則でOK</button>' : '');
+      $$('.vk', box).forEach(function (li) {
+        var it = items.filter(function (x) { return x.w.id === li.dataset.id; })[0], w = it.w, base = Conj.parse(w.w).base;
+        var reg = $('.vk-reg', li), undo = $('.vk-undo', li);
+        if (reg) reg.addEventListener('click', function () { w.reg = true; DONE[w.id] = '規則でOK'; if (save) save(w); draw(); });
+        $$('.vk-st', li).forEach(function (b) {
+          b.addEventListener('click', function () {
+            if (!(w.id in VK_SNAP)) VK_SNAP[w.id] = { cj: w.cj ? JSON.parse(JSON.stringify(w.cj)) : null, irr: Conj.IRR[base] };
+            var st = b.dataset.st, cj = {}, k;
+            if (w.cj) for (k in w.cj) cj[k] = w.cj[k];
+            cj.stem = st;
+            if (Conj.parse(w.w).cls === 'ir') cj.ir = st === 'ue' ? 'u' : 'i'; else delete cj.ir;
+            w.cj = cj; delete w.reg; Conj.addIrr(w.w, cj);
+            DONE[w.id] = '語幹 ' + b.textContent + ' にした'; if (save) save(w); draw();
+          });
+        });
+        if (undo) undo.addEventListener('click', function () {
+          var sn = VK_SNAP[w.id];
+          if (sn) {
+            if (sn.cj) w.cj = sn.cj; else delete w.cj;
+            if (sn.irr) Conj.IRR[base] = sn.irr; else delete Conj.IRR[base];
+            delete VK_SNAP[w.id];
+          }
+          delete w.reg; delete DONE[w.id]; if (save) save(w); draw();
+        });
+      });
+      var all = $('#vkAll', box);
+      if (all) all.addEventListener('click', function () {
+        rest.forEach(function (it) { it.w.reg = true; DONE[it.w.id] = '規則でOK'; if (save) save(it.w); });
+        draw();
+      });
+    }
+    draw();
+  }
+  /* 読み込んだあと：いまのデッキの動詞を確かめる。直したら、端末のデッキにもすぐ保存する */
+  function openVerbCheck() {
+    var box = $('#sheetBody'), items = verbIssues(D);
+    box.innerHTML = '<p class="u-title">🔍 動詞の活用チェック</p><p class="note">「' + esc(D.title) + '」の動詞</p><div id="vkBox"></div><button class="ghost" id="vkBack">← デッキへ</button>';
+    if (!items.length) $('#vkBox', box).innerHTML = '<p class="vk-lead">✔ 確かめる動詞はありません。どの動詞も、アプリが知っている活用か、確かめ済みです。</p>';
+    else verbCheckList($('#vkBox', box), D, items, function (w) {
+      try {
+        var st = VocabDecks.get(D.id); if (!st) return;
+        st.words.forEach(function (x) {
+          if (x.id !== w.id) return;
+          if (w.cj) x.cj = w.cj; else delete x.cj;
+          if (w.reg) x.reg = true; else delete x.reg;
+        });
+        VocabDecks.save(st);
+      } catch (e) { /* 保存できない（容量など）：アプリを開いているあいだだけ効く */ }
+    });
+    $('#vkBack', box).addEventListener('click', function () { openDecks(); });
+    $('#sheet .sh').scrollTop = 0;
+  }
 
   /* =========================================================
    * 💫 身に付いた瞬間（出会って捕まえたとき・野生から取り戻したとき・卒業したとき）

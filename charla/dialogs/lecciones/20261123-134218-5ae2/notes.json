@@ -168,6 +168,7 @@
     "dura": {
       "w": "durar",
       "pos": "v",
+      "reg": true,
       "ja": "続く",
       "form": "durar の現在・三人称単数（一か月続く）",
       "key": true
@@ -356,6 +357,7 @@
     "presto": {
       "w": "prestar",
       "pos": "v",
+      "reg": true,
       "ja": "貸す",
       "form": "prestar の現在・一人称単数（te la presto＝君にそれを貸そうか）",
       "key": true
@@ -464,6 +466,7 @@
     "olvidó": {
       "w": "olvidar",
       "pos": "v",
+      "reg": true,
       "ja": "忘れる",
       "form": "olvidar の点過去・三人称単数（se me olvidó＝うっかり忘れてしまった。主語は paraguas）",
       "key": true
@@ -471,6 +474,7 @@
     "dejas": {
       "w": "dejar",
       "pos": "v",
+      "reg": true,
       "ja": "貸す（ここでは prestar と同じ）",
       "form": "dejar の現在・二人称単数（me dejas uno＝1本貸してくれる？）",
       "key": true,
@@ -494,6 +498,7 @@
     "dejo": {
       "w": "dejar",
       "pos": "v",
+      "reg": true,
       "ja": "貸す（ここでは prestar と同じ）",
       "form": "dejar の現在・一人称単数（te lo dejo＝君にそれを貸す）",
       "key": true

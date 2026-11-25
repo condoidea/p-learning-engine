@@ -130,12 +130,14 @@
     "subido": {
       "w": "subir",
       "pos": "v",
+      "reg": true,
       "ja": "上る・運び上げる",
       "form": "subir の過去分詞（hemos subido＝現在完了）"
     },
     "alquilado": {
       "w": "alquilar",
       "pos": "v",
+      "reg": true,
       "ja": "借りる・賃貸する",
       "key": true,
       "form": "alquilar の過去分詞（has alquilado＝現在完了）",
@@ -158,6 +160,7 @@
     "subir": {
       "w": "subir",
       "pos": "v",
+      "reg": true,
       "ja": "上る・上がる・運び上げる"
     },
     "escaleras": {
@@ -187,6 +190,7 @@
     "dejado": {
       "w": "dejar",
       "pos": "v",
+      "reg": true,
       "ja": "置く・残す",
       "form": "dejar の過去分詞（lo hemos dejado／la había dejado）"
     },
@@ -224,6 +228,7 @@
     "entra": {
       "w": "entrar",
       "pos": "v",
+      "reg": true,
       "ja": "入る・入ってくる",
       "form": "entrar の三人称単数・現在（日差しが「入ってくる」）"
     },
@@ -242,6 +247,7 @@
     "perdona": {
       "w": "perdonar",
       "pos": "v",
+      "reg": true,
       "ja": "許す・（命令で）ごめん",
       "form": "perdonar の tú への命令（perdona＝ごめんね）"
     },
@@ -254,12 +260,14 @@
     "pásame": {
       "w": "pasar",
       "pos": "v",
+      "reg": true,
       "ja": "渡す・手渡す",
       "form": "pasar の tú への命令 pasa ＋ me（私に）"
     },
     "toma": {
       "w": "tomar",
       "pos": "v",
+      "reg": true,
       "ja": "取る・受け取る",
       "form": "tomar の tú への命令（toma＝はい、どうぞ）"
     },
@@ -278,6 +286,7 @@
     "encantan": {
       "w": "encantar",
       "pos": "v",
+      "reg": true,
       "ja": "大好きだ・魅了する",
       "form": "encantar の三人称複数・現在（me encantan las cortinas＝カーテンが大好き）"
     },
@@ -371,6 +380,7 @@
     "tomando": {
       "w": "tomar",
       "pos": "v",
+      "reg": true,
       "ja": "取る・飲む",
       "form": "tomar の現在分詞（me estás tomando el pelo＝進行形）"
     },
@@ -384,6 +394,7 @@
     "entrado": {
       "w": "entrar",
       "pos": "v",
+      "reg": true,
       "ja": "入る",
       "form": "entrar の過去分詞（hemos entrado＝現在完了）"
     },
@@ -396,6 +407,7 @@
     "llevamos": {
       "w": "llevar",
       "pos": "v",
+      "reg": true,
       "ja": "運ぶ・持っていく・（時間が）経つ",
       "form": "llevar の一人称複数・現在（llevamos dos horas metiendo＝2時間〜し続けている）"
     },
@@ -409,6 +421,7 @@
     "metiendo": {
       "w": "meter",
       "pos": "v",
+      "reg": true,
       "ja": "入れる・運び込む",
       "form": "meter の現在分詞（llevamos dos horas metiendo＝2時間〜し続けている）"
     },
@@ -421,6 +434,7 @@
     "mirado": {
       "w": "mirar",
       "pos": "v",
+      "reg": true,
       "ja": "見る",
       "form": "mirar の過去分詞（no he mirado＝現在完了）"
     },
@@ -435,12 +449,14 @@
     "sacarlo": {
       "w": "sacar",
       "pos": "v",
+      "reg": true,
       "ja": "取り出す・外に出す",
       "form": "sacar ＋ lo（それを）"
     },
     "coge": {
       "w": "coger",
       "pos": "v",
+      "reg": true,
       "ja": "取る・つかむ",
       "form": "coger の tú への命令（coge tú las cajas＝君が箱を持って）",
       "note": "スペインでの用法。中南米では別の意味になる地域がある"
@@ -468,12 +484,14 @@
     "subiendo": {
       "w": "subir",
       "pos": "v",
+      "reg": true,
       "ja": "上る・上がる",
       "form": "subir の現在分詞（está subiendo＝進行形）"
     },
     "silbando": {
       "w": "silbar",
       "pos": "v",
+      "reg": true,
       "ja": "口笛を吹く",
       "key": true,
       "form": "silbar の現在分詞（está silbando＝進行形）",
@@ -497,6 +515,7 @@
     "escondo": {
       "w": "esconderse",
       "pos": "v",
+      "reg": true,
       "ja": "隠れる",
       "key": true,
       "form": "esconderse の一人称単数・現在（me escondo＝私は隠れる）"
@@ -529,23 +548,27 @@
     "subimos": {
       "w": "subir",
       "pos": "v",
+      "reg": true,
       "ja": "上る・運び上げる",
       "form": "subir の一人称複数・現在（si le subimos＝もし私たちが運び上げたら）"
     },
     "invita": {
       "w": "invitar",
       "pos": "v",
+      "reg": true,
       "ja": "招く・おごる",
       "form": "invitar の三人称単数・現在（nos invita a cenar＝夕食をごちそうしてくれる）"
     },
     "cenar": {
       "w": "cenar",
       "pos": "v",
+      "reg": true,
       "ja": "夕食を食べる"
     },
     "miramos": {
       "w": "mirar",
       "pos": "v",
+      "reg": true,
       "ja": "見る",
       "form": "mirar の一人称複数・現在（miramos bien＝ちゃんと見る）"
     },
@@ -558,6 +581,7 @@
     "miras": {
       "w": "mirar",
       "pos": "v",
+      "reg": true,
       "ja": "見る",
       "form": "mirar の二人称単数・現在（la miras tú＝君が見るんだよ）"
     },
@@ -570,6 +594,7 @@
     "faltan": {
       "w": "faltar",
       "pos": "v",
+      "reg": true,
       "ja": "足りない・残っている",
       "key": true,
       "form": "faltar の三人称複数・現在（faltan cinco＝あと5個残っている）"
@@ -577,6 +602,7 @@
     "pesa": {
       "w": "pesar",
       "pos": "v",
+      "reg": true,
       "ja": "重さがある・重い",
       "key": true,
       "form": "pesar の三人称単数・現在"
@@ -762,11 +788,13 @@
     "llevar#13": {
       "w": "llevar",
       "pos": "v",
+      "reg": true,
       "ja": "持っていく・運ぶ"
     },
     "mira#16": {
       "w": "mirar",
       "pos": "v",
+      "reg": true,
       "ja": "見る",
       "form": "mirar の tú への命令（mira＝見て・ほら）"
     },
@@ -818,6 +846,7 @@
     "dejado#25": {
       "w": "dejar",
       "pos": "v",
+      "reg": true,
       "ja": "（〜の状態に）しておく",
       "form": "dejar の過去分詞（la había dejado abierta＝開けたままにしておいた）"
     },
@@ -862,6 +891,7 @@
     "llama#36": {
       "w": "llamarse",
       "pos": "v",
+      "reg": true,
       "ja": "〜という名前だ",
       "form": "llamarse の三人称単数・現在（se llama don Ramón＝ラモンさんという名前だ）"
     },

@@ -145,6 +145,7 @@
     "llegué": {
       "w": "llegar",
       "pos": "v",
+      "reg": true,
       "ja": "着く",
       "form": "llegar の点過去・一人称単数（g → gu）",
       "key": true
@@ -229,6 +230,7 @@
     "recibió": {
       "w": "recibir",
       "pos": "v",
+      "reg": true,
       "ja": "出迎える・迎える",
       "form": "recibir の点過去・三人称単数（空港で迎えてくれた）",
       "key": true
@@ -236,6 +238,7 @@
     "llevó": {
       "w": "llevar",
       "pos": "v",
+      "reg": true,
       "ja": "連れて行く",
       "form": "llevar の点過去・三人称単数（me llevó a＝私を〜へ連れて行った）",
       "key": true,
@@ -256,6 +259,7 @@
     "felicito": {
       "w": "felicitar",
       "pos": "v",
+      "reg": true,
       "ja": "お祝いを言う",
       "form": "felicitar の現在・一人称単数（lo felicito＝おめでとうございます）",
       "key": true
@@ -268,6 +272,7 @@
     "fundó": {
       "w": "fundar",
       "pos": "v",
+      "reg": true,
       "ja": "創立する・設立する",
       "form": "fundar の点過去・三人称単数（se fundó＝創立された）",
       "key": true
@@ -290,6 +295,7 @@
     "trabaja": {
       "w": "trabajar",
       "pos": "v",
+      "reg": true,
       "ja": "働く",
       "form": "trabajar の現在・三人称単数"
     },
@@ -325,6 +331,7 @@
     "vivió": {
       "w": "vivir",
       "pos": "v",
+      "reg": true,
       "ja": "住む",
       "form": "vivir の点過去・三人称単数（3年間住んだ）",
       "key": true
@@ -348,6 +355,7 @@
     "trabajar": {
       "w": "trabajar",
       "pos": "v",
+      "reg": true,
       "ja": "働く"
     },
     "principal": {
@@ -359,6 +367,7 @@
     "nombraron": {
       "w": "nombrar",
       "pos": "v",
+      "reg": true,
       "ja": "任命する",
       "form": "nombrar の点過去・三人称複数（誰かが任命した）",
       "key": true

@@ -134,6 +134,7 @@
     "levantarnos": {
       "w": "levantarse",
       "pos": "v",
+      "reg": true,
       "ja": "起きる",
       "form": "levantarse の原形＋nos（再帰・私たちが起きる）",
       "key": true
@@ -183,6 +184,7 @@
     "levantarte": {
       "w": "levantarse",
       "pos": "v",
+      "reg": true,
       "ja": "起きる",
       "form": "levantarse の原形＋te（再帰・君が起きる）"
     },
@@ -203,6 +205,7 @@
     "peino": {
       "w": "peinarse",
       "pos": "v",
+      "reg": true,
       "ja": "髪をとかす",
       "form": "peinarse の現在・一人称単数（me peino＝髪をとかす）",
       "key": true
@@ -210,6 +213,7 @@
     "desayuno": {
       "w": "desayunar",
       "pos": "v",
+      "reg": true,
       "ja": "朝食を食べる",
       "form": "desayunar の現在・一人称単数",
       "key": true
@@ -223,6 +227,7 @@
     "baño": {
       "w": "bañarse",
       "pos": "v",
+      "reg": true,
       "ja": "お風呂に入る",
       "form": "bañarse の現在・一人称単数（me baño＝お風呂に入る）",
       "note": "ここは名詞の「浴室」ではなく動詞",
@@ -244,6 +249,7 @@
     "ducho": {
       "w": "ducharse",
       "pos": "v",
+      "reg": true,
       "ja": "シャワーを浴びる",
       "form": "ducharse の現在・一人称単数",
       "key": true
@@ -251,6 +257,7 @@
     "afeitarme": {
       "w": "afeitarse",
       "pos": "v",
+      "reg": true,
       "ja": "ひげをそる",
       "form": "afeitarse の原形＋me（再帰）",
       "key": true
@@ -394,6 +401,7 @@
     "llévate": {
       "w": "llevarse",
       "pos": "v",
+      "reg": true,
       "ja": "持っていく",
       "form": "llevarse の命令・tú（llévate una chaqueta＝上着を持っていって）",
       "key": true
@@ -412,6 +420,7 @@
     "fabrica": {
       "w": "fabricar",
       "pos": "v",
+      "reg": true,
       "ja": "製造する・つくる",
       "form": "fabricar の現在・三人称単数（¿quién fabrica…?＝だれがつくっているの？）",
       "key": true
@@ -487,6 +496,7 @@
     "saludarla": {
       "w": "saludar",
       "pos": "v",
+      "reg": true,
       "ja": "あいさつする",
       "form": "saludar の原形＋la（彼女に）",
       "key": true
@@ -508,6 +518,7 @@
     "saludamos": {
       "w": "saludarse",
       "pos": "v",
+      "reg": true,
       "ja": "あいさつを交わす",
       "form": "saludarse の現在・一人称複数（nos saludamos＝あいさつし合う）",
       "key": true

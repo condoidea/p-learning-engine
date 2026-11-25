@@ -182,6 +182,7 @@
     "caminar": {
       "w": "caminar",
       "pos": "v",
+      "reg": true,
       "ja": "歩く",
       "key": true
     },
@@ -249,6 +250,7 @@
     "queda": {
       "w": "quedar",
       "pos": "v",
+      "reg": true,
       "ja": "（服が）合う・似合う",
       "form": "quedar の現在・三人称単数（¿qué tal me queda?＝私に似合う？）",
       "key": true
@@ -289,6 +291,7 @@
     "llevo": {
       "w": "llevar",
       "pos": "v",
+      "reg": true,
       "ja": "（買って）持っていく",
       "form": "llevar の現在・一人称単数（me la llevo＝それをもらう）",
       "note": "llevarse：買って持っていく・もらう"
@@ -302,6 +305,7 @@
     "gastas": {
       "w": "gastar",
       "pos": "v",
+      "reg": true,
       "ja": "（お金を）使う",
       "form": "gastar の現在・二人称単数",
       "key": true
@@ -315,6 +319,7 @@
     "comprabas": {
       "w": "comprar",
       "pos": "v",
+      "reg": true,
       "ja": "買っていた",
       "form": "comprar の線過去・二人称単数（antes siempre comprabas＝前はいつも買っていた）"
     },
@@ -341,6 +346,7 @@
     "gano": {
       "w": "ganar",
       "pos": "v",
+      "reg": true,
       "ja": "稼ぐ・もうける",
       "form": "ganar の現在・一人称単数",
       "note": "ここは「勝つ」でなく「収入を得る」",
@@ -361,18 +367,21 @@
     "paga": {
       "w": "pagar",
       "pos": "v",
+      "reg": true,
       "ja": "（給料を）払う",
       "form": "pagar の現在・三人称単数（ese sector paga bien＝その業界は給料がいい）"
     },
     "trabajo": {
       "w": "trabajar",
       "pos": "v",
+      "reg": true,
       "ja": "働く",
       "form": "trabajar の現在・一人称単数（trabajo mucho＝よく働く）"
     },
     "necesito": {
       "w": "necesitar",
       "pos": "v",
+      "reg": true,
       "ja": "必要とする",
       "form": "necesitar の現在・一人称単数"
     },

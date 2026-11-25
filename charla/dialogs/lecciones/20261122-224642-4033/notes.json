@@ -82,6 +82,7 @@
     "pasa": {
       "w": "pasar",
       "pos": "v",
+      "reg": true,
       "ja": "（〜に）起こる",
       "form": "pasar の現在・三人称単数（¿Qué te pasa?＝どうしたの？）"
     },
@@ -127,6 +128,7 @@
     "levantarme": {
       "w": "levantarse",
       "pos": "v",
+      "reg": true,
       "ja": "起きる",
       "form": "levantarse の原形＋me（再帰：自分を起こす＝起きる）",
       "key": true
@@ -176,12 +178,14 @@
     "levantarte": {
       "w": "levantarse",
       "pos": "v",
+      "reg": true,
       "ja": "起きる",
       "form": "levantarse の原形＋te（再帰・君が起きる）"
     },
     "ducho": {
       "w": "ducharse",
       "pos": "v",
+      "reg": true,
       "ja": "シャワーを浴びる",
       "form": "ducharse の現在・一人称単数（me ducho＝シャワーを浴びる）",
       "key": true
@@ -189,6 +193,7 @@
     "desayuno": {
       "w": "desayunar",
       "pos": "v",
+      "reg": true,
       "ja": "朝食を食べる",
       "form": "desayunar の現在・一人称単数",
       "key": true
@@ -196,6 +201,7 @@
     "limpio": {
       "w": "limpiarse",
       "pos": "v",
+      "reg": true,
       "ja": "（自分の〜を）みがく",
       "form": "limpiarse の現在・一人称単数（me limpio los dientes＝歯をみがく）",
       "key": true
@@ -211,6 +217,7 @@
     "cambio": {
       "w": "cambiarse",
       "pos": "v",
+      "reg": true,
       "ja": "（服を）着替える",
       "form": "cambiarse の現在・一人称単数（me cambio de ropa＝着替える）",
       "note": "ここは名詞の「変化」ではなく動詞",
@@ -239,6 +246,7 @@
     "llegar": {
       "w": "llegar",
       "pos": "v",
+      "reg": true,
       "ja": "着く・到着する",
       "key": true
     },

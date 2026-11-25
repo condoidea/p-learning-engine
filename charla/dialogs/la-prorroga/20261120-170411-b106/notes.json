@@ -358,6 +358,7 @@
     "lleva": {
       "w": "llevar",
       "pos": "v",
+      "reg": true,
       "ja": "（期間）〜になる・〜を過ごしている",
       "form": "llevar の現在・三人称単数（lleva cuarenta años en los banquillos＝40年間ベンチにいる）",
       "note": "llevar ＋ 期間＝〜になる"
@@ -377,6 +378,7 @@
     "llámeme": {
       "w": "llamar",
       "pos": "v",
+      "reg": true,
       "ja": "呼ぶ",
       "form": "usted への命令 ＋ me（私を）。llámeme Ramiro＝ラミロと呼んでください"
     },
@@ -413,6 +415,7 @@
     "tuteamos": {
       "w": "tutearse",
       "pos": "v",
+      "reg": true,
       "ja": "（お互いに）tú で話す",
       "key": true,
       "form": "tutearse の現在・一人称複数（nos tuteamos＝お互いに tú で話す）",
@@ -464,6 +467,7 @@
     "vivió": {
       "w": "vivir",
       "pos": "v",
+      "reg": true,
       "ja": "生きる・（体験として）過ごす",
       "form": "vivir の点過去・三人称単数（usted への質問。¿Cómo vivió…?＝どう過ごしましたか）"
     },
@@ -532,6 +536,7 @@
     "mandó": {
       "w": "mandar",
       "pos": "v",
+      "reg": true,
       "ja": "送る",
       "form": "mandar の点過去・三人称単数（mi mujer me mandó un mensaje＝妻がメッセージを送ってきた）"
     },
@@ -544,6 +549,7 @@
     "ganáis": {
       "w": "ganar",
       "pos": "v",
+      "reg": true,
       "ja": "勝つ",
       "form": "ganar の現在・vosotros（二人称複数。si no ganáis＝君たちが勝てなければ）"
     },
@@ -578,6 +584,7 @@
     "entró": {
       "w": "entrar",
       "pos": "v",
+      "reg": true,
       "ja": "入る",
       "form": "entrar の点過去・三人称単数（entró el gol＝ゴールが入った）"
     },
@@ -646,6 +653,7 @@
     "discutiendo": {
       "w": "discutir",
       "pos": "v",
+      "reg": true,
       "ja": "言い合う・議論する",
       "form": "discutir の現在分詞（estaba discutiendo＝言い合っていた）"
     },
@@ -776,6 +784,7 @@
     "practicado": {
       "w": "practicar",
       "pos": "v",
+      "reg": true,
       "ja": "練習する",
       "form": "practicar の過去分詞（había practicado＝練習していた）"
     },
@@ -789,12 +798,14 @@
     "mire": {
       "w": "mirar",
       "pos": "v",
+      "reg": true,
       "ja": "見る",
       "form": "usted への命令（Mire＝いいですか・ほら）"
     },
     "practicamos": {
       "w": "practicar",
       "pos": "v",
+      "reg": true,
       "ja": "練習する・やる",
       "form": "practicar の現在・一人称複数"
     },
@@ -813,6 +824,7 @@
     "inventado": {
       "w": "inventar",
       "pos": "v",
+      "reg": true,
       "ja": "でっちあげる・作り上げる",
       "form": "inventar の過去分詞（ha inventado＝でっちあげた）"
     },
@@ -826,12 +838,14 @@
     "sospechaba": {
       "w": "sospechar",
       "pos": "v",
+      "reg": true,
       "ja": "（そうではないかと）疑う・思う",
       "form": "sospechar の線過去・一人称単数（lo sospechaba＝そうだと思っていた）"
     },
     "hablemos": {
       "w": "hablar",
       "pos": "v",
+      "reg": true,
       "ja": "話す",
       "form": "hablar の接続法現在・一人称複数（hablemos de〜＝〜について話しましょう）"
     },
@@ -889,6 +903,7 @@
     "sacaron": {
       "w": "sacar",
       "pos": "v",
+      "reg": true,
       "ja": "（カードを）出す・取り出す",
       "form": "sacar の点過去・三人称複数（me sacaron tarjetas＝（審判が）私にカードを出した）"
     },
@@ -952,6 +967,7 @@
     "apuntadas": {
       "w": "apuntar",
       "pos": "v",
+      "reg": true,
       "ja": "書きとめる・メモする",
       "form": "apuntar の過去分詞・女性複数（las tenía todas apuntadas＝全部書きとめてあった）"
     },
@@ -1007,6 +1023,7 @@
     "dejar": {
       "w": "dejar",
       "pos": "v",
+      "reg": true,
       "ja": "やめる・置く",
       "note": "dejar de ＋ 原形＝〜するのをやめる"
     },
@@ -1019,6 +1036,7 @@
     "entrenar": {
       "w": "entrenar",
       "pos": "v",
+      "reg": true,
       "ja": "指導する・鍛える",
       "note": "entrenar a un equipo＝チームを指導する"
     },
@@ -1031,6 +1049,7 @@
     "gustaba": {
       "w": "gustar",
       "pos": "v",
+      "reg": true,
       "ja": "気に入る・好きだ",
       "form": "gustar の線過去・三人称単数（me gustaba enseñar＝教えるのが好きだった）",
       "note": "me gusta ＝私は好き（好きなものが主語）"
@@ -1038,6 +1057,7 @@
     "enseñar": {
       "w": "enseñar",
       "pos": "v",
+      "reg": true,
       "ja": "教える"
     },
     "que#20.3": {
@@ -1075,6 +1095,7 @@
     "bailan": {
       "w": "bailar",
       "pos": "v",
+      "reg": true,
       "ja": "踊る",
       "form": "bailar の現在・三人称複数"
     },
@@ -1189,12 +1210,14 @@
     "quedo": {
       "w": "quedarse",
       "pos": "v",
+      "reg": true,
       "ja": "（me lo quedo＝）自分のものにする・預かる",
       "form": "quedarse の現在・一人称単数"
     },
     "quedé": {
       "w": "quedarse",
       "pos": "v",
+      "reg": true,
       "ja": "（quedarse con＝）〜を自分のものにする・預かる",
       "form": "quedarse の点過去・一人称単数（me quedé con el de Dani＝ダニのを預かった）"
     },
@@ -1233,6 +1256,7 @@
     "lesionó": {
       "w": "lesionarse",
       "pos": "v",
+      "reg": true,
       "ja": "怪我をする",
       "form": "lesionarse の点過去・三人称単数（cuando se lesionó＝怪我をしたとき）"
     },
@@ -1297,6 +1321,7 @@
     "cuidar": {
       "w": "cuidar",
       "pos": "v",
+      "reg": true,
       "ja": "世話をする・大事にする",
       "note": "cuidar a〜＝〜の面倒を見る"
     },
@@ -1323,6 +1348,7 @@
     "pregunto": {
       "w": "preguntar",
       "pos": "v",
+      "reg": true,
       "ja": "尋ねる・質問する",
       "form": "preguntar の現在・一人称単数（le pregunto por algo＝あなたに〜について尋ねる）",
       "note": "preguntar por〜＝〜について尋ねる"
@@ -1330,6 +1356,7 @@
     "preocupa": {
       "w": "preocupar",
       "pos": "v",
+      "reg": true,
       "ja": "心配させる・気がかりだ",
       "form": "preocupar の現在・三人称単数（algo que preocupa a los aficionados＝サポーターを心配させていること）"
     },
@@ -1372,6 +1399,7 @@
     "opina": {
       "w": "opinar",
       "pos": "v",
+      "reg": true,
       "ja": "意見を持つ・思う",
       "form": "opinar の現在・三人称単数（¿qué opina usted?＝どうお考えですか）"
     },
@@ -1402,6 +1430,7 @@
     "alegraré": {
       "w": "alegrarse",
       "pos": "v",
+      "reg": true,
       "ja": "喜ぶ",
       "form": "alegrarse の未来・一人称単数（me alegraré por él＝彼のために喜ぶ）"
     },
@@ -1425,12 +1454,14 @@
     "olvide": {
       "w": "olvidarse",
       "pos": "v",
+      "reg": true,
       "ja": "忘れる",
       "form": "olvidarse の接続法現在・三人称単数（que no se olvide de〜＝〜を忘れないでください。頼みごとの que ＋ 接続法）"
     },
     "ate": {
       "w": "atarse",
       "pos": "v",
+      "reg": true,
       "ja": "（ひもを）結ぶ",
       "form": "atarse の接続法現在・三人称単数（que se ate las botas＝スパイクのひもを結んでください）"
     },
@@ -1523,6 +1554,7 @@
     "entrenando": {
       "w": "entrenar",
       "pos": "v",
+      "reg": true,
       "ja": "指導する・監督をする",
       "form": "entrenar の現在分詞（seguir entrenando＝監督を続ける）"
     },
@@ -1553,6 +1585,7 @@
     "aprovechar": {
       "w": "aprovechar",
       "pos": "v",
+      "reg": true,
       "ja": "活用する・利用する",
       "note": "aprovechar la ocasión＝機会を生かす"
     },
@@ -1571,6 +1604,7 @@
     "anunciar": {
       "w": "anunciar",
       "pos": "v",
+      "reg": true,
       "ja": "発表する・知らせる"
     },
     "directo": {
@@ -1607,12 +1641,14 @@
     "termine": {
       "w": "terminar",
       "pos": "v",
+      "reg": true,
       "ja": "終わる",
       "form": "terminar の接続法現在・三人称単数（cuando termine＝終わったら。未来のことは cuando ＋ 接続法）"
     },
     "retiro": {
       "w": "retirarse",
       "pos": "v",
+      "reg": true,
       "ja": "引退する",
       "form": "retirarse の現在・一人称単数（me retiro＝引退する）",
       "key": true
@@ -1656,12 +1692,14 @@
     "pasemos": {
       "w": "pasar",
       "pos": "v",
+      "reg": true,
       "ja": "過ごす",
       "form": "pasar の接続法現在・一人称複数（quiere que pasemos＝私たちが過ごすことを望む）"
     },
     "lleve": {
       "w": "llevar",
       "pos": "v",
+      "reg": true,
       "ja": "連れて行く",
       "form": "llevar の接続法現在・三人称単数（quiere que la lleve＝私が彼女を連れて行くことを望む）"
     },
@@ -1680,6 +1718,7 @@
     "aprenda": {
       "w": "aprender",
       "pos": "v",
+      "reg": true,
       "ja": "学ぶ・覚える",
       "form": "aprender の接続法現在・三人称単数（que aprenda a bailar＝踊れるようになる）",
       "note": "aprender a ＋ 原形＝〜できるようになる"
@@ -1697,6 +1736,7 @@
     "echar": {
       "w": "echar",
       "pos": "v",
+      "reg": true,
       "ja": "（echar de menos＝）恋しく思う",
       "note": "echar de menos＝いなくて寂しい"
     },
@@ -1714,12 +1754,14 @@
     "llevo": {
       "w": "llevar",
       "pos": "v",
+      "reg": true,
       "ja": "（期間）〜になる・〜し続けている",
       "form": "llevar の現在・一人称単数（llevo veinte años anunciando＝20年間ずっと発表している）"
     },
     "anunciando": {
       "w": "anunciar",
       "pos": "v",
+      "reg": true,
       "ja": "発表する",
       "form": "anunciar の現在分詞（llevo veinte años anunciando＝20年間ずっと発表している）"
     },
@@ -1763,6 +1805,7 @@
     "apuntaremos": {
       "w": "apuntar",
       "pos": "v",
+      "reg": true,
       "ja": "書きとめる・メモする",
       "form": "apuntar の未来・一人称複数（lo apuntaremos＝メモしておきます）"
     },
@@ -1781,6 +1824,7 @@
     "hablado": {
       "w": "hablar",
       "pos": "v",
+      "reg": true,
       "ja": "話す",
       "form": "hablar の過去分詞（ha hablado＝話した。現在完了）"
     },
@@ -1825,6 +1869,7 @@
     "subió": {
       "w": "subir",
       "pos": "v",
+      "reg": true,
       "ja": "上がる・載る",
       "form": "subir の点過去・三人称単数（el gol subió al marcador＝ゴールがスコアボードに載った）"
     },
@@ -1838,6 +1883,7 @@
     "pregúnteselo": {
       "w": "preguntar",
       "pos": "v",
+      "reg": true,
       "ja": "尋ねる・質問する",
       "form": "usted への命令 ＋ se（彼に）＋ lo（それを）。pregúnteselo＝彼に聞いてください"
     },
@@ -1862,6 +1908,7 @@
     "deja": {
       "w": "dejar",
       "pos": "v",
+      "reg": true,
       "ja": "許す・させてくれる",
       "form": "dejar の現在・三人称単数（mi mujer me deja＝妻が私に許してくれる）"
     },
@@ -1892,6 +1939,7 @@
     "pasó": {
       "w": "pasar",
       "pos": "v",
+      "reg": true,
       "ja": "起こる",
       "form": "pasar の点過去・三人称単数（¿qué pasó?＝何が起こった？）"
     },

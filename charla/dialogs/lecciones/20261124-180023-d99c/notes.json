@@ -120,12 +120,14 @@
     "llegado": {
       "w": "llegar",
       "pos": "v",
+      "reg": true,
       "ja": "着く・来る",
       "form": "llegar の過去分詞（has llegado＝着いた）"
     },
     "madrugado": {
       "w": "madrugar",
       "pos": "v",
+      "reg": true,
       "ja": "早起きする",
       "form": "madrugar の過去分詞（has madrugado＝早起きした）",
       "key": true
@@ -146,6 +148,7 @@
     "discutir": {
       "w": "discutir",
       "pos": "v",
+      "reg": true,
       "ja": "議論する・話し合う",
       "form": "不定詞（vamos a discutir＝話し合うつもりだ）",
       "key": true
@@ -186,6 +189,7 @@
     "reflejan": {
       "w": "reflejar",
       "pos": "v",
+      "reg": true,
       "ja": "反映する・表す",
       "form": "reflejar の現在・三人称複数（los números reflejan＝数字が表している）",
       "key": true
@@ -199,6 +203,7 @@
     "necesitamos": {
       "w": "necesitar",
       "pos": "v",
+      "reg": true,
       "ja": "必要とする",
       "form": "necesitar の現在・一人称複数（necesitamos una estrategia＝戦略が必要だ）"
     },
@@ -222,6 +227,7 @@
     "presentar": {
       "w": "presentar",
       "pos": "v",
+      "reg": true,
       "ja": "発表する・紹介する",
       "form": "不定詞（va a presentar＝発表する予定だ）"
     },
@@ -242,6 +248,7 @@
     "trabajaba": {
       "w": "trabajar",
       "pos": "v",
+      "reg": true,
       "ja": "働く",
       "form": "trabajar の線過去・三人称単数（trabajaba＝働いていた）"
     },
@@ -300,6 +307,7 @@
     "trabajó": {
       "w": "trabajar",
       "pos": "v",
+      "reg": true,
       "ja": "働く・仕事をする",
       "form": "trabajar の点過去・三人称単数（trabajó con él＝彼と仕事をした）"
     },
@@ -312,6 +320,7 @@
     "diseñó": {
       "w": "diseñar",
       "pos": "v",
+      "reg": true,
       "ja": "設計する・考え出す",
       "form": "diseñar の点過去・三人称単数（diseñó la estrategia＝戦略を作った）",
       "key": true
@@ -331,6 +340,7 @@
     "funciona": {
       "w": "funcionar",
       "pos": "v",
+      "reg": true,
       "ja": "機能する・うまくいく",
       "form": "funcionar の現在・三人称単数（no funciona＝うまくいっていない）",
       "key": true

@@ -48,7 +48,7 @@
     /* 同じセリフに同じ語が2回以上あれば「語#番号.何回目」（例 había#12.2）でさらに分けられる */
     var byLine = ln && (occ && this.words[k + '#' + ln + '.' + occ] || this.words[k + '#' + ln]), g = byLine || this.words[k];
     /* そのセリフだけの意味（語#番号）は、共通単語帳の級（lv）を引き継ぐ（5級・機能語の直しで点線をふやさない） */
-    if (g) return { w: g.w, pos: g.pos, g: g.g, ja: g.ja, form: g.form, note: g.note, key: !!g.key, clue: g.clue, cj: g.cj, src: 'notes', byLine: !!byLine, lv: byLine && this.es[k] ? this.es[k].lv : undefined };
+    if (g) return { w: g.w, pos: g.pos, g: g.g, ja: g.ja, form: g.form, note: g.note, key: !!g.key, clue: g.clue, cj: g.cj, reg: g.reg, src: 'notes', byLine: !!byLine, lv: byLine && this.es[k] ? this.es[k].lv : undefined };
     if (this.names[k]) return { name: true };
     var e = this.es[k];
     if (e) return { w: e.w, pos: e.pos, ja: e.ja, form: lower(e.w) !== k ? e.w + ' の変化した形' : '', key: false, src: 'es-words', lv: e.lv };
@@ -100,6 +100,7 @@
       ex: [ex, lineJa || ''], clue: rec.clue || { t: 'ctx', text: notes.sceneJa || '💬 会話の一場面' } };
     if (pos === 'n') w.g = rec.g;
     if (pos === 'v' && rec.cj) w.cj = rec.cj;
+    if (pos === 'v' && !rec.cj && rec.reg) w.reg = true;   /* 規則動詞と確かめた印（notes.json の reg） */
     var memo = [rec.note, rec.kind === 'w' && rec.form && rec.surf.toLowerCase() !== rec.w.toLowerCase() ? '会話では ' + rec.surf + '（' + rec.form + '）' : ''].filter(Boolean).join('。');
     if (memo) w.memo = memo;
     if (!w.ex[1]) return { why: 'セリフの訳がない' };

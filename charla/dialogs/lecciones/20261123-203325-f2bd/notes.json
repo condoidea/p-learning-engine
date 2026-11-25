@@ -66,6 +66,7 @@
     "vivía": {
       "w": "vivir",
       "pos": "v",
+      "reg": true,
       "ja": "住んでいた",
       "form": "vivir の線過去・一人称単数（昔の習慣・状態）",
       "key": true
@@ -176,6 +177,7 @@
     "estudiabas": {
       "w": "estudiar",
       "pos": "v",
+      "reg": true,
       "ja": "勉強していた",
       "form": "estudiar の線過去・二人称単数"
     },
@@ -187,6 +189,7 @@
     "estudio": {
       "w": "estudiar",
       "pos": "v",
+      "reg": true,
       "ja": "勉強する",
       "form": "estudiar の現在・一人称単数（estudio más ahora＝今のほうが勉強している）"
     },
@@ -283,6 +286,7 @@
     "vivisteis": {
       "w": "vivir",
       "pos": "v",
+      "reg": true,
       "ja": "住んでいた",
       "form": "vivir の点過去・二人称複数（vosotros。終わった期間）"
     },
@@ -307,6 +311,7 @@
     "trasladamos": {
       "w": "trasladarse",
       "pos": "v",
+      "reg": true,
       "ja": "引っ越す・移る",
       "form": "trasladarse の点過去・一人称複数（nos trasladamos a Madrid＝マドリードに引っ越した）",
       "key": true

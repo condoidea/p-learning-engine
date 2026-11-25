@@ -135,12 +135,14 @@
     "entraste": {
       "w": "entrar",
       "pos": "v",
+      "reg": true,
       "ja": "入る",
       "form": "entrar の「君は」（点過去）"
     },
     "entré": {
       "w": "entrar",
       "pos": "v",
+      "reg": true,
       "ja": "入る",
       "form": "entrar の「私は」（点過去）"
     },
@@ -158,12 +160,14 @@
     "viajaría": {
       "w": "viajar",
       "pos": "v",
+      "reg": true,
       "ja": "旅行する",
       "form": "viajar の「彼女は」（過去未来）。「旅行するだろう」と過去から見た未来"
     },
     "viajará": {
       "w": "viajar",
       "pos": "v",
+      "reg": true,
       "ja": "旅行する",
       "form": "viajar の「彼女は」（未来）"
     },
@@ -193,6 +197,7 @@
     "cambiaría": {
       "w": "cambiar",
       "pos": "v",
+      "reg": true,
       "ja": "変わる・変える",
       "form": "cambiar の「それは」（過去未来）。「変わるだろう」と過去から見た未来"
     },
@@ -209,6 +214,7 @@
     "cobró": {
       "w": "cobrar",
       "pos": "v",
+      "reg": true,
       "ja": "（料金を）取る・請求する",
       "key": true,
       "form": "cobrar の「彼女は」（点過去）",
@@ -235,12 +241,14 @@
     "enseñé": {
       "w": "enseñar",
       "pos": "v",
+      "reg": true,
       "ja": "見せる・教える",
       "form": "enseñar の「私は」（点過去）"
     },
     "enseñado": {
       "w": "enseñar",
       "pos": "v",
+      "reg": true,
       "ja": "見せる・教える",
       "form": "enseñar の過去分詞。le he enseñado = 彼女に見せた（現在完了）"
     },
@@ -254,6 +262,7 @@
     "miró": {
       "w": "mirar",
       "pos": "v",
+      "reg": true,
       "ja": "見る",
       "form": "mirar の「彼女は」（点過去）"
     },
@@ -335,6 +344,7 @@
     "llevaba": {
       "w": "llevar",
       "pos": "v",
+      "reg": true,
       "ja": "身につけている・持っていく",
       "form": "llevar の「彼女は」（線過去）"
     },
@@ -404,6 +414,7 @@
     "llamaba": {
       "w": "llamarse",
       "pos": "v",
+      "reg": true,
       "ja": "〜という名前である",
       "form": "llamarse の「それは」（線過去）。se llamaba Felipe = フェリペという名前だった"
     },
@@ -437,6 +448,7 @@
     "jubiló": {
       "w": "jubilarse",
       "pos": "v",
+      "reg": true,
       "ja": "定年退職する",
       "key": true,
       "form": "jubilarse の「彼女は」（点過去）。se jubiló = 退職した",
@@ -448,6 +460,7 @@
     "aburre": {
       "w": "aburrirse",
       "pos": "v",
+      "reg": true,
       "ja": "退屈する",
       "key": true,
       "form": "aburrirse の「彼女は」（現在）。se aburre = 退屈している",
@@ -576,6 +589,7 @@
     "dudo": {
       "w": "dudar",
       "pos": "v",
+      "reg": true,
       "ja": "疑う",
       "form": "dudar の「私は」（現在）。lo dudo = それは疑わしい"
     },
@@ -613,6 +627,7 @@
     "esperando": {
       "w": "esperar",
       "pos": "v",
+      "reg": true,
       "ja": "待つ・期待する",
       "form": "esperar の現在分詞。「待っていて」"
     },

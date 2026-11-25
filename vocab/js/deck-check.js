@@ -94,7 +94,10 @@
         if (w.pos !== 'v') err(at, 'cj は動詞だけ');
         else if (Conj) Conj.checkIrr(w.cj).forEach(function (b) { err(at, 'cj：' + b); });
       }
-      if (ES && w.pos === 'v' && Conj && w.w && /(ar|er|ir|ír)(se)?$/.test(w.w) && !w.cj && !Conj.known(w.w)) {
+      /* reg：アプリの「動詞の活用チェック」で「規則でOK」と確かめた印 */
+      if (w.reg != null && typeof w.reg !== 'boolean') err(at, 'reg は true/false（規則動詞と確かめた印）');
+      if (ES && w.pos === 'v' && Conj && w.w && /(ar|er|ir|ír)(se)?$/.test(w.w) && !w.cj && !w.reg && !Conj.known(w.w)) {
+        warn(at, '動詞は cj（不規則のくせ）か "reg": true（規則動詞と確かめた）のどちらかを書く。' + w.w + ' はいま規則動詞として活用する');
         verbs.push({ w: w.w, at: at, sample: ['pres', 'pret', 'subj'].map(function (t) { return Conj.table(w.w, t).join(', '); }).concat(['未来 ' + Conj.form(w.w, 'fut', 0), '過去分詞 ' + Conj.part(w.w)]) });
       }
     });
@@ -139,7 +142,7 @@
     }
     return false;
   }
-  var api = { check: check, formsOf: formsOf };
+  var api = { check: check, formsOf: formsOf, isFormOf: isFormOf };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.DeckCheck = api;
 })(typeof window !== 'undefined' ? window : this);

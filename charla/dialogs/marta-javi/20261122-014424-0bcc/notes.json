@@ -148,6 +148,7 @@
     "llevo": {
       "w": "llevar",
       "pos": "v",
+      "reg": true,
       "ja": "（時間が）たつ・〜している（llevo ＋ 時間 ＋ 〜ando＝〜してから…になる）",
       "form": "llevar の現在・一人称単数",
       "key": true
@@ -161,6 +162,7 @@
     "esperándote": {
       "w": "esperar",
       "pos": "v",
+      "reg": true,
       "ja": "待つ",
       "form": "現在分詞（〜している）＋ te（君を）＝君を待っている"
     },
@@ -183,6 +185,7 @@
     "olvidaron": {
       "w": "olvidarse",
       "pos": "v",
+      "reg": true,
       "ja": "忘れる（se me olvidó 〜＝〜を忘れてしまった）",
       "form": "olvidar の点過去・三人称複数",
       "key": true
@@ -255,6 +258,7 @@
     "pesa": {
       "w": "pesar",
       "pos": "v",
+      "reg": true,
       "ja": "重い・重さがある",
       "form": "pesar の現在・三人称単数（pesa muchísimo＝すごく重い）"
     },
@@ -331,6 +335,7 @@
     "entra": {
       "w": "entrar",
       "pos": "v",
+      "reg": true,
       "ja": "入る",
       "form": "命令形（tú）＝入って"
     },
@@ -411,6 +416,7 @@
     "dejaba": {
       "w": "dejar",
       "pos": "v",
+      "reg": true,
       "ja": "〜させる・許す（dejar ＋ 原形）",
       "form": "dejar の線過去・三人称単数（nos dejaba jugar＝遊ばせてくれた）",
       "key": true
@@ -434,6 +440,7 @@
     "comías": {
       "w": "comer",
       "pos": "v",
+      "reg": true,
       "ja": "食べる",
       "form": "comer の線過去・二人称単数"
     },
@@ -445,6 +452,7 @@
     "encantaban": {
       "w": "encantar",
       "pos": "v",
+      "reg": true,
       "ja": "大好きだ（me encanta 〜＝〜が大好き）",
       "form": "encantar の線過去・三人称複数（me encantaban los churros＝チュロスが大好きだった）",
       "key": true
@@ -469,6 +477,7 @@
     "tomaba": {
       "w": "tomar",
       "pos": "v",
+      "reg": true,
       "ja": "飲む・食べる",
       "form": "tomar の線過去・三人称単数"
     },
@@ -493,6 +502,7 @@
     "dejado": {
       "w": "dejar",
       "pos": "v",
+      "reg": true,
       "ja": "残す・譲る",
       "form": "過去分詞（nos ha dejado el café＝私たちにカフェを残してくれた）",
       "key": true
@@ -535,6 +545,7 @@
     "interesa": {
       "w": "interesar",
       "pos": "v",
+      "reg": true,
       "ja": "興味を持たせる（le interesa 〜＝〜に興味がある）",
       "form": "interesar の現在・三人称単数",
       "key": true
@@ -571,6 +582,7 @@
     "trabajabas": {
       "w": "trabajar",
       "pos": "v",
+      "reg": true,
       "ja": "働く",
       "form": "trabajar の線過去・二人称単数"
     },
@@ -583,6 +595,7 @@
     "trabajaba": {
       "w": "trabajar",
       "pos": "v",
+      "reg": true,
       "ja": "働く",
       "form": "trabajar の線過去・一人称単数（「働いていた」と過去）"
     },
@@ -611,6 +624,7 @@
     "dejé": {
       "w": "dejar",
       "pos": "v",
+      "reg": true,
       "ja": "やめる・辞める",
       "form": "dejar の点過去・一人称単数（Lo dejé＝それ（仕事）を辞めた）",
       "key": true
@@ -629,6 +643,7 @@
     "echo": {
       "w": "echar",
       "pos": "v",
+      "reg": true,
       "ja": "（echar de menos＝恋しく思う）",
       "form": "echar の現在・一人称単数",
       "key": true
@@ -646,6 +661,7 @@
     "preocupa": {
       "w": "preocupar",
       "pos": "v",
+      "reg": true,
       "ja": "心配させる・気にかかる（me preocupa＝私は心配だ）",
       "form": "preocupar の現在・三人称単数",
       "key": true
@@ -668,6 +684,7 @@
     "mira": {
       "w": "mirar",
       "pos": "v",
+      "reg": true,
       "ja": "見る・（ほら）見て",
       "form": "mirar の命令形（tú）"
     },
@@ -691,6 +708,7 @@
     "olvidado": {
       "w": "olvidarse",
       "pos": "v",
+      "reg": true,
       "ja": "忘れる",
       "form": "olvidar の過去分詞（se me han olvidado las gafas＝めがねを忘れてきた）"
     },
@@ -702,6 +720,7 @@
     "olvida": {
       "w": "olvidarse",
       "pos": "v",
+      "reg": true,
       "ja": "忘れる",
       "form": "olvidar の現在・三人称単数（se te olvida todo＝君は何でも忘れる）"
     },
@@ -737,6 +756,7 @@
     "dejo": {
       "w": "dejar",
       "pos": "v",
+      "reg": true,
       "ja": "残す・譲る",
       "form": "dejar の現在・一人称単数（Os dejo mi café＝君たちに私のカフェを残す）"
     },
@@ -756,6 +776,7 @@
     "escondido": {
       "w": "esconder",
       "pos": "v",
+      "reg": true,
       "ja": "隠す",
       "form": "過去分詞（un tesoro escondido＝隠された宝物）",
       "key": true
@@ -793,6 +814,7 @@
     "espera": {
       "w": "esperar",
       "pos": "v",
+      "reg": true,
       "ja": "待つ",
       "form": "命令形（tú）＝待って"
     },
@@ -819,6 +841,7 @@
     "paró": {
       "w": "pararse",
       "pos": "v",
+      "reg": true,
       "ja": "止まる（se paró＝止まった）",
       "form": "parar の点過去・三人称単数",
       "key": true
@@ -836,6 +859,7 @@
     "significa": {
       "w": "significar",
       "pos": "v",
+      "reg": true,
       "ja": "意味する",
       "form": "significar の現在・三人称単数",
       "key": true
@@ -854,6 +878,7 @@
     "gustaban": {
       "w": "gustar",
       "pos": "v",
+      "reg": true,
       "ja": "好きだ・気に入る（le gustaban los misterios＝彼は謎が好きだった）",
       "form": "gustar の線過去・三人称複数"
     },
@@ -874,6 +899,7 @@
     "esconder": {
       "w": "esconder",
       "pos": "v",
+      "reg": true,
       "ja": "隠す",
       "key": true
     },
@@ -898,6 +924,7 @@
     "tardé": {
       "w": "tardar",
       "pos": "v",
+      "reg": true,
       "ja": "（時間が）かかる（tardar ＋ 期間 ＋ en ＋ 原形）",
       "form": "tardar の点過去・一人称単数",
       "key": true
@@ -947,12 +974,14 @@
     "llama": {
       "w": "llamarse",
       "pos": "v",
+      "reg": true,
       "ja": "〜という名前だ（se llama El Reloj＝「エル・レロホ」という名前だ）",
       "form": "llamarse の現在・三人称単数"
     },
     "funcionaba": {
       "w": "funcionar",
       "pos": "v",
+      "reg": true,
       "ja": "動く・作動する",
       "form": "funcionar の線過去・三人称単数（nunca funcionaba＝ずっと動かなかった）",
       "key": true
@@ -960,6 +989,7 @@
     "marcaba": {
       "w": "marcar",
       "pos": "v",
+      "reg": true,
       "ja": "（時計が時刻を）示す",
       "form": "marcar の線過去・三人称単数",
       "key": true
@@ -967,6 +997,7 @@
     "preguntábamos": {
       "w": "preguntar",
       "pos": "v",
+      "reg": true,
       "ja": "たずねる・聞く",
       "form": "preguntar の線過去・一人称複数"
     },
@@ -979,12 +1010,14 @@
     "marca": {
       "w": "marcar",
       "pos": "v",
+      "reg": true,
       "ja": "（時計が時刻を）示す",
       "form": "marcar の現在・三人称単数"
     },
     "bájalo": {
       "w": "bajar",
       "pos": "v",
+      "reg": true,
       "ja": "下ろす",
       "form": "命令形（tú）＋ lo（それを）＝それを下ろして"
     },
@@ -996,6 +1029,7 @@
     "sujétame": {
       "w": "sujetar",
       "pos": "v",
+      "reg": true,
       "ja": "押さえる・つかまえる",
       "form": "命令形（tú）＋ me（私に）＝私のために押さえて",
       "key": true
@@ -1047,6 +1081,7 @@
     "sube": {
       "w": "subir",
       "pos": "v",
+      "reg": true,
       "ja": "上る・上がる",
       "form": "命令形（tú）＝上って"
     },
@@ -1071,6 +1106,7 @@
     "pegado": {
       "w": "pegar",
       "pos": "v",
+      "reg": true,
       "ja": "貼る・くっつける",
       "form": "過去分詞（pegado con cinta＝テープで貼られた）"
     },
@@ -1095,6 +1131,7 @@
     "toma": {
       "w": "tomar",
       "pos": "v",
+      "reg": true,
       "ja": "受け取る（Toma＝はい、どうぞ）",
       "form": "命令形（tú）"
     },
@@ -1159,6 +1196,7 @@
     "enseñó": {
       "w": "enseñar",
       "pos": "v",
+      "reg": true,
       "ja": "教える",
       "form": "enseñar の点過去・三人称単数",
       "key": true
@@ -1215,6 +1253,7 @@
     "necesitamos": {
       "w": "necesitar",
       "pos": "v",
+      "reg": true,
       "ja": "必要とする",
       "form": "necesitar の現在・一人称複数"
     },
@@ -1259,6 +1298,7 @@
     "prepáralo": {
       "w": "preparar",
       "pos": "v",
+      "reg": true,
       "ja": "準備する・用意する（ここではコーヒーを淹れる）",
       "form": "命令形（tú）＋ lo（それを）＝それを用意して"
     },

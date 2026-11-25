@@ -351,6 +351,7 @@
     "hablado": {
       "w": "hablar",
       "pos": "v",
+      "reg": true,
       "ja": "話す",
       "form": "hablar の過去分詞（hemos hablado＝話してきた）"
     },
@@ -417,6 +418,7 @@
     "insultada": {
       "w": "insultar",
       "pos": "v",
+      "reg": true,
       "ja": "侮辱する・悪口を言う",
       "form": "insultar の過去分詞・女性形（la persona más insultada＝一番悪口を言われる人）"
     },
@@ -449,6 +451,7 @@
     "invitan": {
       "w": "invitar",
       "pos": "v",
+      "reg": true,
       "ja": "招待する・呼ぶ",
       "form": "invitar の現在・三人称複数（me invitan＝（人々が）私を呼ぶ）"
     },
@@ -461,6 +464,7 @@
     "prometo": {
       "w": "prometer",
       "pos": "v",
+      "reg": true,
       "ja": "約束する",
       "form": "prometer の現在・一人称単数（te lo prometo＝約束するよ）"
     },
@@ -500,6 +504,7 @@
     "pregunta#4": {
       "w": "preguntar",
       "pos": "v",
+      "reg": true,
       "ja": "尋ねる・質問する",
       "form": "preguntar の現在・三人称単数（me pregunta＝私に尋ねる）"
     },
@@ -584,6 +589,7 @@
     "arbitra": {
       "w": "arbitrar",
       "pos": "v",
+      "reg": true,
       "ja": "審判をする",
       "form": "arbitrar の命令形（tú）（arbitra＝審判をやれ）",
       "key": true
@@ -591,12 +597,14 @@
     "gustó": {
       "w": "gustar",
       "pos": "v",
+      "reg": true,
       "ja": "好きだ・気に入る",
       "form": "gustar の点過去・三人称単数（te gustó＝気に入った？）"
     },
     "encantó": {
       "w": "encantar",
       "pos": "v",
+      "reg": true,
       "ja": "大好きになる・とても気に入る",
       "form": "encantar の点過去・三人称単数（me encantó＝大好きになった）"
     },
@@ -609,18 +617,21 @@
     "miraba": {
       "w": "mirar",
       "pos": "v",
+      "reg": true,
       "ja": "見る",
       "form": "mirar の線過去・三人称単数（me miraba＝私を見ていた）"
     },
     "miraban": {
       "w": "mirar",
       "pos": "v",
+      "reg": true,
       "ja": "見る",
       "form": "mirar の線過去・三人称複数（me miraban＝私を見ていた）"
     },
     "gritaban": {
       "w": "gritar",
       "pos": "v",
+      "reg": true,
       "ja": "叫ぶ・怒鳴る",
       "form": "gritar の線過去・三人称複数（me gritaban＝私に怒鳴っていた）"
     },
@@ -649,6 +660,7 @@
     "recibís": {
       "w": "recibir",
       "pos": "v",
+      "reg": true,
       "ja": "受ける・もらう",
       "form": "recibir の現在・二人称複数（vosotros／スペインの「君たち」）"
     },
@@ -662,6 +674,7 @@
     "llevas": {
       "w": "llevar",
       "pos": "v",
+      "reg": true,
       "ja": "（困難を）乗り切る・こなす",
       "form": "llevar の現在・二人称単数（¿cómo lo llevas?＝どう受け止めてる？）"
     },
@@ -700,6 +713,7 @@
     "afectaba": {
       "w": "afectar",
       "pos": "v",
+      "reg": true,
       "ja": "影響する・（心に）こたえる",
       "form": "afectar の線過去・三人称単数（me afectaba＝私にこたえた）"
     },
@@ -712,6 +726,7 @@
     "intento": {
       "w": "intentar",
       "pos": "v",
+      "reg": true,
       "ja": "試みる・〜しようとする",
       "form": "intentar の現在・一人称単数（intento no leer＝読まないようにする）"
     },
@@ -730,6 +745,7 @@
     "meten": {
       "w": "meterse",
       "pos": "v",
+      "reg": true,
       "ja": "ちょっかいを出す・（悪く）言う（meterse con〜）",
       "form": "meter の現在・三人称複数（se meten con〜＝〜を悪く言う）"
     },
@@ -748,6 +764,7 @@
     "pasan": {
       "w": "pasar",
       "pos": "v",
+      "reg": true,
       "ja": "（時を）すごす",
       "form": "pasar の現在・三人称複数（lo pasan mal＝つらい思いをする）"
     },
@@ -778,6 +795,7 @@
     "llorando": {
       "w": "llorar",
       "pos": "v",
+      "reg": true,
       "ja": "泣く",
       "form": "llorar の現在分詞（llorando＝泣きながら）"
     },
@@ -797,6 +815,7 @@
     "cantado": {
       "w": "cantar",
       "pos": "v",
+      "reg": true,
       "ja": "歌う",
       "form": "cantar の過去分詞"
     },
@@ -821,6 +840,7 @@
     "dejarlo": {
       "w": "dejar",
       "pos": "v",
+      "reg": true,
       "ja": "やめる・置く",
       "form": "dejar ＋ lo（それ）（dejarlo＝審判をやめる）",
       "key": true
@@ -828,6 +848,7 @@
     "dejaste": {
       "w": "dejar",
       "pos": "v",
+      "reg": true,
       "ja": "やめる・置く",
       "form": "dejar の点過去・二人称単数（¿por qué no lo dejaste?＝なぜやめなかった？）",
       "key": true
@@ -841,6 +862,7 @@
     "dejes": {
       "w": "dejar",
       "pos": "v",
+      "reg": true,
       "ja": "やめる",
       "form": "dejar の否定命令（tú）（no lo dejes＝やめないで）"
     },
@@ -924,6 +946,7 @@
     "explícanos": {
       "w": "explicar",
       "pos": "v",
+      "reg": true,
       "ja": "説明する",
       "form": "explicar の命令形（tú）＋ nos（私たちに）（explícanos＝私たちに説明して）"
     },
@@ -1032,6 +1055,7 @@
     "equivoca": {
       "w": "equivocarse",
       "pos": "v",
+      "reg": true,
       "ja": "まちがえる",
       "form": "equivocarse の現在・三人称単数（se equivoca＝間違える）",
       "key": true
@@ -1098,6 +1122,7 @@
     "equivoco": {
       "w": "equivocarse",
       "pos": "v",
+      "reg": true,
       "ja": "まちがえる",
       "form": "equivocarse の現在・一人称単数（me equivoco＝間違える）"
     },
@@ -1128,6 +1153,7 @@
     "lleva": {
       "w": "llevar",
       "pos": "v",
+      "reg": true,
       "ja": "（ある所へ）導く・連れていく",
       "form": "llevar の現在・三人称単数（nos lleva a〜＝私たちを〜へ導く）"
     },
@@ -1199,6 +1225,7 @@
     "aceptado": {
       "w": "aceptar",
       "pos": "v",
+      "reg": true,
       "ja": "受け入れる・承諾する",
       "form": "aceptar の過去分詞"
     },
@@ -1211,6 +1238,7 @@
     "pasó": {
       "w": "pasar",
       "pos": "v",
+      "reg": true,
       "ja": "起こる",
       "form": "pasar の点過去・三人称単数（lo que pasó＝起こったこと）"
     },
@@ -1222,6 +1250,7 @@
     "escuchamos": {
       "w": "escuchar",
       "pos": "v",
+      "reg": true,
       "ja": "聞く",
       "form": "escuchar の現在・一人称複数（te escuchamos＝聞いてるよ）"
     },
@@ -1245,6 +1274,7 @@
     "coloqué": {
       "w": "colocarse",
       "pos": "v",
+      "reg": true,
       "ja": "位置につく・身を置く",
       "form": "colocar の点過去・一人称単数（me coloqué＝位置についた）"
     },
@@ -1275,6 +1305,7 @@
     "rebotó": {
       "w": "rebotar",
       "pos": "v",
+      "reg": true,
       "ja": "跳ね返る・当たって跳ねる",
       "form": "rebotar の点過去・三人称単数（rebotó en un defensa＝ディフェンダーに当たって跳ねた）",
       "key": true
@@ -1321,6 +1352,7 @@
     "atándose": {
       "w": "atarse",
       "pos": "v",
+      "reg": true,
       "ja": "（自分の〜を）結ぶ",
       "form": "atar の現在分詞＋ se（atándose la bota＝スパイクのひもを結びながら）"
     },
@@ -1370,12 +1402,14 @@
     "toca": {
       "w": "tocar",
       "pos": "v",
+      "reg": true,
       "ja": "さわる・（ボールが）当たる",
       "form": "tocar の現在・三人称単数（toca al árbitro＝審判に当たる）"
     },
     "termina": {
       "w": "terminar",
       "pos": "v",
+      "reg": true,
       "ja": "終わる",
       "form": "terminar の現在・三人称単数（termina en gol＝ゴールで終わる）"
     },
@@ -1388,6 +1422,7 @@
     "parar": {
       "w": "parar",
       "pos": "v",
+      "reg": true,
       "ja": "止める・止まる",
       "key": true
     },
@@ -1421,6 +1456,7 @@
     "paré": {
       "w": "parar",
       "pos": "v",
+      "reg": true,
       "ja": "止める",
       "form": "parar の点過去・一人称単数（no lo paré＝止めなかった）"
     },
@@ -1504,6 +1540,7 @@
     "avisar": {
       "w": "avisar",
       "pos": "v",
+      "reg": true,
       "ja": "知らせる・教える"
     },
     "cuándo": {
@@ -1525,6 +1562,7 @@
     "comiendo": {
       "w": "comer",
       "pos": "v",
+      "reg": true,
       "ja": "食べる",
       "form": "comer の現在分詞（estábamos comiendo＝食べていた）"
     },
@@ -1543,6 +1581,7 @@
     "dejó": {
       "w": "dejar",
       "pos": "v",
+      "reg": true,
       "ja": "置く・やめる",
       "form": "dejar の点過去・三人称単数（dejó el tenedor＝フォークを置いた）"
     },
@@ -1555,12 +1594,14 @@
     "levantó": {
       "w": "levantarse",
       "pos": "v",
+      "reg": true,
       "ja": "立ち上がる",
       "form": "levantar の点過去・三人称単数（se levantó＝立ち上がった）"
     },
     "gritó": {
       "w": "gritar",
       "pos": "v",
+      "reg": true,
       "ja": "叫ぶ・大声で言う",
       "form": "gritar の点過去・三人称単数"
     },
@@ -1606,6 +1647,7 @@
     "coge": {
       "w": "coger",
       "pos": "v",
+      "reg": true,
       "ja": "取る・（電話に）出る",
       "form": "coger の現在・三人称単数（coge el teléfono＝電話に出る）"
     },
@@ -1624,6 +1666,7 @@
     "cambiar": {
       "w": "cambiar",
       "pos": "v",
+      "reg": true,
       "ja": "変える・変わる"
     },
     "oficial": {
@@ -1634,6 +1677,7 @@
     "salvado": {
       "w": "salvarse",
       "pos": "v",
+      "reg": true,
       "ja": "降格を免れる・残留する",
       "form": "salvar の過去分詞（se ha salvado＝残留した）",
       "key": true
@@ -1641,6 +1685,7 @@
     "bajado": {
       "w": "bajar",
       "pos": "v",
+      "reg": true,
       "ja": "下がる・降格する",
       "form": "bajar の過去分詞（ha bajado de categoría＝降格した）",
       "key": true
@@ -1684,6 +1729,7 @@
     "llamen": {
       "w": "llamar",
       "pos": "v",
+      "reg": true,
       "ja": "呼ぶ・呼び出す",
       "form": "llamar の接続法現在・三人称複数（es posible que me llamen＝呼び出されるかもしれない）"
     },
@@ -1697,6 +1743,7 @@
     "sancionen": {
       "w": "sancionar",
       "pos": "v",
+      "reg": true,
       "ja": "処分する",
       "form": "sancionar の接続法現在・三人称複数",
       "key": true
@@ -1723,6 +1770,7 @@
     "equivocarse": {
       "w": "equivocarse",
       "pos": "v",
+      "reg": true,
       "ja": "まちがえる",
       "key": true
     },
@@ -1734,6 +1782,7 @@
     "llegando": {
       "w": "llegar",
       "pos": "v",
+      "reg": true,
       "ja": "届く・着く",
       "form": "llegar の現在分詞（están llegando＝届きつつある）"
     },
@@ -1783,12 +1832,14 @@
     "llamó": {
       "w": "llamar",
       "pos": "v",
+      "reg": true,
       "ja": "呼ぶ",
       "form": "llamar の点過去・三人称単数（te llamó otra cosa＝君を別の名前で呼んだ）"
     },
     "olvidado": {
       "w": "olvidar",
       "pos": "v",
+      "reg": true,
       "ja": "忘れる",
       "form": "olvidar の過去分詞（se le ha olvidado＝うっかり忘れた）"
     },
@@ -1836,6 +1887,7 @@
     "conste": {
       "w": "constar",
       "pos": "v",
+      "reg": true,
       "ja": "（記録として）明らかである・はっきりしている",
       "form": "constar の接続法現在・三人称単数（que conste que〜＝言っておくが）",
       "key": true
@@ -1848,6 +1900,7 @@
     "retiro": {
       "w": "retirarse",
       "pos": "v",
+      "reg": true,
       "ja": "引退する",
       "form": "retirarse の現在・一人称単数（me retiro＝引退する）",
       "key": true
@@ -1866,6 +1919,7 @@
     "llama#47": {
       "w": "llamarse",
       "pos": "v",
+      "reg": true,
       "ja": "〜という名前だ",
       "form": "llamar の現在・三人称単数（se llama Carmen＝カルメンという名前だ）"
     },
@@ -1919,6 +1973,7 @@
     "preocupes": {
       "w": "preocuparse",
       "pos": "v",
+      "reg": true,
       "ja": "心配する",
       "form": "preocuparse の否定命令（tú）（no te preocupes＝心配しないで）"
     },
@@ -1931,6 +1986,7 @@
     "subir": {
       "w": "subir",
       "pos": "v",
+      "reg": true,
       "ja": "上がる・昇格する",
       "key": true
     },
@@ -1986,6 +2042,7 @@
     "terminamos": {
       "w": "terminar",
       "pos": "v",
+      "reg": true,
       "ja": "終わる・終える",
       "form": "terminar の現在・一人称複数"
     },

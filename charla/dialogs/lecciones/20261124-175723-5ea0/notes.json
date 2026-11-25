@@ -65,6 +65,7 @@
     "domina": {
       "w": "dominar",
       "pos": "v",
+      "reg": true,
       "ja": "習得する・マスターする",
       "form": "dominar の現在・三人称単数（usted domina＝あなたはマスターしている）",
       "key": true
@@ -85,6 +86,7 @@
     "enseñan": {
       "w": "enseñar",
       "pos": "v",
+      "reg": true,
       "ja": "教える",
       "form": "enseñar の現在・三人称複数（los profesores que me enseñan＝私に教えてくれる先生たち）",
       "key": true
@@ -106,6 +108,7 @@
     "estudiado": {
       "w": "estudiar",
       "pos": "v",
+      "reg": true,
       "ja": "勉強する",
       "form": "過去分詞（había estudiado＝勉強していた）",
       "key": true
@@ -134,6 +137,7 @@
     "estudió": {
       "w": "estudiar",
       "pos": "v",
+      "reg": true,
       "ja": "勉強する・習う",
       "form": "estudiar の点過去・三人称単数（usted に対して。¿Estudió con…?＝…に習いましたか）"
     },
@@ -146,6 +150,7 @@
     "estudié": {
       "w": "estudiar",
       "pos": "v",
+      "reg": true,
       "ja": "勉強する・習う",
       "form": "estudiar の点過去・一人称単数（Estudié español con…＝…に習った）"
     },
@@ -172,6 +177,7 @@
     "vivía": {
       "w": "vivir",
       "pos": "v",
+      "reg": true,
       "ja": "住む",
       "form": "vivir の線過去・三人称単数（vivía cerca de mi casa＝家の近くに住んでいた）"
     },
@@ -264,6 +270,7 @@
     "familiarizado": {
       "w": "familiarizarse",
       "pos": "v",
+      "reg": true,
       "ja": "なじむ・慣れ親しむ",
       "form": "過去分詞（se había familiarizado con…＝〜になじんでいた）",
       "note": "familiarizarse con…＝〜になじむ",

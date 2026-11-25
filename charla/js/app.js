@@ -840,7 +840,7 @@
         '<p class="bja">' + esc(g.ja) + '</p>' +
         (g.form ? '<p class="bform"><span lang="es">' + esc(surf) + '</span>：' + esc(g.form) + '</p>' : '') +
         (g.note ? '<p class="bnote">' + esc(g.note) + '</p>' : '');
-      if (g.pos !== 'art' && g.pos !== 'prep' && g.pos !== 'bad') rec = { kind: 'w', w: g.w, pos: g.pos, g: g.g || null, ja: g.ja, surf: surf, line: li, form: g.form || '', note: g.note || '', clue: g.clue || null, cj: g.cj || null };
+      if (g.pos !== 'art' && g.pos !== 'prep' && g.pos !== 'bad') rec = { kind: 'w', w: g.w, pos: g.pos, g: g.g || null, ja: g.ja, surf: surf, line: li, form: g.form || '', note: g.note || '', clue: g.clue || null, cj: g.cj || null, reg: g.reg || null };
     }
     if (rec) { record(rec); html += '<p class="bfoot">📒 調べた単語に記録しました</p>'; }
     B.innerHTML = html;

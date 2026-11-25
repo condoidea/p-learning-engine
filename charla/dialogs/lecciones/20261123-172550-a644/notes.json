@@ -148,6 +148,7 @@
     "llegué": {
       "w": "llegar",
       "pos": "v",
+      "reg": true,
       "ja": "着く",
       "form": "llegar の点過去・一人称単数（g → gu）",
       "key": true
@@ -203,6 +204,7 @@
     "casaron": {
       "w": "casarse",
       "pos": "v",
+      "reg": true,
       "ja": "結婚する",
       "form": "casarse の点過去・三人称複数（se casaron＝結婚した）",
       "key": true
@@ -347,6 +349,7 @@
     "duró": {
       "w": "durar",
       "pos": "v",
+      "reg": true,
       "ja": "続く",
       "form": "durar の点過去・三人称単数（¿Cuánto duró?＝どのくらい続いた？）",
       "key": true
@@ -449,6 +452,7 @@
     "compré": {
       "w": "comprar",
       "pos": "v",
+      "reg": true,
       "ja": "買う",
       "form": "comprar の点過去・一人称単数（te compré＝君に買ってきた）"
     },
@@ -510,6 +514,7 @@
     "regala": {
       "w": "regalar",
       "pos": "v",
+      "reg": true,
       "ja": "贈る・プレゼントする",
       "form": "regalar の現在・三人称単数（se regala＝贈られる）",
       "key": true

@@ -112,6 +112,7 @@
     "significa": {
       "w": "significar",
       "pos": "v",
+      "reg": true,
       "ja": "意味する",
       "form": "significar の現在・三人称単数（¿Qué significa…?＝…はどういう意味？）",
       "key": true
@@ -139,6 +140,7 @@
     "bombardeado": {
       "w": "bombardear",
       "pos": "v",
+      "reg": true,
       "ja": "爆撃する",
       "form": "過去分詞（fue bombardeado＝爆撃された）",
       "key": true
@@ -146,6 +148,7 @@
     "pintó": {
       "w": "pintar",
       "pos": "v",
+      "reg": true,
       "ja": "描く",
       "form": "pintar の点過去・三人称単数（pintó un cuadro＝絵を描いた）"
     },
@@ -208,6 +211,7 @@
     "pintados": {
       "w": "pintar",
       "pos": "v",
+      "reg": true,
       "ja": "描く",
       "form": "過去分詞・男性複数（están pintados＝描かれている）"
     },
@@ -221,6 +225,7 @@
     "destrozados": {
       "w": "destrozar",
       "pos": "v",
+      "reg": true,
       "ja": "破壊する",
       "form": "過去分詞・男性複数（edificios destrozados＝壊された建物）",
       "key": true
@@ -241,6 +246,7 @@
     "protestar": {
       "w": "protestar",
       "pos": "v",
+      "reg": true,
       "ja": "抗議する",
       "key": true
     },
@@ -267,6 +273,7 @@
     "representa": {
       "w": "representar",
       "pos": "v",
+      "reg": true,
       "ja": "表す・表現する",
       "form": "representar の現在・三人称単数",
       "key": true

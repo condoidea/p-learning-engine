@@ -169,6 +169,7 @@
     "enseñas": {
       "w": "enseñar",
       "pos": "v",
+      "reg": true,
       "ja": "教える",
       "form": "enseñar の現在・二人称単数（君は教える）",
       "key": true
@@ -225,6 +226,7 @@
     "acompaño": {
       "w": "acompañar",
       "pos": "v",
+      "reg": true,
       "ja": "一緒に行く・付き添う",
       "form": "acompañar の現在・一人称単数",
       "key": true
@@ -262,6 +264,7 @@
     "entregan": {
       "w": "entregar",
       "pos": "v",
+      "reg": true,
       "ja": "届ける・渡す",
       "form": "entregar の現在・三人称複数（誰かが届ける。郵便局側を指す）",
       "key": true
@@ -292,6 +295,7 @@
     "comprársela": {
       "w": "comprar",
       "pos": "v",
+      "reg": true,
       "ja": "買う",
       "form": "comprar＋se（妹に）＋la（財布を）。アクセント記号がつく形",
       "key": true
@@ -315,6 +319,7 @@
     "regalártela": {
       "w": "regalar",
       "pos": "v",
+      "reg": true,
       "ja": "贈る・プレゼントする",
       "form": "regalar＋te（君に）＋la（それを）。アクセント記号がつく形",
       "key": true
@@ -322,11 +327,13 @@
     "olvidar": {
       "w": "olvidar",
       "pos": "v",
+      "reg": true,
       "ja": "忘れる"
     },
     "esperar": {
       "w": "esperar",
       "pos": "v",
+      "reg": true,
       "ja": "待つ"
     },
     "casi": {

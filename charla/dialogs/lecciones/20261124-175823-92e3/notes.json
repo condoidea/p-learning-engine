@@ -123,6 +123,7 @@
     "regresaste": {
       "w": "regresar",
       "pos": "v",
+      "reg": true,
       "ja": "戻る・帰る",
       "form": "regresar の点過去・二人称単数（regresaste de＝〜から戻った）",
       "key": true
@@ -130,6 +131,7 @@
     "llegué": {
       "w": "llegar",
       "pos": "v",
+      "reg": true,
       "ja": "着く・到着する",
       "form": "llegar の点過去・一人称単数（llegué＝着いた）"
     },
@@ -182,6 +184,7 @@
     "agotado": {
       "w": "agotarse",
       "pos": "v",
+      "reg": true,
       "ja": "品切れになる・売り切れる",
       "form": "agotarse の過去分詞（se habían agotado＝売り切れていた）",
       "key": true
@@ -214,6 +217,7 @@
     "comprado": {
       "w": "comprar",
       "pos": "v",
+      "reg": true,
       "ja": "買う",
       "form": "comprar の過去分詞"
     },
@@ -257,6 +261,7 @@
     "agotarse": {
       "w": "agotarse",
       "pos": "v",
+      "reg": true,
       "ja": "品切れになる・売り切れる",
       "form": "不定詞（suelen agotarse＝ふつう売り切れる）",
       "key": true
@@ -280,6 +285,7 @@
     "alojaste": {
       "w": "alojarse",
       "pos": "v",
+      "reg": true,
       "ja": "泊まる・宿泊する",
       "form": "alojarse の点過去・二人称単数（te alojaste＝泊まった）",
       "key": true
@@ -360,6 +366,7 @@
     "subí": {
       "w": "subir",
       "pos": "v",
+      "reg": true,
       "ja": "登る・上がる",
       "form": "subir の点過去・一人称単数（subí a＝〜に登った）"
     },

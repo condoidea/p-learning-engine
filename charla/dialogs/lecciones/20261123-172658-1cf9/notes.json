@@ -79,6 +79,7 @@
     "alegro": {
       "w": "alegrarse",
       "pos": "v",
+      "reg": true,
       "ja": "うれしく思う・喜ぶ",
       "form": "alegrarse の現在・一人称単数（me alegro de ＋ 不定詞）",
       "key": true
@@ -144,6 +145,7 @@
     "visité": {
       "w": "visitar",
       "pos": "v",
+      "reg": true,
       "ja": "訪れる・見学する",
       "form": "visitar の点過去・一人称単数"
     },
@@ -164,6 +166,7 @@
     "impresionaron": {
       "w": "impresionar",
       "pos": "v",
+      "reg": true,
       "ja": "感動させる",
       "form": "impresionar の点過去・三人称複数（me impresionaron＝それらは私を感動させた）",
       "key": true
@@ -176,12 +179,14 @@
     "compraste": {
       "w": "comprar",
       "pos": "v",
+      "reg": true,
       "ja": "買う",
       "form": "comprar の点過去・二人称単数"
     },
     "compré": {
       "w": "comprar",
       "pos": "v",
+      "reg": true,
       "ja": "買う",
       "form": "comprar の点過去・一人称単数"
     },
@@ -230,12 +235,14 @@
     "trabajé": {
       "w": "trabajar",
       "pos": "v",
+      "reg": true,
       "ja": "働く",
       "form": "trabajar の点過去・一人称単数"
     },
     "trabajaste": {
       "w": "trabajar",
       "pos": "v",
+      "reg": true,
       "ja": "働く",
       "form": "trabajar の点過去・二人称単数（¿Trabajaste?＝働いてたの？）"
     },
@@ -255,6 +262,7 @@
     "ganar": {
       "w": "ganar",
       "pos": "v",
+      "reg": true,
       "ja": "稼ぐ（ganar dinero＝お金を稼ぐ）"
     },
     "porque": {

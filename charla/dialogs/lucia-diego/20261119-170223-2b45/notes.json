@@ -167,6 +167,7 @@
     "olvidado": {
       "w": "olvidarse",
       "pos": "v",
+      "reg": true,
       "ja": "忘れる",
       "form": "olvidarse の過去分詞（me había olvidado＝過去完了。すっかり忘れていた）"
     },
@@ -288,6 +289,7 @@
     "llamará": {
       "w": "llamarse",
       "pos": "v",
+      "reg": true,
       "ja": "〜という名前である",
       "form": "llamarse の未来・三人称単数（se llamará Napoleón＝ナポレオンという名前になる）"
     },
@@ -299,12 +301,14 @@
     "calla": {
       "w": "callarse",
       "pos": "v",
+      "reg": true,
       "ja": "黙る",
       "form": "callarse の tú への命令（calla＝黙って）"
     },
     "cases": {
       "w": "casarse",
       "pos": "v",
+      "reg": true,
       "ja": "結婚する",
       "form": "casarse の接続法現在・二人称単数（espero que no te cases＝結婚していないといいな。esperar que のあとは接続法）"
     },
@@ -324,6 +328,7 @@
     "trabajes": {
       "w": "trabajar",
       "pos": "v",
+      "reg": true,
       "ja": "働く",
       "form": "trabajar の接続法現在・二人称単数（ojalá のあと）"
     },
@@ -335,12 +340,14 @@
     "trabajas": {
       "w": "trabajar",
       "pos": "v",
+      "reg": true,
       "ja": "働く",
       "form": "trabajar の二人称単数・現在"
     },
     "casar": {
       "w": "casarse",
       "pos": "v",
+      "reg": true,
       "ja": "結婚する",
       "form": "casarse の不定詞（te vas a casar＝君は結婚する予定だ。ir a ＋ 不定詞）"
     },
@@ -354,6 +361,7 @@
     "practica": {
       "w": "practicar",
       "pos": "v",
+      "reg": true,
       "ja": "練習する",
       "form": "practicar の三人称単数・現在"
     },
@@ -483,12 +491,14 @@
     "intenté": {
       "w": "intentar",
       "pos": "v",
+      "reg": true,
       "ja": "試みる・〜しようとする",
       "form": "intentar の点過去・一人称単数（intenté olvidarme＝忘れようとした）"
     },
     "olvidarme": {
       "w": "olvidarse",
       "pos": "v",
+      "reg": true,
       "ja": "忘れる",
       "form": "olvidarse ＋ me。不定詞に代名詞をつなげた形（intenté olvidarme de ella＝それを忘れようとした）"
     },
@@ -520,6 +530,7 @@
     "gustas": {
       "w": "gustar",
       "pos": "v",
+      "reg": true,
       "ja": "好まれる・気に入られる",
       "form": "gustar の二人称単数・現在（me gustas＝私は君が好き。直訳は「君は私に気に入られている」）"
     },
@@ -546,6 +557,7 @@
     "invitaré": {
       "w": "invitar",
       "pos": "v",
+      "reg": true,
       "ja": "招く・ごちそうする",
       "form": "invitar の未来・一人称単数（te invitaré a una paella＝パエリアをごちそうしよう）"
     },
@@ -577,6 +589,7 @@
     "llamado": {
       "w": "llamar",
       "pos": "v",
+      "reg": true,
       "ja": "呼ぶ・名づける",
       "form": "llamar の過去分詞（un perro llamado Napoleón＝ナポレオンという名前の犬）"
     },
@@ -601,6 +614,7 @@
     "viajaría": {
       "w": "viajar",
       "pos": "v",
+      "reg": true,
       "ja": "旅行する",
       "form": "viajar の過去未来・三人称単数／一人称（que viajaría a un país＝ある国に旅するだろう）"
     },
@@ -660,6 +674,7 @@
     "queda": {
       "w": "quedar",
       "pos": "v",
+      "reg": true,
       "ja": "残っている・〜になる",
       "form": "quedar の三人称単数・現在（queda tiempo＝時間が残っている）"
     },
@@ -671,6 +686,7 @@
     "guarda": {
       "w": "guardar",
       "pos": "v",
+      "reg": true,
       "ja": "しまう・保管する",
       "form": "guardar の tú への命令（guarda las cartas＝手紙をしまって）"
     },
@@ -812,12 +828,14 @@
     "llama#10": {
       "w": "llamarse",
       "pos": "v",
+      "reg": true,
       "ja": "〜という名前である",
       "form": "llamarse の三人称単数・現在（se llama Michi＝ミチという名前だ）"
     },
     "espero#11": {
       "w": "esperar",
       "pos": "v",
+      "reg": true,
       "ja": "望む・〜だといいと思う",
       "form": "esperar の一人称単数・現在（espero que ...＝〜だといいな）"
     },
@@ -848,6 +866,7 @@
     "olvidé#22": {
       "w": "olvidarse",
       "pos": "v",
+      "reg": true,
       "ja": "忘れる",
       "form": "olvidarse の点過去・一人称単数（no me olvidé＝忘れなかった）"
     },
@@ -866,6 +885,7 @@
     "come#32": {
       "w": "comerse",
       "pos": "v",
+      "reg": true,
       "ja": "食べてしまう・平らげる",
       "form": "comerse の三人称単数・現在（se come todas mis paellas＝僕のパエリアを全部食べてしまう）"
     },

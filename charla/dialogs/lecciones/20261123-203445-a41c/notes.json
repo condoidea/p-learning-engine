@@ -94,6 +94,7 @@
     "vivíamos": {
       "w": "vivir",
       "pos": "v",
+      "reg": true,
       "ja": "住んでいた",
       "form": "vivir の線過去・一人称複数（当時の暮らし）",
       "key": true
@@ -132,6 +133,7 @@
     "saltábamos": {
       "w": "saltar",
       "pos": "v",
+      "reg": true,
       "ja": "飛び込んでいた・跳んでいた",
       "form": "saltar の線過去・一人称複数（昔の習慣。-ar 動詞の nosotros は -ábamos）",
       "key": true
@@ -229,6 +231,7 @@
     "encantaba": {
       "w": "encantar",
       "pos": "v",
+      "reg": true,
       "ja": "大好きである・とても気に入る",
       "form": "encantar の線過去・三人称単数（gustar 型：nos encantaba＝私たちには大好きだった）",
       "key": true
@@ -281,6 +284,7 @@
     "pasó": {
       "w": "pasar",
       "pos": "v",
+      "reg": true,
       "ja": "起こる",
       "form": "pasar の点過去・三人称単数（¿qué pasó?＝何があった？）"
     },
@@ -293,6 +297,7 @@
     "enfadó": {
       "w": "enfadarse",
       "pos": "v",
+      "reg": true,
       "ja": "怒る",
       "form": "enfadarse の点過去・三人称単数（se enfadó＝怒った）",
       "key": true
@@ -329,6 +334,7 @@
     "saltar": {
       "w": "saltar",
       "pos": "v",
+      "reg": true,
       "ja": "飛び込む・跳ぶ",
       "key": true
     },

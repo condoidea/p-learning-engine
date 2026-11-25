@@ -119,6 +119,7 @@
     "mira": {
       "w": "mirar",
       "pos": "v",
+      "reg": true,
       "ja": "見て",
       "form": "mirar の命令形・tú（mira＝見て・ほら）"
     },
@@ -151,6 +152,7 @@
     "bajado": {
       "w": "bajar",
       "pos": "v",
+      "reg": true,
       "ja": "下ろす",
       "form": "過去分詞（la he bajado＝それを下ろした）"
     },
@@ -183,6 +185,7 @@
     "llevamos": {
       "w": "llevar",
       "pos": "v",
+      "reg": true,
       "ja": "持っていく",
       "form": "llevar の現在・一人称複数（llevamos la mía＝私のを持っていこう）"
     },
@@ -226,6 +229,7 @@
     "compramos": {
       "w": "comprar",
       "pos": "v",
+      "reg": true,
       "ja": "買う",
       "form": "comprar の現在・一人称複数（compramos＝買おう）"
     },
@@ -290,6 +294,7 @@
     "cuidarlo": {
       "w": "cuidar",
       "pos": "v",
+      "reg": true,
       "ja": "世話をする",
       "form": "cuidar ＋ lo（猫を）",
       "key": true
@@ -368,6 +373,7 @@
     "llegado": {
       "w": "llegar",
       "pos": "v",
+      "reg": true,
       "ja": "着く・届く",
       "form": "過去分詞（ha llegado＝届いた）"
     },

@@ -100,6 +100,7 @@
     "pasado": {
       "w": "pasar",
       "pos": "v",
+      "reg": true,
       "ja": "起こる",
       "form": "過去分詞（ha pasado algo＝何かあった）"
     },
@@ -132,6 +133,7 @@
     "robó": {
       "w": "robar",
       "pos": "v",
+      "reg": true,
       "ja": "盗む",
       "form": "robar の点過去・三人称単数（robó dos cuadros＝絵を2枚盗んだ）",
       "key": true
@@ -326,6 +328,7 @@
     "buscado": {
       "w": "buscar",
       "pos": "v",
+      "reg": true,
       "ja": "捜す・追う",
       "form": "過去分詞（lo ha buscado＝彼を追ってきた）"
     },
@@ -370,6 +373,7 @@
     "pasar": {
       "w": "pasar",
       "pos": "v",
+      "reg": true,
       "ja": "起こる",
       "note": "¿Qué le va a pasar?＝（彼は）どうなるの？"
     },
