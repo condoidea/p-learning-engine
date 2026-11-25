@@ -758,3 +758,17 @@ svg.dove .owl-wing { transform-origin: 30px 58px; }
 .opts.seals .opt[data-i="1"]::before { background: radial-gradient(circle at 40% 35%, var(--wax-red2), var(--wax-red) 65%); }
 .opts.seals .opt[data-i="0"]:not(.ok):not(.ng) { border-color: color-mix(in srgb, var(--wax-blue) 60%, transparent); }
 .opts.seals .opt[data-i="1"]:not(.ok):not(.ng) { border-color: color-mix(in srgb, var(--wax-red) 60%, transparent); }
+
+/* ---- 依頼の終わり：書きあがった手紙・届いた手紙・代書人の独白 ---- */
+.letter-full .lt-sheet { padding: 16px 56px 14px 18px; background: repeating-linear-gradient(180deg, transparent 0 31px, rgba(31, 62, 122, .09) 31px 32px), linear-gradient(180deg, #fffefa, #fbf4e2); }
+.lt-sheet p { margin: 0; }
+.lt-to { font: 600 18px/2 var(--f-es); color: var(--ink); }
+.lt-es { font: 500 18px/1.55 var(--f-es); color: var(--ink); padding-left: 1em; }
+.lt-ja { font-size: 12px; line-height: 1.5; color: var(--ink-soft); padding-left: 1.5em; margin-bottom: 6px !important; }
+.lt-sign { margin-top: 8px !important; text-align: right; font: italic 600 18px/1.5 var(--f-latin); color: var(--ink); }
+.lt-note { margin: 8px 4px 0; font-size: 12.5px; line-height: 1.6; color: var(--ink-soft); }
+.letter-full.recv .lt-sheet { background: linear-gradient(180deg, #fbf8f0, #f1ead8); transform: rotate(-.6deg); }
+.talk.mono { background: linear-gradient(180deg, rgba(253, 249, 239, .96), rgba(244, 236, 218, .96)); border-left: 3px solid var(--wax-red); }
+.talk.mono .tk-name { color: var(--wax-red); }
+.talk.mono .tk-x { color: var(--ink2); letter-spacing: .02em; }
+.talk.mono .tk-av span { font-size: 26px; opacity: .75; }

@@ -52,6 +52,7 @@ OQ.lessons.forEach(L => L.steps.forEach((st, i) => {
   if (st.t !== 'forge') (st.o || []).forEach(o => { if (o.length > 2) addEs(src, o); });
   (st.tbl || []).forEach(r => r.forEach(c => addEs(src, c.replace(/（[^）]*）/g, ' ').replace(/[：:]/g, ' '))));
   ['x', 'r', 'why', 'more', 'q', 'ti', 'hint', 'need', 'mis'].forEach(k => addTicks(src, st[k]));
+  if (st.t === 'letter') { addEs(src, st.to); addEs(src, String(st.sign).replace(/\n/g, ' ')); (st.body || []).forEach(b => addEs(src, b[0])); }
 }));
 OQ.questions.forEach(q => {
   const src = 'Q ' + q.id;
@@ -148,6 +149,11 @@ OQ.lessons.forEach((L, li) => {
       if (!st.why) warn(at + '：seal に why がない');
       if (new Set(st.o).size !== st.o.length) err(at + '：seal に同じ選択肢');
     }
+    if (st.t === 'letter') {
+      if (!Array.isArray(st.body) || !st.body.length) err(at + '：letter の body が空');
+      (st.body || []).forEach(b => { if (!/\{/.test(b[0])) warn(at + '：letter の行に {形} がない「' + b[0] + '」'); if (!b[1]) err(at + '：letter の行に訳がない'); });
+      if (!st.to || !st.sign) err(at + '：letter に宛名（to）か署名（sign）がない');
+    }
     if (st.t === 'forge') {
       if (st.cut && !st.w.endsWith(st.cut)) err(at + '：forge の w が cut で終わっていない');
       if (st.add && (st.o || []).indexOf(st.add) < 0) err(at + '：forge の add が o にない');
@@ -168,7 +174,7 @@ OQ.lessons.forEach((L, li) => {
     if (run === 4) warn(at + '：読むだけのステップが4つ続いている');
     owl = st.t === 'say' && !st.who ? owl + 1 : (st.t === 'show' || st.t === 'enter' ? owl : 0);
     if (owl === 3) warn(at + '：パロマが3回つづけて話している（返事・問いで区切る）');
-    (st.t === 'say' ? String(st.x || '') : '').split('\n').forEach(line => {
+    (st.t === 'say' || st.t === 'mono' ? String(st.x || '') : '').split('\n').forEach(line => {
       const len = line.replace(/\*\*|__|\(\(|\)\)|`|[\[\]{}^]/g, '').length;
       if (len > 30) warn(at + '：吹き出しの1行が長い（' + len + '字）「' + line.slice(0, 20) + '…」');
     });

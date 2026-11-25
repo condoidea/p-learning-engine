@@ -941,7 +941,10 @@
   W('mamá', 'お母さん', 'n', 5);
   W('necesario', '必要な', 'adj', 4);
   W('suerte', '運（tener suerte＝運がいい）', 'n', 4);
-  F('trabajar', 'trabajas, trabajes, trabajéis, trabajen');
+  W('querido', '親愛なる（手紙の書き出し：Querido Marco:）', 'adj', 4, 'querida, queridos, queridas');
+  W('estimado', '拝啓・〜様（あらたまった手紙の書き出し）', 'adj', 3, 'estimada, estimados, estimadas');
+  W('atentamente', '敬具（あらたまった手紙の結び）', 'adv', 3);
+  F('trabajar','trabajas, trabajes, trabajéis, trabajen');
   F('llamar', 'llame, llames, llamemos, llaméis, llamen');
   F('escuchar', 'escuchan, escuches, escuchemos, escuchéis, escuchen');
   F('cantar', 'cantáis, cantes, cantéis, canten');

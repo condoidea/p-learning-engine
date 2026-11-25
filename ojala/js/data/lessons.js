@@ -2,6 +2,9 @@
  * ¡OJALÁ! — レッスン（台本）
  *
  *  戦後の港町。学ぶ人＝代書屋をついだ見習いの代書人。相棒は伝書バトのパロマ。
+ *  物語の芯：代書人は、もと役所の清書係。事実（🔵 青）の書類はまちがえずに書けるが、
+ *  人の心（🔴 赤＝願い・気持ち・まだ来ない日）を手紙にするのは、はじめて。
+ *  依頼を重ねるうちに、赤い封蝋の意味（＝心）が分かっていく。依頼の終わりに短い独白（mono）。
  *  字を書けない・うまく言えない町の人の手紙を代わりに書き、封蝋で封をして届ける。
  *  que のあとが「本当のこと」なら 🔵 青い封蝋（直説法＝いつもの形）、
  *  「頭の中のこと（願い・気持ち・疑い・まだ）」なら 🔴 赤い封蝋（接続法）。
@@ -38,6 +41,10 @@
  *    map    { hi: ['wish'], x }                  封蝋の地図をボードに出す。hi の枝を光らせる。x はパロマの一言
  *    q      { id }                               問題バンクの1問
  *    drill  { n }                                このレッスンの問題から n 問
+ *    letter { who, to, body: [[es, ja], …], sign, note, recv }
+ *           書きあがった1通（宛名・本文・署名）を便せんに出し、封をして送る。body はその依頼で書いた文。
+ *           recv:true は届いた手紙（読むだけ）
+ *    mono   { x }                                代書人（わたし）の独白。1〜2行
  *
  *  例文・人物・町の名前は、このアプリのためのオリジナル。
  * ========================================================= */
@@ -99,12 +106,13 @@ OQ.lessons = [
     actors: ['luz'],
     steps: [
       { t: 'say', x: 'いらっしゃい、代書人さん。\nわたしはパロマ。\nこの代書屋の、伝書バトです。' },
+      { t: 'say', x: '役所で、清書をしていたのよね。\nきれいな字。\n……でも、手紙は書類とは少しちがうの。' },
       { t: 'say', who: 'luz', x: 'こんばんは。港の食堂のルスです。\n船に乗っているマルコに、\n手紙を……書いてもらえますか。' },
       { t: 'show', cap: 'ルスの手紙・2つの書き出し', tbl: [['Sé que {regresas} el lunes.', '月曜に帰ると知ってる'], ['Espero que {regreses} el lunes.', '月曜に帰るといいな']] },
       { t: 'ask', pred: true, q: 'que のあとの動詞を見て。\nどこがちがう？', o: ['regresas と regreses で、語尾がちがう', 'どちらも同じ形', 'que の場所がちがう'], a: 0, r: '`{regresas}` と `{regreses}`。\n「知ってる」のあとは、いつもの形。\n「〜だといいな」のあとは、形が変わる。' },
       { t: 'say', x: 'que のあとが\n**本当のこと**なら 🔵 青い封蝋。\n**頭の中のこと**（願い）なら 🔴 赤い封蝋。' },
       { t: 'say', who: 'luz', x: '赤い封蝋の手紙は、\n動詞の形も変わるのね。' },
-      { t: 'say', x: 'そう。赤のときの形を\n**接続法**っていうんだ。\n青は、いつもの形（直説法）。' },
+      { t: 'say', x: 'ええ。赤のときの形を、\n**接続法**と呼ぶの。\n青は、いつもの形（直説法）。' },
       { t: 'show', cap: 'hablar（話す）の作り方', tbl: [['yo の形', 'habl^o^'], ['接続法', 'habl^e^']] },
       { t: 'forge', w: 'hablo', cut: 'o', add: 'e', o: ['a', 'e', 'i'], out: '{hable}', ja: '（私が）話すように', hint: 'yo の形の **o** をタップして消そう' },
       { t: 'say', x: '作り方は1つだけ。\n**yo の形の o を、反対の母音に。**\n-ar の動詞は o → e。' },
@@ -119,8 +127,10 @@ OQ.lessons = [
       { t: 'seal', who: 'luz', need: '「あなたがたくさん働いているのは知ってる」と書いて。', es: 'Sé que ___ mucho.', v: 'trabajar', mood: 'ind', o: ['trabajas', 'trabajes', 'trabaje'], a: 0, out: 'Sé que {trabajas} mucho.', ja: 'あなたがたくさん働いていること、知ってる。',
         mis: 'マルコの返事：「もっと働いてほしいって？ これ以上は無理だよ……」', why: '`sé que`（知っている）のあとは本当のこと。いつもの形 `{trabajas}`。' },
       { t: 'tip', id: 't-l1', ti: '赤い封蝋＝接続法', x: 'que のあとが **頭の中のこと**（願い）→ 接続法\n`Quiero que {hables}.`\nque のあとが **本当のこと** → いつもの形\n`Sé que {hablas}.`\n作り方：yo の形の o → e（-ar）' },
-      { t: 'map', hi: ['sub-ar', 'wish'], x: '封蝋の地図に書きこんだよ。\n赤の枝には「願い」。\n形の枝には「-ar は o → e」。' },
-      { t: 'drill', n: 8 }
+      { t: 'map', hi: ['sub-ar', 'wish'], x: '封蝋の地図に書きこんだわ。\n赤の枝には「願い」。\n形の枝には「-ar は o → e」。' },
+      { t: 'drill', n: 8 },
+      { t: 'letter', who: 'luz', to: 'Querido [Marco]:', body: [['Quiero que {regreses} pronto.', '早く帰ってきてほしい。'], ['Espero que {descanses} bien.', 'よく休めているといいな。'], ['Sé que {trabajas} mucho.', 'あなたがたくさん働いていること、知ってる。']], sign: 'Tu [Luz]' },
+      { t: 'mono', x: '「帰ってくる」ではなく「帰ってきてほしい」。\n書類には、なかった書き方だ。' }
     ]
   },
   {
@@ -129,9 +139,9 @@ OQ.lessons = [
     actors: ['nico'],
     steps: [
       { t: 'say', who: 'nico', x: '代書人さん。\nいなかの母さんに、手紙を出したいんだ。\nぼく……字が書けなくて。' },
-      { t: 'say', x: 'だいじょうぶ。\n言いたいことを、ゆっくり話して。\n今日は -er と -ir の動詞。' },
+      { t: 'say', x: 'だいじょうぶ。\n言いたいことを、ゆっくり話して。\n字は、こちらで書くから。' },
       { t: 'show', cap: 'comer（食べる）の作り方', tbl: [['yo の形', 'com^o^'], ['接続法', '？？？']] },
-      { t: 'ask', pred: true, q: '-ar の hablo は hable だった。\n-er の como は、何になると思う？', o: ['coma', 'come', 'comi'], a: 0, r: '`{coma}`！\n**-er・-ir は o → a**。\n-ar は e、-er・-ir は a。反対の母音だね。' },
+      { t: 'ask', pred: true, q: '-ar の hablo は hable だった。\n-er の como は、何になると思う？', o: ['coma', 'come', 'comi'], a: 0, r: '`{coma}`。\n**-er・-ir は o → a**。\n-ar は e、-er・-ir は a。反対の母音ね。' },
       { t: 'forge', w: 'vivo', cut: 'o', add: 'a', o: ['a', 'e', 'i'], out: '{viva}', ja: '（私が）住むように', hint: 'yo の形の **o** をタップ' },
       { t: 'show', cap: 'comer の接続法（人ごと）', tbl: [['yo', '{coma}'], ['tú', '{comas}'], ['él・ella・usted', '{coma}'], ['nosotros', '{comamos}'], ['vosotros', '{comáis}'], ['ellos・ustedes', '{coman}']] },
       { t: 'say', who: 'nico', x: 'tener は？\nyo の形は tengo で、\nちょっと変な形だよ。' },
@@ -141,15 +151,17 @@ OQ.lessons = [
       { t: 'seal', who: 'nico', need: '母さんに「すぐに返事を書いてほしい」と書いて。', es: 'Quiero que me ___ pronto.', v: 'escribir', mood: 'sub', o: ['escribes', 'escribas', 'escriba'], a: 1, out: 'Quiero que me {escribas} pronto.', ja: 'すぐに手紙を書いてほしい。',
         mis: '母さんの返事：「わたしがすぐ書いてるって？ まだ1通も書いてないのに、だれから聞いたの？」', why: '母さんには tú。`escribo` → `escriba`、tú の語尾 s で `{escribas}`。' },
       { t: 'say', x: 'もうひとつ、願いのことば。\n`Ojalá` ＝「〜だといいなあ」。\nojalá のあとも 🔴 赤。' },
-      { t: 'seal', who: 'nico', need: '「母さんが町に来られたらいいなあ」と書いて。', es: 'Ojalá ___ a la ciudad.', v: 'venir', mood: 'sub', o: ['viene', 'venga', 'vienes'], a: 1, out: 'Ojalá {venga} a la ciudad.', ja: '母さんが町に来られたらいいなあ。',
-        mis: '母さんの返事：「わたしが町に行くことになってるの？ そんな話、聞いてないよ」', why: '`ojalá` のあとは願い。`vengo` → `{venga}`（él・ella の形。ここでは「母さんが」）。' },
+      { t: 'seal', who: 'nico', need: '母さんに「町に来られたらいいなあ」と書いて。', es: 'Ojalá ___ a la ciudad.', v: 'venir', mood: 'sub', o: ['vienes', 'vengas', 'venga'], a: 1, out: 'Ojalá {vengas} a la ciudad.', ja: '母さんが町に来られたらいいなあ。',
+        mis: '母さんの返事：「わたしが町に行くことになってるの？ そんな話、聞いてないよ」', why: '`ojalá` のあとは願い。`vengo` → `venga`、母さんには tú なので `{vengas}`。' },
       { t: 'seal', who: 'nico', need: '「母さんがぼくを大事に思ってくれてるのは知ってる」と書いて。', es: 'Mamá, sé que me ___ mucho.', v: 'querer', mood: 'ind', o: ['quieres', 'quieras', 'quiera'], a: 0, out: '[Mamá], sé que me {quieres} mucho.', ja: '母さん、ぼくのことをとても大事に思ってくれてるの、知ってるよ。',
         mis: '母さんの返事：「大事に思ってほしいって？ そんなの、あたりまえでしょう……」', why: '`sé que` のあとは本当のこと。いつもの形 `{quieres}`。' },
       { t: 'say', x: '自分のことなら que はいらない。\n`Quiero ir.`（私は行きたい）\n人に願うときだけ que＋接続法。' },
       { t: 'ask', q: '「（ぼくは）町で働きたい」は、どれ？', o: ['Quiero trabajar en la ciudad.', 'Quiero que trabaje en la ciudad.', 'Quiero que trabajo en la ciudad.'], a: 0, why: '自分がしたいことは、原形のまま `Quiero trabajar`。`Quiero que {trabaje}` だと「（だれかに）働いてほしい」になる。' },
       { t: 'tip', id: 't-l2', ti: '-er・-ir は o → a', x: 'yo の形の o → **-er・-ir は a**\n`como` → `{coma}`　`tengo` → `{tenga}`\n`Ojalá` のあとも接続法\n自分のこと：`Quiero ir.`（que なし）' },
-      { t: 'map', hi: ['sub-er', 'ojala'], x: '形の枝に「-er・-ir は o → a」。\n赤の枝に ojalá が増えたよ。' },
-      { t: 'drill', n: 8 }
+      { t: 'map', hi: ['sub-er', 'ojala'], x: '形の枝に「-er・-ir は o → a」。\n赤の枝に ojalá が増えたわ。' },
+      { t: 'drill', n: 8 },
+      { t: 'letter', who: 'nico', to: 'Querida mamá:', body: [['Sé que me {quieres} mucho.', 'ぼくのことを大事に思ってくれてるの、知ってるよ。'], ['Quiero que me {escribas} pronto.', 'すぐに手紙を書いてほしい。'], ['Ojalá {vengas} a la ciudad.', '町に来られたらいいなあ。']], sign: 'Tu hijo,\n[Nico]', note: '署名だけは、ニコが自分で書いた。大きくて、少しかたむいた字。' },
+      { t: 'mono', x: 'ニコは字を知らない。\nでも、何を書きたいかは、だれよりも知っていた。' }
     ]
   },
   /* ================= DAY 2 ================= */
@@ -163,7 +175,7 @@ OQ.lessons = [
       { t: 'ask', pred: true, q: 'セビリアに住んでいるのは、本当のこと。\nなのに 🔴 赤（接続法）。なぜ？', o: ['「うれしい」「残念」という気持ちの文だから', 'うそを書いているから', 'これから先のことだから'], a: 0, r: '文の中心は「うれしい」「残念」という**気持ち**。\n**気持ちの que も 🔴 赤**。' },
       { t: 'seal', who: 'anselmo', need: 'フェリクスに「おまえに仕事があって、うれしい」と書いてくれ。', es: 'Me alegro de que ___ trabajo.', v: 'tener', mood: 'sub', o: ['tienes', 'tengas', 'tenga'], a: 1, out: 'Me alegro de que {tengas} trabajo.', ja: 'おまえに仕事があって、うれしい。',
         mis: 'フェリクスの返事：「仕事があるのは知ってるよ。……で、兄さんはうれしくないの？」', why: '気持ち（`me alegro de que`）のあとは接続法。`tengo` → `{tengas}`（tú）。' },
-      { t: 'say', x: 'さて、例外の話。\nyo の形が o で終わらない動詞は、\no → a ができないね。' },
+      { t: 'say', x: 'yo の形が o で終わらない動詞は、\no → a ができないの。' },
       { t: 'show', cap: 'yo の形が -oy の4つ', tbl: [['voy（ir）', '{vaya}'], ['soy（ser）', '{sea}'], ['estoy（estar）', '{esté}'], ['doy（dar）', '{dé}']] },
       { t: 'say', x: 'この4つは、形をそのまま覚える。\nあと2つ。\n`haber` → `{haya}`　`saber` → `{sepa}`' },
       { t: 'show', cap: 'estar の接続法（人ごと）', tbl: [['yo', '{esté}'], ['tú', '{estés}'], ['él・ella・usted', '{esté}'], ['nosotros', '{estemos}'], ['vosotros', '{estéis}'], ['ellos・ustedes', '{estén}']] },
@@ -175,11 +187,13 @@ OQ.lessons = [
       { t: 'say', x: '音を守るため。\nc のまま e をつけると「セ」の音。\nだから qu・gu・c に書きかえる。' },
       { t: 'seal', who: 'anselmo', need: '「おまえが早く着くといいな」と書いてくれ。', es: 'Espero que ___ pronto.', v: 'llegar', mood: 'sub', o: ['llegas', 'llegues', 'llegue'], a: 1, out: 'Espero que {llegues} pronto.', ja: 'おまえが早く着くといいな。',
         mis: 'フェリクスの返事：「もう着いてるって？ まだ汽車の切符も買ってないよ」', why: '願い → 接続法。`llego` → `{llegue}`（g のあとに u）、tú は `{llegues}`。' },
-      { t: 'say', who: 'anselmo', x: 'これで、弟に届く。\n……長いこと、言えなかった言葉じゃ。\nありがとう、代書人さん。' },
+      { t: 'say', who: 'anselmo', x: 'これで、弟に届く。\n長いこと、言えなかった言葉じゃ。\n……返事は、来るかのう。' },
       { t: 'tip', id: 't-l3', ti: '例外は6つ＋つづり', x: '`{vaya}`・`{sea}`・`{esté}`・`{dé}`（-oy の4つ）\n`{haya}`（haber）・`{sepa}`（saber）\n-car・-gar・-zar：`{busque}`・`{llegue}`・`{empiece}`\n気持ち（me alegro de que・siento que）→ 接続法',
         why: '`quiero` → `{quiera}`、`puedo` → `{pueda}` のように ie・ue になる動詞も yo の形から作れる。nosotros・vosotros だけは原形の芯にもどる（`{podamos}`）。4級では読めれば OK。' },
       { t: 'map', hi: ['ex6', 'feel'], x: '形の枝に「例外の6つ」。\n赤の枝に「気持ち」。' },
-      { t: 'drill', n: 8 }
+      { t: 'drill', n: 8 },
+      { t: 'letter', who: 'anselmo', to: 'Querido [Félix]:', body: [['Me alegro de que {estés} bien.', 'おまえが元気で、うれしい。'], ['Me alegro de que {tengas} trabajo.', 'おまえに仕事があって、うれしい。'], ['Espero que {llegues} pronto.', 'おまえが早く着くといいな。']], sign: 'Tu hermano,\n[Anselmo]' },
+      { t: 'mono', x: '弟が生きているのは、本当のことだ。\nそれでも封蝋は赤。うれしい、が文のまん中にあるから。' }
     ]
   },
   {
@@ -203,10 +217,12 @@ OQ.lessons = [
       { t: 'ask', q: '「小麦粉が来るのは本当だ」は、どれ？', o: ['Es verdad que viene la harina.', 'Es verdad que venga la harina.', 'No creo que viene la harina.'], a: 0, why: '`es verdad que` は本当のこと → いつもの形 `{viene}`。`no creo que` なら接続法 `venga` になる。' },
       { t: 'seal', who: 'ines', need: '役所の人に「あなたが助けてくださるといいのですが」と書いて。', es: 'Espero que usted me ___.', v: 'ayudar', mood: 'sub', o: ['ayuda', 'ayude', 'ayudes'], a: 1, out: 'Espero que usted me {ayude}.', ja: 'あなたが助けてくださるといいのですが。',
         mis: '役所の返事：「わたしがもう助けている？ いえ、まだ何もしておりませんが……」', why: '願い → 接続法。usted は él と同じ形 `{ayude}`。`ayudes` は tú の形。' },
-      { t: 'say', who: 'ines', x: 'これで、小麦が届くといいけど。\nお礼に、焼きたてを持ってくるわね。' },
+      { t: 'say', who: 'ines', x: 'これで、小麦が届くといいけど。\n……届かなかったら、また書いてね。' },
       { t: 'tip', id: 't-l4', ti: '疑いと必要は赤', x: '🔵 `sé que`・`creo que`・`es verdad que`\n🔴 `no creo que`・`dudo que`（疑い）\n🔴 `es necesario que`・`es importante que`（必要）' },
-      { t: 'map', hi: ['doubt', 'need'], x: '赤の枝に「疑い」と「必要」。\ncreo que は、青の枝に書いたよ。' },
-      { t: 'drill', n: 8 }
+      { t: 'map', hi: ['doubt', 'need'], x: '赤の枝に「疑い」と「必要」。\ncreo que は、青の枝に書いたわ。' },
+      { t: 'drill', n: 8 },
+      { t: 'letter', who: 'ines', to: 'Estimado señor alcalde:', body: [['Sé que ustedes {tienen} mucho trabajo.', 'みなさんにお仕事がたくさんあるのは分かっています。'], ['No creo que la harina {llegue} mañana.', '明日小麦粉が届くとは思えません。'], ['Es importante que los niños {coman} pan.', '子どもたちがパンを食べることが大事です。'], ['Espero que usted me {ayude}.', 'あなたが助けてくださるといいのですが。']], sign: 'Atentamente,\n[Inés]' },
+      { t: 'mono', x: '役所あての手紙なら、前のわたしにも書けた。\nでも「子どもたちに」の行で、ペンが少し重かった。' }
     ]
   },
   /* ================= DAY 3 ================= */
@@ -222,7 +238,7 @@ OQ.lessons = [
         mis: 'マルコの返事：「ぼくが帰ると、いつも踊ってたっけ？ まだ一度も帰ってないのに！」', why: 'まだ帰っていない → 接続法。`vuelvo` → `{vuelvas}`（tú）。' },
       { t: 'seal', who: 'luz', need: '「わたし、仕事が終わると、いつも海を見るの」と書いて。', es: 'Cuando ___ de trabajar, miro el mar.', v: 'terminar', mood: 'ind', o: ['termino', 'termine', 'terminas'], a: 0, out: 'Cuando {termino} de trabajar, miro el mar.', ja: '仕事が終わると（いつも）、海を見るの。',
         mis: 'マルコの返事：「仕事が終わったら？ まだ終わってないの？ 大丈夫？」', why: 'いつものこと → いつもの形 `{termino}`（yo）。' },
-      { t: 'say', x: '`antes de que`（〜する前に）と\n`para que`（〜するように）は、\nいつも 🔴 赤。迷わなくていい。' },
+      { t: 'say', x: '`antes de que`（〜する前に）と\n`para que`（〜するように）は、\nいつも 🔴 赤。' },
       { t: 'show', cap: 'いつも赤', tbl: [['antes de que {salga} el barco', '船が出る前に'], ['para que no {estés} triste', '君が悲しくならないように']] },
       { t: 'forge', w: 'salgo', cut: 'o', add: 'a', o: ['a', 'e'], out: '{salga}', ja: '（船が）出る（前に）', hint: 'salir の yo の形。**o** をタップ' },
       { t: 'seal', who: 'luz', need: '「船が出る前に、わたしの手紙を受け取ってね」と書いて。', es: 'Recibe mi carta antes de que ___ el barco.', v: 'salir', mood: 'sub', o: ['sale', 'salga', 'salgas'], a: 1, out: 'Recibe mi carta antes de que {salga} el barco.', ja: '船が出る前に、わたしの手紙を受け取ってね。',
@@ -232,7 +248,9 @@ OQ.lessons = [
       { t: 'say', who: 'luz', x: 'もうすぐ、会える。\n……手紙じゃなくて、\nちゃんと顔を見て言えるかな。' },
       { t: 'tip', id: 't-l5', ti: 'まだのこと・目的', x: 'cuando ＋ これから → 接続法　`Cuando {vuelvas}…`\ncuando ＋ いつものこと → いつもの形　`Cuando {termino}…`\n`antes de que`・`para que` → いつも接続法' },
       { t: 'map', hi: ['yet', 'purpose'], x: '赤に「まだ」と「目的」。\nいつもの cuando は、青の枝に。' },
-      { t: 'drill', n: 8 }
+      { t: 'drill', n: 8 },
+      { t: 'letter', who: 'luz', to: 'Querido [Marco]:', body: [['Cuando {termino} de trabajar, miro el mar.', '仕事が終わると、いつも海を見るの。'], ['Escribo con letras grandes para que {leas} bien.', 'よく読めるように、大きな字で書くね。'], ['Recibe mi carta antes de que {salga} el barco.', '船が出る前に、この手紙を受け取ってね。'], ['Cuando {vuelvas}, vamos a bailar.', '帰ってきたら、いっしょに踊ろう。']], sign: 'Tu [Luz]' },
+      { t: 'mono', x: 'まだ来ない日のことを書くと、文は赤くなる。\n待つ人の手紙は、赤い封蝋ばかりだ。' }
     ]
   },
   {
@@ -255,10 +273,12 @@ OQ.lessons = [
         mis: 'イネスの返事：「知っている人がいるのに、だれもいない？ よく分からないわ」', why: 'いない人 → 接続法。`conozco` → `{conozca}`。' },
       { t: 'say', who: 'ines', x: 'あら、ニコ。\nあなた、うちで働かない？\n字は、代書人さんに習えばいいわ。' },
       { t: 'say', who: 'nico', x: 'ほんとに？\n……母さんにも、書かなきゃ。\n今度は、ぼくの字で。' },
-      { t: 'ask', q: 'イネスさんがさがしていた人、\nもう見つかった？', o: ['見つかった（ニコ！）', 'まだ見つからない'], a: 0, r: 'ニコに決まり！\nもういる人のことなら、\nこれからは 🔵 青で書くね。' },
+      { t: 'ask', q: 'イネスさんがさがしていた人、\nもう見つかった？', o: ['見つかった（ニコ！）', 'まだ見つからない'], a: 0, r: 'ニコに決まり。\nもういる人になったから、\nこれからは 🔵 青で書ける。' },
       { t: 'tip', id: 't-l6', ti: 'どんな人？', x: 'もういる人：`Tengo un amigo que {habla}…`\nさがしている人：`Busco un amigo que {hable}…`\nいない人：`No hay nadie que {sepa}…`' },
       { t: 'map', hi: ['unknown', 'exist'], x: '赤に「まだ見つからない人」。\n青に「もういる人」。' },
-      { t: 'drill', n: 8 }
+      { t: 'drill', n: 8 },
+      { t: 'letter', who: 'nico', to: 'Querida mamá:', body: [['No hay nadie que me {conozca} aquí.', 'ここには、ぼくを知っている人はだれもいない。'], ['Pero tengo un amigo que {sabe} leer.', 'でも、字が読める友だちがいる。'], ['Ahora {trabajo} en una panadería.', 'いまは、パン屋で働いてるよ。']], sign: '[Nico]', note: 'この手紙は、ニコが自分で書いた。字はまだ大きくて、ところどころ消した跡がある。' },
+      { t: 'mono', x: 'さがしている人は、まだ頭の中にいる。\n見つかったとき、その人は青で書けるようになる。' }
     ]
   },
   /* ================= DAY 4 ================= */
@@ -274,6 +294,10 @@ OQ.lessons = [
         mis: 'フェリクスの返事：「兄さんがぼくの店に来るんだね！ じゃあ待ってるよ」……すれちがい！', why: '「来て」という頼み → 接続法 `{venga}`（él の形。主語はフェリクス）。' },
       { t: 'seal', who: 'anselmo', need: '「フェリクスに、わしは元気だと伝えてくれ」と書いて。', es: 'Dile a Félix que ___ bien.', v: 'estar', mood: 'ind', o: ['estoy', 'esté', 'estés'], a: 0, out: 'Dile a Félix que {estoy} bien.', ja: 'フェリクスに、わしは元気だと伝えてくれ。',
         mis: 'フェリクスの返事：「兄さんに元気でいろって？ ……もしかして、具合が悪いの!?」', why: '事実（わしは元気だ）を伝える → いつもの形 `{estoy}`。' },
+      { t: 'say', who: 'teo', x: '……それから、アンセルモさん。\nセビリアから、一通。' },
+      { t: 'letter', who: 'anselmo', recv: true, to: 'Hermano:', body: [['{Llego} el domingo.', '日曜に着く。']], sign: '[Félix]' },
+      { t: 'say', who: 'anselmo', x: '……これだけか。\nあいつらしいのう。' },
+      { t: 'say', who: 'anselmo', x: '日曜日か。\n店の時計を、ぜんぶ合わせておかんとな。' },
       { t: 'say', x: '`pedir que`（〜するよう頼む）は、\nいつも頼み。🔴 赤。' },
       { t: 'enter', who: 'ines' },
       { t: 'seal', who: 'ines', need: 'テオに「お客さんたちに、明日また来るよう頼んで」と書いて。', es: 'Pide a los clientes que ___ mañana.', v: 'volver', mood: 'sub', o: ['vuelven', 'vuelvan', 'vuelva'], a: 1, out: 'Pide a los clientes que {vuelvan} mañana.', ja: 'お客さんたちに、明日また来るよう頼んで。',
@@ -281,12 +305,15 @@ OQ.lessons = [
       { t: 'say', x: 'ところで、usted への\n「〜してください」`{Venga}`は、\n接続法と同じ形だよ。' },
       { t: 'show', cap: '使い分けの表', tbl: [['🔴 願い・頼み', 'quiero que・espero que・ojalá・pedir que'], ['🔴 気持ち', 'me alegro de que・siento que'], ['🔴 疑い・必要', 'no creo que・dudo que・es necesario que'], ['🔴 まだ・目的', 'cuando（これから）・antes de que・para que'], ['🔴 まだいない人', 'busco … que・no hay nadie que'], ['🔵 本当のこと', 'sé que・creo que・es verdad que・dile que（事実）']] },
       { t: 'enter', who: 'luz' },
-      { t: 'say', who: 'luz', x: '代書人さん。\nマルコが、帰ってきたの。\n結婚式の招待状を、書いてほしい。' },
+      { t: 'say', who: 'luz', x: 'マルコの船が、嵐で三日おくれたの。\n毎晩、港のあかりを数えてた。' },
+      { t: 'say', who: 'luz', x: '……でも、帰ってきた。\n結婚式の招待状を、書いてほしい。' },
       { t: 'seal', who: 'luz', need: '町のみんなに「結婚式に来てくれるといいな」と書いて。（vosotros）', es: 'Esperamos que ___ a la boda.', v: 'venir', mood: 'sub', o: ['venís', 'vengáis', 'vengan'], a: 1, out: 'Esperamos que {vengáis} a la boda.', ja: 'みんなが結婚式に来てくれるといいな。',
         mis: '町のみんな：「もう行くことになってるの？ 招待状、まだもらってないけど？」', why: '願い → 接続法。vosotros の語尾 -is で `{vengáis}`。`vengan` は ellos・ustedes。' },
       { t: 'tip', id: 't-l7', ti: '伝える？ 頼む？', x: '事実を伝える：`Dile que {viene}.`\n頼みを伝える：`Dile que {venga}.`\n`pedir que` → いつも接続法\nusted の「〜してください」＝ 接続法の形' },
       { t: 'map', hi: ['order', 'tell'], x: '最後の枝。\n赤に「頼みを伝える」、\n青に「事実を伝える」。' },
-      { t: 'drill', n: 10 }
+      { t: 'drill', n: 10 },
+      { t: 'letter', who: 'luz', to: 'Queridos amigos:', body: [['[Marco] ya {está} aquí.', 'マルコが、帰ってきました。'], ['Esperamos que {vengáis} a la boda.', 'みんなが結婚式に来てくれるといいな。']], sign: '[Luz] y [Marco]' },
+      { t: 'mono', x: '赤い封蝋は、まだ起きていないことの色だと思っていた。\nいまは、人の心の色だと思う。' }
     ]
   }
 ];
@@ -294,11 +321,11 @@ OQ.lessons = [
 /* ボス（そのレッスンのあとに出る） */
 OQ.bosses = [
   { id: 'B1', after: 'L2', day: 1, name: '霧の配達人ニエブラ', en: 'LA NIEBLA', face: '🌫️', col: '#9fb8d0', from: ['L1', 'L2'], n: 7,
-    line: 'にじんだ手紙は、だれにも読めない……', win: '霧が晴れて、港に朝の光がさした。' },
+    line: '霧の朝は、宛名の字がにじむ。……にじむ前に、封をしなさい。', win: '霧が晴れて、港に朝の光がさした。' },
   { id: 'B2', after: 'L4', day: 2, name: '石頭の検閲官セベロ', en: 'CENSOR SEVERO', face: '🕵️', col: '#c49a3a', from: ['L3', 'L4'], n: 8,
-    line: 'その手紙は、本当のことか。頭の中のことか。怪しいものは、通さない。', win: 'セベロが帽子を取った。「……いい手紙だ。通してよし」' },
+    line: 'その手紙は、本当のことか。頭の中のことか。……決まりなので、一通ずつ読ませてもらう。', win: 'セベロが帽子を取った。「……いい手紙だ。通してよし」' },
   { id: 'B3', after: 'L7', day: 4, name: '行きちがいの嵐', en: 'TORMENTA', face: '🌊', col: '#5a7bff', from: ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7'], n: 12, final: true,
-    line: '伝言など、みんな行きちがえばいい……', win: '嵐が去った。町じゅうの窓に、手紙が届いた。' }
+    line: '風の強い夜は、手紙がよく迷子になる。……宛名を、たしかに。', win: '嵐が去った。町じゅうの窓に、手紙が届いた。' }
 ];
 
 /* 日本語の用語（本文に出たら点線。タップで説明） */

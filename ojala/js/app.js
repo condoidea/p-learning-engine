@@ -668,11 +668,12 @@
 
   /* ---- セリフ（1文字ずつ） ---- */
   var typeT = 0, typeDone = null;
+  var ME = { e: '🖋', n: 'わたし（代書人）' };   // 依頼の終わりの独白
   function talk(x, who, mood, then) {
     talkEl.hidden = false;
     clearTimeout(typeT);
-    var p = who ? D.people[who] : null;
-    talkEl.className = 'talk' + (p ? ' person' : '');
+    var p = who === 'me' ? ME : who ? D.people[who] : null;
+    talkEl.className = 'talk' + (who === 'me' ? ' mono' : p ? ' person' : '');
     talkEl.innerHTML = '<div class="tk-av">' + (p ? '<span>' + p.e + '</span>' : FX.owl(mood)) + '</div><div class="tk-body"><b class="tk-name">' + (p ? esc(p.n) : 'パロマ') + '</b><div class="tk-x">' + ja(x) + '</div></div><button class="tk-log" aria-label="これまでのセリフ">📜</button>';
     if (cur) cur.log.push({ who: who, x: x });
     var box = $('.tk-x', talkEl);
@@ -699,15 +700,15 @@
   function showLog() {
     if (!cur) return;
     modal('<h3 class="m-h">📜 これまでのセリフ</h3><div class="log">' + cur.log.map(function (l) {
-      var p = l.who ? D.people[l.who] : null;
+      var p = l.who === 'me' ? ME : l.who ? D.people[l.who] : null;
       return '<div class="lg"><b>' + (p ? p.e + ' ' + esc(p.n) : '🕊️ パロマ') + '</b><p>' + ja(l.x) + '</p></div>';
     }).join('') + '</div>', 'log-m');
     glossAll($('#mbody'));
     var lg = $('#mbody .log'); lg.scrollTop = lg.scrollHeight;
   }
 
-  var REPLY = ['なるほど ▶', 'ふむふむ ▶', 'うんうん ▶', 'それで？ ▶', 'わかった ▶', 'OK ▶'];
-  var READY = ['やってみる ▶', 'まかせて ▶', 'よし、書こう ▶', 'ペンを取る ▶'];
+  var REPLY = ['ええ ▶', 'うん ▶', 'それで？ ▶', 'わかった ▶', 'なるほど ▶'];
+  var READY = ['書いてみる ▶', 'ペンを取る ▶', 'インクをつける ▶'];
   function replyLabel() {
     var nx = cur && cur.L.steps[cur.i];
     return nx && /^(seal|forge|ask|q|drill)$/.test(nx.t) ? pick(READY) : pick(REPLY);
@@ -733,7 +734,7 @@
     setProg();
     if (cur.i >= cur.L.steps.length) return finishLesson();
     var st = cur.L.steps[cur.i++], run = cur.run;
-    ({ say: doSay, show: doShow, enter: doEnter, ask: doAsk, forge: doForge, seal: doSeal, tip: doTip, map: doMap, q: doQ, drill: doDrill })[st.t](st, run);
+    ({ say: doSay, show: doShow, enter: doEnter, ask: doAsk, forge: doForge, seal: doSeal, tip: doTip, map: doMap, q: doQ, drill: doDrill, letter: doLetter, mono: doMono })[st.t](st, run);
   }
   function nextBtn(label) { if (!cur) return; setProg(); T1.next(step, label || replyLabel()); }
 
@@ -758,6 +759,29 @@
     step();
   }
   function doEnter(st) { addActor(st.who); later(step, 500); }
+
+  /* ✉️ 書きあがった手紙：その依頼で書いた文をつなげて、宛名・本文・署名の1通にして便せんに出す。封をして送る。
+   *  recv:true は届いた手紙（読むだけ）。どの行も下に小さく訳をそえる（文脈の中で形を見直す） */
+  function doLetter(st) {
+    talkHide();
+    if (st.who) addActor(st.who);
+    var body = st.body.map(function (b) { return '<p class="lt-es">' + esHtml(b[0]) + '</p><p class="lt-ja">' + esc(b[1]) + '</p>'; }).join('');
+    var c = boardSet(el('div', 'card letter-full' + (st.recv ? ' recv' : ''), '<div class="qtag">' + (st.recv ? '📮 届いた手紙' : '✉️ 書きあがった手紙') + '</div>' +
+      '<div class="letter lt-sheet"><p class="lt-to">' + esHtml(st.to) + '</p>' + body + '<p class="lt-sign">' + String(st.sign).split('\n').map(esHtml).join('<br>') + '</p></div>' +
+      (st.note ? '<p class="lt-note">' + ja(st.note) + '</p>' : '')));
+    glossEs(c);
+    Sfx.whoosh();
+    if (st.recv) return later(function () { nextBtn('たたむ ▶'); }, 400);
+    T1.next(function () {
+      if (!cur) return;
+      stamp(c, st.wax === 'blue' ? 0 : 1);
+      sfxDivine();
+      var w = $('.wax', c), pt = FX.at(w || c); FX.rays(pt.x, pt.y);
+      if (st.who) actorReact(st.who, '✉️', '😊');
+      later(function () { nextBtn('送る ▶'); }, 700);
+    }, '🔏 封をする');
+  }
+  function doMono(st) { talk(st.x, 'me', '', function () { nextBtn('つぎへ ▶'); }); }
 
   function doAsk(st, run) {
     talkHide();
@@ -820,7 +844,7 @@
         var p = FX.at($('.fg-out', c)); FX.rays(p.x, p.y); FX.burst(p.x, p.y, { pal: 'divine', n: 50, sp: 10, ring: true });
         if (!errs) hit(run, $('.fg-out', c)); else bonus(run, 5, $('.fg-out', c));
         autoSay(plain(st.out));
-        later(function () { nextBtn('▶ ' + pick(['できた！', 'かんぺき！', 'ふむ、いい形だ'])); }, 500);
+        later(function () { nextBtn(pick(['できた ▶', 'きれいな形 ▶', 'つぎへ ▶'])); }, 500);
       }, 300);
     }
     fls.forEach(function (f) {
@@ -985,7 +1009,7 @@
   /* =========================================================
    * 結果画面
    * ========================================================= */
-  function nodeLabel(n) { if (n.type === 'L') { var L = LESSON[n.id]; return oracleNo(L) + '　' + L.ti; } var B = BOSS[n.id]; return '⚔ ' + B.name; }
+  function nodeLabel(n) { if (n.type === 'L') { var L = LESSON[n.id]; return oracleNo(L) + '　' + L.ti; } var B = BOSS[n.id]; return '✉️ ' + B.name; }
   var resTok = 0;
   function showResult(o) {
     var scr = $('#done'); show('done');
@@ -1078,15 +1102,15 @@
   /* ----- ボス：手紙をねらう影から、3通の手紙を守る ----- */
   function bossIntro(B) {
     zStop(); show('quiz'); feverOff(); setHour(B.id);
-    $('#zTitle').textContent = (B.final ? 'FINAL BOSS' : 'BOSS') + '  ' + B.name; $('#zProg').style.width = '0%'; $('#zRight').innerHTML = '';
+    $('#zTitle').textContent = (B.final ? '最後の夜' : '試しの日') + '　' + B.name; $('#zProg').style.width = '0%'; $('#zRight').innerHTML = '';
     zHud.innerHTML = '<div class="warn"><span>町に影がさす　·　手紙を守って　·　町に影がさす　·　手紙を守って　·　</span></div>';
     var rec = S.bosses[B.id];
     zMain.innerHTML = '<div class="boss-intro" style="--bc:' + B.col + '"><div class="bface big">' + B.face + '</div><small>' + esc(B.en) + '</small><h2>' + esc(B.name) + '</h2>' +
       '<p class="bline">「' + esc(B.line) + '」</p>' +
-      '<ul class="rules"><li>✉️ 手紙は3通。まちがえると1通ぬすまれる</li><li>⚡ 早書きゲージが残っているうちに正解するとクリティカル</li><li>🏆 ノーミスで S ランク</li><li>📚 出題：' + B.from.map(function (id) { return oracleNo(LESSON[id]).replace('の依頼', ''); }).join('・') + ' の依頼</li></ul>' +
+      '<ul class="rules"><li>✉️ 手紙は3通。まちがえると1通、迷子になる</li><li>⚡ 早書きゲージが残っているうちに正解するとクリティカル</li><li>🏆 ノーミスで S ランク</li><li>📚 出題：' + B.from.map(function (id) { return oracleNo(LESSON[id]).replace('の依頼', ''); }).join('・') + ' の依頼</li></ul>' +
       (rec && rec.win ? '<p class="best">これまでの最高：<b>' + rec.rank + '</b> ランク</p>' : '') + '</div>';
     Sfx.combo(10); FX.shake(null, true);
-    T2.next(function () { bossFight(B); }, '🖋 ペンで立ち向かう！', 'boss');
+    T2.next(function () { bossFight(B); }, '🖋 書きはじめる', 'boss');
   }
   function bossFight(B) {
     var pool = D.questions.filter(function (q) { return B.from.indexOf('L' + q.L) >= 0; });
@@ -1155,9 +1179,9 @@
     if (win) {
       zRun.xp += B.final ? 200 : 100;
       if (first) {
-        S.tickets += 5; rewards.push({ icon: '🎟', t: '初撃破 +5' });
+        S.tickets += 5; rewards.push({ icon: '🎟', t: 'はじめて越えた +5' });
         card = CARD['u-' + B.id]; if (card) S.cards[card.id] = (S.cards[card.id] || 0) + 1;
-      } else { S.tickets += 1; rewards.push({ icon: '🎟', t: '撃破 +1' }); }
+      } else { S.tickets += 1; rewards.push({ icon: '🎟', t: '越えた +1' }); }
       var better = !rec.rank || 'SAB'.indexOf(rank) < 'SAB'.indexOf(rec.rank);
       S.bosses[B.id] = { win: true, rank: better ? rank : rec.rank, at: Date.now() };
       rewards = rewards.concat(missionDone('stage'));
@@ -1165,7 +1189,7 @@
     touchDay();
     var up = addXp(zRun.xp);
     save();
-    showResult({ title: win ? (B.final ? 'Cielo despejado' : 'Se fue la sombra') : 'Otra vez', sub: win ? B.win : B.name + ' に手紙をめちゃくちゃにされた…', lose: !win, rank: rank, run: zRun, rewards: rewards, card: card, up: up, weak: weak,
+    showResult({ title: win ? (B.final ? 'Cielo despejado' : 'Se fue la sombra') : 'Otra vez', sub: win ? B.win : B.name + ' の中で、手紙が迷子になった……', lose: !win, rank: rank, run: zRun, rewards: rewards, card: card, up: up, weak: weak,
       note: win ? (B.final && rank !== 'S' ? 'ノーミスで S ランクをねらってみよう！' : '') : '答えた問題は復習に入ったよ。Tips を見直して、もう一回！',
       retry: win ? null : { label: '⚡ もう一回！', fn: function () { bossIntro(B); } },
       next: win ? { label: first ? '⚓ 港町へもどる（町がにぎわう！）' : '⚓ 港町へもどる', fn: function () { home(first ? { grow: B.id } : null); } } : null, noHome: win });
@@ -1711,7 +1735,7 @@
       '<div class="gacha"><div class="altar" id="gm"><div class="orb"><i></i><i></i><i></i></div><div class="pedestal"></div></div>' +
       '<p class="g-info">封筒を開けると、新しい切手が出てくる。<br>クリアした依頼の切手が出るよ（いま ' + pool.length + ' 種類）。切手 ' + own + ' / ' + D.cards.length + '</p>' +
       '<div class="g-btns"><button class="tb go" id="g1">1通あける <small>🎟1</small></button><button class="tb gold" id="g10">10通まとめて <small>🎟10・SR以上1枚確定</small></button></div>' +
-      '<p class="g-rate">出る確率：SSR 5%・SR 13%・R 30%・N 52%（UR はボスを倒したときだけ）<br>もう持っている切手が来たら +15 XP<br>🏆 依頼ごとに切手5枚そろえると 🎟+3・+50 XP</p><div id="gOut"></div></div>';
+      '<p class="g-rate">出る確率：SSR 5%・SR 13%・R 30%・N 52%（UR はボスの日を越えたときだけ）<br>もう持っている切手が来たら +15 XP<br>🏆 依頼ごとに切手5枚そろえると 🎟+3・+50 XP</p><div id="gOut"></div></div>';
     $('#gBack').addEventListener('click', function () { home(); });
     $('#g1').addEventListener('click', function () { pull(1); });
     $('#g10').addEventListener('click', function () { pull(10); });
@@ -1805,7 +1829,7 @@
               (rec ? '<span class="ns">' + [1, 2, 3].map(function (k) { return k <= rec.stars ? '★' : '☆'; }).join('') + '</span>' : '') + '</button>';
           } else {
             var B = BOSS[n.id], br = S.bosses[n.id];
-            html += '<button class="node boss' + st + '" data-i="' + x.i + '" style="--bc:' + B.col + '"><span class="ni">' + (open ? B.face : '🔒') + '</span><span class="nt"><small>' + (B.final ? 'FINAL BOSS' : 'BOSS') + '</small>' + (open ? esc(B.name) : '？？？') + '</span>' +
+            html += '<button class="node boss' + st + '" data-i="' + x.i + '" style="--bc:' + B.col + '"><span class="ni">' + (open ? B.face : '🔒') + '</span><span class="nt"><small>' + (B.final ? '最後の夜' : '試しの日') + '</small>' + (open ? esc(B.name) : '？？？') + '</span>' +
               (br && br.win ? '<span class="ns rk">' + br.rank + '</span>' : '') + '</button>';
           }
         });
