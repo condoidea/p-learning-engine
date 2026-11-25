@@ -15,6 +15,7 @@
  *    part   過去分詞（hecho）
  *    tu     命令 tú の不規則（ten）
  *    表ごと  pres / pret / impf / subj を6つの形で直接書く（ser, ir など）
+ *    acc    強く読む i・u にアクセント記号（envío, actúo）
  *  つづりの決まり：-car, -gar, -zar は e の前で qu, gu, c（llegué, pague, empiece）
  * ========================================================= */
 (function () {
@@ -71,9 +72,9 @@
     perder: { stem: 'ie' }, entender: { stem: 'ie' }, encender: { stem: 'ie' }, defender: { stem: 'ie' },
     comenzar: { stem: 'ie' }, sentar: { stem: 'ie' }, recomendar: { stem: 'ie' }, nevar: { stem: 'ie' },
     preferir: { stem: 'ie', ir: 'i' }, mentir: { stem: 'ie', ir: 'i' }, divertir: { stem: 'ie', ir: 'i' }, arrepentir: { stem: 'ie', ir: 'i' },
+    corregir: { stem: 'i', ir: 'i' }, elegir: { stem: 'i', ir: 'i' }, medir: { stem: 'i', ir: 'i' },
     servir: { stem: 'i', ir: 'i' }, repetir: { stem: 'i', ir: 'i' }, vestir: { stem: 'i', ir: 'i' },
-    seguir: { pres: ['sigo', 'sigues', 'sigue', 'seguimos', 'seguís', 'siguen'], pret: ['seguí', 'seguiste', 'siguió', 'seguimos', 'seguisteis', 'siguieron'],
-      subj: ['siga', 'sigas', 'siga', 'sigamos', 'sigáis', 'sigan'] },
+    seguir: { stem: 'i', ir: 'i' },
     contar: { stem: 'ue' }, encontrar: { stem: 'ue' }, mostrar: { stem: 'ue' }, costar: { stem: 'ue' }, acordar: { stem: 'ue' },
     probar: { stem: 'ue' }, almorzar: { stem: 'ue' }, mover: { stem: 'ue' }, doler: { stem: 'ue' }, llover: { stem: 'ue' }, soler: { stem: 'ue' },
     devolver: { stem: 'ue', part: 'devuelto' }, morir: { stem: 'ue', ir: 'u', part: 'muerto' },
@@ -87,16 +88,75 @@
       subj: ['construya', 'construyas', 'construya', 'construyamos', 'construyáis', 'construyan'] },
     'reír': { pres: ['río', 'ríes', 'ríe', 'reímos', 'reís', 'ríen'], pret: ['reí', 'reíste', 'rio', 'reímos', 'reísteis', 'rieron'],
       subj: ['ría', 'rías', 'ría', 'riamos', 'riais', 'rían'], futS: 'reir' },
-    romper: { part: 'roto' }, cubrir: { part: 'cubierto' }, descubrir: { part: 'descubierto' }, imprimir: { part: 'impreso' }
+    romper: { part: 'roto' }, cubrir: { part: 'cubierto' }, descubrir: { part: 'descubierto' }, imprimir: { part: 'impreso' },
+    confesar: { stem: 'ie' }, atender: { stem: 'ie' }, extender: { stem: 'ie' }, negar: { stem: 'ie' }, fregar: { stem: 'ie' }, calentar: { stem: 'ie' },
+    atravesar: { stem: 'ie' }, gobernar: { stem: 'ie' }, apretar: { stem: 'ie' }, tropezar: { stem: 'ie' }, merendar: { stem: 'ie' },
+    apostar: { stem: 'ue' }, sonar: { stem: 'ue' }, soñar: { stem: 'ue' }, volar: { stem: 'ue' }, colgar: { stem: 'ue' }, rogar: { stem: 'ue' },
+    morder: { stem: 'ue' }, resolver: { stem: 'ue', part: 'resuelto' }, renovar: { stem: 'ue' },
+    valer: { yo: 'valgo', futS: 'valdr' },
+    caber: { yo: 'quepo', pretS: 'cup', futS: 'cabr' },
+    'oír': { pres: ['oigo', 'oyes', 'oye', 'oímos', 'oís', 'oyen'], pret: ['oí', 'oíste', 'oyó', 'oímos', 'oísteis', 'oyeron'],
+      subj: ['oiga', 'oigas', 'oiga', 'oigamos', 'oigáis', 'oigan'], futS: 'oir' },
+    'sonreír': { pres: ['sonrío', 'sonríes', 'sonríe', 'sonreímos', 'sonreís', 'sonríen'], pret: ['sonreí', 'sonreíste', 'sonrió', 'sonreímos', 'sonreísteis', 'sonrieron'],
+      subj: ['sonría', 'sonrías', 'sonría', 'sonriamos', 'sonriais', 'sonrían'], futS: 'sonreir' }
   };
 
   function parse(inf) {
     var refl = /[aeií]rse$/.test(inf), base = refl ? inf.slice(0, -2) : inf;
     /* oír・reír のように -ír と書く動詞も -ir 動詞として扱う */
-    return { inf: inf, base: base, refl: refl, cls: base.slice(-2).replace('í', 'i'), stem: base.slice(0, -2), x: IRR[base] || {} };
+    return { inf: inf, base: base, refl: refl, cls: base.slice(-2).replace('í', 'i'), stem: base.slice(0, -2), x: IRR[base] || autoX(base) };
+  }
+  /* 表（IRR）にない動詞の くせ を、つづりから決める（デッキに cj がなくても正しく活用できるように）
+   *  ・複合動詞（detener, componer, aprobar, conseguir…）は元の動詞と同じくせ
+   *  ・母音＋-cer・-cir は yo が -zco（conocer, parecer, ofrecer）。-ducir は点過去も -duj-（traduje）
+   *  ・-uir は y が入る（construyo, construyó）
+   *  ・母音＋-er・-ir（leer, creer）は点過去が leí, leíste, leyó…
+   *  ・ACC の動詞は 強く読む i・u にアクセント記号（envío, actúo, prohíbo） */
+  var COMP = ['tener', 'poner', 'venir', 'hacer', 'traer', 'volver', 'escribir', 'cubrir', 'abrir', 'contar', 'probar', 'sentir', 'seguir', 'pedir',
+    'mostrar', 'cerrar', 'mover', 'conocer', 'caer', 'vestir', 'pensar', 'salir'];
+  var ACC = ['enviar', 'confiar', 'fiar', 'guiar', 'variar', 'ampliar', 'enfriar', 'desviar', 'criar', 'vaciar', 'esquiar', 'resfriar',
+    'actuar', 'continuar', 'graduar', 'situar', 'evaluar', 'efectuar', 'acentuar', 'prohibir', 'reunir'];
+  var AUTO = {}, NOAUTO = false;   /* NOAUTO：規則どおりの形を作るとき（regularForm）は つづりからのくせも使わない */
+  function autoX(base) {
+    if (NOAUTO) return {};
+    if (AUTO[base]) return AUTO[base];
+    var x = {}, cls = base.slice(-2).replace('í', 'i'), st = base.slice(0, -2), i;
+    for (i = 0; i < COMP.length; i++) {
+      var B = COMP[i];
+      if (base.length > B.length && base.slice(-B.length) === B && IRR[B]) { x = prefixX(base.slice(0, -B.length), IRR[B]); break; }
+    }
+    if (!Object.keys(x).length) {
+      if (ACC.indexOf(base) >= 0) x = { acc: true };
+      else if (/[aeiou]c(er|ir)$/.test(base) && !/(hacer|decir|cocer|mecer)$/.test(base)) {
+        x = { yo: st.slice(0, -1) + 'zco' };
+        if (/ducir$/.test(base)) x.pretS = st.slice(0, -1) + 'j';
+      } else if (/[^gq]uir$/.test(base)) {
+        x = { pres: ['yo', 'yes', 'ye', 'imos', 'ís', 'yen'].map(function (e) { return st + e; }),
+          pret: ['í', 'iste', 'yó', 'imos', 'isteis', 'yeron'].map(function (e) { return st + e; }),
+          subj: ['ya', 'yas', 'ya', 'yamos', 'yáis', 'yan'].map(function (e) { return st + e; }) };
+      } else if (cls !== 'ar' && /[aeo]$/.test(st)) {
+        x = { pret: ['í', 'íste', 'yó', 'ímos', 'ísteis', 'yeron'].map(function (e) { return st + e; }) };
+      }
+    }
+    return (AUTO[base] = x);
+  }
+  /* 複合動詞：元の動詞のくせの形に頭をつける（tener → detener：detengo, detuve, detendré, detén） */
+  function prefixX(pre, X) {
+    var x = {};
+    Object.keys(X).forEach(function (k) {
+      var val = X[k];
+      if (Array.isArray(val)) x[k] = val.map(function (f) { return pre + f; });
+      else if (typeof val === 'string' && ['yo', 'pretS', 'futS', 'part', 'tu'].indexOf(k) >= 0) {
+        /* 1音節の命令（ten, pon, ven, sal）は頭がつくと記号がいる（detén, propón）。haz は deshaz のまま */
+        if (k === 'tu' && /^[^aeiou]*[aeiou][ns]$/.test(val)) val = val.replace(/[aeiou]/, function (c) { return 'áéíóú'.charAt('aeiou'.indexOf(c)); });
+        x[k] = pre + val;
+      } else x[k] = val;
+    });
+    return x;
   }
   /* 語幹の最後の母音を変える */
   function change(stem, kind) {
+    if (/[gq]u$/.test(stem)) return change(stem.slice(0, -1), kind) + 'u';   /* seguir：segu → sigu */
     if (kind === 'ie') return stem.replace(/e([^aeiou]*)$/, 'ie$1');
     if (kind === 'i') return stem.replace(/e([^aeiou]*)$/, 'i$1');
     if (kind === 'ue') return stem.replace(/[ou]([^aeiou]*)$/, 'ue$1');
@@ -108,18 +168,27 @@
     if (!/^[eé]/.test(end)) return stem + end;
     return stem.replace(/c$/, 'qu').replace(/g$/, 'gu').replace(/z$/, 'c') + end;
   }
+  /* a・o の前のつづり（-er・-ir 動詞）：g→j（protejo）、gu→g（sigo）、子音のあとの c→z（venzo） */
+  function spellAO(stem, end) {
+    if (!/^[aoáó]/.test(end)) return stem + end;
+    if (/gu$/.test(stem)) return stem.slice(0, -1) + end;
+    return stem.replace(/g$/, 'j').replace(/([^aeiou])c$/, '$1z') + end;
+  }
+  /* 強く読む i・u にアクセント記号（envi → enví, actu → actú, prohib → prohíb, reun → reún） */
+  function accent(stem) { return stem.replace(/([iu])([^aeiou]*)$/, function (m, c, r) { return (c === 'i' ? 'í' : 'ú') + r; }); }
   var STRONG_P = [0, 1, 2, 5];   // 語幹が変わる人称（強く読む所）
 
   function presForm(v, p) {
     if (v.x.pres) return v.x.pres[p];
     if (p === 0 && v.x.yo) return v.x.yo;
-    var st = v.x.stem && STRONG_P.indexOf(p) >= 0 ? change(v.stem, v.x.stem) : v.stem;
-    return st + END.pres[v.cls][p];
+    var strong = STRONG_P.indexOf(p) >= 0, st = v.x.stem && strong ? change(v.stem, v.x.stem) : v.stem;
+    if (v.x.acc && strong) st = accent(st);
+    return v.cls === 'ar' ? st + END.pres.ar[p] : spellAO(st, END.pres[v.cls][p]);
   }
   function pretForm(v, p) {
     if (v.x.pret) return v.x.pret[p];
     if (v.x.pretS) {
-      if (v.x.pretS === 'hic' && p === 2) return 'hizo';
+      if (/hic$/.test(v.x.pretS) && p === 2) return v.x.pretS.slice(0, -1) + 'zo';   /* hizo, deshizo */
       var e = STRONG[p]; if (p === 5 && /j$/.test(v.x.pretS)) e = 'eron';
       return v.x.pretS + e;
     }
@@ -140,12 +209,15 @@
     var st;
     if (v.x.yo || STRONG_P.indexOf(p) >= 0) st = yoStem;
     else st = v.cls === 'ir' && v.x.ir ? change(v.stem, v.x.ir) : v.stem;
-    return v.cls === 'ar' ? spell(st, END.subj.ar[p]) : st + END.subj[v.cls][p];
+    if (v.cls === 'ar') return spell(st, END.subj.ar[p]);
+    return v.x.yo || STRONG_P.indexOf(p) >= 0 ? st + END.subj[v.cls][p] : spellAO(st, END.subj[v.cls][p]);
   }
   /* アクセント記号：語の後ろに代名詞がつく（levanta＋te）と、元の強く読む所に記号が要る */
+  /* 音節の母音のまとまり：a・e・o（と記号つきの母音）は1つずつ別の音節（ca-e, tu-te-a, rí-e）。i・u は隣とくっつく（sie, ue） */
+  var SYL = /[iuü]*[aeoáéíóú][iuü]*|[iuü]+/g;
   function stressMark(word) {
     if (/[áéíóú]/.test(word)) return word;
-    var groups = [], re = /[aeiouü]+/g, m;
+    var groups = [], re = new RegExp(SYL.source, 'g'), m;
     while ((m = re.exec(word))) groups.push({ i: m.index, s: m[0] });
     if (groups.length < 2) return word;
     var g = /[nsaeiou]$/.test(word) ? groups[groups.length - 2] : groups[groups.length - 1];
@@ -167,6 +239,8 @@
     else if (tense === 'imp') {
       if ((p !== 1 && p !== 2) || v.x.noImp) return null;   /* 命令は tú と usted だけ（haber・poder などは練習しない） */
       f = p === 1 ? (v.x.tu || presForm(v, 2)) : subjForm(v, 2);
+      /* 1音節（dé, ve）は記号なしでつなぐ（dese, vete） */
+      if (v.refl && (f.match(SYL) || []).length < 2) return f.replace(/[áéíóú]/, function (c) { return 'aeiou'.charAt('áéíóú'.indexOf(c)); }) + (p === 1 ? 'te' : 'se');
       return v.refl ? stressMark(f) + (p === 1 ? 'te' : 'se') : f;
     }
     return v.refl ? REFL[p] + ' ' + f : f;
@@ -174,21 +248,29 @@
   function table(inf, tense) { return [0, 1, 2, 3, 4, 5].map(function (p) { return form(inf, tense, p); }); }
   /* 不規則かどうか（規則どおりの形と比べる） */
   function regularForm(inf, tense, p) {
-    var v = parse(inf); v.x = {}; var save = IRR[v.base]; delete IRR[v.base];
-    var f = form(inf, tense, p); if (save) IRR[v.base] = save; return f;
+    var v = parse(inf), save = IRR[v.base]; delete IRR[v.base]; NOAUTO = true;
+    var f; try { f = form(inf, tense, p); } finally { NOAUTO = false; if (save) IRR[v.base] = save; }
+    return f;
   }
   function kind(inf) {
     var v = parse(inf), x = v.x;
     if (x.pres) return '不規則';
     if (x.yo && x.stem) return 'yo が不規則＋語幹が変わる';
     if (x.yo) return 'yo が不規則';
+    if (x.acc) return 'アクセント記号がつく（' + presForm(v, 0) + '）';
     if (x.stem) return '語幹が変わる（' + (x.stem === 'ie' ? 'e→ie' : x.stem === 'i' ? 'e→i' : v.base === 'jugar' ? 'u→ue' : 'o→ue') + '）';
     return '規則（-' + v.cls + '）';
   }
   /* デッキに書かれた動詞のくせ（単語の cj）を足す。アプリが知っているくせより、デッキの指定を優先 */
-  function addIrr(inf, x) { var v = parse(inf); IRR[v.base] = x; }
+  /* デッキの指定は、アプリが知っているくせに上書きで足す（stem だけの cj で、querer の quis- や volver の vuelto が消えないように） */
+  function addIrr(inf, x) {
+    var v = parse(inf), m = {}, k, old = IRR[v.base] || autoX(v.base);
+    for (k in old) m[k] = old[k];
+    for (k in x) m[k] = x[k];
+    IRR[v.base] = m;
+  }
   /* くせの書き方が正しいか（チェック用） */
-  var KEYS = { stem: ['ie', 'ue', 'i'], ir: ['i', 'u'], yo: 's', pretS: 's', futS: 's', part: 's', tu: 's', noImp: 'b', pres: 6, pret: 6, impf: 6, subj: 6 };
+  var KEYS = { acc: 'b', stem: ['ie', 'ue', 'i'], ir: ['i', 'u'], yo: 's', pretS: 's', futS: 's', part: 's', tu: 's', noImp: 'b', pres: 6, pret: 6, impf: 6, subj: 6 };
   function checkIrr(x) {
     var bad = [];
     Object.keys(x).forEach(function (k) {
@@ -201,6 +283,6 @@
     });
     return bad;
   }
-  window.Conj = { form: form, addIrr: addIrr, checkIrr: checkIrr, known: function (inf) { return !!IRR[parse(inf).base]; }, table: table, parse: parse, kind: kind, regularForm: regularForm, part: function (inf) { return part(parse(inf)); },
+  window.Conj = { form: form, addIrr: addIrr, checkIrr: checkIrr, known: function (inf) { var b = parse(inf).base; return !!IRR[b] || Object.keys(autoX(b)).length > 0; }, table: table, parse: parse, kind: kind, regularForm: regularForm, part: function (inf) { return part(parse(inf)); },
     PRON: PRON, PRON_JA: PRON_JA, TENSES: TENSES, END: END, FUT: FUT, COND: COND, STRONG: STRONG, HABER: HABER, IRR: IRR };
 })();

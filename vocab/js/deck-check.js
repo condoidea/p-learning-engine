@@ -120,8 +120,10 @@
     if (/eír$/.test(v.base)) return v.base.slice(0, -3) + 'iendo';
     if (v.cls === 'ar') return v.stem + 'ando';
     var st = v.stem, k = v.cls === 'ir' ? (v.x.ir || { i: 'i', ie: 'i', ue: 'u' }[v.x.stem]) : null;
+    var gu = /[gq]u$/.test(st) ? st.slice(-1) : ''; if (gu) st = st.slice(0, -1);   /* seguir：segu → sigu */
     if (k === 'i') st = st.replace(/e([^aeiou]*)$/, 'i$1');
     if (k === 'u') st = st.replace(/o([^aeiou]*)$/, 'u$1');
+    st += gu;
     return /[aeiou]$/.test(st) && !/[gq]u$/.test(st) ? st + 'yendo' : st + 'iendo';
   }
   /* 例文の形が活用形か。後ろに代名詞がつく形（contarte, prométeme, devuélvemelo, levantándose）も認める */
