@@ -101,7 +101,7 @@
     OV = [];
     __manda.boss(id); await SL(800); ov(id + ' intro');
     document.querySelector('#zTray .tb.go').click(); await SL(1200);
-    for (var guard = 0; guard < 60; guard++) {
+    for (var t0 = Date.now(); Date.now() - t0 < 300000;) {   // 時間で区切る（ペインが隠れていると遅いので回数では足りない）
       if (document.body.dataset.screen !== 'quiz') break;
       var T = document.querySelector('#zTray');
       var go = T.querySelector('.tb.go'); if (go) { go.click(); await SL(500); continue; }

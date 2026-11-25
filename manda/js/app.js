@@ -34,12 +34,37 @@
   var SANDBOX = /[?&]sandbox\b/.test(location.search);
   var KEY = SANDBOX ? 'manda.sandbox' : 'manda.v1';
   function fresh() {
-    return { v: 1, xp: 0, tickets: 0, streak: { n: 0, last: '' }, lessons: {}, bosses: {}, q: {}, cards: {}, tips: {},
+    return { v: 2, xp: 0, tickets: 0, streak: { n: 0, last: '' }, lessons: {}, bosses: {}, q: {}, cards: {}, tips: {},
       mis: { d: '', done: {}, bonus: false }, rushBest: 0, pulls: 0, sets: {}, cardp: {}, seen: {}, weak: {}, mockBest: 0, settings: { sound: true, speak: true, auto: true } };
   }
   function load() {
-    try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) { var f = fresh(); for (var k in s) f[k] = s[k]; return f; } } catch (e) { /* 保存領域が使えない */ }
+    try {
+      var s = JSON.parse(localStorage.getItem(KEY));
+      if (s && s.v === 1) s = migrate1(s);
+      if (s && s.v === 2) { var f = fresh(); for (var k in s) f[k] = s[k]; return f; }
+    } catch (e) { /* 保存領域が使えない */ }
     return fresh();
+  }
+  /* 2026-11-25：14の神託を7つにまとめた。新しい神託は、もとの神託がぜんぶ済んでいれば済み（星は低いほう）。まちがえた問題（weak）は新しい番号へ */
+  function migrate1(s) {
+    var G = { 1: [1, 2], 2: [3, 4], 3: [5, 6, 11], 4: [7, 8], 5: [10, 12], 6: [9, 13], 7: [14] }, R = {}, ls = {}, wk = {};
+    Object.keys(G).forEach(function (n) {
+      G[n].forEach(function (o) { R[o] = +n; });
+      var recs = G[n].map(function (o) { return (s.lessons || {})['L' + o]; });
+      if (recs.every(function (r) { return r && r.done; })) {
+        var r0 = {}; for (var k in recs[0]) r0[k] = recs[0][k];
+        if (r0.stars != null) r0.stars = Math.min.apply(null, recs.map(function (r) { return r.stars || 0; }));
+        ls['L' + n] = r0;
+      }
+    });
+    Object.keys(s.weak || {}).forEach(function (o) {
+      var n = R[o], w = s.weak[o]; if (!n || !w) return;
+      var t = wk[n] || (wk[n] = { ids: [], at: 0 });
+      (w.ids || []).forEach(function (id) { if (t.ids.indexOf(id) < 0) t.ids.push(id); });
+      t.at = Math.max(t.at, w.at || 0);
+    });
+    s.lessons = ls; s.weak = wk; s.v = 2;
+    return s;
   }
   var S = load();
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* 保存できない環境 */ } }
@@ -552,9 +577,9 @@
     if (ni < 0) return 'sky-gold';
     if (k === 0) return 'sky-night';
     var n = ORDER[k];
-    if (n.id === 'L10' || n.id === 'B3') return 'sky-dark';
-    if (k <= 3) return 'sky-dawn';
-    if (k <= 8) return 'sky-day';
+    if (n.id === 'L5' || n.id === 'B3') return 'sky-dark';
+    if (k <= 2) return 'sky-dawn';
+    if (k <= 5) return 'sky-day';
     return 'sky-dusk';
   }
   function sprite(it, cls) {
@@ -1589,9 +1614,9 @@
   }
   /* 復習でまちがえたときの「📜 ヒント」：その神託の Tips と表 */
   function hintModal(no) {
-    var L = LESSON['L' + no], tip = L.steps.filter(function (st) { return st.t === 'tip'; })[0], shows = L.steps.filter(function (st) { return st.t === 'show' && st.tbl; });
+    var L = LESSON['L' + no], tips = L.steps.filter(function (st) { return st.t === 'tip'; }), shows = L.steps.filter(function (st) { return st.t === 'show' && st.tbl; });
     modal('<h3 class="m-h">📜 ' + esc(oracleNo(L)) + '　' + esc(L.ti) + '</h3>' +
-      (tip ? '<div class="card tip"><b class="tip-ti">' + esc(tip.ti) + '</b><div class="tip-x">' + ja(tip.x) + '</div>' + (tip.why ? '<details><summary>🤔 なぜ？</summary><p>' + ja(tip.why) + '</p></details>' : '') + '</div>' : '') +
+      tips.map(function (tip) { return '<div class="card tip"><b class="tip-ti">' + esc(tip.ti) + '</b><div class="tip-x">' + ja(tip.x) + '</div>' + (tip.why ? '<details><summary>🤔 なぜ？</summary><p>' + ja(tip.why) + '</p></details>' : '') + '</div>'; }).join('') +
       shows.map(function (st) { return '<div class="card board-tbl"><div class="qtag">📋 ' + esc(st.cap || '') + '</div><table class="tbl">' + st.tbl.map(function (r) { return '<tr><th class="es-cell">' + esHtml(r[0]) + '</th><td class="es-cell">' + esHtml(r[1]) + '</td></tr>'; }).join('') + '</table></div>'; }).join('') +
       '<p class="m-note">この神託は、復習のあとで「🩹 おさらい」できるよ。</p>', 'hint-m');
     glossAll($('#mbody'));
@@ -1602,13 +1627,13 @@
    *  分野ごとの正解数を出し、まちがえた神託は「🩹 おさらい」へ。合格ライン 70%
    * ========================================================= */
   var TOPICS = [
-    { id: 'tu', ti: 'tú の命令（s を取る・つづりが変わる動詞）', L: [1, 2], n: 3 },
-    { id: 'irr', ti: '不規則な8つ（ven・ten・pon・sal・haz・di・ve・sé）', L: [3, 4], n: 3 },
-    { id: 'ud', ti: 'usted・ustedes（yo の形から・-oy の4つ）', L: [5, 6, 7, 11], n: 4 },
-    { id: 'who', ti: '相手の使い分け・vosotros・「〜しよう」', L: [8, 14], n: 3 },
-    { id: 'pron', ti: '代名詞（cómelo・siéntese・dámelo・dásela）', L: [9, 13], n: 4 },
-    { id: 'neg', ti: '「〜するな」（no hables・no llegues・no te preocupes）', L: [10, 12], n: 3 }
-  ];
+    { id: 'tu', ti: 'tú の命令（s を取る・つづりが変わる動詞）', L: [1], n: 3 },
+    { id: 'irr', ti: '不規則な8つ（ven・ten・pon・sal・haz・di・ve・sé）', L: [2], n: 3 },
+    { id: 'ud', ti: 'usted（接続法の形・yo の形が特別な動詞）', L: [3], n: 4 },
+    { id: 'who', ti: '相手の使い分け（ustedes・vosotros・「〜しよう」）', L: [4, 7], n: 3 },
+    { id: 'neg', ti: '「〜するな」（no hables・no llegues・no habléis）', L: [5], n: 4 },
+    { id: 'pron', ti: '代名詞（cómelo・siéntese・dámelo・no te preocupes）', L: [6], n: 3 }
+  ]
   var EXAMK = { pick: 1, form: 1, scene: 1, who: 1, bug: 1, ja: 1 };
   function topicOf(q) { for (var i = 0; i < TOPICS.length; i++) if (TOPICS[i].L.indexOf(q.L) >= 0) return TOPICS[i]; }
   function allLessonsDone() { return D.lessons.every(function (L) { return lessonDone(L.no); }); }

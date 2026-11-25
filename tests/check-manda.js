@@ -181,7 +181,7 @@ MQ.cards.forEach(c => {
   if (icons.has(c.icon)) warn('カードの絵文字の重複：' + c.icon + '（' + c.id + '）');
   icons.add(c.icon);
 });
-MQ.lessons.forEach(L => { const n = MQ.cards.filter(c => c.L === L.no).length; if (n !== 5) warn(L.id + '：カードが ' + n + ' 枚（5枚のはず）'); });
+MQ.lessons.forEach(L => { const n = MQ.cards.filter(c => c.L === L.no).length; if (n < 5) warn(L.id + '：カードが ' + n + ' 枚（5枚以上のはず）'); });
 MQ.bosses.forEach(B => { if (!MQ.cards.some(c => c.id === 'u-' + B.id)) err(B.id + '：UR カード u-' + B.id + ' がない'); });
 
 console.log('\nレッスン ' + MQ.lessons.length + '・問題 ' + MQ.questions.length + '（' + Object.keys(perL).map(k => 'L' + k + ':' + perL[k]).join(' ') + '）・カード ' + MQ.cards.length);
