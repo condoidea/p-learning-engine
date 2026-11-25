@@ -73,7 +73,7 @@
         else if (ES && w.pos === 'v' && Conj && w.w && !/(ar|er|ir|ír)(se)?$/.test(w.w)) err(at, '動詞の w は原形（-ar・-er・-ir、再帰動詞は -se）で書く');
         else if (ES && w.pos === 'v' && Conj && w.w) {
           var f = m[0].slice(1, -1), forms = formsOf(w.w, Conj);
-          if (forms.indexOf(f.toLowerCase()) < 0) warn(at, '例文の {' + f + '} が ' + w.w + ' の活用形として作れない（活用のまちがい、または cj が必要）');
+          if (!isFormOf(f, forms)) warn(at, '例文の {' + f + '} が ' + w.w + ' の活用形として作れない（活用のまちがい、または cj が必要）');
         } else if (w.w && w.pos !== 'phr') {
           var f2 = m[0].slice(1, -1).toLowerCase(), base = w.w.toLowerCase();
           if (f2.slice(0, 3) !== base.slice(0, 3)) warn(at, '例文の {' + m[0].slice(1, -1) + '} が単語「' + w.w + '」と形がかなりちがう');
@@ -103,14 +103,39 @@
   }
   /* その動詞の作れる形（例文の { } と比べる） */
   function formsOf(inf, Conj) {
-    var out = [inf.toLowerCase()], v = Conj.parse(inf);
-    out.push(v.base, Conj.part(inf), v.stem + (v.cls === 'ar' ? 'ando' : 'iendo'));
+    var out = [inf.toLowerCase()], v = Conj.parse(inf), pt = Conj.part(inf);
+    out.push(v.base, pt, gerund(v));
+    if (/o$/.test(pt)) out.push(pt.replace(/o$/, 'a'), pt.replace(/o$/, 'os'), pt.replace(/o$/, 'as'));   /* 形容詞として使う過去分詞（cambiada, pintados） */
+    if (v.base === 'haber') out.push('hay');
     TENSES.forEach(function (t) { [0, 1, 2, 3, 4, 5].forEach(function (p) {
       var f; try { f = Conj.form(inf, t, p); } catch (e) { f = null; } if (!f) return;
       f = f.toLowerCase(); out.push(f);
       var parts = f.split(' '); if (parts.length > 1) out.push(parts[parts.length - 1], parts.slice(1).join(' '));
     }); });
     return out;
+  }
+  /* 現在分詞：-ir の語幹が変わる動詞は diciendo・durmiendo、母音のあとは leyendo、reír は riendo */
+  function gerund(v) {
+    if (v.base === 'ir') return 'yendo';
+    if (/eír$/.test(v.base)) return v.base.slice(0, -3) + 'iendo';
+    if (v.cls === 'ar') return v.stem + 'ando';
+    var st = v.stem, k = v.cls === 'ir' ? (v.x.ir || { i: 'i', ie: 'i', ue: 'u' }[v.x.stem]) : null;
+    if (k === 'i') st = st.replace(/e([^aeiou]*)$/, 'i$1');
+    if (k === 'u') st = st.replace(/o([^aeiou]*)$/, 'u$1');
+    return /[aeiou]$/.test(st) && !/[gq]u$/.test(st) ? st + 'yendo' : st + 'iendo';
+  }
+  /* 例文の形が活用形か。後ろに代名詞がつく形（contarte, prométeme, devuélvemelo, levantándose）も認める */
+  function plain(s) { return String(s).toLowerCase().replace(/[áéíóú]/g, function (c) { return 'aeiou'.charAt('áéíóú'.indexOf(c)); }); }
+  function isFormOf(f, forms) {
+    var lf = f.toLowerCase();
+    if (forms.indexOf(lf) >= 0) return true;
+    var P = forms.map(plain), s = plain(f);
+    for (var i = 0; i < 2; i++) {
+      var t = s.replace(/(me|te|se|nos|os|lo|la|los|las|le|les)$/, '');
+      if (t === s) break;
+      s = t; if (P.indexOf(s) >= 0) return true;
+    }
+    return false;
   }
   var api = { check: check, formsOf: formsOf };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

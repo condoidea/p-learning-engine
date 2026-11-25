@@ -66,7 +66,28 @@
     empezar: { stem: 'ie' }, pensar: { stem: 'ie' }, despertar: { stem: 'ie' }, cerrar: { stem: 'ie' },
     volver: { stem: 'ue', part: 'vuelto' }, recordar: { stem: 'ue' }, acostar: { stem: 'ue' }, jugar: { stem: 'ue' },
     dormir: { stem: 'ue', ir: 'u' }, pedir: { stem: 'i', ir: 'i' }, sentir: { stem: 'ie', ir: 'i' },
-    escribir: { part: 'escrito' }, abrir: { part: 'abierto' }
+    escribir: { part: 'escrito' }, abrir: { part: 'abierto' },
+    /* よく出る不規則動詞。デッキに cj がなくても正しく活用できるように（CHARLA から送った語は cj がないことがある） */
+    perder: { stem: 'ie' }, entender: { stem: 'ie' }, encender: { stem: 'ie' }, defender: { stem: 'ie' },
+    comenzar: { stem: 'ie' }, sentar: { stem: 'ie' }, recomendar: { stem: 'ie' }, nevar: { stem: 'ie' },
+    preferir: { stem: 'ie', ir: 'i' }, mentir: { stem: 'ie', ir: 'i' }, divertir: { stem: 'ie', ir: 'i' }, arrepentir: { stem: 'ie', ir: 'i' },
+    servir: { stem: 'i', ir: 'i' }, repetir: { stem: 'i', ir: 'i' }, vestir: { stem: 'i', ir: 'i' },
+    seguir: { pres: ['sigo', 'sigues', 'sigue', 'seguimos', 'seguís', 'siguen'], pret: ['seguí', 'seguiste', 'siguió', 'seguimos', 'seguisteis', 'siguieron'],
+      subj: ['siga', 'sigas', 'siga', 'sigamos', 'sigáis', 'sigan'] },
+    contar: { stem: 'ue' }, encontrar: { stem: 'ue' }, mostrar: { stem: 'ue' }, costar: { stem: 'ue' }, acordar: { stem: 'ue' },
+    probar: { stem: 'ue' }, almorzar: { stem: 'ue' }, mover: { stem: 'ue' }, doler: { stem: 'ue' }, llover: { stem: 'ue' }, soler: { stem: 'ue' },
+    devolver: { stem: 'ue', part: 'devuelto' }, morir: { stem: 'ue', ir: 'u', part: 'muerto' },
+    oler: { pres: ['huelo', 'hueles', 'huele', 'olemos', 'oléis', 'huelen'], subj: ['huela', 'huelas', 'huela', 'olamos', 'oláis', 'huelan'] },
+    proponer: { yo: 'propongo', pretS: 'propus', futS: 'propondr', part: 'propuesto', tu: 'propón' },
+    traer: { yo: 'traigo', pretS: 'traj' }, andar: { pretS: 'anduv' },
+    caer: { yo: 'caigo', pret: ['caí', 'caíste', 'cayó', 'caímos', 'caísteis', 'cayeron'] },
+    leer: { pret: ['leí', 'leíste', 'leyó', 'leímos', 'leísteis', 'leyeron'] },
+    construir: { pres: ['construyo', 'construyes', 'construye', 'construimos', 'construís', 'construyen'],
+      pret: ['construí', 'construiste', 'construyó', 'construimos', 'construisteis', 'construyeron'],
+      subj: ['construya', 'construyas', 'construya', 'construyamos', 'construyáis', 'construyan'] },
+    'reír': { pres: ['río', 'ríes', 'ríe', 'reímos', 'reís', 'ríen'], pret: ['reí', 'reíste', 'rio', 'reímos', 'reísteis', 'rieron'],
+      subj: ['ría', 'rías', 'ría', 'riamos', 'riais', 'rían'], futS: 'reir' },
+    romper: { part: 'roto' }, cubrir: { part: 'cubierto' }, descubrir: { part: 'descubierto' }, imprimir: { part: 'impreso' }
   };
 
   function parse(inf) {
