@@ -35,7 +35,8 @@
  *    say    { x, who }                          パロマ（who があればその人）が話す
  *    show   { tbl: [[左, 右], …], cap, es, ja }  ボード（表・例文）を出す。次のボードが出るまで残る
  *    ask    { q, es, o, a, pred, r, why }        問い。pred:true は予想（採点しない）。a が正解の番号
- *    forge  { w, cut, add, o, out, ja, hint }    形を作る：w の最後の cut をタップで消す → o から add を選ぶ → out が完成
+ *    forge  { p, w, cut, add, o, out, ja, hint } 形を作る：w の最後の cut をタップで消す → o から add を選ぶ → out が完成。
+ *           p はだれの形か（yo・tú…）。カードと「つける文字は？」にずっと出す（語尾だけでは選べないので）
  *    seal   { who, need, es, v, mood, o, a, out, ja, mis, why, fx }
  *           🔏 封蝋：who の依頼（need）→ 封蝋の色を選ぶ（mood:'sub' 赤／'ind' 青）→ es の ___ に入る形を o から選ぶ。
  *           色をまちがえると mis（届いた先での誤解の返事）が出る
@@ -132,11 +133,11 @@ OQ.lessons = [
       { t: 'ask', q: '② `hablo` の最後の o をとると？', o: ['habl-', 'hablo', 'habla'], a: 0, why: '最後の1文字 o だけをとって `habl-`。' },
       { t: 'show', cap: '接続法の作り方（hablar 話す）', tbl: [['① yo（私）の形にする', 'habl^o^'], ['② 最後の o をとる', 'habl-'], ['③ 反対の母音をつける', 'habl^e^']] },
       { t: 'say', x: '③ -ar の動詞には **e** をつける。\n（-er・-ir の動詞なら **a**）\n((a と e を入れかえるので「反対の母音」))' },
-      { t: 'forge', w: 'hablo', cut: 'o', add: 'e', o: ['a', 'e', 'i'], out: '{hable}', ja: '（私が）話すように', hint: '② **o** をタップして消す → ③ 母音をえらぶ' },
+      { t: 'forge', p: 'yo', w: 'hablo', cut: 'o', add: 'e', o: ['a', 'e', 'i'], out: '{hable}', ja: '（私が）話すように', hint: '② **o** をタップして消す → ③ 母音をえらぶ' },
       { t: 'say', x: '④ 最後に、人ごとの語尾。\nいつもの形と同じ -s・-mos・-is・-n。' },
       { t: 'show', cap: 'hablar の接続法（人ごと）', tbl: [['yo', '{hable}'], ['tú', '{hables}'], ['él・ella・usted', '{hable}'], ['nosotros', '{hablemos}'], ['vosotros', '{habléis}'], ['ellos・ustedes', '{hablen}']] },
       { t: 'say', x: 'yo と él は、同じ `{hable}`。\ntú は s をつけて `{hables}`。' },
-      { t: 'forge', w: 'llamo', cut: 'o', add: 'es', o: ['e', 'es', 'en'], out: '{llames}', ja: '（君が）電話するように', hint: 'tú の接続法を作ろう。まず **o** を消す' },
+      { t: 'forge', p: 'tú', w: 'llamo', cut: 'o', add: 'es', o: ['e', 'es', 'en'], out: '{llames}', ja: '（君が）電話するように', hint: 'tú の接続法を作ろう。まず **o** を消す' },
       { t: 'say', x: 'まとめると、作り方は1つだけ。\n**yo の形の o を、反対の母音に。**\nそれから、人ごとの語尾。' },
       { t: 'say', x: '「〜してほしい」は `Quiero que`。\nこれも願い。que のあとは接続法。\n`Quiero que {regreses}.`（帰ってきてほしい）' },
       { t: 'seal', who: 'luz', need: 'マルコに「早く帰ってきてほしい」と書いて。', es: 'Quiero que ___ pronto.', v: 'regresar', mood: 'sub', o: ['regresas', 'regreses', 'regrese'], a: 1, out: 'Quiero que {regreses} pronto.', ja: '早く帰ってきてほしい。',
@@ -164,10 +165,10 @@ OQ.lessons = [
       { t: 'say', x: 'だいじょうぶ。\n言いたいことを、ゆっくり話して。\n字は、こちらで書くから。' },
       { t: 'show', cap: 'comer（食べる）の作り方', tbl: [['yo の形', 'com^o^'], ['接続法', '？？？']] },
       { t: 'ask', pred: true, q: '-ar の hablo は hable だった。\n-er の como は、何になると思う？', o: ['coma', 'come', 'comi'], a: 0, r: '`{coma}`。\n**-er・-ir は o → a**。\n-ar は e、-er・-ir は a。反対の母音ね。' },
-      { t: 'forge', w: 'vivo', cut: 'o', add: 'a', o: ['a', 'e', 'i'], out: '{viva}', ja: '（私が）住むように', hint: 'yo の形の **o** をタップ' },
+      { t: 'forge', p: 'yo', w: 'vivo', cut: 'o', add: 'a', o: ['a', 'e', 'i'], out: '{viva}', ja: '（私が）住むように', hint: 'yo の形の **o** をタップ' },
       { t: 'show', cap: 'comer の接続法（人ごと）', tbl: [['yo', '{coma}'], ['tú', '{comas}'], ['él・ella・usted', '{coma}'], ['nosotros', '{comamos}'], ['vosotros', '{comáis}'], ['ellos・ustedes', '{coman}']] },
       { t: 'say', who: 'nico', x: 'tener は？\nyo の形は tengo で、\nちょっと変な形だよ。' },
-      { t: 'forge', w: 'tengo', cut: 'o', add: 'a', o: ['a', 'e'], out: '{tenga}', ja: '（私が）持っているように', hint: 'やることは同じ。**o** をタップ' },
+      { t: 'forge', p: 'yo', w: 'tengo', cut: 'o', add: 'a', o: ['a', 'e'], out: '{tenga}', ja: '（私が）持っているように', hint: 'やることは同じ。**o** をタップ' },
       { t: 'say', x: 'yo の形がクセものでも、やることは同じ。\n原形でなく yo の形から作るのは、このため。\n`tengo` → `{tenga}`。g も、そのまま残る。' },
       { t: 'show', cap: 'yo の形がクセものの動詞', tbl: [['tengo（tener）', '{tenga}'], ['vengo（venir）', '{venga}'], ['hago（hacer）', '{haga}'], ['digo（decir）', '{diga}'], ['salgo（salir）', '{salga}'], ['conozco（conocer）', '{conozca}']] },
       { t: 'seal', who: 'nico', need: '母さんに「すぐに返事を書いてほしい」と書いて。', es: 'Quiero que me ___ pronto.', v: 'escribir', mood: 'sub', o: ['escribes', 'escribas', 'escriba'], a: 1, out: 'Quiero que me {escribas} pronto.', ja: 'すぐに手紙を書いてほしい。',
@@ -275,7 +276,7 @@ OQ.lessons = [
         mis: 'マルコの返事：「仕事が終わったら？ まだ終わってないの？ 大丈夫？」', why: 'いつものこと → いつもの形 `{termino}`（yo）。' },
       { t: 'say', x: '`antes de que`（〜する前に）と\n`para que`（〜するように）は、いつも 🔴 赤。\nque のあとは、まだ起きていないことだから。' },
       { t: 'show', cap: 'いつも赤', tbl: [['antes de que {salga} el barco', '船が出る前に'], ['para que no {estés} triste', '君が悲しくならないように']] },
-      { t: 'forge', w: 'salgo', cut: 'o', add: 'a', o: ['a', 'e'], out: '{salga}', ja: '（船が）出る（前に）', hint: 'salir の yo の形。**o** をタップ' },
+      { t: 'forge', p: 'el barco（él）', w: 'salgo', cut: 'o', add: 'a', o: ['a', 'e'], out: '{salga}', ja: '（船が）出る（前に）', hint: 'salir の yo の形。**o** をタップ' },
       { t: 'seal', who: 'luz', need: '「船が出る前に、わたしの手紙を受け取ってね」と書いて。', es: 'Recibe mi carta antes de que ___ el barco.', v: 'salir', mood: 'sub', o: ['sale', 'salga', 'salgas'], a: 1, out: 'Recibe mi carta antes de que {salga} el barco.', ja: '船が出る前に、わたしの手紙を受け取ってね。',
         mis: 'マルコの返事：「船はもう出たの？ じゃあ手紙はどこに……？」', why: '`antes de que` → いつも接続法。主語は el barco なので `{salga}`。' },
       { t: 'seal', who: 'luz', need: '「あなたがよく読めるように、大きな字で書くね」と書いて。', es: 'Escribo con letras grandes para que ___ bien.', v: 'leer', mood: 'sub', o: ['lees', 'leas', 'lea'], a: 1, out: 'Escribo con letras grandes para que {leas} bien.', ja: 'あなたがよく読めるように、大きな字で書くね。',
@@ -304,7 +305,7 @@ OQ.lessons = [
         mis: 'イネスの返事：「字が読める友だちが、いるの？ いないの？ どっち？」', why: 'もういる友だち → いつもの形 `{sabe}`。' },
       { t: 'say', x: '`No hay nadie que`\n（〜する人はだれもいない）も、\nいない人だから 🔴 赤。' },
       { t: 'show', cap: 'いない人・いるか分からない人', tbl: [['No hay nadie que {sepa} leer aquí.', 'ここに字が読める人はいない'], ['¿Hay alguien que {tenga} un lápiz?', '鉛筆を持っている人はいる？']] },
-      { t: 'forge', w: 'conozco', cut: 'o', add: 'a', o: ['a', 'e'], out: '{conozca}', ja: '（だれかが）知っている', hint: 'conocer の yo の形。**o** をタップ' },
+      { t: 'forge', p: 'nadie（él）', w: 'conozco', cut: 'o', add: 'a', o: ['a', 'e'], out: '{conozca}', ja: '（だれかが）知っている', hint: 'conocer の yo の形。**o** をタップ' },
       { t: 'seal', who: 'nico', need: '「この町には、ぼくを知っている人はだれもいない」と書いて。', es: 'No hay nadie que me ___ aquí.', v: 'conocer', mood: 'sub', o: ['conoce', 'conozca', 'conozco'], a: 1, out: 'No hay nadie que me {conozca} aquí.', ja: 'ここには、ぼくを知っている人はだれもいない。',
         mis: 'イネスの返事：「知っている人がいるのに、だれもいない？ よく分からないわ」', why: 'いない人 → 接続法。`conozco` → `{conozca}`。' },
       { t: 'say', who: 'ines', x: 'あら、ニコ。\nあなた、うちで働かない？\n字は、代書人さんに習えばいいわ。' },

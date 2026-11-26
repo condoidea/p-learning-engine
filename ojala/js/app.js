@@ -818,7 +818,7 @@
   function doForge(st, run) {
     talkHide();
     var w = st.w, cut = st.cut || '', start = w.length - cut.length, errs = 0, left = cut.length;
-    var c = boardSet(el('div', 'card forge', '<div class="qtag">形を作る</div><div class="fg-word">' + w.split('').map(function (ch, i) { return '<button class="fl" data-i="' + i + '">' + esc(ch) + '</button>'; }).join('') + '</div><div class="qres"></div>'));
+    var c = boardSet(el('div', 'card forge', '<div class="qtag">形を作る</div>' + (st.p ? '<p class="forge2-ask"><b>' + esc(st.p) + '</b> の接続法に　<small>' + esc(st.ja) + '</small></p>' : '') + '<div class="fg-word">' + w.split('').map(function (ch, i) { return '<button class="fl" data-i="' + i + '">' + esc(ch) + '</button>'; }).join('') + '</div><div class="qres"></div>'));
     var fls = $$('.fl', c);
     T1.hint('👆 ' + ja(st.hint));
     function wrong(src) {
@@ -838,7 +838,7 @@
         var p = FX.at(nl); FX.burst(p.x, p.y, { pal: 'rel', n: 24 });
         later(finish, 380);
       });
-      $('.opts', T1.el).insertAdjacentHTML('beforebegin', '<p class="thint">つける文字は？</p>');
+      $('.opts', T1.el).insertAdjacentHTML('beforebegin', '<p class="thint">つける文字は？' + (st.p ? '（<b>' + esc(st.p) + '</b> の形）' : '') + '</p>');
     }
     function finish() {
       T1.clear();
