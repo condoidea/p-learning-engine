@@ -1774,14 +1774,61 @@
         ST.map(function (x) { return '<button class="vk-st" data-st="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div>') +
       '</li>';
   }
+  /* 🤖 AI にまかせる：診断をテキストにしてコピー → AI に貼る → AI の答え（JSON）をアプリに貼って反映。
+   *  答えの形：<<<VERBCHECK {"動詞": "reg" | {cj} | "keep"} VERBCHECK>>>（cj の項目は Conj.checkIrr で確かめる） */
+  function vkPrompt(deck, items) {
+    var F = function (w, t, p) { var f = Conj.form(w.w, t, p); return f ? String(f).replace(/^(me|te|se|nos|os) /, '') : '−'; };
+    var rows = items.map(function (it) {
+      var w = it.w, ex = w.ex && typeof w.ex[0] === 'string' ? w.ex[0] : '';
+      return '- ' + w.w + '（' + (w.ja || '') + '）\n' +
+        '  いまの活用：現在 ' + [0, 1, 2, 3, 4, 5].map(function (p) { return F(w, 'pres', p); }).join(', ') +
+        '／点過去 ' + [0, 2, 5].map(function (p) { return F(w, 'pret', p); }).join(', ') + '（yo, él, ellos）' +
+        '／接続法 ' + [0, 3].map(function (p) { return F(w, 'subj', p); }).join(', ') + '（yo, nosotros）' +
+        '／過去分詞 ' + F(w, 'perf', 0).replace(/^(he) /, '') + '\n' +
+        (w.cj ? '  いまの cj：' + JSON.stringify(w.cj) + '\n' : '') +
+        (ex ? '  例文：' + ex + (it.f ? '　⚠ { } の形 ' + it.f + ' が、いまの活用から作れない' : '') + '\n' : '');
+    }).join('');
+    return '【スペイン語 動詞の活用チェック】単語アプリ「' + (deck.title || '') + '」から\n' +
+      '下の動詞は、アプリが活用のくせを知らないので、規則動詞として活用しています。1語ずつ、いまの活用が正しいかを辞書の活用表で確かめて、最後の形で答えてください。\n\n' +
+      '■ 答え方（1語ずつ、どれか1つ）\n' +
+      '- 規則動詞（いまの活用で正しい）→ "reg"\n' +
+      '- 不規則 → くせ（cj）のオブジェクト。書ける項目：\n' +
+      '  stem: "ie" | "ue" | "i"（語幹の母音の変化。強く読む所だけ）\n' +
+      '  ir: "i" | "u"（-ir 動詞の点過去3人称・接続法 nosotros/vosotros・現在分詞の変化）\n' +
+      '  yo: 直説法現在 yo の不規則形（接続法はここから作る）\n' +
+      '  pretS: 点過去の強変化の語幹（例 traer → "traj"）\n' +
+      '  futS: 未来・過去未来の語幹\n' +
+      '  part: 過去分詞\n' +
+      '  tu: 命令 tú の不規則形\n' +
+      '  pres / pret / impf / subj: その時制の6つの形の配列（yo, tú, él, nosotros, vosotros, ellos）。上の項目で表せないとき\n' +
+      '  例：entender {"stem":"ie"}／preferir {"stem":"ie","ir":"i"}／traer {"yo":"traigo","pretS":"traj"}\n' +
+      '- 活用は正しいが、例文の { } の書きまちがい → "keep"（アプリでは直さない。デッキのファイルを直す）\n\n' +
+      '■ 返す形（この3行の形だけを返してください。説明は要りません）\n' +
+      '<<<VERBCHECK\n{"perder": {"stem":"ie"}, "hablar": "reg"}\nVERBCHECK>>>\n\n' +
+      '■ 動詞（' + items.length + '語）\n' + rows;
+  }
+  function vkParse(text) {
+    var m = /<<<VERBCHECK([\s\S]*?)VERBCHECK>>>/.exec(text), body = m ? m[1] : text, a = body.indexOf('{'), b = body.lastIndexOf('}');
+    if (a < 0 || b < a) return null;
+    try { return JSON.parse(body.slice(a, b + 1).replace(/[“”]/g, '"')); } catch (e) { return null; }
+  }
+  function vkCopy(text, btn) {
+    var ok = function () { btn.textContent = '✔ コピーした（AI に貼ってください）'; };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok, function () { window.prompt('コピーしてください', text); });
+    else window.prompt('コピーしてください', text);
+  }
   /* 一覧を box に出す。save(w)：1語を直したら呼ぶ（読み込み前は null：読み込むときに一緒に保存される） */
   function verbCheckList(box, deck, items, save) {
-    var DONE = {};
+    var DONE = {}, AIMSG = '';
     function draw() {
       var rest = items.filter(function (it) { return !DONE[it.w.id] && !it.f && vkFree(it.w); });
       box.innerHTML = '<p class="vk-lead">🔍 <b>確かめる動詞 ' + items.length + '語</b>　アプリが知らない動詞は、規則動詞として活用します。形がちがっていたら、語幹の変わり方をえらんでください。' +
         (items.some(function (it) { return it.f; }) ? '<br>⚠ は例文の形が作れない動詞です（例文の書きまちがいのことも）。' : '') +
-        '<br><small>ほかの不規則（yo だけ不規則など）は、ファイルに cj を書いて読み込み直してください。</small></p>' +
+        '<br><small>ほかの不規則（yo だけ不規則など）は、ファイルに cj を書いて読み込み直すか、下の 🤖 で AI にまかせてください。</small></p>' +
+        '<div class="vk-ai"><p class="vk-ai-h">🤖 AI にまかせる</p><p class="vk-ai-s">① 診断をコピーして AI に貼る　② AI の答えを下に貼って「反映する」</p>' +
+        '<button class="ghost" id="vkCopy">📋 診断をコピー</button>' +
+        '<textarea id="vkPaste" rows="3" placeholder="AI の答え（<<<VERBCHECK … VERBCHECK>>>）をここに貼る"></textarea>' +
+        '<button class="next" id="vkApply">反映する</button>' + (AIMSG ? '<p class="vk-ai-m">' + AIMSG + '</p>' : '') + '</div>' +
         '<ul class="vk-list">' + items.map(function (it) { return vkRow(it, DONE[it.w.id]); }).join('') + '</ul>' +
         (rest.length > 1 ? '<button class="ghost" id="vkAll">残り ' + rest.length + '語は全部 規則でOK</button>' : '');
       $$('.vk', box).forEach(function (li) {
@@ -1808,6 +1855,42 @@
           }
           delete w.reg; delete DONE[w.id]; if (save) save(w); draw();
         });
+      });
+      $('#vkCopy', box).addEventListener('click', function () {
+        vkCopy(vkPrompt(deck, items.filter(function (it) { return !DONE[it.w.id]; }).length ? items.filter(function (it) { return !DONE[it.w.id]; }) : items), this);
+      });
+      $('#vkApply', box).addEventListener('click', function () {
+        var ans = vkParse($('#vkPaste', box).value), got = [], bad = [], k;
+        if (!ans || typeof ans !== 'object') { AIMSG = '✖ 答えが読めませんでした。&lt;&lt;&lt;VERBCHECK から VERBCHECK&gt;&gt;&gt; までを、そのまま貼ってください。'; return draw(); }
+        var low = {}; for (k in ans) low[k.trim().toLowerCase()] = ans[k];
+        items.forEach(function (it) {
+          var w = it.w, a = low[w.w.toLowerCase()], base = Conj.parse(w.w).base;
+          if (a === undefined) a = low[base];
+          if (a === undefined) return;
+          if (a === 'keep') { DONE[w.id] = 'そのまま（例文はファイルで直す）'; got.push(w.w); return; }
+          if (!(w.id in VK_SNAP)) VK_SNAP[w.id] = { cj: w.cj ? JSON.parse(JSON.stringify(w.cj)) : null, irr: Conj.IRR[base] };
+          if (a === 'reg') {
+            if (vkFree(w) || !Conj.known(w.w)) { delete w.cj; w.reg = true; if (VK_SNAP[w.id].irr) Conj.IRR[base] = VK_SNAP[w.id].irr; else delete Conj.IRR[base]; }
+            DONE[w.id] = '規則でOK（AI）'; got.push(w.w);
+          } else if (a && typeof a === 'object' && !Array.isArray(a)) {
+            var er = Conj.checkIrr(a);
+            if (er.length) { bad.push(w.w + '（' + er.join('・') + '）'); return; }
+            var cj = {}; if (w.cj) for (k in w.cj) cj[k] = w.cj[k];
+            for (k in a) cj[k] = a[k];
+            w.cj = cj; delete w.reg; Conj.addIrr(w.w, a);
+            DONE[w.id] = 'くせ ' + JSON.stringify(a) + '（AI）'; got.push(w.w);
+          } else { bad.push(w.w + '（"reg"・"keep"・{ } のどれでもない）'); return; }
+          if (save) save(w);
+        });
+        var still = items.filter(function (it) {
+          if (!it.f || !DONE[it.w.id] || /^そのまま/.test(DONE[it.w.id])) return false;
+          return !DeckCheck.isFormOf(it.f, DeckCheck.formsOf(it.w.w, Conj));
+        }).map(function (it) { return it.w.w + ' の ' + it.f; });
+        var miss = items.filter(function (it) { return !DONE[it.w.id]; }).length;
+        AIMSG = '✔ ' + got.length + '語を反映した' + (miss ? '。まだ ' + miss + '語が残っている（もう一度コピーすると、残りだけ）' : '') +
+          (bad.length ? '<br>✖ 読めなかった：' + esc(bad.join('、')) : '') +
+          (still.length ? '<br>⚠ 直したあとも例文の形が作れない：' + esc(still.join('、')) + '（例文の書きまちがいかも）' : '');
+        draw();
       });
       var all = $('#vkAll', box);
       if (all) all.addEventListener('click', function () {

@@ -426,6 +426,12 @@ mark { background: var(--mark); color: inherit; padding: 0 3px; border-radius: 4
 /* 🔍 動詞の活用チェック */
 .vk-lead { margin: 0 0 8px; font-size: 14px; line-height: 1.6; text-align: left; }
 .vk-lead small { color: var(--muted); }
+.vk-ai { margin: 0 0 12px; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 14px; text-align: left; }
+.vk-ai-h { margin: 0; font-weight: 700; font-size: 15px; }
+.vk-ai-s { margin: 2px 0 8px; font-size: 13px; color: var(--muted); }
+.vk-ai textarea { display: block; width: 100%; margin: 8px 0; padding: 8px; border-radius: 10px; border: 1px solid var(--line-strong); font: inherit; font-size: 16px; resize: vertical; box-sizing: border-box; }
+.vk-ai .next, .vk-ai .ghost { width: 100%; }
+.vk-ai-m { margin: 8px 0 0; font-size: 13.5px; line-height: 1.6; }
 .vk-list { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .vk { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line-strong); background: var(--card); text-align: left; }
 .vk.done { opacity: .75; }
