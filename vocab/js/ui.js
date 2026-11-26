@@ -1662,7 +1662,7 @@
     var builtin = (window.VocabDecks && VocabDecks.builtin || []).filter(function (b) { return b.app === APP; });
     var cur = D.id;
     var item = function (id, name, sub, href) {
-      return '<a class="deck-item' + (id === cur ? ' cur' : '') + '" href="' + href + '"><b>' + esc(name) + '</b><small>' + esc(sub) + '</small>' + (id === cur ? '<span class="dcur">いま使っている</span>' : '') + '</a>';
+      return '<a class="deck-item' + (id === cur ? ' cur' : '') + '" href="' + href + '">' + (id === cur ? '<span class="dcur">✔ いま使っている</span>' : '') + '<b>' + esc(name) + '</b><small>' + esc(sub) + '</small></a>';   /* 札は見出しの上の行（長い名前と重ならないように） */
     };
     var vq = myDeck() ? verbIssues(D) : null;
     box.innerHTML = '<p class="u-title">📚 デッキ</p>' +
