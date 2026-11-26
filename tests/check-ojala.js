@@ -170,11 +170,12 @@ OQ.lessons.forEach((L, li) => {
       });
       if (!st.x) err(at + '：map に x（パロマの一言）がない');
     }
-    if (st.t !== 'show' && st.t !== 'enter') run = PASSIVE[st.t] ? run + 1 : 0;
+    if (st.t === 'scene' && !st.x) err(at + '：scene に x がない');
+    if (st.t !== 'show' && st.t !== 'enter' && st.t !== 'scene') run = PASSIVE[st.t] ? run + 1 : 0;   // 場面の地の文（scene）は物語の流れなので数えない
     if (run === 4) warn(at + '：読むだけのステップが4つ続いている');
     owl = st.t === 'say' && !st.who ? owl + 1 : (st.t === 'show' || st.t === 'enter' ? owl : 0);
     if (owl === 3) warn(at + '：パロマが3回つづけて話している（返事・問いで区切る）');
-    (st.t === 'say' || st.t === 'mono' ? String(st.x || '') : '').split('\n').forEach(line => {
+    (st.t === 'say' || st.t === 'mono' || st.t === 'scene' ? String(st.x || '') : '').split('\n').forEach(line => {
       const len = line.replace(/\*\*|__|\(\(|\)\)|`|[\[\]{}^]/g, '').length;
       if (len > 30) warn(at + '：吹き出しの1行が長い（' + len + '字）「' + line.slice(0, 20) + '…」');
     });

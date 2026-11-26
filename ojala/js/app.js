@@ -18,7 +18,10 @@
   /* ---------- 小物 ---------- */
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
-  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function esc(s) { return seals(String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; })); }
+  /* 本文の 🔴・🔵（{{red}}・{{blue}} とも書ける）は、絵文字ではなく CSS で描く小さな封蝋にする
+     （絵文字は明朝のウェブフォントと混ざると機種ごとに見え方が変わり、1文字ずつ出す吹き出しでは割れていた） */
+  function seals(h) { return h.replace(/(?:🔴|\{\{red\}\})\s?/g, '<i class="wx red" aria-label="赤"></i>').replace(/(?:🔵|\{\{blue\}\})\s?/g, '<i class="wx blue" aria-label="青"></i>'); }
   function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
   function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
@@ -154,8 +157,8 @@
     var h = esc(s);
     h = h.replace(/`([^`]+)`/g, function (m, x) { return '<span class="es">' + roles(x) + '</span>'; });
     h = h.replace(/\*\*([^*]+)\*\*/g, '<mark>$1</mark>');
-    h = h.replace(/__([^_]+)__/g, '<span class="hint">💡$1</span>');
-    h = h.replace(/\(\(([^)]+)\)\)/g, '<span class="conv">📎 $1</span>');
+    h = h.replace(/__([^_]+)__/g, '<span class="hint">$1</span>');
+    h = h.replace(/\(\(([^)]+)\)\)/g, '<span class="conv">$1</span>');
     return h.replace(/\n/g, '<br>');
   }
   var WRE = /([A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+)/;
@@ -593,7 +596,7 @@
     /* 町の人たち（依頼を受けたことのある人） */
     var met = { luz: S.lessons.L1, nico: S.lessons.L2, anselmo: S.lessons.L3, ines: S.lessons.L4, teo: S.lessons.L7 };
     var spots = { luz: [38, 80], nico: [48, 84], anselmo: [26, 80], ines: [64, 78], teo: [74, 84] };
-    Object.keys(met).forEach(function (k) { if (met[k]) h += '<i class="sp folk" data-who="' + k + '" style="left:' + spots[k][0] + '%;top:' + spots[k][1] + '%;z-index:' + spots[k][1] + '">' + D.people[k].e + '</i>'; });
+    /* 人物は絵文字で描かない（ユーザーの指摘：絵文字には情緒がない）。町の絵には人を出さない */
     /* 手に入れた切手（位置は id から決める） */
     D.cards.forEach(function (c) {
       if (!S.cards[c.id]) return;
@@ -619,7 +622,7 @@
   function addActor(k, quiet) {
     var box = $('#actors');
     if (!box || $('.actor[data-who="' + k + '"]', box)) return;
-    var p = D.people[k], a = el('button', 'actor', '<span class="af">' + p.e + '</span><span class="an">' + esc(p.n) + '</span><span class="am"></span>');
+    var p = D.people[k], a = el('button', 'actor', '<span class="an">' + esc(p.n) + '</span><span class="am"></span>');
     a.setAttribute('data-who', k); a.disabled = true;
     box.appendChild(a);
     if (!quiet) { FX.pop(a, 1.4); var pt = FX.at(a); FX.burst(pt.x, pt.y, { pal: 'divine', n: 18 }); Sfx.whoosh(); }
@@ -628,7 +631,6 @@
   function actorReact(k, e, mood) {
     var a = actorEl(k); if (!a) return;
     a.classList.remove('jump'); void a.offsetWidth; a.classList.add('jump');
-    if (mood) { var m = $('.am', a); m.textContent = mood; m.classList.remove('on'); void m.offsetWidth; m.classList.add('on'); }
     if (e) {
       var f = el('i', 'act-fx', e); stageEl.appendChild(f);
       var r = a.getBoundingClientRect(), R = stageEl.getBoundingClientRect();
@@ -674,7 +676,7 @@
     clearTimeout(typeT);
     var p = who === 'me' ? ME : who ? D.people[who] : null;
     talkEl.className = 'talk' + (who === 'me' ? ' mono' : p ? ' person' : '');
-    talkEl.innerHTML = '<div class="tk-av">' + (p ? '<span>' + p.e + '</span>' : FX.owl(mood)) + '</div><div class="tk-body"><b class="tk-name">' + (p ? esc(p.n) : 'パロマ') + '</b><div class="tk-x">' + ja(x) + '</div></div><button class="tk-log" aria-label="これまでのセリフ">📜</button>';
+    talkEl.innerHTML = '<div class="tk-body"><b class="tk-name">' + (p ? esc(p.n) : 'パロマ') + '</b><div class="tk-x">' + ja(x) + '</div></div><button class="tk-log" aria-label="これまでのセリフ">📜</button>';
     if (cur) cur.log.push({ who: who, x: x });
     var box = $('.tk-x', talkEl);
     glossAll(box);
@@ -682,7 +684,7 @@
     var chars = [];
     walk(box, function (node) {
       var frag = document.createDocumentFragment();
-      Array.prototype.forEach.call(node.nodeValue, function (ch) { var s = el('span', 'ch', esc(ch)); chars.push(s); frag.appendChild(s); });
+      Array.from(node.nodeValue).forEach(function (ch) { var s = el('span', 'ch', esc(ch)); chars.push(s); frag.appendChild(s); });
       node.parentNode.replaceChild(frag, node);
     });
     var k = 0, step = Math.max(10, Math.min(28, 1500 / Math.max(1, chars.length)));
@@ -699,9 +701,9 @@
   function talkHide() { clearTimeout(typeT); typeDone = null; talkEl.hidden = true; }
   function showLog() {
     if (!cur) return;
-    modal('<h3 class="m-h">📜 これまでのセリフ</h3><div class="log">' + cur.log.map(function (l) {
+    modal('<h3 class="m-h">これまでのことば</h3><div class="log">' + cur.log.map(function (l) {
       var p = l.who === 'me' ? ME : l.who ? D.people[l.who] : null;
-      return '<div class="lg"><b>' + (p ? p.e + ' ' + esc(p.n) : '🕊️ パロマ') + '</b><p>' + ja(l.x) + '</p></div>';
+      return '<div class="lg"><b>' + (p ? esc(p.n) : 'パロマ') + '</b><p>' + ja(l.x) + '</p></div>';
     }).join('') + '</div>', 'log-m');
     glossAll($('#mbody'));
     var lg = $('#mbody .log'); lg.scrollTop = lg.scrollHeight;
@@ -734,7 +736,7 @@
     setProg();
     if (cur.i >= cur.L.steps.length) return finishLesson();
     var st = cur.L.steps[cur.i++], run = cur.run;
-    ({ say: doSay, show: doShow, enter: doEnter, ask: doAsk, forge: doForge, seal: doSeal, tip: doTip, map: doMap, q: doQ, drill: doDrill, letter: doLetter, mono: doMono })[st.t](st, run);
+    ({ say: doSay, show: doShow, enter: doEnter, ask: doAsk, forge: doForge, seal: doSeal, tip: doTip, map: doMap, q: doQ, drill: doDrill, letter: doLetter, mono: doMono, scene: doScene })[st.t](st, run);
   }
   function nextBtn(label) { if (!cur) return; setProg(); T1.next(step, label || replyLabel()); }
 
@@ -746,12 +748,12 @@
       if (!st.more) return nextBtn();
       T1.btns([
         { t: 'わかった ▶', cls: 'go', fn: function () { step(); } },
-        { t: '🤔 なんで？', cls: 'sub', fn: function () { talk(st.more, null, 'happy', function () { nextBtn(); }); } }
+        { t: 'なんで？', cls: 'sub', fn: function () { talk(st.more, null, 'happy', function () { nextBtn(); }); } }
       ]);
     });
   }
   function doShow(st) {
-    var c = el('div', 'card board-tbl', (st.cap ? '<div class="qtag">📋 ' + esc(st.cap) + '</div>' : '') +
+    var c = el('div', 'card board-tbl', (st.cap ? '<div class="qtag">' + esc(st.cap) + '</div>' : '') +
       (st.tbl ? '<table class="tbl">' + st.tbl.map(function (r) { return '<tr><th class="es-cell">' + esHtml(r[0]) + '</th><td class="es-cell">' + esHtml(r[1]) + '</td></tr>'; }).join('') + '</table>' : '') +
       (st.es ? '<div class="es-line big">' + esHtml(st.es) + sayBtn(st.es) + '</div>' : '') + (st.ja ? '<div class="ja-line">' + esc(st.ja) + '</div>' : ''));
     glossEs(c);
@@ -766,7 +768,7 @@
     talkHide();
     if (st.who) addActor(st.who);
     var body = st.body.map(function (b) { return '<p class="lt-es">' + esHtml(b[0]) + '</p><p class="lt-ja">' + esc(b[1]) + '</p>'; }).join('');
-    var c = boardSet(el('div', 'card letter-full' + (st.recv ? ' recv' : ''), '<div class="qtag">' + (st.recv ? '📮 届いた手紙' : '✉️ 書きあがった手紙') + '</div>' +
+    var c = boardSet(el('div', 'card letter-full' + (st.recv ? ' recv' : ''), '<div class="qtag">' + (st.recv ? '届いた手紙' : '書きあがった手紙') + '</div>' +
       '<div class="letter lt-sheet"><p class="lt-to">' + esHtml(st.to) + '</p>' + body + '<p class="lt-sign">' + String(st.sign).split('\n').map(esHtml).join('<br>') + '</p></div>' +
       (st.note ? '<p class="lt-note">' + ja(st.note) + '</p>' : '')));
     glossEs(c);
@@ -779,13 +781,20 @@
       var w = $('.wax', c), pt = FX.at(w || c); FX.rays(pt.x, pt.y);
       if (st.who) actorReact(st.who, '✉️', '😊');
       later(function () { nextBtn('送る ▶'); }, 700);
-    }, '🔏 封をする');
+    }, '封をする');
+  }
+  /* 場面の地の文（だれのせりふでもない）。ボードに静かに出す。物語の流れ（いつ・なぜ来たか）を見せる */
+  function doScene(st) {
+    talkHide();
+    var c = boardSet(el('div', 'card scene', String(st.x).split('\n').map(function (l) { return '<p>' + ja(l) + '</p>'; }).join('')));
+    glossAll(c);
+    later(function () { nextBtn('つぎへ ▶'); }, 500);
   }
   function doMono(st) { talk(st.x, 'me', '', function () { nextBtn('つぎへ ▶'); }); }
 
   function doAsk(st, run) {
     talkHide();
-    var c = boardSet(el('div', 'card ask' + (st.pred ? ' pred' : ''), '<div class="qtag">' + (st.pred ? '🤔 予想してみて <em>まちがえても OK</em>' : '❓ クイズ') + '</div><div class="qq">' + ja(st.q) + '</div>' + (st.es ? '<div class="es-line">' + esHtml(st.es) + '</div>' : '') + '<div class="qres"></div>'));
+    var c = boardSet(el('div', 'card ask' + (st.pred ? ' pred' : ''), '<div class="qtag">' + (st.pred ? '予想してみて <em>まちがえても OK</em>' : '問い') + '</div><div class="qq">' + ja(st.q) + '</div>' + (st.es ? '<div class="es-line">' + esHtml(st.es) + '</div>' : '') + '<div class="qres"></div>'));
     glossAll(c);
     var list = st.o.map(function (o, i) { return { label: o, i: i }; });
     if (!st.pred) list = shuffle(list);
@@ -809,7 +818,7 @@
   function doForge(st, run) {
     talkHide();
     var w = st.w, cut = st.cut || '', start = w.length - cut.length, errs = 0, left = cut.length;
-    var c = boardSet(el('div', 'card forge', '<div class="qtag">🖋 形を作る</div><div class="fg-word">' + w.split('').map(function (ch, i) { return '<button class="fl" data-i="' + i + '">' + esc(ch) + '</button>'; }).join('') + '</div><div class="qres"></div>'));
+    var c = boardSet(el('div', 'card forge', '<div class="qtag">形を作る</div><div class="fg-word">' + w.split('').map(function (ch, i) { return '<button class="fl" data-i="' + i + '">' + esc(ch) + '</button>'; }).join('') + '</div><div class="qres"></div>'));
     var fls = $$('.fl', c);
     T1.hint('👆 ' + ja(st.hint));
     function wrong(src) {
@@ -876,7 +885,7 @@
     talkHide();
     addActor(st.who);
     var p = D.people[st.who], want = st.mood === 'ind' ? 0 : 1, sealOk = true;
-    var c = boardSet(el('div', 'card seal', '<div class="qtag">🔏 封蝋 <em>どちらの色で封をする？</em></div><div class="need"><span class="nf">' + p.e + '</span><div class="nb"><b>' + esc(p.n) + '</b><p>' + ja(st.need) + '</p></div></div>' +
+    var c = boardSet(el('div', 'card seal', '<div class="qtag">封蝋 <em>どちらの色で封をする？</em></div><div class="need"><div class="nb"><b>' + esc(p.n) + '</b><p>' + ja(st.need) + '</p></div></div>' +
       '<div class="letter"><div class="es-line">' + esHtml(st.es) + '</div><small class="vhint">' + esc(st.v) + '</small></div><div class="qres"></div>'));
     glossAll(c);
     var a = actorEl(st.who); if (a) a.classList.add('ask');
@@ -888,7 +897,7 @@
       sealOk = false; miss(run, c); stamp(c, i, true);
       var res = $('.qres', c);
       /* 見せたいのは「届いた先の誤解の返事」。パロマの吹き出しで隠さず、返事の下に一言だけ添えて、返事が見える位置までボードを送る */
-      res.innerHTML = '<div class="misreply"><b>📮 届いた先で……</b><p>' + ja(st.mis) + '</p><p class="mis-fix">' + (want ? 'que のあとは、頭の中のこと → 🔴 赤' : 'que のあとは、本当のこと → 🔵 青') + '</p></div>';
+      res.innerHTML = '<div class="misreply"><b>届いた先で……</b><p>' + ja(st.mis) + '</p><p class="mis-fix">' + (want ? 'que のあとは、頭の中のこと → <i class="wx red"></i>赤' : 'que のあとは、本当のこと → 🔵 青') + '</p></div>';
       glossAll(res);
       later(function () {
         var r = res.getBoundingClientRect(), B = boardEl.getBoundingClientRect();
@@ -930,14 +939,14 @@
           later(function () { talk(st.why || '', null, 'sad', function () { nextBtn('▶ もう覚えた'); }); }, 400);
         }
       });
-      $('.opts', T1.el).insertAdjacentHTML('beforebegin', '<p class="thint">' + (want ? '🔴 接続法' : '🔵 いつもの形') + 'で、入る形は？</p>');
+      $('.opts', T1.el).insertAdjacentHTML('beforebegin', '<p class="thint">' + (want ? '<i class="wx red"></i>接続法' : '<i class="wx blue"></i>いつもの形') + 'で、入る形は？</p>');
     }
   }
   function doTip(st, run) {
     var first = !S.tips[st.id];
     S.tips[st.id] = 1; save();
     var c = boardSet(el('div', 'card tip', '<div class="tip-h"><span>📜 TIP GET!</span>' + (first ? '<em>NEW</em>' : '') + '</div><b class="tip-ti">' + esc(st.ti) + '</b><div class="tip-x">' + ja(st.x) + '</div>' +
-      (st.why ? '<details><summary>🤔 なぜ？</summary><p>' + ja(st.why) + '</p></details>' : '')));
+      (st.why ? '<details><summary>なぜ？</summary><p>' + ja(st.why) + '</p></details>' : '')));
     glossAll(c);
     if (first) { Sfx.coin(); var p = FX.at(c); FX.burst(p.x, p.y, { pal: 'gold', n: 30 }); bonus(run, 5, c, 'Tips'); }
     var me = cur;
@@ -1062,7 +1071,7 @@
   function mkBtn(label, cls, fn) { var b = el('button', 'tb ' + cls, esc(label)); b.addEventListener('click', function () { if (b.disabled || $('#done').hidden) return; b.disabled = true; Sfx.tap(); fn(); }); return b; }
   function levelUp(lv) {
     Sfx.levelUp(); FX.confetti(200, 'divine'); FX.flash('#ffd23f');
-    modal('<div class="lvup"><small>ランクが上がりました</small><b>' + lv + '</b><span>' + esc(titleOf(lv)) + '</span>' + FX.owl('happy') + '</div>', 'lvup-m');
+    modal('<div class="lvup"><small>ランクが上がりました</small><b>' + lv + '</b><span>' + esc(titleOf(lv)) + '</span></div>', 'lvup-m');
   }
 
   /* =========================================================
@@ -1582,8 +1591,8 @@
   function hintModal(no) {
     var L = LESSON['L' + no], tips = L.steps.filter(function (st) { return st.t === 'tip'; }), shows = L.steps.filter(function (st) { return st.t === 'show' && st.tbl; });
     modal('<h3 class="m-h">📜 ' + esc(oracleNo(L)) + '　' + esc(L.ti) + '</h3>' +
-      tips.map(function (tip) { return '<div class="card tip"><b class="tip-ti">' + esc(tip.ti) + '</b><div class="tip-x">' + ja(tip.x) + '</div>' + (tip.why ? '<details><summary>🤔 なぜ？</summary><p>' + ja(tip.why) + '</p></details>' : '') + '</div>'; }).join('') +
-      shows.map(function (st) { return '<div class="card board-tbl"><div class="qtag">📋 ' + esc(st.cap || '') + '</div><table class="tbl">' + st.tbl.map(function (r) { return '<tr><th class="es-cell">' + esHtml(r[0]) + '</th><td class="es-cell">' + esHtml(r[1]) + '</td></tr>'; }).join('') + '</table></div>'; }).join('') +
+      tips.map(function (tip) { return '<div class="card tip"><b class="tip-ti">' + esc(tip.ti) + '</b><div class="tip-x">' + ja(tip.x) + '</div>' + (tip.why ? '<details><summary>なぜ？</summary><p>' + ja(tip.why) + '</p></details>' : '') + '</div>'; }).join('') +
+      shows.map(function (st) { return '<div class="card board-tbl"><div class="qtag">' + esc(st.cap || '') + '</div><table class="tbl">' + st.tbl.map(function (r) { return '<tr><th class="es-cell">' + esHtml(r[0]) + '</th><td class="es-cell">' + esHtml(r[1]) + '</td></tr>'; }).join('') + '</table></div>'; }).join('') +
       '<p class="m-note">この依頼は、読み返しのあとで「🩹 おさらい」できるよ。</p>', 'hint-m');
     glossAll($('#mbody'));
   }
@@ -1809,7 +1818,7 @@
       body.innerHTML = '<div class="card cmap-card"><div class="qtag">🗺 封蝋の地図　' + mapOpenN() + ' / ' + MAP.nodes.length + '</div>' + mapHtml([]) + '</div>' +
         '<p class="dex-note">依頼で手に入れたコツ。</p>' + TIPS.map(function (t) {
         var st = t.tip, have = S.tips[st.id];
-        return have ? '<div class="card tip"><div class="tip-h"><span>' + esc(oracleNo(t.L)) + '</span></div><b class="tip-ti">' + esc(st.ti) + '</b><div class="tip-x">' + ja(st.x) + '</div>' + (st.why ? '<details><summary>🤔 なぜ？</summary><p>' + ja(st.why) + '</p></details>' : '') + '</div>'
+        return have ? '<div class="card tip"><div class="tip-h"><span>' + esc(oracleNo(t.L)) + '</span></div><b class="tip-ti">' + esc(st.ti) + '</b><div class="tip-x">' + ja(st.x) + '</div>' + (st.why ? '<details><summary>なぜ？</summary><p>' + ja(st.why) + '</p></details>' : '') + '</div>'
           : '<div class="card tip locked"><b class="tip-ti">？？？</b><small>' + esc(oracleNo(t.L)) + ' でゲット</small></div>';
       }).join('');
       glossAll(body);
@@ -1829,7 +1838,7 @@
               (rec ? '<span class="ns">' + [1, 2, 3].map(function (k) { return k <= rec.stars ? '★' : '☆'; }).join('') + '</span>' : '') + '</button>';
           } else {
             var B = BOSS[n.id], br = S.bosses[n.id];
-            html += '<button class="node boss' + st + '" data-i="' + x.i + '" style="--bc:' + B.col + '"><span class="ni">' + (open ? B.face : '🔒') + '</span><span class="nt"><small>' + (B.final ? '最後の夜' : '試しの日') + '</small>' + (open ? esc(B.name) : '？？？') + '</span>' +
+            html += '<button class="node boss' + st + '" data-i="' + x.i + '" style="--bc:' + B.col + '"><span class="ni">' + (open ? '✉' : '🔒') + '</span><span class="nt"><small>' + (B.final ? '最後の夜' : '試しの日') + '</small>' + (open ? esc(B.name) : '？？？') + '</span>' +
               (br && br.win ? '<span class="ns rk">' + br.rank + '</span>' : '') + '</button>';
           }
         });
@@ -1913,15 +1922,15 @@
       evEl.innerHTML = '<span class="ev-f">🕊️</span><p>おつかれさま、代書人さん！<br>読み返しとラッシュで、腕をみがこう。</p>';
     } else if (ORDER[ni].type === 'B') {
       var B = BOSS[ORDER[ni].id];
-      cta.innerHTML = '<small>⚠ あやしい影が近づいている</small>' + B.face + ' ' + esc(B.name) + ' に立ち向かう';
+      cta.innerHTML = '<small>試しの日</small>' + esc(B.name);
       cta.className = 'cta boss';
       evEl.className = 'ev danger';
-      evEl.innerHTML = '<span class="ev-f">' + B.face + '</span><p>「' + esc(B.line) + '」</p>';
+      evEl.innerHTML = '<p>「' + esc(B.line) + '」</p>';
     } else {
       var NL = LESSON[ORDER[ni].id], who = D.people[NL.ev.who];
       cta.innerHTML = '<small>✉️ ' + esc(oracleNo(NL)) + '</small>' + esc(NL.ti);
       cta.className = 'cta';
-      evEl.innerHTML = '<span class="ev-f">' + who.e + '</span><p><b>' + esc(who.n) + '</b>' + esc(NL.ev.line) + '</p>';
+      evEl.innerHTML = '<p><b>' + esc(who.n) + '</b>' + esc(NL.ev.line) + '</p>';
     }
     var go = function () { if (ni < 0) { if ((S.mockBest || 0) < 70) mockGo(); else rushIntro(); } else openNode(ni); };
     if (ni < 0) {
@@ -2019,7 +2028,7 @@
     if (!f) return;
     var p = D.people[f.getAttribute('data-who')];
     FX.pop(f, 1.5); Sfx.tap();
-    showPop(f, '<b class="pw">' + p.e + ' ' + esc(p.n) + '</b><span>' + esc(p.d) + '</span>');
+    showPop(f, '<b class="pw">' + esc(p.n) + '</b><span>' + esc(p.d) + '</span>');
   });
   $('#hLv').addEventListener('click', function () {
     var L = levelOf(S.xp);

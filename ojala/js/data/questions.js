@@ -96,7 +96,7 @@ OQ.questions = [
   { id: 'l3-19', L: 3, k: 'ng', s: '___ que tengas trabajo.', o: ['Me alegro de', 'Espero', 'Sé'], a: 2, fit: 0, ja: '仕事があってうれしい。／仕事があるといいな。', why: '`sé que` のあとは本当のこと（`tienes`）。接続法の `tengas` とは合わない。' },
   { id: 'l3-20', L: 3, k: 'pick', s: 'Ojalá ___ una carta de Félix.', o: ['llega', 'llegue', 'llege', 'llegará'], a: 1, ja: 'フェリクスから手紙が届くといいなあ。', why: '`ojalá` → 接続法。`llego` → `{llegue}`（u を入れる）。' },
   { id: 'l3-21', L: 3, k: 'pick', s: 'Quiero que el concierto ___ a las ocho.', o: ['empieza', 'empiece', 'empieze'], a: 1, ja: 'コンサートを8時に始めてほしい。', why: '願い → 接続法。`empiezo` → z は e の前で c に書きかえて `{empiece}`。' },
-  { id: 'l3-22', L: 3, k: 'form', v: 'poder', p: 'nosotros', o: ['podamos', 'puedamos', 'podemos'], a: 0, why: 'ie・ue になる動詞も yo の形から（`pueda`）。ただ nosotros・vosotros だけは原形の芯 pod- にもどって `{podamos}`。`podemos` はいつもの形。' },
+  { id: 'l3-22', L: 3, k: 'form', v: 'poder', p: 'nosotros', o: ['podamos', 'puedamos', 'podemos'], a: 0, why: 'ie・ue になる動詞も yo の形から（`pueda`）。ただ nosotros・vosotros だけは原形の pod- にもどって `{podamos}`。`podemos` はいつもの形。' },
   { id: 'l3-23', L: 3, k: 'form', v: 'dar', p: 'tú', o: ['des', 'dés', 'das'], a: 0, why: 'dar の接続法で ´ がつくのは `{dé}` だけ。tú は `{des}`（´ なし）。`das` はいつもの形。' },
 
   /* ================= L4 疑い・必要（赤）と本当だと思う（青） ================= */

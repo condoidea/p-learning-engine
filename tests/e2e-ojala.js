@@ -50,7 +50,7 @@
     var o = overlaps(); if (o.length) OV.push(tag + ': ' + o.slice(0, 3).join(' ; '));
     if (document.documentElement.scrollWidth > innerWidth) OV.push(tag + ': 横スクロール ' + document.documentElement.scrollWidth);
   }
-  function opt(T, label) { return Array.prototype.filter.call(T.querySelectorAll('.opt'), function (b) { return b.textContent === label && !b.disabled; })[0]; }
+  function opt(T, label) { return Array.prototype.filter.call(T.querySelectorAll('.opt'), function (b) { return b.textContent === String(label).replace(/{{(red|blue)}}/g, '') && !b.disabled; })[0]; }
   async function solveQ(T) {
     var card = document.querySelector('.qcard[data-q]:not(.is-ok):not(.is-ng)'); if (!card) return false;   // 前の画面に残った済みのカードは飛ばす
     var q = __ojala.Q[card.getAttribute('data-q')]; if (!q) return false;
