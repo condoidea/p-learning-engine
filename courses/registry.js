@@ -107,7 +107,7 @@ window.LE_COURSES = [
   },
   {
     id: 'juku-1009', kind: 'vocab', entry: 'vocab.html?deck=juku-1009', storageKey: 'vocab.juku-1009.v1',
-    title: '英単語　塾プリント10月9日', brand: 'WORD AVENUE', icon: '🗽',
+    title: 'WORD AVENUE', brand: 'ENGLISH', icon: '🗽',
     desc: '塾プリント Lesson 7 の英単語・熟語。英英の説明から意味を予想し、捕まえて図鑑で育てる。',
     color: '#8fb8de', color2: '#e0a83b', words: 47
   }
