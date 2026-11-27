@@ -736,7 +736,7 @@
     setProg();
     if (cur.i >= cur.L.steps.length) return finishLesson();
     var st = cur.L.steps[cur.i++], run = cur.run;
-    ({ say: doSay, show: doShow, enter: doEnter, ask: doAsk, forge: doForge, seal: doSeal, tip: doTip, map: doMap, q: doQ, drill: doDrill, letter: doLetter, mono: doMono, scene: doScene })[st.t](st, run);
+    ({ say: doSay, show: doShow, enter: doEnter, ask: doAsk, forge: doForge, seal: doSeal, tip: doTip, map: doMap, q: doQ, drill: doDrill, letter: doLetter, mono: doMono, scene: doScene, note: doNote })[st.t](st, run);
   }
   function nextBtn(label) { if (!cur) return; setProg(); T1.next(step, label || replyLabel()); }
 
@@ -757,6 +757,7 @@
       (st.tbl ? '<table class="tbl">' + st.tbl.map(function (r) { return '<tr><th class="es-cell">' + esHtml(r[0]) + '</th><td class="es-cell">' + esHtml(r[1]) + '</td></tr>'; }).join('') + '</table>' : '') +
       (st.es ? '<div class="es-line big">' + esHtml(st.es) + sayBtn(st.es) + '</div>' : '') + (st.ja ? '<div class="ja-line">' + esc(st.ja) + '</div>' : ''));
     glossEs(c);
+    talkHide();
     boardSet(c);
     step();
   }
@@ -789,6 +790,30 @@
     var c = boardSet(el('div', 'card scene', String(st.x).split('\n').map(function (l) { return '<p>' + ja(l) + '</p>'; }).join('')));
     glossAll(c);
     later(function () { nextBtn('つぎへ ▶'); }, 500);
+  }
+  /* 文法のノート：見出し＋（表）＋箇条書き。箇条は「つぎへ」で1つずつ足す（いっぺんに出さない・読む順が分かる）。
+     ノートの間は吹き出しを出さない（同じことを2か所で説明しない）。ボードの前の表は消して、1枚に1つのこと */
+  function doNote(st) {
+    talkHide();
+    var c = boardSet(el('div', 'card board-tbl note', '<div class="qtag">' + esc(st.ti) + '</div>' +
+      (st.tbl ? '<table class="tbl">' + st.tbl.map(function (r) { return '<tr><th class="es-cell">' + esHtml(r[0]) + '</th><td class="es-cell">' + esHtml(r[1]) + '</td></tr>'; }).join('') + '</table>' : '') +
+      '<ul class="nt"></ul>'));
+    glossEs(c);
+    var ul = $('.nt', c), i = 0, li = st.li || [];
+    function more() {
+      if (!cur) return;
+      var old = $('.nt li.now', ul); if (old) old.classList.remove('now');
+      var it = el('li', 'now', ja(li[i++])); ul.appendChild(it); glossAll(it);
+      /* 短いスペイン語の言い回し（es posible que など）は途中で折らない */
+      $$('.es', it).forEach(function (e) { if (e.textContent.length <= 22) e.classList.add('nw'); });
+      /* いま足した行が見えるところまで動かす（行が多いときは、読み終えた上の行が上へ送られる） */
+      later(function () {
+        var r = it.getBoundingClientRect(), B = boardEl.getBoundingClientRect();
+        if (r.bottom > B.bottom) boardEl.scrollTop += r.bottom - B.bottom + 10;   // 入りきらないときだけ。ふつうは見出しから下が1画面に入る
+      }, 30);
+      if (i < li.length) T1.next(more, 'つぎへ ▶'); else nextBtn(i > 1 ? 'わかった ▶' : 'つぎへ ▶');
+    }
+    if (li.length) more(); else nextBtn();
   }
   function doMono(st) { talk(st.x, 'me', '', function () { nextBtn('つぎへ ▶'); }); }
 
@@ -1557,7 +1582,7 @@
     list.sort(function (a, b) { return S.weak[b].ids.length - S.weak[a].ids.length || LESSON['L' + a].ord - LESSON['L' + b].ord; });
     return list[0] || 0;
   }
-  var REMEDY_KEEP = { show: 1, forge: 1, seal: 1, ask: 1, tip: 1, map: 1 };
+  var REMEDY_KEEP = { show: 1, note: 1, forge: 1, seal: 1, ask: 1, tip: 1, map: 1 };
   function remedyLesson(no) {
     var L = LESSON['L' + no], ids = (S.weak[no] ? S.weak[no].ids : []).slice(0, 4), steps = [];
     steps.push({ t: 'say', x: oracleNo(L) + '「' + L.ti + '」で、\nまちがえた問題があったね。\n1回で覚えきれないのは、あたりまえのこと。\n要点だけ、もう一度ゆっくり見ていこう。' });

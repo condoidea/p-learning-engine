@@ -52,6 +52,7 @@ OQ.lessons.forEach(L => L.steps.forEach((st, i) => {
   if (st.t !== 'forge') (st.o || []).forEach(o => { if (o.length > 2) addEs(src, o); });
   (st.tbl || []).forEach(r => r.forEach(c => addEs(src, c.replace(/（[^）]*）/g, ' ').replace(/[：:]/g, ' '))));
   ['x', 'r', 'why', 'more', 'q', 'ti', 'hint', 'need', 'mis'].forEach(k => addTicks(src, st[k]));
+  (st.li || []).forEach(x => addTicks(src, x));
   if (st.t === 'letter') { addEs(src, st.to); addEs(src, String(st.sign).replace(/\n/g, ' ')); (st.body || []).forEach(b => addEs(src, b[0])); }
 }));
 OQ.questions.forEach(q => {
@@ -171,6 +172,13 @@ OQ.lessons.forEach((L, li) => {
       if (!st.x) err(at + '：map に x（パロマの一言）がない');
     }
     if (st.t === 'scene' && !st.x) err(at + '：scene に x がない');
+    if (st.t === 'note') {
+      if (!st.ti || !Array.isArray(st.li) || !st.li.length) err(at + '：note に見出し（ti）か箇条（li）がない');
+      if ((st.li || []).length > 7) warn(at + '：note の箇条が多い（' + st.li.length + '）');
+      (st.li || []).forEach(x => { const y = x.replace(/\{\{(red|blue)\}\}/g, '').replace(/\*\*|__|\(\(|\)\)|`|[\[\]{}^]/g, ''); const len = Math.round(y.replace(/[ -~À-ɏ]/g, '').length + y.replace(/[^ -~À-ɏ]/g, '').length / 2); /* 欧文は半角で数える */ if (len > 40) warn(at + '：note の1行が長い（' + len + '字）「' + x.slice(0, 16) + '…」'); });
+      if ((st.tbl || []).length > 6) warn(at + '：note の表が長い');
+    }
+    if (st.t === 'show' && (st.tbl || []).length > 6) warn(at + '：表が長い（' + st.tbl.length + '行）');
     if (st.t !== 'show' && st.t !== 'enter' && st.t !== 'scene') run = PASSIVE[st.t] ? run + 1 : 0;   // 場面の地の文（scene）は物語の流れなので数えない
     if (run === 4) warn(at + '：読むだけのステップが4つ続いている');
     owl = st.t === 'say' && !st.who ? owl + 1 : (st.t === 'show' || st.t === 'enter' ? owl : 0);

@@ -795,3 +795,20 @@ svg.dove .owl-wing { transform-origin: 30px 58px; }
 .card.scene p:nth-child(3) { animation-delay: 1s; }
 @keyframes sceneIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .card.scene p { animation: none; opacity: 1; } }
+
+/* 文法のノート（note）：見出し＋箇条書き。新しい行（.now）だけ印をつけ、前の行は少し下げる（読む順が分かる） */
+.card.note .tbl { margin-bottom: 8px; }
+.card.note .nt { list-style: none; margin: 4px 0 0; padding: 0; }
+.card.note .nt li { position: relative; margin: 0; padding: 7px 4px 7px 22px; font-size: 16px; line-height: 1.75; color: var(--ink2); border-top: 1px dashed var(--line); }
+.card.note .nt li:first-child { border-top: 0; }
+.card.note .nt li::before { content: ''; position: absolute; left: 6px; top: 1.05em; width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+.card.note .nt li.now { color: var(--ink); }
+.card.note .nt li.now::before { background: var(--wax-red); }
+.card.note .nt li.now { animation: sceneIn .35s ease both; }
+@media (prefers-reduced-motion: reduce) { .card.note .nt li.now { animation: none; } }
+.card.note .nt .es.nw { white-space: nowrap; }
+.card.note .nt mark { white-space: nowrap; }   /* 覚えること（マーカー）は途中で折らない */
+/* ノートの中の表は、見出し・表・箇条が1画面に入るよう少し詰める（見出しがヘッダの下に隠れない） */
+.card.note .tbl th, .card.note .tbl td { padding: 2px 8px; line-height: 1.45; }
+.card.note .tbl td { font-size: 17px; }
+.card.note .nt li { padding-top: 5px; padding-bottom: 5px; }
