@@ -3,48 +3,8 @@
   "sceneJa": "🇲🇽 メキシコの職場。同僚のガルシアさんが、日本人の田中さんのスペイン語をほめる",
   "phrases": [
     {
-      "t": "ya casi",
-      "ja": "もうほとんど",
-      "key": true
-    },
-    {
-      "t": "antes de venir",
-      "ja": "来る前に（antes de ＋ 不定詞）",
-      "key": true
-    },
-    {
-      "t": "antes de llegar",
-      "ja": "着く前に（antes de ＋ 不定詞）",
-      "key": true
-    },
-    {
-      "t": "ya había estudiado",
-      "ja": "もう勉強していた（過去完了）",
-      "key": true
-    },
-    {
-      "t": "cerca de",
-      "ja": "〜の近くに",
-      "key": true
-    },
-    {
       "t": "por eso",
       "ja": "だから",
-      "key": true
-    },
-    {
-      "t": "tiene acento mexicano",
-      "ja": "メキシコのなまりがある（tener acento ＋ 形容詞）",
-      "key": true
-    },
-    {
-      "t": "una vez",
-      "ja": "一度・あるとき",
-      "key": true
-    },
-    {
-      "t": "familiarizado con",
-      "ja": "〜になじんでいた（familiarizarse con…）",
       "key": true
     }
   ],
@@ -103,7 +63,8 @@
       "pos": "v",
       "ja": "（助動詞）〜していた",
       "form": "haber の線過去・三人称単数（había estudiado＝勉強していた。過去完了）",
-      "key": true
+      "key": true,
+      "note": "había estudiado＝勉強していた（過去完了：haber の線過去＋過去分詞）"
     },
     "estudiado": {
       "w": "estudiar",
@@ -204,7 +165,7 @@
       "pos": "n",
       "g": "m",
       "ja": "なまり",
-      "note": "アクセント記号・強勢の意味もある",
+      "note": "tener acento ＋ 形容詞＝〜のなまりがある",
       "key": true
     },
     "probado": {
@@ -273,7 +234,7 @@
       "reg": true,
       "ja": "なじむ・慣れ親しむ",
       "form": "過去分詞（se había familiarizado con…＝〜になじんでいた）",
-      "note": "familiarizarse con…＝〜になじむ",
+      "note": "familiarizarse con＝〜になじむ",
       "key": true
     }
   }

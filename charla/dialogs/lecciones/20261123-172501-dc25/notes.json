@@ -3,13 +3,8 @@
   "sceneJa": "✈️ メキシコ市の会社。モンテレイ出張から戻った田中さんに、上司のガルシアさんが出張の様子をたずねる",
   "phrases": [
     {
-      "t": "a eso de las diez",
-      "ja": "10時ごろ",
-      "key": true
-    },
-    {
-      "t": "una hora atrasado",
-      "ja": "1時間遅れて（メキシコの言い方。スペインでは con una hora de retraso）",
+      "t": "a eso de",
+      "ja": "〜ごろ（a eso de las diez＝10時ごろ）",
       "key": true
     },
     {
@@ -18,57 +13,13 @@
       "key": true
     },
     {
-      "t": "cómo le fue",
-      "ja": "〜はどうでしたか（usted に対して）",
-      "key": true
-    },
-    {
-      "t": "muy bien",
-      "ja": "とてもうまく（うまくいきました）"
-    },
-    {
-      "t": "lo felicito",
-      "ja": "おめでとうございます・よかったですね（usted に。tú なら te felicito）",
-      "key": true
-    },
-    {
-      "t": "se fundó",
-      "ja": "創立された（受身の se）",
-      "key": true
-    },
-    {
-      "t": "mil novecientos veinte",
-      "ja": "1920年（千・九百・二十と読む）",
-      "key": true
-    },
-    {
       "t": "desde hace",
       "ja": "〜前から（今も続いている）",
       "key": true
     },
     {
-      "t": "hace catorce años que trabaja",
-      "ja": "働いて14年になる（hace＋期間＋que＋現在形）",
-      "key": true
-    },
-    {
-      "t": "hace dos años",
-      "ja": "2年前に（点過去といっしょに使う）",
-      "key": true
-    },
-    {
-      "t": "oficina principal",
-      "ja": "本店・本社",
-      "key": true
-    },
-    {
       "t": "ciudad de méxico",
       "ja": "メキシコ市"
-    },
-    {
-      "t": "lo nombraron gerente",
-      "ja": "（会社が）彼を支店長に任命した",
-      "key": true
     }
   ],
   "words": {
@@ -134,7 +85,8 @@
       "pos": "adj",
       "ja": "遅れた",
       "form": "atrasado（遅れて）。メキシコでよく使う言い方",
-      "key": true
+      "key": true,
+      "note": "una hora atrasado＝1時間遅れて（スペインでは con una hora de retraso）"
     },
     "aeropuerto": {
       "w": "aeropuerto",
@@ -197,7 +149,8 @@
       "pos": "v",
       "ja": "行く・（〜の結果に）なる",
       "form": "ir の点過去・三人称単数（ser と同じ形。cómo le fue＝どうでしたか）",
-      "key": true
+      "key": true,
+      "note": "cómo le fue＝〜はどうでしたか（usted に）"
     },
     "reunión": {
       "w": "reunión",
@@ -262,7 +215,8 @@
       "reg": true,
       "ja": "お祝いを言う",
       "form": "felicitar の現在・一人称単数（lo felicito＝おめでとうございます）",
-      "key": true
+      "key": true,
+      "note": "lo felicito＝おめでとうございます（tú なら te felicito）"
     },
     "se": {
       "w": "se",
@@ -280,7 +234,8 @@
     "mil": {
       "w": "mil",
       "pos": "num",
-      "ja": "1000（mil novecientos veinte＝1920）"
+      "ja": "1000（mil novecientos veinte＝1920）",
+      "note": "mil novecientos veinte＝1920年（千・九百・二十と読む）"
     },
     "novecientos": {
       "w": "novecientos",
@@ -370,7 +325,8 @@
       "reg": true,
       "ja": "任命する",
       "form": "nombrar の点過去・三人称複数（誰かが任命した）",
-      "key": true
+      "key": true,
+      "note": "lo nombraron gerente＝（会社が）彼を支店長に任命した"
     },
     "gerente": {
       "w": "gerente",
@@ -385,6 +341,11 @@
       "g": "f",
       "ja": "支店",
       "key": true
+    },
+    "que#8": {
+      "w": "que",
+      "pos": "conj",
+      "ja": "〜して（hace＋期間＋que＋現在形の que）"
     }
   },
   "names": [

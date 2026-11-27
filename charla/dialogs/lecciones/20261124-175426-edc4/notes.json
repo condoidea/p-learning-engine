@@ -3,42 +3,9 @@
   "sceneJa": "🧳 土曜の朝、旅行に出かける直前。クララとオスカルが家で最後の確認をする",
   "phrases": [
     {
-      "t": "hecho ya la maleta",
-      "ja": "荷造りをした（hacer la maleta）",
-      "key": true
-    },
-    {
-      "t": "qué has hecho",
-      "ja": "何をしたの？（¿Qué has hecho?）"
-    },
-    {
-      "t": "los de ida",
-      "ja": "行きの切符（los de ida）",
-      "key": true
-    },
-    {
-      "t": "la vuelta",
-      "ja": "帰り（の切符）",
-      "key": true
-    },
-    {
       "t": "todavía no",
       "ja": "まだ…ない",
       "key": true
-    },
-    {
-      "t": "ese es el timbre",
-      "ja": "あ、チャイムだ！",
-      "key": true
-    },
-    {
-      "t": "la mía",
-      "ja": "私のもの（la mía＝mi maleta）",
-      "key": true
-    },
-    {
-      "t": "ya se lo he dicho",
-      "ja": "もう（妹に）言ってある"
     }
   ],
   "words": {
@@ -215,7 +182,7 @@
       "pos": "n",
       "g": "f",
       "ja": "行き",
-      "note": "los de ida＝行きの切符",
+      "note": "los de ida＝行きの（切符）",
       "key": true
     },
     "vuelta": {
@@ -223,7 +190,7 @@
       "pos": "n",
       "g": "f",
       "ja": "帰り・戻り",
-      "note": "la vuelta＝帰り（の切符）",
+      "note": "la vuelta＝帰りの（切符）",
       "key": true
     },
     "compramos": {
@@ -442,6 +409,14 @@
       "ja": "戻る・また来る",
       "form": "volver の過去分詞・不規則（ha vuelto＝また来た）",
       "key": true
+    },
+    "hecho#1": {
+      "w": "hacer",
+      "pos": "v",
+      "ja": "した（hacer la maleta＝荷造りをする）",
+      "form": "hacer の過去分詞・不規則（has hecho la maleta＝荷造りをした）",
+      "key": true,
+      "note": "hacer la maleta＝荷造りをする"
     }
   }
 }

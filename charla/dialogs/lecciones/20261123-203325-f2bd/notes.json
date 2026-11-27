@@ -3,21 +3,6 @@
   "sceneJa": "🏡 カルメンが子どものころに住んでいた村。マコトを連れて、昔の家や学校のあった場所を歩く",
   "phrases": [
     {
-      "t": "cuando era pequeña",
-      "ja": "小さいころ（cuando ＋ 線過去）",
-      "key": true
-    },
-    {
-      "t": "en aquel tiempo",
-      "ja": "あのころ・当時",
-      "key": true
-    },
-    {
-      "t": "aún ahora",
-      "ja": "今でも",
-      "key": true
-    },
-    {
       "t": "ya no",
       "ja": "もう…ない",
       "key": true
@@ -25,30 +10,8 @@
     {
       "t": "fines de semana",
       "ja": "週末（fin de semana の複数形）",
-      "key": true
-    },
-    {
-      "t": "hasta cuándo",
-      "ja": "いつまで",
-      "key": true
-    },
-    {
-      "t": "jugaba al fútbol",
-      "ja": "サッカーをしていた（jugar al fútbol）",
-      "key": true
-    },
-    {
-      "t": "pertenecía a",
-      "ja": "〜に所属していた（pertenecer a）",
-      "key": true
-    },
-    {
-      "t": "por la mañana",
-      "ja": "朝に・午前中に"
-    },
-    {
-      "t": "estudio más ahora que antes",
-      "ja": "昔より今のほうが勉強している（比較級 más … que）"
+      "key": true,
+      "w": "fin de semana"
     }
   ],
   "words": {
@@ -315,6 +278,11 @@
       "ja": "引っ越す・移る",
       "form": "trasladarse の点過去・一人称複数（nos trasladamos a Madrid＝マドリードに引っ越した）",
       "key": true
+    },
+    "por#10": {
+      "w": "por",
+      "pos": "prep",
+      "ja": "〜に（por la mañana＝朝に）"
     }
   }
 }

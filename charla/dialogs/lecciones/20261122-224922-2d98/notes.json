@@ -1,53 +1,7 @@
 {
   "format": 1,
   "sceneJa": "👗 ブティックで、トマスとエレナがドレスを選んでいる。店員が値段を教えてくれる",
-  "phrases": [
-    {
-      "t": "me gusta más",
-      "ja": "（私は）〜のほうが好き（gustar の比較）",
-      "key": true
-    },
-    {
-      "t": "me parece",
-      "ja": "（私には）〜と思える・〜だと思う（parecer）",
-      "key": true
-    },
-    {
-      "t": "no te parece",
-      "ja": "〜だと思わない？（¿No te parece…?）",
-      "key": true
-    },
-    {
-      "t": "no es tan bueno como",
-      "ja": "〜ほどよくない（tan … como＝同じくらい）",
-      "key": true
-    },
-    {
-      "t": "más barato",
-      "ja": "もっと安い（比較級）",
-      "key": true
-    },
-    {
-      "t": "el más caro",
-      "ja": "いちばん高いもの（最上級）",
-      "key": true
-    },
-    {
-      "t": "una marca de prestigio",
-      "ja": "有名ブランド（marca de prestigio）",
-      "key": true
-    },
-    {
-      "t": "por qué no compramos",
-      "ja": "（いっしょに）買ってはどう？（¿Por qué no + 1人称複数?＝〜しようよ）",
-      "key": true
-    },
-    {
-      "t": "no siempre",
-      "ja": "いつも〜とは限らない",
-      "key": true
-    }
-  ],
+  "phrases": [],
   "words": {
     "qué": {
       "w": "qué",
@@ -134,7 +88,7 @@
       "w": "como",
       "pos": "conj",
       "ja": "〜のように・〜と同じく（tan … como＝〜と同じくらい…）",
-      "note": "comer の「食べる」ではない"
+      "note": "tan ＋形容詞＋como＝〜と同じくらい…。comer の「食べる」ではない"
     },
     "ese": {
       "w": "ese",
@@ -216,6 +170,11 @@
       "w": "mal",
       "pos": "adv",
       "ja": "悪く・よくなく（no está mal＝悪くない）"
+    },
+    "bueno#6": {
+      "w": "bueno",
+      "pos": "adj",
+      "ja": "よい（no es tan bueno como ese＝そちらほど良くはない）"
     }
   },
   "lines": [

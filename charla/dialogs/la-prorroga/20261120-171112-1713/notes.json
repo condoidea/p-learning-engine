@@ -16,51 +16,12 @@
       "key": true
     },
     {
-      "t": "gol de dos espaldas",
-      "ja": "背中二つ分のゴール（審判とダニ、二人の背中に当たって入った）"
-    },
-    {
-      "t": "primera vez",
-      "ja": "初めて（es la primera vez que〜＝〜は初めてだ）"
-    },
-    {
-      "t": "hablan mal de",
-      "ja": "〜の悪口を言う（hablar mal de）",
-      "key": true
-    },
-    {
-      "t": "para empezar",
-      "ja": "まず・最初に"
-    },
-    {
       "t": "por qué",
       "ja": "なぜ"
     },
     {
-      "t": "todos los domingos",
-      "ja": "毎週日曜日に"
-    },
-    {
-      "t": "de joven",
-      "ja": "若いころ（は）",
-      "key": true
-    },
-    {
-      "t": "un día",
-      "ja": "ある日"
-    },
-    {
-      "t": "eso mismo",
-      "ja": "まさにそのこと"
-    },
-    {
       "t": "todo el mundo",
       "ja": "みんな・世界中の人"
-    },
-    {
-      "t": "cómo lo llevas",
-      "ja": "どうやって乗り切ってる？（llevar＝こなす・耐える）",
-      "key": true
     },
     {
       "t": "al principio",
@@ -68,26 +29,16 @@
       "key": true
     },
     {
-      "t": "es broma",
-      "ja": "冗談だよ"
-    },
-    {
-      "t": "después de",
-      "ja": "〜のあとで"
-    },
-    {
-      "t": "lo que",
-      "ja": "〜なこと・〜するもの（lo que más me duele＝一番つらいこと）"
-    },
-    {
       "t": "se meten con",
       "ja": "〜を悪く言う・〜にちょっかいを出す（meterse con）",
-      "key": true
+      "key": true,
+      "w": "meterse con"
     },
     {
       "t": "lo pasan mal",
       "ja": "つらい思いをする（pasarlo mal）",
-      "key": true
+      "key": true,
+      "w": "pasarlo mal"
     },
     {
       "t": "a veces",
@@ -95,7 +46,8 @@
     },
     {
       "t": "tenía razón",
-      "ja": "正しかった（tener razón）"
+      "ja": "正しかった（tener razón）",
+      "w": "tener razón"
     },
     {
       "t": "hacer trampas",
@@ -103,26 +55,9 @@
       "key": true
     },
     {
-      "t": "qué bonito",
-      "ja": "なんて素敵な（話だ）"
-    },
-    {
-      "t": "vamos a hablar",
-      "ja": "話しましょう（Vamos a ＋ 原形＝〜しましょう）"
-    },
-    {
       "t": "fuera de juego",
       "ja": "オフサイド",
       "key": true
-    },
-    {
-      "t": "dicho de forma sencilla",
-      "ja": "簡単に言えば",
-      "key": true
-    },
-    {
-      "t": "más cerca de",
-      "ja": "〜よりも近い"
     },
     {
       "t": "nada más",
@@ -134,17 +69,8 @@
       "ja": "だから・そのために"
     },
     {
-      "t": "siempre que pueda",
-      "ja": "できる限り・できるときはいつも（siempre que ＋ 接続法）",
-      "key": true
-    },
-    {
       "t": "atlético montaña",
       "ja": "（サッカークラブの名前）アトレティコ・モンターニャ"
-    },
-    {
-      "t": "la semana pasada",
-      "ja": "先週"
     },
     {
       "t": "de verdad",
@@ -154,22 +80,6 @@
       "t": "saque de esquina",
       "ja": "コーナーキック",
       "key": true
-    },
-    {
-      "t": "dentro del",
-      "ja": "〜の中に（dentro de ＋ el）"
-    },
-    {
-      "t": "me dio a mí",
-      "ja": "私に当たった（dar a〜＝〜に当たる）"
-    },
-    {
-      "t": "te ha dado a ti",
-      "ja": "君に当たった（dar a〜＝〜に当たる）"
-    },
-    {
-      "t": "atándose la bota",
-      "ja": "スパイクのひもを結びながら"
     },
     {
       "t": "desde hace",
@@ -195,30 +105,26 @@
     },
     {
       "t": "tenía que",
-      "ja": "〜しなければならなかった・〜すべきだった（tener que）"
+      "ja": "〜しなければならなかった・〜すべきだった（tener que）",
+      "w": "tener que"
     },
     {
       "t": "diste por bueno",
       "ja": "（ゴールを）認めた（dar por bueno＝正しいと認める）",
-      "key": true
+      "key": true,
+      "w": "dar por bueno"
     },
     {
       "t": "me di cuenta",
       "ja": "気づいた（darse cuenta）",
-      "key": true
+      "key": true,
+      "w": "darse cuenta"
     },
     {
       "t": "te diste cuenta",
       "ja": "気づいた（darse cuenta）",
-      "key": true
-    },
-    {
-      "t": "al día siguiente",
-      "ja": "翌日に"
-    },
-    {
-      "t": "en casa de",
-      "ja": "〜の家で"
+      "key": true,
+      "w": "darse cuenta"
     },
     {
       "t": "a cámara lenta",
@@ -228,56 +134,23 @@
     {
       "t": "hizo de",
       "ja": "〜の役をした（hacer de）",
-      "key": true
-    },
-    {
-      "t": "es del",
-      "ja": "〜のファンだ（ser de ＋ チーム名）",
-      "key": true
+      "key": true,
+      "w": "hacer de"
     },
     {
       "t": "ni siquiera",
       "ja": "〜すらしない"
     },
     {
-      "t": "coge el teléfono",
-      "ja": "電話に出る（スペイン）"
-    },
-    {
       "t": "ha bajado de categoría",
       "ja": "降格した（bajar de categoría）",
-      "key": true
-    },
-    {
-      "t": "se ha salvado",
-      "ja": "残留した・降格を免れた（salvarse）",
-      "key": true
-    },
-    {
-      "t": "seguir callado",
-      "ja": "黙ったままでいる"
-    },
-    {
-      "t": "es posible que",
-      "ja": "〜かもしれない（後ろは接続法）",
-      "key": true
-    },
-    {
-      "t": "prefiero que no",
-      "ja": "やめてほしい（prefiero que no leas…の「leas」を省略）"
-    },
-    {
-      "t": "se le ha olvidado",
-      "ja": "（うっかり）忘れてしまった（無意志の se）"
+      "key": true,
+      "w": "bajar de categoría"
     },
     {
       "t": "un tal",
       "ja": "〜とかいう人",
       "key": true
-    },
-    {
-      "t": "ya lo sabía yo",
-      "ja": "やっぱりな・分かってたよ"
     },
     {
       "t": "visión periférica",
@@ -289,28 +162,13 @@
       "key": true
     },
     {
-      "t": "todos los años",
-      "ja": "毎年"
-    },
-    {
-      "t": "se llama",
-      "ja": "〜という名前だ"
-    },
-    {
-      "t": "estoy orgullosa de ti",
-      "ja": "あなたを誇りに思う"
-    },
-    {
       "t": "no te preocupes",
       "ja": "心配しないで"
     },
     {
-      "t": "volverá a subir",
-      "ja": "また昇格する（volver a ＋ 原形＝再び〜する）"
-    },
-    {
-      "t": "si quieres",
-      "ja": "よかったら"
+      "t": "volverá a",
+      "ja": "また〜する（volver a ＋ 不定詞）",
+      "w": "volver a"
     },
     {
       "t": "lo siento",
@@ -676,7 +534,9 @@
       "pos": "v",
       "reg": true,
       "ja": "（困難を）乗り切る・こなす",
-      "form": "llevar の現在・二人称単数（¿cómo lo llevas?＝どう受け止めてる？）"
+      "form": "llevar の現在・二人称単数（¿cómo lo llevas?＝どう受け止めてる？）",
+      "key": true,
+      "note": "cómo lo llevas＝どう乗り切ってる？（llevarlo＝うまくこなす）"
     },
     "paciencia": {
       "w": "paciencia",
@@ -2095,6 +1955,44 @@
       "w": "siquiera",
       "pos": "adv",
       "ja": "せめて・〜さえ（ni siquiera＝〜すらない）"
+    },
+    "es#34": {
+      "w": "ser",
+      "pos": "v",
+      "ja": "〜である",
+      "form": "ser の現在・三人称単数",
+      "note": "ser de ＋チーム名＝〜のファンだ（es del Atlético Montaña）"
+    },
+    "posible": {
+      "w": "posible",
+      "pos": "adj",
+      "ja": "可能な・ありうる",
+      "note": "es posible que ＋接続法＝〜かもしれない",
+      "key": true
+    },
+    "joven": {
+      "w": "joven",
+      "pos": "adj",
+      "ja": "若い",
+      "note": "de joven＝若いころ（は）"
+    },
+    "se#43": {
+      "w": "se",
+      "pos": "pron",
+      "ja": "（se le ha olvidado で）うっかり〜してしまった",
+      "note": "olvidársele＋人＝（人が）うっかり忘れる"
+    },
+    "lo#8": {
+      "w": "lo",
+      "pos": "art",
+      "ja": "〜なこと・〜するもの",
+      "note": "lo que ＋動詞＝〜なこと（lo que más me duele＝一番つらいこと）"
+    },
+    "lo#20": {
+      "w": "lo",
+      "pos": "art",
+      "ja": "〜なこと・〜するもの",
+      "note": "lo que ＋動詞＝〜なこと（lo que pasó＝起こったこと）"
     }
   }
 }

@@ -3,61 +3,20 @@
   "sceneJa": "📷 イレネとおじいちゃんが古いアルバムを見ている。橋の上に立つ男の子の写真から、昔話が始まる",
   "phrases": [
     {
-      "t": "a los diez años",
-      "ja": "10歳のとき（a ＋ los ＋ 年齢 ＋ años）",
-      "key": true
-    },
-    {
-      "t": "qué niño tan encantador",
-      "ja": "なんてすてきな男の子（¡Qué ＋ 名詞 ＋ tan ＋ 形容詞!）",
-      "key": true
-    },
-    {
-      "t": "todas las tardes",
-      "ja": "毎日午後に",
-      "key": true
-    },
-    {
-      "t": "un poco",
-      "ja": "少し",
-      "key": true
-    },
-    {
-      "t": "un día",
-      "ja": "ある日"
-    },
-    {
       "t": "de repente",
       "ja": "突然",
       "key": true
     },
     {
-      "t": "qué pasó",
-      "ja": "何があった？・どうなった？（pasar の点過去）",
-      "key": true
-    },
-    {
-      "t": "después de eso",
-      "ja": "そのあと・それから"
-    },
-    {
-      "t": "volví a saltar",
-      "ja": "また飛び込んだ（volver a ＋ 不定詞＝また〜する）",
-      "key": true
-    },
-    {
-      "t": "nunca más",
-      "ja": "二度と…ない",
-      "key": true
+      "t": "volví a",
+      "ja": "また〜した（volver a＋不定詞＝また〜する）",
+      "key": true,
+      "w": "volver a"
     },
     {
       "t": "por lo menos",
       "ja": "少なくとも",
       "key": true
-    },
-    {
-      "t": "en casa",
-      "ja": "家に（家にいる）"
     }
   ],
   "words": {
@@ -357,6 +316,13 @@
       "w": "ella",
       "pos": "pron",
       "ja": "彼女（ここでは母）"
+    },
+    "años#2": {
+      "w": "año",
+      "pos": "n",
+      "g": "m",
+      "ja": "年・〜歳",
+      "note": "a los diez años＝10歳のとき"
     }
   }
 }

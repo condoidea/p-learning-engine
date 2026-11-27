@@ -6,11 +6,6 @@
   ],
   "phrases": [
     {
-      "t": "ya estoy en casa",
-      "ja": "ただいま（直訳：もう家にいる）",
-      "key": true
-    },
-    {
       "t": "por fin",
       "ja": "やっと・ついに",
       "key": true
@@ -21,23 +16,8 @@
       "key": true
     },
     {
-      "t": "no supe nada de ti",
-      "ja": "君の消息は何もなかった（saber de ＋ 人＝〜の消息を知る）",
-      "key": true
-    },
-    {
       "t": "lo siento",
       "ja": "ごめんなさい・残念です",
-      "key": true
-    },
-    {
-      "t": "quise llamarte",
-      "ja": "電話しようとした（querer の点過去＝実際にやってみた）",
-      "key": true
-    },
-    {
-      "t": "no pude",
-      "ja": "（やってみたが）できなかった（poder の点過去）",
       "key": true
     },
     {
@@ -46,54 +26,10 @@
       "key": true
     },
     {
-      "t": "no te traje nada",
-      "ja": "何も持ってこなかった（二重否定：no ＋ 動詞 ＋ nada）",
-      "key": true
-    },
-    {
-      "t": "nada bonito",
-      "ja": "素敵なものは何も（nada ＋ 形容詞の男性単数形）",
-      "key": true
-    },
-    {
-      "t": "tampoco hay nada",
-      "ja": "…にも何もない（tampoco が動詞の前なので no は付けない）",
-      "key": true
-    },
-    {
       "t": "tienes hambre",
       "ja": "おなかがすいている（tener hambre）",
-      "key": true
-    },
-    {
-      "t": "ni un yogur",
-      "ja": "ヨーグルト1個も（ni un ＝ 1つも…ない）",
-      "key": true
-    },
-    {
-      "t": "me los comí todos",
-      "ja": "全部食べてしまった（comerse ＋ los yogures）",
-      "key": true
-    },
-    {
-      "t": "damos una vuelta",
-      "ja": "ちょっと出かける・ひと回りする（dar una vuelta）",
-      "key": true
-    },
-    {
-      "t": "cenamos fuera",
-      "ja": "外で晩ごはんにする（cenar fuera＝外食）",
-      "key": true
-    },
-    {
-      "t": "te invito yo",
-      "ja": "僕がおごるよ",
-      "key": true
-    },
-    {
-      "t": "mejor que cualquier recuerdo",
-      "ja": "どんなお土産よりもいい（mejor que ＋ 比較対象）",
-      "key": true
+      "key": true,
+      "w": "tener hambre"
     }
   ],
   "words": {
@@ -145,7 +81,8 @@
       "pos": "v",
       "ja": "知る・消息を知る",
       "form": "saber の点過去・一人称単数（不規則）。no supe nada de ti＝君の消息は何もなかった",
-      "key": true
+      "key": true,
+      "note": "no supe nada de ti＝君の消息は何もなかった（saber de＋人＝〜の消息を知る）"
     },
     "nada": {
       "w": "nada",
@@ -510,6 +447,11 @@
       "pos": "det",
       "ja": "どんな〜でも",
       "key": true
+    },
+    "por#5": {
+      "w": "por",
+      "pos": "prep",
+      "ja": "〜を・〜あたりを（por la montaña＝山を）"
     }
   }
 }

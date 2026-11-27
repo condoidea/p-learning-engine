@@ -101,7 +101,8 @@
     if (pos === 'n') w.g = rec.g;
     if (pos === 'v' && rec.cj) w.cj = rec.cj;
     if (pos === 'v' && !rec.cj && rec.reg) w.reg = true;   /* 規則動詞と確かめた印（notes.json の reg） */
-    var memo = [rec.note, rec.kind === 'w' && rec.form && rec.surf.toLowerCase() !== rec.w.toLowerCase() ? '会話では ' + rec.surf + '（' + rec.form + '）' : ''].filter(Boolean).join('。');
+    var memo = [rec.note, rec.kind === 'w' && rec.form && rec.surf.toLowerCase() !== rec.w.toLowerCase() ? '会話では ' + rec.surf + '（' + rec.form + '）' : '',
+      rec.kind === 'p' && rec.surf.toLowerCase() !== rec.w.toLowerCase() ? '会話では ' + rec.surf : ''].filter(Boolean).join('。');
     if (memo) w.memo = memo;
     if (!w.ex[1]) return { why: 'セリフの訳がない' };
     return { word: w };

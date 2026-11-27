@@ -23,7 +23,8 @@
       "t": "me di cuenta",
       "ja": "気づいた",
       "key": true,
-      "note": "darse cuenta de（〜に気づく）の点過去"
+      "note": "darse cuenta de（〜に気づく）の点過去",
+      "w": "darse cuenta"
     },
     {
       "t": "ni hablar",
@@ -31,27 +32,10 @@
       "key": true
     },
     {
-      "t": "no me digas que",
-      "ja": "まさか…じゃないよね",
+      "t": "no me digas",
+      "ja": "まさか（…じゃないよね）",
       "key": true,
-      "note": "直訳：私に…と言わないで"
-    },
-    {
-      "t": "cara de inocente",
-      "ja": "とぼけた顔・何も知らない顔",
-      "key": true,
-      "note": "tener cara de inocente の一部"
-    },
-    {
-      "t": "el lado positivo",
-      "ja": "いい面",
-      "key": true,
-      "note": "mirar el lado positivo（いい面を見る）"
-    },
-    {
-      "t": "salir mal",
-      "ja": "うまくいかない",
-      "key": true
+      "note": "直訳：私に言わないで"
     },
     {
       "t": "o sea",
@@ -63,12 +47,6 @@
       "ja": "ええと・どれどれ"
     },
     {
-      "t": "tardé tres horas en",
-      "ja": "〜するのに3時間かかった",
-      "key": true,
-      "note": "tardar ＋ 時間 ＋ en ＋ 不定詞"
-    },
-    {
       "t": "cada vez que",
       "ja": "〜するたびに"
     },
@@ -77,17 +55,14 @@
       "ja": "次回・次は"
     },
     {
-      "t": "como siempre",
-      "ja": "いつものように"
-    },
-    {
       "t": "claro que",
       "ja": "もちろん〜だ"
     },
     {
       "t": "tengo que",
       "ja": "〜しなければならない",
-      "note": "tener que ＋ 不定詞"
+      "note": "tener que ＋ 不定詞",
+      "w": "tener que"
     }
   ],
   "words": {
@@ -839,7 +814,8 @@
     "inocente#16": {
       "w": "inocente",
       "pos": "adj",
-      "ja": "無邪気な・何も知らない"
+      "ja": "無邪気な・何も知らない",
+      "key": true
     },
     "vaya#22": {
       "w": "vaya",
@@ -864,6 +840,26 @@
       "pos": "adv",
       "ja": "（ya sabes で）ほら・知ってのとおり",
       "form": "Ya sabes cómo es＝あの人がどんなだか知ってるでしょ"
+    },
+    "tardé#4": {
+      "w": "tardar",
+      "pos": "v",
+      "reg": true,
+      "ja": "かかった（時間が）",
+      "form": "tardar の「私は」（点過去）"
+    },
+    "salir#20": {
+      "w": "salir",
+      "pos": "v",
+      "ja": "出る・うまくいく",
+      "note": "salir mal＝うまくいかない"
+    },
+    "iba#20": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "（ir a ＋不定詞で）〜しそうだ",
+      "form": "ir の「それは」（線過去）",
+      "note": "ir a ＋不定詞＝〜しそうだ・〜するところだ"
     }
   }
 }

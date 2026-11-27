@@ -7,50 +7,17 @@
       "ja": "こんばんは（夜のあいさつ。おやすみなさいの意味でも使う）"
     },
     {
-      "t": "hace una semana",
-      "ja": "1週間前に（hace ＋ 期間＝〜前に）"
-    },
-    {
       "t": "de espaldas",
       "ja": "背を向けて・背中で（gol de espaldas＝背中で決めたゴール）",
       "key": true
-    },
-    {
-      "t": "lleva cuarenta años",
-      "ja": "40年になる（llevar ＋ 期間＝〜になる）"
     },
     {
       "t": "por favor",
       "ja": "お願いします"
     },
     {
-      "t": "lo de",
-      "ja": "〜のこと（lo de «don»＝「ドン」を付けること）"
-    },
-    {
       "t": "de acuerdo",
       "ja": "分かりました・賛成です"
-    },
-    {
-      "t": "mejor no",
-      "ja": "やめておきましょう（〜しないほうがいい）"
-    },
-    {
-      "t": "soy de otra época",
-      "ja": "私は古い世代の人間です（ser de otra época）"
-    },
-    {
-      "t": "de usted",
-      "ja": "usted で話す（丁寧な言い方で）",
-      "key": true
-    },
-    {
-      "t": "a mis años",
-      "ja": "この年になると"
-    },
-    {
-      "t": "no está para",
-      "ja": "〜に耐えられる状態ではない（no estar para〜）"
     },
     {
       "t": "cómo que",
@@ -65,11 +32,8 @@
     {
       "t": "me di la vuelta",
       "ja": "振り向いた（darse la vuelta）",
-      "key": true
-    },
-    {
-      "t": "encima de",
-      "ja": "〜の上に"
+      "key": true,
+      "w": "darse la vuelta"
     },
     {
       "t": "o sea",
@@ -81,24 +45,19 @@
       "ja": "みんな・全員"
     },
     {
-      "t": "la semana pasada",
-      "ja": "先週"
-    },
-    {
-      "t": "toda la semana",
-      "ja": "1週間ずっと"
-    },
-    {
       "t": "tenía que",
-      "ja": "〜しなければならなかった・〜するべきだった（tener que ＋ 原形）"
+      "ja": "〜しなければならなかった・〜するべきだった（tener que ＋ 原形）",
+      "w": "tener que"
     },
     {
       "t": "tuve que",
-      "ja": "〜しなければならなかった（tener que ＋ 原形）"
+      "ja": "〜しなければならなかった（tener que ＋ 原形）",
+      "w": "tener que"
     },
     {
       "t": "tiene que",
-      "ja": "〜しなければならない（tener que ＋ 原形）"
+      "ja": "〜しなければならない（tener que ＋ 原形）",
+      "w": "tener que"
     },
     {
       "t": "de los de antes",
@@ -107,18 +66,11 @@
     },
     {
       "t": "tarjetas rojas",
-      "ja": "レッドカード（tarjeta roja）"
+      "ja": "レッドカード（tarjeta roja）",
+      "w": "tarjeta roja"
     },
     {
-      "t": "se hizo",
-      "ja": "〜になった（hacerse ＋ 職業など）"
-    },
-    {
-      "t": "a los treinta y dos años",
-      "ja": "32歳のとき"
-    },
-    {
-      "t": "dejar de jugar",
+      "t": "dejar de",
       "ja": "プレーをやめる（dejar de ＋ 原形＝〜するのをやめる）"
     },
     {
@@ -126,83 +78,27 @@
       "ja": "最初は"
     },
     {
-      "t": "se reían de",
-      "ja": "〜を笑った・ばかにした（reírse de）",
-      "key": true
-    },
-    {
       "t": "por supuesto",
       "ja": "もちろん"
     },
     {
-      "t": "me lo quedo",
-      "ja": "それを自分のものにする（取り上げて預かる）"
-    },
-    {
       "t": "me quedé con",
-      "ja": "〜を自分のものにした・預かった（quedarse con）"
-    },
-    {
-      "t": "el mes pasado",
-      "ja": "先月"
-    },
-    {
-      "t": "tiene fama de",
-      "ja": "〜として知られている（tener fama de）",
-      "key": true
-    },
-    {
-      "t": "no tiene importancia",
-      "ja": "大したことではない"
+      "ja": "〜を自分のものにした・預かった（quedarse con）",
+      "w": "quedarse con"
     },
     {
       "t": "me hacen caso",
       "ja": "私の言うことを聞く（hacer caso a alguien）",
-      "key": true
-    },
-    {
-      "t": "se dice que",
-      "ja": "〜と言われている・〜という噂だ"
-    },
-    {
-      "t": "se va a ir",
-      "ja": "去っていく・移籍する（irse）"
-    },
-    {
-      "t": "me alegraré por",
-      "ja": "〜のために喜ぶ（alegrarse por）"
-    },
-    {
-      "t": "el fútbol es así",
-      "ja": "サッカーとはそういうもの"
-    },
-    {
-      "t": "antes de",
-      "ja": "〜の前に"
+      "key": true,
+      "w": "hacer caso"
     },
     {
       "t": "visión periférica",
       "ja": "周辺視野"
     },
     {
-      "t": "cuánto tiempo más",
-      "ja": "あとどのくらい"
-    },
-    {
       "t": "en directo",
       "ja": "生放送で"
-    },
-    {
-      "t": "me retiro",
-      "ja": "引退します（retirarse）"
-    },
-    {
-      "t": "vaya noticia",
-      "ja": "すごいニュースだ・大ニュースだ"
-    },
-    {
-      "t": "quiere que",
-      "ja": "〜してほしい（querer que ＋ 接続法）"
     },
     {
       "t": "de verdad",
@@ -211,27 +107,17 @@
     {
       "t": "echar de menos",
       "ja": "〜がいなくて寂しい・〜が恋しい",
-      "key": true
+      "key": true,
+      "w": "echar de menos"
     },
     {
       "t": "claro que sí",
       "ja": "もちろん"
     },
     {
-      "t": "llevo veinte años anunciando",
-      "ja": "20年間ずっと発表し続けている（llevar ＋ 期間 ＋ 現在分詞）"
-    },
-    {
-      "t": "todos los veranos",
-      "ja": "毎年夏に"
-    },
-    {
-      "t": "lo mismo",
-      "ja": "同じこと"
-    },
-    {
-      "t": "va en serio",
-      "ja": "本気だ（ir en serio）"
+      "t": "en serio",
+      "ja": "本気だ（ir en serio）",
+      "w": "en serio"
     },
     {
       "t": "por si acaso",
@@ -239,32 +125,8 @@
       "key": true
     },
     {
-      "t": "qué quiere decir",
-      "ja": "どういう意味ですか（querer decir＝意味する）"
-    },
-    {
-      "t": "gracias a usted",
-      "ja": "こちらこそ（ありがとうございます）"
-    },
-    {
       "t": "nos vemos",
       "ja": "また会いましょう（お互いに会う）"
-    },
-    {
-      "t": "si mi mujer me deja",
-      "ja": "妻が許してくれればね"
-    },
-    {
-      "t": "la próxima semana",
-      "ja": "来週"
-    },
-    {
-      "t": "casi nunca",
-      "ja": "めったに〜ない・ほとんど〜ない"
-    },
-    {
-      "t": "no se lo pierdan",
-      "ja": "お聞き逃しなく（perderse＝見逃す。ustedes への否定命令）"
     },
     {
       "t": "muchas gracias",
@@ -1148,7 +1010,8 @@
       "w": "reírse",
       "pos": "v",
       "ja": "笑う",
-      "form": "reírse の線過去・三人称複数（se reían de mí＝私を笑っていた）"
+      "form": "reírse の線過去・三人称複数（se reían de mí＝私を笑っていた）",
+      "key": true
     },
     "se#22": {
       "w": "se",
@@ -1239,7 +1102,8 @@
       "pos": "n",
       "g": "f",
       "ja": "評判・名声",
-      "note": "tener fama de〜＝〜として知られている"
+      "note": "tener fama de〜＝〜として知られている",
+      "key": true
     },
     "exigente": {
       "w": "exigente",
@@ -1948,6 +1812,30 @@
       "pos": "v",
       "ja": "見逃す・聞き逃す",
       "form": "perderse の接続法現在・三人称複数（no se lo pierdan＝見逃さないで。ustedes への否定命令）"
+    },
+    "tiene#25": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持っている・ある（tener fama de＝〜と評判だ）",
+      "form": "tener の現在・三人称単数"
+    },
+    "tiene#26": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持っている・ある（no tiene importancia＝大したことではない）",
+      "form": "tener の現在・三人称単数"
+    },
+    "tiene#37": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持っている・ある（tener experiencia＝経験がある）",
+      "form": "tener の現在・三人称単数"
+    },
+    "usted#4": {
+      "w": "usted",
+      "pos": "pron",
+      "ja": "あなた（ていねいに話す相手）",
+      "note": "de usted＝usted で話す（tú ではなく）"
     }
   }
 }

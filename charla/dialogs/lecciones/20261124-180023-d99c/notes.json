@@ -3,41 +3,8 @@
   "sceneJa": "💼 月曜の朝、マドリードの会社。ソフィアとアンドレスが今日の会議について話す",
   "phrases": [
     {
-      "t": "qué pronto",
-      "ja": "なんて早く（¡Qué pronto has llegado!）"
-    },
-    {
-      "t": "has llegado",
-      "ja": "着いた（現在完了）"
-    },
-    {
-      "t": "en la que",
-      "ja": "その中で〜する（前置詞 en ＋ la que。先行詞は la reunión）",
-      "key": true
-    },
-    {
       "t": "qué tal",
       "ja": "〜はどう？（¿Qué tal…?）",
-      "key": true
-    },
-    {
-      "t": "lo que ya sabíamos",
-      "ja": "もう分かっていたこと（lo que＝〜こと）",
-      "key": true
-    },
-    {
-      "t": "en quien",
-      "ja": "その人を〜に（前置詞 en ＋ quien。tener confianza en＝〜を信頼する）",
-      "key": true
-    },
-    {
-      "t": "tiene mucha confianza",
-      "ja": "とても信頼している（tener confianza en…）",
-      "key": true
-    },
-    {
-      "t": "cuyo nombre",
-      "ja": "その名前が（cuyo＝〜の。持たれる nombre に合わせる）",
       "key": true
     },
     {
@@ -45,23 +12,8 @@
       "ja": "なぜ・どうして"
     },
     {
-      "t": "del que",
-      "ja": "（それ）について〜する（前置詞 de ＋ el ＋ que。hablar de un asunto）",
-      "key": true
-    },
-    {
-      "t": "hace unos años",
-      "ja": "何年か前に",
-      "key": true
-    },
-    {
       "t": "de verdad",
       "ja": "本当に・本当？"
-    },
-    {
-      "t": "esa misma",
-      "ja": "まさにそれ",
-      "key": true
     }
   ],
   "words": {
@@ -92,7 +44,9 @@
     "lo#4": {
       "w": "lo",
       "pos": "art",
-      "ja": "〜こと（lo que＝〜こと）"
+      "ja": "〜こと（lo que＝〜こと）",
+      "note": "lo que ya sabíamos＝もう分かっていたこと",
+      "key": true
     },
     "sé": {
       "w": "saber",
@@ -243,7 +197,8 @@
       "pos": "n",
       "g": "f",
       "ja": "信頼",
-      "key": true
+      "key": true,
+      "note": "tener confianza en〜＝〜を信頼する"
     },
     "trabajaba": {
       "w": "trabajar",
@@ -355,7 +310,42 @@
       "w": "mismo",
       "pos": "adj",
       "ja": "同じ・まさに〜",
-      "form": "mismo の女性形（esa misma＝まさにそれ）"
+      "form": "mismo の女性形（esa misma＝まさにそれ）",
+      "note": "esa misma＝まさにそれ"
+    },
+    "qué#1": {
+      "w": "qué",
+      "pos": "int",
+      "ja": "なんて（感嘆）",
+      "note": "¡Qué pronto…!＝なんて早く…！"
+    },
+    "en#2": {
+      "w": "en",
+      "pos": "prep",
+      "ja": "〜の中で（en la que＝その中で）",
+      "note": "en la que vamos a discutir＝その中で話し合う（先行詞は la reunión）",
+      "key": true
+    },
+    "en#6.1": {
+      "w": "en",
+      "pos": "prep",
+      "ja": "〜を（tener confianza en＝〜を信頼する）",
+      "note": "en quien＝その人を（前置詞 en ＋ quien）",
+      "key": true
+    },
+    "cuyo#6": {
+      "w": "cuyo",
+      "pos": "rel",
+      "ja": "その〜が（持たれる nombre に合わせる）",
+      "note": "cuyo nombre＝その名前が（性・数は持ち物 nombre に合う）",
+      "key": true
+    },
+    "del#8": {
+      "w": "del",
+      "pos": "prep",
+      "ja": "de ＋ el（del que＝それについて）",
+      "note": "del que no quiere hablar＝それについて話したくない",
+      "key": true
     }
   }
 }

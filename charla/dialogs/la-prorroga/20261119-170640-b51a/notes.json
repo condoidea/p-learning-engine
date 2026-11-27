@@ -24,10 +24,6 @@
       "ja": "お会いできてうれしい・光栄です"
     },
     {
-      "t": "el placer es nuestro",
-      "ja": "こちらこそ（直訳：喜びは私たちのもの）"
-    },
-    {
       "t": "no me lo creo",
       "ja": "信じられない",
       "key": true
@@ -70,33 +66,33 @@
       "key": true
     },
     {
-      "t": "no tienen ni idea de",
-      "ja": "〜がまったく分かっていない（no tener ni idea de）",
+      "t": "ni idea",
+      "ja": "まったく分からない（no tener ni idea＝〜が全然分かっていない）",
       "key": true
     },
     {
       "t": "tiene que",
-      "ja": "〜しなければならない（tener que ＋ 不定詞）"
+      "ja": "〜しなければならない（tener que ＋ 不定詞）",
+      "w": "tener que"
     },
     {
       "t": "tienes que",
-      "ja": "〜しなければならない（tener que ＋ 不定詞）"
+      "ja": "〜しなければならない（tener que ＋ 不定詞）",
+      "w": "tener que"
     },
     {
       "t": "tuve que",
-      "ja": "〜しなければならなかった（tener que ＋ 不定詞・点過去）"
+      "ja": "〜しなければならなかった（tener que ＋ 不定詞・点過去）",
+      "w": "tener que"
     },
     {
       "t": "tengan que",
-      "ja": "〜しなければならない（tener que ＋ 不定詞・接続法）"
+      "ja": "〜しなければならない（tener que ＋ 不定詞・接続法）",
+      "w": "tener que"
     },
     {
       "t": "ya veo",
       "ja": "なるほど・分かった"
-    },
-    {
-      "t": "un poco de",
-      "ja": "少しの〜"
     },
     {
       "t": "así que",
@@ -111,120 +107,38 @@
       "ja": "最高！・いいね！"
     },
     {
-      "t": "te diste cuenta de",
-      "ja": "〜に気づいた（darse cuenta de）",
-      "key": true
-    },
-    {
-      "t": "a los doce años",
-      "ja": "12歳のとき"
-    },
-    {
-      "t": "con doce años",
-      "ja": "12歳で"
-    },
-    {
-      "t": "el pueblo de al lado",
-      "ja": "隣村"
-    },
-    {
-      "t": "lejos de",
-      "ja": "〜から離れて"
-    },
-    {
-      "t": "debió de ser",
-      "ja": "〜だったに違いない（deber de ＋ 不定詞）",
-      "key": true
+      "t": "te diste cuenta",
+      "ja": "気づいた",
+      "key": true,
+      "w": "darse cuenta"
     },
     {
       "t": "echaba mucho de menos",
       "ja": "とても恋しかった（echar de menos＝〜がいなくて寂しい）",
-      "key": true
+      "key": true,
+      "w": "echar de menos"
     },
     {
-      "t": "todas las noches",
-      "ja": "毎晩"
-    },
-    {
-      "t": "todos los días",
-      "ja": "毎日"
-    },
-    {
-      "t": "no se pierde ni un",
-      "ja": "〜を一つも見逃さない（no perderse ni un〜）"
-    },
-    {
-      "t": "mejor que no",
-      "ja": "しないほうがいい・やめておこう"
-    },
-    {
-      "t": "desde hace dos años",
-      "ja": "2年前から（desde hace ＋ 期間）"
-    },
-    {
-      "t": "secreto profesional",
-      "ja": "（ここでは冗談で）プロの秘密"
-    },
-    {
-      "t": "el año pasado",
-      "ja": "去年"
-    },
-    {
-      "t": "me operaron",
-      "ja": "手術を受けた（直訳：人が私を手術した）"
-    },
-    {
-      "t": "se habla mucho de que",
-      "ja": "〜という噂だ（直訳：〜についてよく話される）"
-    },
-    {
-      "t": "ahora mismo",
-      "ja": "いま、まさに"
+      "t": "desde hace",
+      "ja": "〜前から（desde hace ＋ 期間）"
     },
     {
       "t": "me hice hombre",
       "ja": "大人になった（hacerse hombre）",
-      "key": true
-    },
-    {
-      "t": "para toda la vida",
-      "ja": "一生（のあいだ）"
-    },
-    {
-      "t": "algún día",
-      "ja": "いつか"
+      "key": true,
+      "w": "hacerse hombre"
     },
     {
       "t": "para que",
       "ja": "〜するように（目的・接続法が続く）"
     },
     {
-      "t": "seguro que",
-      "ja": "きっと〜だ"
-    },
-    {
-      "t": "se nos acaba el tiempo",
-      "ja": "時間がなくなってきた（番組の決まり文句）"
-    },
-    {
       "t": "ni siquiera",
       "ja": "〜さえ…ない"
     },
     {
-      "t": "se llama",
-      "ja": "〜と呼ばれる・〜という名前だ"
-    },
-    {
       "t": "visión periférica",
       "ja": "周辺視野（視線の外側のものが見える力）"
-    },
-    {
-      "t": "un saludo a",
-      "ja": "〜によろしく"
-    },
-    {
-      "t": "no se lo pierdan",
-      "ja": "お聞き逃しなく（ustedへの呼びかけ・番組の決まり文句）"
     }
   ],
   "words": {
@@ -1640,7 +1554,8 @@
       "pos": "v",
       "reg": true,
       "ja": "〜にちがいない（deber de）・〜すべきだ",
-      "form": "deber の点過去・三人称単数（debió de ser＝〜だったに違いない）"
+      "form": "deber の点過去・三人称単数（debió de ser＝〜だったに違いない）",
+      "key": true
     },
     "echaba": {
       "w": "echar",
@@ -1686,6 +1601,75 @@
       "pos": "adj",
       "ja": "大きい・（クラブが）強豪の",
       "form": "grande の複数形（equipos grandes＝大きなクラブ）"
+    },
+    "uno#5": {
+      "w": "uno",
+      "pos": "num",
+      "ja": "1（uno a uno＝1対1のスコア）"
+    },
+    "poco#13": {
+      "w": "poco",
+      "pos": "adv",
+      "ja": "少し・少しの",
+      "note": "un poco de ＋ 名詞＝少しの〜"
+    },
+    "años#18": {
+      "w": "año",
+      "pos": "n",
+      "g": "m",
+      "ja": "歳・年",
+      "form": "año の複数形（a los doce años＝12歳のとき）"
+    },
+    "años#19": {
+      "w": "año",
+      "pos": "n",
+      "g": "m",
+      "ja": "歳・年",
+      "form": "año の複数形（con doce años＝12歳で）"
+    },
+    "todos#30": {
+      "w": "todo",
+      "pos": "det",
+      "ja": "すべての",
+      "form": "todo の複数形・男性（todos los días＝毎日）"
+    },
+    "llama#42": {
+      "w": "llamarse",
+      "pos": "v",
+      "reg": true,
+      "ja": "〜という名前だ・〜と呼ばれる",
+      "form": "llamar の三人称単数・現在（se llama «…»＝「…」という名前だ・と呼ぶ）"
+    },
+    "seguro#37": {
+      "w": "seguro",
+      "pos": "adv",
+      "ja": "きっと",
+      "note": "seguro que ＋ 文＝きっと〜だ"
+    },
+    "seguro#44": {
+      "w": "seguro",
+      "pos": "adv",
+      "ja": "きっと",
+      "note": "seguro que ＋ 文＝きっと〜だ"
+    },
+    "mejor#23": {
+      "w": "mejor",
+      "pos": "adj",
+      "ja": "〜のほうがいい",
+      "note": "mejor que no＝しないほうがいい"
+    },
+    "habla#31": {
+      "w": "hablar",
+      "pos": "v",
+      "reg": true,
+      "ja": "話す",
+      "form": "hablar の三人称単数・現在（se habla de que＝〜という噂だ）"
+    },
+    "que#22.2": {
+      "w": "que",
+      "pos": "pron",
+      "ja": "〜する（関係代名詞）",
+      "note": "cosas que no puedo repetir＝くり返せないこと（ことば）"
     }
   }
 }

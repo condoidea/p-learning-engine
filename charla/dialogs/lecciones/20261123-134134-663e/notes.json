@@ -3,38 +3,9 @@
   "sceneJa": "🎁 マドリード。留学中のマコトが、スペイン人の友だちカルメンに妹の誕生日プレゼントを相談し、デパートで財布を選ぶ",
   "phrases": [
     {
-      "t": "por correo",
-      "ja": "郵便で",
-      "key": true
-    },
-    {
       "t": "por qué no",
       "ja": "〜したら？（提案）／どうして〜しないの",
       "key": true
-    },
-    {
-      "t": "buena idea",
-      "ja": "いいね、いい考えだ",
-      "key": true
-    },
-    {
-      "t": "me enseñas a",
-      "ja": "〜の仕方を教えてくれる？（enseñar a＋不定詞）",
-      "key": true
-    },
-    {
-      "t": "no sé cómo se hace",
-      "ja": "やり方がわからない",
-      "key": true
-    },
-    {
-      "t": "se lo entregan",
-      "ja": "（誰かが）それを（妹に）届ける。le → se の形",
-      "key": true
-    },
-    {
-      "t": "esta semana",
-      "ja": "今週"
     },
     {
       "t": "qué tal",
@@ -42,22 +13,8 @@
       "key": true
     },
     {
-      "t": "voy a comprársela",
-      "ja": "（妹に）それを買うつもりだ（comprar＋se＋la）",
-      "key": true
-    },
-    {
-      "t": "para mí",
-      "ja": "自分用に",
-      "key": true
-    },
-    {
-      "t": "voy a regalártela",
-      "ja": "（君に）それをプレゼントするつもりだ（regalar＋te＋la）",
-      "key": true
-    },
-    {
       "t": "tengo que",
+      "w": "tener que",
       "ja": "〜しなければならない（tener que＋不定詞）",
       "key": true
     },
@@ -65,10 +22,6 @@
       "t": "correos",
       "ja": "（スペインの郵便局の名前）コレオス。郵便局",
       "key": true
-    },
-    {
-      "t": "el día de tu cumpleaños",
-      "ja": "誕生日の日に"
     }
   ],
   "words": {
@@ -172,7 +125,8 @@
       "reg": true,
       "ja": "教える",
       "form": "enseñar の現在・二人称単数（君は教える）",
-      "key": true
+      "key": true,
+      "note": "enseñar a ＋不定詞＝〜の仕方を教える"
     },
     "paquete": {
       "w": "paquete",

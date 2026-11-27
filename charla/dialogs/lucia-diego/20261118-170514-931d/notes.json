@@ -3,63 +3,24 @@
   "sceneJa": "🦜 旅行に出た人の部屋で、留守を預かる日",
   "phrases": [
     {
-      "t": "demos de comer",
-      "ja": "エサ（食事）をあげる（dar de comer a 〜）",
+      "t": "acabamos de",
+      "ja": "〜したばかりだ",
       "key": true,
-      "note": "demos は dar の接続法。que le demos de comer＝エサをあげてほしい"
+      "w": "acabar de",
+      "note": "acabar de ＋ 不定詞"
     },
     {
-      "t": "hace daño",
-      "ja": "体に悪い・傷つける（hacer daño）",
-      "key": true
-    },
-    {
-      "t": "nada de",
-      "ja": "〜はなし・〜は禁止",
+      "t": "acaba de",
+      "ja": "〜したばかりだ",
       "key": true,
-      "note": "nada de chocolate＝チョコは禁止"
-    },
-    {
-      "t": "te has puesto pálido",
-      "ja": "青ざめた（ponerse pálido）",
-      "key": true,
-      "note": "現在完了。ponerse ＋ 形容詞＝〜になる"
-    },
-    {
-      "t": "dar un paseo",
-      "ja": "散歩する",
-      "key": true
-    },
-    {
-      "t": "acabamos de llegar",
-      "ja": "着いたばかりだ（acabar de ＋ 不定詞）",
-      "key": true
-    },
-    {
-      "t": "acaba de decir",
-      "ja": "言ったばかりだ（acabar de ＋ 不定詞）",
-      "key": true
-    },
-    {
-      "t": "no es lo que piensas",
-      "ja": "君が思っているようなことじゃない",
-      "key": true
+      "w": "acabar de",
+      "note": "acabar de ＋ 不定詞"
     },
     {
       "t": "madre mía",
       "ja": "ああ、なんてこった",
       "key": true,
       "note": "ay, madre mía＝驚き・困惑の決まり文句"
-    },
-    {
-      "t": "ahora mismo",
-      "ja": "今すぐ",
-      "key": true
-    },
-    {
-      "t": "es broma",
-      "ja": "冗談だよ",
-      "key": true
     },
     {
       "t": "cómo que",
@@ -72,8 +33,8 @@
       "ja": "もちろん・いいに決まってる"
     },
     {
-      "t": "claro que hay",
-      "ja": "もちろんある"
+      "t": "claro que",
+      "ja": "もちろん〜だ"
     },
     {
       "t": "a ver",
@@ -86,20 +47,6 @@
     {
       "t": "por nada",
       "ja": "なんでもない"
-    },
-    {
-      "t": "qué majo",
-      "ja": "いい人だね"
-    },
-    {
-      "t": "me lo pensaré",
-      "ja": "よく考えておく（pensarse algo）",
-      "note": "pensarse ＝ じっくり考える。未来形"
-    },
-    {
-      "t": "no me lo recuerdes",
-      "ja": "思い出させないで",
-      "note": "否定命令は接続法と同じ形"
     },
     {
       "t": "es que",
@@ -1014,6 +961,50 @@
       "pos": "adv",
       "ja": "今すぐ・すぐに",
       "form": "Ya se lo quito yo＝私が今取ってあげる"
+    },
+    "demos#3": {
+      "w": "dar",
+      "pos": "v",
+      "ja": "あげる",
+      "form": "dar の接続法・現在・一人称複数（que le demos＝私たちがあげるように）",
+      "note": "dar de comer＝食べ物（エサ）をあげる",
+      "key": true
+    },
+    "daño#5": {
+      "w": "daño",
+      "pos": "n",
+      "g": "m",
+      "ja": "害・損害",
+      "note": "hacer daño＝害を与える・体に悪い",
+      "key": true
+    },
+    "nada#6": {
+      "w": "nada",
+      "pos": "pron",
+      "ja": "〜はなし",
+      "note": "nada de ＋名詞＝〜はなし・〜は禁止",
+      "key": true
+    },
+    "lo#22": {
+      "w": "lo",
+      "pos": "art",
+      "ja": "〜なこと（中性）",
+      "note": "lo que piensas＝君が思っていること"
+    },
+    "lo#26": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを"
+    },
+    "lo#30": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを"
+    },
+    "lo#37": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを"
     }
   }
 }

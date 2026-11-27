@@ -14,21 +14,6 @@
       "t": "así es",
       "ja": "そのとおり",
       "key": true
-    },
-    {
-      "t": "qué significa",
-      "ja": "〜はどういう意味？（¿Qué significa…?）",
-      "key": true
-    },
-    {
-      "t": "puso el nombre",
-      "ja": "名前をつけた（poner el nombre de…）",
-      "key": true
-    },
-    {
-      "t": "protestar contra",
-      "ja": "〜に抗議する",
-      "key": true
     }
   ],
   "words": {
@@ -115,7 +100,8 @@
       "reg": true,
       "ja": "意味する",
       "form": "significar の現在・三人称単数（¿Qué significa…?＝…はどういう意味？）",
-      "key": true
+      "key": true,
+      "note": "qué significa＝〜はどういう意味？"
     },
     "nombre": {
       "w": "nombre",
@@ -163,7 +149,8 @@
       "pos": "v",
       "ja": "置く・（名前を）つける",
       "form": "poner の点過去・三人称単数（不規則）",
-      "key": true
+      "key": true,
+      "note": "poner el nombre de…＝〜の名前をつける"
     },
     "lo#6": {
       "w": "lo",
@@ -248,7 +235,8 @@
       "pos": "v",
       "reg": true,
       "ja": "抗議する",
-      "key": true
+      "key": true,
+      "note": "protestar contra＝〜に抗議する"
     },
     "contra": {
       "w": "contra",

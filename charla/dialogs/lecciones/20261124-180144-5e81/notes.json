@@ -3,60 +3,8 @@
   "sceneJa": "🏠 田舎の古い家。ダニとおばあちゃんが、屋上で見つけた古い箱を開ける",
   "phrases": [
     {
-      "t": "lo que he encontrado",
-      "ja": "私が見つけたもの（lo que＝〜もの）",
-      "key": true
-    },
-    {
-      "t": "hacía años que",
-      "ja": "何年も前から〜（hacer ＋ 時間 ＋ que。過去の基準点から見て hacía）",
-      "key": true
-    },
-    {
-      "t": "el lugar donde",
-      "ja": "〜した場所（donde＝その場所で）"
-    },
-    {
-      "t": "a la que",
-      "ja": "それを〜（前置詞 a ＋ la que。llamar a algo＝〜を…と呼ぶ）",
-      "key": true
-    },
-    {
-      "t": "cuyo padre",
-      "ja": "その父親が（cuyo＝〜の。padre に合わせる）",
-      "key": true
-    },
-    {
-      "t": "tenía diez años",
-      "ja": "10歳だった",
-      "key": true
-    },
-    {
-      "t": "es de oro",
-      "ja": "金でできている（ser de ＋ 材料）",
-      "key": true
-    },
-    {
-      "t": "como un tesoro",
-      "ja": "宝物のように",
-      "key": true
-    },
-    {
-      "t": "un día",
-      "ja": "ある日"
-    },
-    {
-      "t": "donde vendían",
-      "ja": "売っていた（donde＝その店で）"
-    },
-    {
       "t": "de todos modos",
       "ja": "とにかく・それでも・結局",
-      "key": true
-    },
-    {
-      "t": "casé con él",
-      "ja": "彼と結婚した（casarse con…）",
       "key": true
     }
   ],
@@ -261,7 +209,8 @@
       "pos": "n",
       "g": "m",
       "ja": "金（きん）",
-      "key": true
+      "key": true,
+      "note": "ser de ＋ 材料＝〜でできている"
     },
     "eso": {
       "w": "eso",
@@ -380,6 +329,27 @@
       "pos": "n",
       "g": "m",
       "ja": "おじいちゃん・祖父"
+    },
+    "la#4.2": {
+      "w": "la",
+      "pos": "pron",
+      "ja": "それ（la casa を受ける。a la que＝その家を）",
+      "note": "a la que llamábamos＝それを…と呼んでいた（先行詞は la casa）",
+      "key": true
+    },
+    "cuyo#6": {
+      "w": "cuyo",
+      "pos": "rel",
+      "ja": "その〜が（持たれる padre に合わせる）",
+      "note": "cuyo padre＝その父親が",
+      "key": true
+    },
+    "tenía#6": {
+      "w": "tener",
+      "pos": "v",
+      "ja": "持っている（tener ... años＝…歳だ）",
+      "note": "tenía diez años＝10歳だった",
+      "key": true
     }
   }
 }

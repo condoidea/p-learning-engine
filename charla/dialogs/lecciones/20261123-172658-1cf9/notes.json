@@ -15,41 +15,12 @@
       "key": true
     },
     {
-      "t": "me alegro de verte",
-      "ja": "会えてうれしい（alegrarse de ＋ 不定詞）",
-      "key": true
-    },
-    {
-      "t": "cómo te fueron",
-      "ja": "…はどうだった？（¿Cómo te fue／fueron …?）",
-      "key": true
-    },
-    {
       "t": "sagrada familia",
       "ja": "（バルセロナの教会）サグラダ・ファミリア"
     },
     {
       "t": "parque güell",
       "ja": "（バルセロナの公園）グエル公園"
-    },
-    {
-      "t": "algún recuerdo",
-      "ja": "何かお土産（algún ＝ alguno が男性単数名詞の前で変わった形）",
-      "key": true
-    },
-    {
-      "t": "algún día",
-      "ja": "いつか",
-      "key": true
-    },
-    {
-      "t": "para ganar dinero",
-      "ja": "お金を稼ぐために",
-      "key": true
-    },
-    {
-      "t": "viajar por",
-      "ja": "〜を旅行する（por ＝ …のあたりを）"
     }
   ],
   "words": {
@@ -82,7 +53,8 @@
       "reg": true,
       "ja": "うれしく思う・喜ぶ",
       "form": "alegrarse の現在・一人称単数（me alegro de ＋ 不定詞）",
-      "key": true
+      "key": true,
+      "note": "me alegro de＋不定詞＝〜してうれしい"
     },
     "vacaciones": {
       "w": "vacaciones",

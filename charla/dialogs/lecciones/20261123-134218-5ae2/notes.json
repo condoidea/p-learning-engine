@@ -3,16 +3,6 @@
   "sceneJa": "☔ 6月の東京。留学中のスペイン人ラウラが、日本人の友だちリクの家で雨宿りをしながら、映画・本・傘の話をする",
   "phrases": [
     {
-      "t": "qué lluvia",
-      "ja": "すごい雨！（¡Qué＋名詞!＝なんて〜だ）",
-      "key": true
-    },
-    {
-      "t": "todos los días",
-      "ja": "毎日",
-      "key": true
-    },
-    {
       "t": "la temporada de lluvias",
       "ja": "梅雨（雨の時期）",
       "key": true
@@ -23,90 +13,26 @@
       "key": true
     },
     {
-      "t": "te propongo una cosa",
-      "ja": "提案があるんだけど",
-      "key": true
-    },
-    {
-      "t": "tengo una de suspense",
-      "ja": "サスペンス映画を1本持っている（una＝una película）"
-    },
-    {
       "t": "me dan miedo",
       "ja": "私には怖い（dar miedo＝怖がらせる。主語は películas）",
-      "key": true
+      "key": true,
+      "w": "dar miedo"
     },
     {
       "t": "no da tanto miedo",
       "ja": "そんなに怖くない（dar miedo）",
-      "key": true
+      "key": true,
+      "w": "dar miedo"
     },
     {
       "t": "me da mucho miedo",
       "ja": "私にはとても怖い（dar miedo）",
-      "key": true
-    },
-    {
-      "t": "te la presto",
-      "ja": "君にそれを（小説を）貸そうか（prestar＋te＋la）",
-      "key": true
+      "key": true,
+      "w": "dar miedo"
     },
     {
       "t": "por favor",
       "ja": "お願いします"
-    },
-    {
-      "t": "esta noche",
-      "ja": "今夜"
-    },
-    {
-      "t": "algo que hacer",
-      "ja": "することがある（tener algo que hacer）"
-    },
-    {
-      "t": "delante de",
-      "ja": "〜の前に",
-      "key": true
-    },
-    {
-      "t": "hay obras",
-      "ja": "工事をしている（obras＝工事）",
-      "key": true
-    },
-    {
-      "t": "ya te vas",
-      "ja": "もう帰るの？（irse＝帰る）",
-      "key": true
-    },
-    {
-      "t": "está lloviendo",
-      "ja": "（今）雨が降っている（estar＋現在分詞）",
-      "key": true
-    },
-    {
-      "t": "se me olvidó",
-      "ja": "（うっかり）忘れた。主語は忘れたもの（olvidarse＋人）",
-      "key": true
-    },
-    {
-      "t": "me dejas uno",
-      "ja": "1本貸してくれる？（dejar＝貸す）",
-      "key": true
-    },
-    {
-      "t": "te lo dejo",
-      "ja": "君にそれを（傘を）貸す（dejar＋te＋lo）",
-      "key": true
-    },
-    {
-      "t": "me lo devuelves",
-      "ja": "僕にそれを返す（devolver＋me＋lo）。現在形で軽く頼んでいる",
-      "key": true
-    },
-    {
-      "t": "te lo devuelvo",
-      "ja": "君にそれを返す（devolver＋te＋lo）",
-      "key": true
     }
   ],
   "words": {

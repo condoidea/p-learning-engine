@@ -14,39 +14,6 @@
       "key": true
     },
     {
-      "t": "tan hermosa como dicen",
-      "ja": "言われているほど美しい（tan … como＝〜と同じくらい…）",
-      "key": true
-    },
-    {
-      "t": "se habían agotado",
-      "ja": "売り切れていた（agotarse の過去完了）",
-      "key": true
-    },
-    {
-      "t": "habías comprado",
-      "ja": "買っていた（過去完了）",
-      "key": true
-    },
-    {
-      "t": "con el que",
-      "ja": "〜と（いっしょに）…した（前置詞 con ＋ el que。先行詞は un chico）",
-      "key": true
-    },
-    {
-      "t": "suelen agotarse",
-      "ja": "ふつうは売り切れる（soler ＋ 不定詞）",
-      "key": true
-    },
-    {
-      "t": "un mes antes",
-      "ja": "1か月前に（そのときより前に）"
-    },
-    {
-      "t": "por internet",
-      "ja": "ネットで・インターネットで"
-    },
-    {
       "t": "qué pena",
       "ja": "残念！（¡Qué pena!）",
       "key": true
@@ -61,32 +28,14 @@
       "ja": "いいね！・よかったね！"
     },
     {
-      "t": "en la que",
-      "ja": "その中で〜した（前置詞 en ＋ la que。先行詞は la habitación）",
-      "key": true
-    },
-    {
       "t": "daba a",
+      "w": "dar a",
       "ja": "〜に面していた（dar a…）",
       "key": true
     },
     {
-      "t": "lo que me dijo",
-      "ja": "〜が私に言ったこと（lo que＝〜こと）",
-      "key": true
-    },
-    {
-      "t": "desde donde",
-      "ja": "そこから（場所を表す donde）"
-    },
-    {
       "t": "mirador de san nicolás",
       "ja": "サン・ニコラスの展望台（グラナダの名所）"
-    },
-    {
-      "t": "lo más hermoso que he visto",
-      "ja": "今まで見た中でいちばんきれいなもの（lo más ＋ 形容詞 ＋ que）",
-      "key": true
     },
     {
       "t": "en mi vida",
@@ -99,18 +48,8 @@
       "key": true
     },
     {
-      "t": "desde fuera",
-      "ja": "外から",
-      "key": true
-    },
-    {
       "t": "el mes que viene",
       "ja": "来月",
-      "key": true
-    },
-    {
-      "t": "esta vez",
-      "ja": "今度は",
       "key": true
     }
   ],
@@ -151,7 +90,9 @@
     "como": {
       "w": "como",
       "pos": "conj",
-      "ja": "〜ほど・〜のように（tan … como＝〜と同じくらい…）"
+      "ja": "〜ほど・〜のように（tan … como＝〜と同じくらい…）",
+      "note": "tan ＋ 形容詞 ＋ como＝〜と同じくらい…",
+      "key": true
     },
     "dicen": {
       "w": "decir",
@@ -187,7 +128,8 @@
       "reg": true,
       "ja": "品切れになる・売り切れる",
       "form": "agotarse の過去分詞（se habían agotado＝売り切れていた）",
-      "key": true
+      "key": true,
+      "note": "se habían agotado＝売り切れていた（過去完了）"
     },
     "entradas": {
       "w": "entrada",
@@ -212,7 +154,9 @@
       "w": "haber",
       "pos": "v",
       "ja": "（過去完了を作る助動詞）〜していた",
-      "form": "haber の線過去・二人称単数（habías comprado＝買っていた）"
+      "form": "haber の線過去・二人称単数（habías comprado＝買っていた）",
+      "note": "habías comprado＝買っていた（過去完了）",
+      "key": true
     },
     "comprado": {
       "w": "comprar",
@@ -256,7 +200,8 @@
       "pos": "v",
       "ja": "いつも〜する・〜するのが普通だ（soler ＋ 不定詞）",
       "form": "soler の現在・三人称複数",
-      "key": true
+      "key": true,
+      "note": "soler ＋ 不定詞＝ふつう〜する"
     },
     "agotarse": {
       "w": "agotarse",
@@ -408,7 +353,9 @@
     "lo#12.2": {
       "w": "lo",
       "pos": "art",
-      "ja": "〜なもの（lo más hermoso＝いちばん美しいもの）"
+      "ja": "〜なもの（lo más hermoso＝いちばん美しいもの）",
+      "note": "lo más ＋ 形容詞 ＋ que he visto＝今まで見た中でいちばん…なもの",
+      "key": true
     },
     "toda": {
       "w": "todo",
@@ -500,6 +447,26 @@
       "pos": "n",
       "g": "f",
       "ja": "回・度（esta vez＝今度は）"
+    },
+    "con#6": {
+      "w": "con",
+      "pos": "prep",
+      "ja": "〜と（いっしょに）",
+      "note": "con el que hablé＝その人と話した（前置詞 ＋ el que）",
+      "key": true
+    },
+    "en#10": {
+      "w": "en",
+      "pos": "prep",
+      "ja": "〜の中で（en la que＝その中で）",
+      "note": "en la que dormí＝その中で寝た（先行詞は la habitación）",
+      "key": true
+    },
+    "donde#12": {
+      "w": "donde",
+      "pos": "rel",
+      "ja": "〜する場所（desde donde＝そこから）",
+      "note": "desde donde se ve＝そこから見える"
     }
   }
 }

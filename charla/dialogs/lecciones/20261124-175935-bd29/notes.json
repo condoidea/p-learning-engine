@@ -8,47 +8,8 @@
   ],
   "phrases": [
     {
-      "t": "lo busca a usted",
-      "ja": "あなたを訪ねてきている（lo ＝ a usted を重ねた言い方）",
-      "key": true
-    },
-    {
-      "t": "que se llama",
-      "ja": "〜という名前の",
-      "key": true
-    },
-    {
-      "t": "de quien",
-      "ja": "〜について…した（前置詞 de ＋ quien。先行詞は la chica で、人だけに使う）",
-      "key": true
-    },
-    {
-      "t": "la hija del señor rodríguez",
-      "ja": "ロドリゲスさんの娘さん"
-    },
-    {
-      "t": "la que",
-      "ja": "〜するもの・〜するほう（la universidad の代わり。la que está＝…にある大学）",
-      "key": true
-    },
-    {
-      "t": "al sur de",
-      "ja": "〜の南に",
-      "key": true
-    },
-    {
-      "t": "la llaman",
-      "ja": "それは〜と呼ばれている（llamar ＋ 人々が。UNAM と呼ばれる）",
-      "key": true
-    },
-    {
       "t": "universidad nacional autónoma de méxico",
       "ja": "メキシコ国立自治大学（UNAM）"
-    },
-    {
-      "t": "una de las mejores que hay",
-      "ja": "〜にある中で最も優れたものの一つ（una de las ＋ 最上級 ＋ que hay）",
-      "key": true
     }
   ],
   "words": {
@@ -61,7 +22,8 @@
     "lo": {
       "w": "lo",
       "pos": "pron",
-      "ja": "あなたを（usted を指す。lo busca a usted＝あなたを訪ねている）"
+      "ja": "あなたを（usted を指す。lo busca a usted＝あなたを訪ねている）",
+      "note": "lo busca a usted＝あなたを訪ねてきている（lo と a usted で同じ人を重ねる）"
     },
     "busca": {
       "w": "buscar",
@@ -88,7 +50,8 @@
       "reg": true,
       "ja": "〜という名前である",
       "form": "llamarse の現在・三人称単数（se llama＝〜という名前だ）",
-      "key": true
+      "key": true,
+      "note": "que se llama＝〜という名前の"
     },
     "se": {
       "w": "se",
@@ -105,7 +68,9 @@
     "quien": {
       "w": "quien",
       "pos": "pron",
-      "ja": "〜する人（関係代名詞。人だけに使う）"
+      "ja": "〜する人（関係代名詞。人だけに使う）",
+      "note": "de quien le hablé＝私が話した（人）。人だけに使う",
+      "key": true
     },
     "le": {
       "w": "le",
@@ -241,7 +206,8 @@
       "pos": "v",
       "reg": true,
       "ja": "呼ぶ",
-      "form": "llamar の現在・三人称複数（la llaman UNAM＝それを UNAM と呼ぶ。人々が）"
+      "form": "llamar の現在・三人称複数（la llaman UNAM＝それを UNAM と呼ぶ。人々が）",
+      "note": "la llaman UNAM＝それは UNAM と呼ばれる（人々が呼ぶ）"
     },
     "unam": {
       "w": "UNAM",
@@ -265,7 +231,8 @@
       "pos": "adj",
       "ja": "最もすぐれた・いちばんよい",
       "form": "mejor の複数形（una de las mejores＝最も優れたものの一つ）",
-      "key": true
+      "key": true,
+      "note": "una de las mejores que hay＝〜にある中で最も優れたものの一つ"
     },
     "hay": {
       "w": "haber",
@@ -278,6 +245,13 @@
       "pos": "n",
       "g": "m",
       "ja": "国"
+    },
+    "la#4.4": {
+      "w": "la",
+      "pos": "art",
+      "ja": "（la universidad を指す）〜のもの（la que＝〜する大学）",
+      "note": "名詞をくり返さないための la que",
+      "key": true
     }
   }
 }

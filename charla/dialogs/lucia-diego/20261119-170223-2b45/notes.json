@@ -5,12 +5,14 @@
     {
       "t": "me da un poco de vergüenza",
       "ja": "ちょっと恥ずかしい（dar vergüenza）",
-      "key": true
+      "key": true,
+      "w": "dar vergüenza"
     },
     {
       "t": "me daba mucha vergüenza",
       "ja": "とても恥ずかしかった（dar vergüenza）",
-      "key": true
+      "key": true,
+      "w": "dar vergüenza"
     },
     {
       "t": "con vistas a",
@@ -25,7 +27,8 @@
     {
       "t": "tener razón",
       "ja": "正しい・当たっている",
-      "key": true
+      "key": true,
+      "w": "tener razón"
     },
     {
       "t": "al final",
@@ -43,39 +46,12 @@
       "key": true
     },
     {
-      "t": "dentro de quince años",
-      "ja": "（今から）15年後に（dentro de ＋ 期間）",
-      "key": true
-    },
-    {
-      "t": "hace quince años",
-      "ja": "15年前に（hace ＋ 期間）",
-      "key": true
-    },
-    {
-      "t": "todavía queda tiempo",
-      "ja": "まだ時間がある",
-      "key": true
-    },
-    {
       "t": "por cierto",
       "ja": "ところで"
     },
     {
       "t": "por favor",
       "ja": "お願いします・どうぞ"
-    },
-    {
-      "t": "de pequeña",
-      "ja": "小さいころ（女性が言う場合）"
-    },
-    {
-      "t": "ya me acuerdo",
-      "ja": "思い出した"
-    },
-    {
-      "t": "te acuerdas de",
-      "ja": "〜を覚えている"
     },
     {
       "t": "por qué",
@@ -676,7 +652,8 @@
       "pos": "v",
       "reg": true,
       "ja": "残っている・〜になる",
-      "form": "quedar の三人称単数・現在（queda tiempo＝時間が残っている）"
+      "form": "quedar の三人称単数・現在（queda tiempo＝時間が残っている）",
+      "key": true
     },
     "gracioso": {
       "w": "gracioso",
@@ -781,13 +758,15 @@
       "w": "dentro",
       "pos": "adv",
       "ja": "（dentro de ＋ 期間で）〜後に",
-      "form": "dentro de quince años＝15年後に"
+      "form": "dentro de quince años＝15年後に",
+      "key": true
     },
     "dentro#39": {
       "w": "dentro",
       "pos": "adv",
       "ja": "（dentro de ＋ 期間で）〜後に",
-      "form": "dentro de quince años＝15年後に"
+      "form": "dentro de quince años＝15年後に",
+      "key": true
     },
     "pone#3": {
       "w": "poner",
@@ -945,6 +924,33 @@
       "pos": "pron",
       "ja": "それらを（女性・複数）",
       "form": "Las leeremos＝それら（の手紙）を読もう"
+    },
+    "pequeña#2": {
+      "w": "pequeño",
+      "pos": "adj",
+      "ja": "小さい",
+      "form": "pequeño の女性形",
+      "note": "de pequeña＝小さいころ（女性が言う場合）"
+    },
+    "pequeña#9": {
+      "w": "pequeño",
+      "pos": "adj",
+      "ja": "小さい",
+      "form": "pequeño の女性形",
+      "note": "de pequeña＝小さいころ（女性が言う場合）"
+    },
+    "acuerdas#33": {
+      "w": "acordarse",
+      "pos": "v",
+      "ja": "覚えている・思い出す",
+      "form": "acordarse の「君は」（現在）",
+      "note": "acordarse de ＋もの＝〜を覚えている"
+    },
+    "lo#33": {
+      "w": "lo",
+      "pos": "art",
+      "ja": "〜なこと（中性）",
+      "note": "lo que dijo tu abuela＝おばあちゃんが言ったこと"
     }
   }
 }

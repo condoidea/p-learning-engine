@@ -3,13 +3,8 @@
   "sceneJa": "💒 月曜の朝、マドリードの会社。姉の結婚式でセビーリャに行っていたアナが、同僚のケンジに週末の話をして、お土産を渡す",
   "phrases": [
     {
-      "t": "a eso de las once",
-      "ja": "11時ごろ",
-      "key": true
-    },
-    {
-      "t": "con una hora de retraso",
-      "ja": "1時間遅れで",
+      "t": "a eso de",
+      "ja": "〜ごろ（a eso de las once＝11時ごろ）",
       "key": true
     },
     {
@@ -23,67 +18,13 @@
       "key": true
     },
     {
-      "t": "se casaron",
-      "ja": "結婚した（casarse の点過去・三人称複数。受身ではなく再帰）",
-      "key": true
-    },
-    {
-      "t": "se construyó",
-      "ja": "建てられた（受身の se）",
-      "key": true
-    },
-    {
-      "t": "en el siglo quince",
-      "ja": "15世紀に（siglo XV）",
-      "key": true
-    },
-    {
-      "t": "mil novecientos cuarenta",
-      "ja": "1940年（千・九百・四十と読む）",
-      "key": true
-    },
-    {
-      "t": "justo después de",
-      "ja": "〜のすぐ後に",
-      "key": true
-    },
-    {
-      "t": "hasta las cuatro de la mañana",
-      "ja": "朝の4時まで"
-    },
-    {
       "t": "por eso",
       "ja": "だから・そのために",
       "key": true
     },
     {
-      "t": "pediste permiso",
-      "ja": "許可を求めた・休みをもらった（pedir permiso）",
-      "key": true
-    },
-    {
       "t": "muchas gracias",
       "ja": "どうもありがとう"
-    },
-    {
-      "t": "el mes pasado",
-      "ja": "先月",
-      "key": true
-    },
-    {
-      "t": "el mío",
-      "ja": "私のもの（el mío＝mi monedero）",
-      "key": true
-    },
-    {
-      "t": "es para la suerte",
-      "ja": "縁起物だ（幸運のためのもの）",
-      "key": true
-    },
-    {
-      "t": "se regala",
-      "ja": "贈られる（受身の se）",
-      "key": true
     }
   ],
   "words": {
@@ -143,7 +84,8 @@
       "pos": "n",
       "g": "m",
       "ja": "遅れ",
-      "key": true
+      "key": true,
+      "note": "con una hora de retraso＝1時間遅れで"
     },
     "llegué": {
       "w": "llegar",
@@ -266,7 +208,8 @@
       "pos": "n",
       "g": "m",
       "ja": "世紀",
-      "key": true
+      "key": true,
+      "note": "el siglo quince＝15世紀（siglo XV）"
     },
     "quince": {
       "w": "quince",
@@ -299,7 +242,8 @@
     "mil": {
       "w": "mil",
       "pos": "num",
-      "ja": "1000（mil novecientos cuarenta＝1940）"
+      "ja": "1000（mil novecientos cuarenta＝1940）",
+      "note": "mil novecientos cuarenta＝1940年（千・九百・四十と読む）"
     },
     "novecientos": {
       "w": "novecientos",
@@ -398,7 +342,8 @@
       "pos": "v",
       "ja": "頼む・求める",
       "form": "pedir の点過去・二人称単数（pedir permiso＝許可を求める）",
-      "key": true
+      "key": true,
+      "note": "pedir permiso＝許可を求める（休みをもらう）"
     },
     "permiso": {
       "w": "permiso",
@@ -504,7 +449,8 @@
       "pos": "n",
       "g": "f",
       "ja": "運・幸運（para la suerte＝縁起のために）",
-      "key": true
+      "key": true,
+      "note": "es para la suerte＝縁起物だ（幸運のためのもの）"
     },
     "nunca": {
       "w": "nunca",
@@ -524,6 +470,26 @@
       "pos": "adj",
       "ja": "空の・からっぽの",
       "key": true
+    },
+    "con#2": {
+      "w": "con",
+      "pos": "prep",
+      "ja": "〜で・〜を伴って（con una hora de retraso＝1時間遅れで）"
+    },
+    "de#6": {
+      "w": "de",
+      "pos": "prep",
+      "ja": "〜の（después de＝〜の後に）"
+    },
+    "de#8": {
+      "w": "de",
+      "pos": "prep",
+      "ja": "〜の（de la mañana＝午前の）"
+    },
+    "para#12": {
+      "w": "para",
+      "pos": "prep",
+      "ja": "〜のための（para la suerte＝縁起のため）"
     }
   }
 }

@@ -3,48 +3,14 @@
   "sceneJa": "🥾 スポーツ用品店。ルシアとパブロが山登りのための靴と上着を選ぶ",
   "phrases": [
     {
-      "t": "qué te parecen",
-      "ja": "〜をどう思う？（parecer：複数のものにはparecen）",
-      "key": true
-    },
-    {
-      "t": "son mejores",
-      "ja": "（そちらのほうが）よりよい（bueno の比較）",
-      "key": true
-    },
-    {
-      "t": "las más caras",
-      "ja": "いちばん高いもの（最上級・複数）",
-      "key": true
-    },
-    {
-      "t": "no son tan buenas como",
-      "ja": "〜ほどよくない（tan … como）",
-      "key": true
-    },
-    {
-      "t": "vamos a caminar",
-      "ja": "歩くつもりだ（ir a＋原形）",
-      "key": true
-    },
-    {
       "t": "tienes razón",
       "ja": "君の言うとおりだ（tener razón）",
-      "key": true
+      "key": true,
+      "w": "tener razón"
     },
     {
-      "t": "me llevo",
-      "ja": "（買って）持って帰る・これをもらう（llevarse）",
-      "key": true
-    },
-    {
-      "t": "qué tal me queda",
+      "t": "qué tal",
       "ja": "似合う？・サイズはどう？（quedar：服が〜に合う）",
-      "key": true
-    },
-    {
-      "t": "hace mucho más frío que",
-      "ja": "〜よりずっと寒い（hacer frío＝寒い）",
       "key": true
     },
     {
@@ -55,11 +21,6 @@
     {
       "t": "por eso",
       "ja": "だから",
-      "key": true
-    },
-    {
-      "t": "no hay nada mejor",
-      "ja": "これ以上のものはない",
       "key": true
     }
   ],

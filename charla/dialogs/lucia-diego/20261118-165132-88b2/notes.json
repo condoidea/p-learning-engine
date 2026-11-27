@@ -3,31 +3,11 @@
   "sceneJa": "☕ 金曜、マドリードのカフェ",
   "phrases": [
     {
-      "t": "a que no sabes",
-      "ja": "〜って知らないでしょ？",
-      "key": true
-    },
-    {
-      "t": "no seas así",
-      "ja": "そんなこと言わないで",
-      "key": true
-    },
-    {
-      "t": "sí que",
-      "ja": "本当に〜だ（強調）",
-      "key": true,
-      "note": "ella sí que viajará = 彼女こそ旅行するだろうね"
-    },
-    {
-      "t": "tengo curiosidad",
-      "ja": "気になる・興味がある",
-      "key": true
-    },
-    {
       "t": "dando miedo",
       "ja": "怖がらせている",
       "key": true,
-      "note": "dar miedo（怖がらせる）。me estás dando miedo = 君、怖いよ"
+      "note": "dar miedo（怖がらせる）。me estás dando miedo = 君、怖いよ",
+      "w": "dar miedo"
     },
     {
       "t": "qué vergüenza",
@@ -61,10 +41,6 @@
     {
       "t": "por fin",
       "ja": "ついに・やっと"
-    },
-    {
-      "t": "por la tarde",
-      "ja": "午後に"
     },
     {
       "t": "por qué",
@@ -663,31 +639,199 @@
       "ja": "終わり",
       "note": "por fin = ついに"
     },
-    "trabajo#2": { "w": "trabajo", "pos": "n", "g": "m", "ja": "仕事", "form": "después del trabajo = 仕事のあと" },
-    "trabajo#7": { "w": "trabajo", "pos": "n", "g": "m", "ja": "仕事", "form": "un trabajo nuevo = 新しい仕事" },
-    "bueno#3": { "w": "bueno", "pos": "interj", "ja": "まあ・さて（言いよどみ・話の切り出し）", "form": "Bueno… = まあ…" },
-    "tarde#1": { "w": "tarde", "pos": "n", "g": "f", "ja": "午後・夕方" },
-    "ya#8": { "w": "ya", "pos": "interj", "ja": "ふうん・なるほど（相づち）", "form": "Ya. = ふうん（もう、ではない）" },
-    "por#8": { "w": "por", "pos": "prep", "ja": "〜の代金として・〜に対して", "form": "cobrar por todo eso = それ全部の代金を取る" },
-    "te#17": { "w": "te", "pos": "pron", "ja": "（再帰）君自身を", "form": "te has puesto nervioso の te（ponerse の再帰）" },
-    "has#17": { "w": "haber", "pos": "v", "ja": "（過去分詞とともに）〜した", "form": "haber の「君は」（現在）。has puesto = なった（現在完了）" },
-    "puesto#17": { "w": "ponerse", "pos": "v", "ja": "（ある状態に）なる", "form": "ponerse の過去分詞（te has puesto nervioso＝緊張した・そわそわしている）" },
-    "tan#17": { "w": "tan", "pos": "adv", "ja": "そんなに・とても", "form": "tan nervioso = そんなに緊張して" },
-    "entonces#17": { "w": "entonces", "pos": "adv", "ja": "それなら・じゃあ", "form": "Entonces, ¿por qué…? = じゃあ、なぜ…？" },
-    "oye#18": { "w": "oír", "pos": "interj", "ja": "ねえ・ちょっと（呼びかけ）", "form": "oír の命令形（君に）。話しかけるときの言葉" },
-    "señora#18": { "w": "señora", "pos": "n", "g": "f", "ja": "女の人・ご婦人", "form": "esa señora = その女の人" },
-    "mayor#19": { "w": "mayor", "pos": "adj", "ja": "年配の・年上の", "form": "era mayor = 年配の人だった" },
-    "abuela#24": { "w": "abuela", "pos": "n", "g": "f", "ja": "祖母・おばあちゃん" },
-    "señora#24": { "w": "señora", "pos": "n", "g": "f", "ja": "女の人・ご婦人", "form": "esa señora = その女の人" },
-    "abuela#25": { "w": "abuela", "pos": "n", "g": "f", "ja": "祖母・おばあちゃん" },
-    "seguro#26": { "w": "seguro", "pos": "adv", "ja": "きっと・確かに", "form": "seguro que 〜 = きっと〜" },
-    "he#26": { "w": "haber", "pos": "v", "ja": "（過去分詞とともに）〜した", "form": "haber の「私は」（現在）。he enseñado = 見せた（現在完了）" },
-    "sí#28": { "w": "sí", "pos": "interj", "ja": "そう（相づち）", "form": "¿Ah, sí? = へえ、そうなの？" },
-    "juego#30": { "w": "jugar", "pos": "v", "ja": "（ゲームを）する・遊ぶ", "form": "jugar の「私は」（現在）。jugar a las cartas = トランプをする" },
-    "cartas#30": { "w": "carta", "pos": "n", "g": "f", "ja": "トランプ", "form": "carta の複数形。las cartas = トランプ（手紙の意味もある）" },
-    "entonces#29": { "w": "entonces", "pos": "adv", "ja": "それなら・じゃあ" },
-    "sí#33": { "w": "sí", "pos": "adv", "ja": "本当に（強調）", "form": "sí conoce = ほんとうに知っている" },
-    "abuela#33": { "w": "abuela", "pos": "n", "g": "f", "ja": "祖母・おばあちゃん" },
-    "entonces#39": { "w": "entonces", "pos": "adv", "ja": "それなら・じゃあ" }
+    "trabajo#2": {
+      "w": "trabajo",
+      "pos": "n",
+      "g": "m",
+      "ja": "仕事",
+      "form": "después del trabajo = 仕事のあと"
+    },
+    "trabajo#7": {
+      "w": "trabajo",
+      "pos": "n",
+      "g": "m",
+      "ja": "仕事",
+      "form": "un trabajo nuevo = 新しい仕事"
+    },
+    "bueno#3": {
+      "w": "bueno",
+      "pos": "interj",
+      "ja": "まあ・さて（言いよどみ・話の切り出し）",
+      "form": "Bueno… = まあ…"
+    },
+    "tarde#1": {
+      "w": "tarde",
+      "pos": "n",
+      "g": "f",
+      "ja": "午後・夕方"
+    },
+    "ya#8": {
+      "w": "ya",
+      "pos": "interj",
+      "ja": "ふうん・なるほど（相づち）",
+      "form": "Ya. = ふうん（もう、ではない）"
+    },
+    "por#8": {
+      "w": "por",
+      "pos": "prep",
+      "ja": "〜の代金として・〜に対して",
+      "form": "cobrar por todo eso = それ全部の代金を取る"
+    },
+    "te#17": {
+      "w": "te",
+      "pos": "pron",
+      "ja": "（再帰）君自身を",
+      "form": "te has puesto nervioso の te（ponerse の再帰）"
+    },
+    "has#17": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去分詞とともに）〜した",
+      "form": "haber の「君は」（現在）。has puesto = なった（現在完了）"
+    },
+    "puesto#17": {
+      "w": "ponerse",
+      "pos": "v",
+      "ja": "（ある状態に）なる",
+      "form": "ponerse の過去分詞（te has puesto nervioso＝緊張した・そわそわしている）"
+    },
+    "tan#17": {
+      "w": "tan",
+      "pos": "adv",
+      "ja": "そんなに・とても",
+      "form": "tan nervioso = そんなに緊張して"
+    },
+    "entonces#17": {
+      "w": "entonces",
+      "pos": "adv",
+      "ja": "それなら・じゃあ",
+      "form": "Entonces, ¿por qué…? = じゃあ、なぜ…？"
+    },
+    "oye#18": {
+      "w": "oír",
+      "pos": "interj",
+      "ja": "ねえ・ちょっと（呼びかけ）",
+      "form": "oír の命令形（君に）。話しかけるときの言葉"
+    },
+    "señora#18": {
+      "w": "señora",
+      "pos": "n",
+      "g": "f",
+      "ja": "女の人・ご婦人",
+      "form": "esa señora = その女の人"
+    },
+    "mayor#19": {
+      "w": "mayor",
+      "pos": "adj",
+      "ja": "年配の・年上の",
+      "form": "era mayor = 年配の人だった"
+    },
+    "abuela#24": {
+      "w": "abuela",
+      "pos": "n",
+      "g": "f",
+      "ja": "祖母・おばあちゃん"
+    },
+    "señora#24": {
+      "w": "señora",
+      "pos": "n",
+      "g": "f",
+      "ja": "女の人・ご婦人",
+      "form": "esa señora = その女の人"
+    },
+    "abuela#25": {
+      "w": "abuela",
+      "pos": "n",
+      "g": "f",
+      "ja": "祖母・おばあちゃん"
+    },
+    "seguro#26": {
+      "w": "seguro",
+      "pos": "adv",
+      "ja": "きっと・確かに",
+      "form": "seguro que 〜 = きっと〜"
+    },
+    "he#26": {
+      "w": "haber",
+      "pos": "v",
+      "ja": "（過去分詞とともに）〜した",
+      "form": "haber の「私は」（現在）。he enseñado = 見せた（現在完了）"
+    },
+    "sí#28": {
+      "w": "sí",
+      "pos": "interj",
+      "ja": "そう（相づち）",
+      "form": "¿Ah, sí? = へえ、そうなの？"
+    },
+    "juego#30": {
+      "w": "jugar",
+      "pos": "v",
+      "ja": "（ゲームを）する・遊ぶ",
+      "form": "jugar の「私は」（現在）。jugar a las cartas = トランプをする"
+    },
+    "cartas#30": {
+      "w": "carta",
+      "pos": "n",
+      "g": "f",
+      "ja": "トランプ",
+      "form": "carta の複数形。las cartas = トランプ（手紙の意味もある）"
+    },
+    "entonces#29": {
+      "w": "entonces",
+      "pos": "adv",
+      "ja": "それなら・じゃあ"
+    },
+    "sí#33": {
+      "w": "sí",
+      "pos": "adv",
+      "ja": "本当に（強調）",
+      "form": "sí conoce = ほんとうに知っている"
+    },
+    "abuela#33": {
+      "w": "abuela",
+      "pos": "n",
+      "g": "f",
+      "ja": "祖母・おばあちゃん"
+    },
+    "entonces#39": {
+      "w": "entonces",
+      "pos": "adv",
+      "ja": "それなら・じゃあ"
+    },
+    "sabes#1": {
+      "w": "saber",
+      "pos": "v",
+      "ja": "知っている",
+      "form": "saber の「君は」（現在）",
+      "note": "a que no sabes…＝〜って知らないでしょ？"
+    },
+    "seas#11": {
+      "w": "ser",
+      "pos": "v",
+      "ja": "〜である",
+      "form": "ser の接続法・「君は」（否定命令）",
+      "note": "no seas así＝そんなこと言わないで（ser の接続法による否定命令）",
+      "key": true
+    },
+    "sí#10": {
+      "w": "sí",
+      "pos": "adv",
+      "ja": "（強調）本当に・まさに",
+      "note": "sí ＋動詞（ella sí que viajará）＝彼女こそ旅行する（強調）"
+    },
+    "curiosidad#18": {
+      "w": "curiosidad",
+      "pos": "n",
+      "g": "f",
+      "ja": "好奇心",
+      "note": "tener curiosidad＝気になる",
+      "key": true
+    },
+    "por#1": {
+      "w": "por",
+      "pos": "prep",
+      "ja": "〜に（時間帯）",
+      "note": "por la tarde＝午後に"
+    }
   }
 }

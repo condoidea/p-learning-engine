@@ -828,9 +828,11 @@
       var ph = tok.ph;
       var parts = tok.toks.filter(function (t) { return t.t === 'w' && t.g && !t.g.name && t.g.pos !== 'art' && t.g.pos !== 'prep'; });
       html = '<p class="bw"><b lang="es">' + esc(tok.s) + '</b><small>言い回し</small><button class="say" data-say="' + esc(tok.s) + '" aria-label="読み上げ">🔊</button></p>' +
+        (ph.w ? '<p class="bform">もとの形：<span lang="es">' + esc(ph.w) + '</span></p>' : '') +
         '<p class="bja">' + esc(ph.ja) + '</p>' + (ph.note ? '<p class="bnote">' + esc(ph.note) + '</p>' : '') +
         (parts.length ? '<p class="bparts">' + parts.map(function (t) { return '<span lang="es">' + esc(t.s) + '</span>＝' + esc(t.g.ja); }).join('　') + '</p>' : '');
-      rec = { kind: 'p', w: ph.t, pos: 'phr', ja: ph.ja, surf: tok.s, line: li, note: ph.note || '', clue: ph.clue || null };
+      /* 活用した形の言い回し（me di cuenta）は、もとの形（ph.w＝darse cuenta）で記録する → 単語アプリで1枚にまとまる */
+      rec = { kind: 'p', w: ph.w || ph.t, pos: 'phr', ja: ph.ja, surf: tok.s, line: li, note: ph.note || '', clue: ph.clue || null };
     } else {
       /* そのセリフでの意味（語#番号・何回目）で引く。つづりだけで引かない */
       var g = C.dict.word(el.dataset.k, li + 1, +el.dataset.o || 1);

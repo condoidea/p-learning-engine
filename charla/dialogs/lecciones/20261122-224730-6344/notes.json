@@ -3,14 +3,22 @@
   "sceneJa": "🚄 前の晩、カルロスと恋人のユキが、明日の新幹線での京都行きの準備をしている",
   "phrases": [
     {
-      "t": "tenemos que levantarnos",
-      "ja": "起きなければならない（tener que＋再帰動詞）",
-      "key": true
+      "t": "tenemos que",
+      "ja": "〜しなければならない（tener que＋原形）",
+      "key": true,
+      "w": "tener que"
     },
     {
-      "t": "a qué hora",
-      "ja": "何時に",
-      "key": true
+      "t": "tengo que",
+      "ja": "〜しなければならない（tener que＋原形）",
+      "key": true,
+      "w": "tener que"
+    },
+    {
+      "t": "tienes que",
+      "ja": "〜しなければならない（tener que＋原形）",
+      "key": true,
+      "w": "tener que"
     },
     {
       "t": "y cuarto",
@@ -33,57 +41,20 @@
       "key": true
     },
     {
-      "t": "por la mañana",
-      "ja": "朝に・午前中に",
-      "key": true
-    },
-    {
-      "t": "por la noche",
-      "ja": "夜に",
-      "key": true
-    },
-    {
       "t": "tengo muchas ganas de",
       "ja": "〜するのをとても楽しみにしている（tener ganas de＋原形）",
-      "key": true
+      "key": true,
+      "w": "tener ganas de"
     },
     {
       "t": "tiene muchas ganas de",
       "ja": "〜するのをとても楽しみにしている（tener ganas de＋原形）",
-      "key": true
-    },
-    {
-      "t": "qué tiempo va a hacer",
-      "ja": "天気はどうなる？（hacer：天候）",
-      "key": true
-    },
-    {
-      "t": "va a estar despejado",
-      "ja": "晴れるだろう（ir a＋原形）",
-      "key": true
-    },
-    {
-      "t": "hace fresco",
-      "ja": "肌寒い・涼しい（hacer fresco）",
-      "key": true
-    },
-    {
-      "t": "todo el día",
-      "ja": "一日じゅう",
-      "key": true
-    },
-    {
-      "t": "según la tele",
-      "ja": "テレビによると（según＋名詞）",
-      "key": true
+      "key": true,
+      "w": "tener ganas de"
     },
     {
       "t": "qué bien",
       "ja": "よかった！・いいね！（¡Qué bien!）"
-    },
-    {
-      "t": "qué interesante",
-      "ja": "おもしろい！（¡Qué interesante!）"
     },
     {
       "t": "tren bala",
@@ -534,6 +505,31 @@
       "pos": "v",
       "ja": "持っている",
       "form": "tener の現在・一人称単数（tengo que＋原形＝〜しなければならない／tengo muchas ganas de＝〜が楽しみ）"
+    },
+    "por#6": {
+      "w": "por",
+      "pos": "prep",
+      "ja": "〜に（por la mañana＝朝に）"
+    },
+    "por#7": {
+      "w": "por",
+      "pos": "prep",
+      "ja": "〜に（por la mañana＝朝に）"
+    },
+    "por#12": {
+      "w": "por",
+      "pos": "prep",
+      "ja": "〜に（por la mañana＝朝に）"
+    },
+    "a#11": {
+      "w": "a",
+      "pos": "prep",
+      "ja": "（ir a＋原形の a）"
+    },
+    "a#12": {
+      "w": "a",
+      "pos": "prep",
+      "ja": "（ir a＋原形の a）"
     }
   },
   "lines": [

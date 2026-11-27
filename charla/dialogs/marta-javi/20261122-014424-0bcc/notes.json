@@ -13,47 +13,15 @@
       "key": true
     },
     {
-      "t": "típico de ti",
-      "ja": "君らしいね・君にありがちだ"
-    },
-    {
-      "t": "se me olvidaron",
-      "ja": "（うっかり）忘れてしまった（se＋me＋動詞＝無意図の表現）",
-      "key": true
-    },
-    {
-      "t": "se me han olvidado",
-      "ja": "（うっかり）忘れてしまった",
-      "key": true
-    },
-    {
-      "t": "se te olvida",
-      "ja": "君は（うっかり）忘れる"
-    },
-    {
-      "t": "todos los veranos",
-      "ja": "毎年夏に"
-    },
-    {
-      "t": "a mí me encantaban",
-      "ja": "私は〜が大好きだった（a mí は強調）"
-    },
-    {
-      "t": "a ti siempre te dolía",
-      "ja": "君はいつも〜が痛くなった"
-    },
-    {
       "t": "le sienta fatal",
-      "ja": "（体に）まったく合わない"
+      "ja": "（体に）まったく合わない",
+      "w": "sentar fatal"
     },
     {
       "t": "echo nada de menos",
       "ja": "ちっとも恋しくない（echar de menos＝恋しく思う）",
-      "key": true
-    },
-    {
-      "t": "hace un mes",
-      "ja": "1か月前"
+      "key": true,
+      "w": "echar de menos"
     },
     {
       "t": "la verdad",
@@ -80,28 +48,16 @@
       "key": true
     },
     {
-      "t": "una vez",
-      "ja": "あるとき・一度"
+      "t": "tuve que",
+      "ja": "〜しなければならなかった",
+      "w": "tener que",
+      "note": "tener que ＋ 不定詞"
     },
     {
-      "t": "tardé tres días en encontrar",
-      "ja": "見つけるのに3日かかった（tardar＋期間＋en＋原形）"
-    },
-    {
-      "t": "tuve que volver",
-      "ja": "戻らなければならなかった"
-    },
-    {
-      "t": "tenemos que encontrar",
-      "ja": "見つけなければならない"
-    },
-    {
-      "t": "según este reloj",
-      "ja": "この時計によれば"
-    },
-    {
-      "t": "la hora del café",
-      "ja": "コーヒーの時間"
+      "t": "tenemos que",
+      "ja": "〜しなければならない",
+      "w": "tener que",
+      "note": "tener que ＋ 不定詞"
     },
     {
       "t": "tarta de santiago",
@@ -109,32 +65,8 @@
       "key": true
     },
     {
-      "t": "se busca a",
-      "ja": "〜求む（張り紙の定型）"
-    },
-    {
-      "t": "me parece una idea genial",
-      "ja": "すばらしい考えだと思う"
-    },
-    {
-      "t": "con facilidad",
-      "ja": "簡単に・すぐに"
-    },
-    {
       "t": "por qué",
       "ja": "なぜ"
-    },
-    {
-      "t": "cerca del mar",
-      "ja": "海の近くに"
-    },
-    {
-      "t": "no es mala idea",
-      "ja": "悪くない考えだ"
-    },
-    {
-      "t": "empezamos bien",
-      "ja": "幸先がいいね（皮肉にも使う）"
     }
   ],
   "words": {
@@ -710,7 +642,8 @@
       "pos": "v",
       "reg": true,
       "ja": "忘れる",
-      "form": "olvidar の過去分詞（se me han olvidado las gafas＝めがねを忘れてきた）"
+      "form": "olvidar の過去分詞（se me han olvidado las gafas＝めがねを忘れてきた）",
+      "key": true
     },
     "se#16": {
       "w": "se",
@@ -1319,6 +1252,27 @@
       "pos": "v",
       "ja": "始める",
       "form": "empezar の現在・一人称複数（Empezamos bien＝幸先がいい。皮肉も含む）"
+    },
+    "típico": {
+      "w": "típico",
+      "pos": "adj",
+      "ja": "典型的な・ありがちな",
+      "note": "típico de ti＝君らしいね"
+    },
+    "vez#22": {
+      "w": "vez",
+      "pos": "n",
+      "g": "f",
+      "ja": "回・度",
+      "note": "una vez＝あるとき・一度"
+    },
+    "tardé#22": {
+      "w": "tardar",
+      "pos": "v",
+      "reg": true,
+      "ja": "かかった（時間が）",
+      "form": "tardar の「私は」（点過去）",
+      "note": "tardar ＋期間＋ en ＋不定詞＝〜するのに（期間）かかる"
     }
   },
   "names": [

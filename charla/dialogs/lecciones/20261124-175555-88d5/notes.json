@@ -3,23 +3,9 @@
   "sceneJa": "📰 朝、ペドロが朝食を食べながらスマホでニュースを読み、ルームメイトのロラに話す",
   "phrases": [
     {
-      "t": "ha pasado algo",
-      "ja": "何かあったの？",
-      "key": true
-    },
-    {
-      "t": "ha sido detenido",
-      "ja": "逮捕された（現在完了の受け身）",
-      "key": true
-    },
-    {
       "t": "por fin",
       "ja": "やっと",
       "key": true
-    },
-    {
-      "t": "primera página",
-      "ja": "一面（新聞の）"
     },
     {
       "t": "no me digas",
@@ -27,36 +13,8 @@
       "key": true
     },
     {
-      "t": "por suerte",
-      "ja": "運よく",
-      "key": true
-    },
-    {
       "t": "menos mal",
       "ja": "よかった・助かった",
-      "key": true
-    },
-    {
-      "t": "dicen que",
-      "ja": "…らしい・…だそうだ",
-      "key": true
-    },
-    {
-      "t": "qué le va a pasar",
-      "ja": "（彼は）どうなるの？"
-    },
-    {
-      "t": "el mes pasado",
-      "ja": "先月",
-      "key": true
-    },
-    {
-      "t": "robos de arte",
-      "ja": "美術品の盗難"
-    },
-    {
-      "t": "por leer",
-      "ja": "読んだせいで（por ＋ 不定詞）",
       "key": true
     }
   ],
@@ -102,7 +60,8 @@
       "pos": "v",
       "reg": true,
       "ja": "起こる",
-      "form": "過去分詞（ha pasado algo＝何かあった）"
+      "form": "過去分詞（ha pasado algo＝何かあった）",
+      "note": "ha pasado algo＝何かあったの？"
     },
     "pasado#11": {
       "w": "pasado",
@@ -301,7 +260,8 @@
       "pos": "v",
       "ja": "言う",
       "form": "decir の現在・三人称複数（Dicen que…＝…らしい・…だそうだ。主語を言わない複数）",
-      "key": true
+      "key": true,
+      "note": "dicen que＝…だそうだ・…らしい（人々が言っている）"
     },
     "líder": {
       "w": "líder",
@@ -362,7 +322,8 @@
       "w": "por",
       "pos": "prep",
       "ja": "〜したせいで・〜したために",
-      "note": "por ＋ 不定詞＝〜したせいで（por leer＝読んでいたせいで）"
+      "note": "por ＋ 不定詞＝〜したせいで",
+      "key": true
     },
     "le": {
       "w": "le",
@@ -444,6 +405,20 @@
       "pos": "adv",
       "ja": "いや・そうだね",
       "note": "相手の否定的な見方に同意して「そうだね」"
+    },
+    "sido#3": {
+      "w": "ser",
+      "pos": "v",
+      "ja": "（受け身）〜された（ha sido detenido＝逮捕された）",
+      "form": "ser の過去分詞（ha sido detenido＝逮捕された。受け身）",
+      "key": true,
+      "note": "現在完了の受け身：haber ＋ sido ＋ 過去分詞"
+    },
+    "va#10": {
+      "w": "ir",
+      "pos": "v",
+      "ja": "（ir a ＋ 不定詞）〜することになる",
+      "note": "ir a ＋ 不定詞＝〜する予定・〜しそう"
     }
   }
 }

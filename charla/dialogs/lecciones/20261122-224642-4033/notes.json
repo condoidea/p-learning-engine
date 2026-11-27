@@ -3,53 +3,14 @@
   "sceneJa": "🌙 夜11時、マコトとエレナの会話。マコトは明日から大学の留学生向けコースが始まる",
   "phrases": [
     {
-      "t": "me voy a la cama",
-      "ja": "寝にいく・寝る（irse a la cama）",
-      "key": true
-    },
-    {
-      "t": "qué te pasa",
-      "ja": "どうしたの？（pasar：起こる）",
-      "key": true
-    },
-    {
       "t": "es que",
       "ja": "だって〜なんだ（理由を言うときの言い方）",
       "key": true
     },
     {
-      "t": "tengo que levantarme",
-      "ja": "起きなければならない（tener que＋原形）",
-      "key": true
-    },
-    {
-      "t": "voy a levantarme",
-      "ja": "起きるつもりだ（ir a＋原形）",
-      "key": true
-    },
-    {
-      "t": "me limpio los dientes",
-      "ja": "歯をみがく（limpiarse los dientes）",
-      "key": true
-    },
-    {
-      "t": "me cambio de ropa",
-      "ja": "着替える（cambiarse de ropa）",
-      "key": true
-    },
-    {
-      "t": "antes de las nueve",
-      "ja": "9時前に",
-      "key": true
-    },
-    {
-      "t": "siete menos cinco",
-      "ja": "6時55分（7時5分前）",
-      "key": true
-    },
-    {
-      "t": "las ocho y cuarto",
-      "ja": "8時15分",
+      "t": "tengo que",
+      "w": "tener que",
+      "ja": "〜しなければならない（tener que＋不定詞）",
       "key": true
     }
   ],
@@ -241,7 +202,7 @@
       "pos": "n",
       "g": "m",
       "ja": "15分・4分の1",
-      "note": "y cuarto＝15分過ぎ"
+      "note": "y cuarto＝15分過ぎ（las ocho y cuarto＝8時15分）"
     },
     "llegar": {
       "w": "llegar",

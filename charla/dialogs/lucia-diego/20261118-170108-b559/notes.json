@@ -6,51 +6,41 @@
       "t": "hecha polvo",
       "ja": "くたくただ（estar hecho/a polvo）",
       "key": true,
-      "note": "女性なので hecha"
+      "note": "女性なので hecha",
+      "w": "estar hecho polvo"
     },
     {
-      "t": "me estás tomando el pelo",
-      "ja": "私をからかっている（tomar el pelo a alguien）",
+      "t": "tomando el pelo",
+      "ja": "からかっている（tomar el pelo a alguien）",
       "key": true,
-      "note": "estar ＋ 現在分詞の進行形"
-    },
-    {
-      "t": "te lo juro",
-      "ja": "誓うよ、本当だって",
-      "key": true
+      "note": "me estás tomando el pelo＝私をからかっている",
+      "w": "tomar el pelo"
     },
     {
       "t": "tienes razón",
       "ja": "君の言う通りだ（tener razón）",
-      "key": true
-    },
-    {
-      "t": "aquí la tienes",
-      "ja": "はい、どうぞ",
       "key": true,
-      "note": "la ＝ 渡すもの（caja）"
+      "w": "tener razón"
     },
     {
       "t": "al fondo del",
       "ja": "〜の奥に（al fondo de）",
       "key": true,
-      "note": "de ＋ el ＝ del"
+      "note": "de ＋ el ＝ del",
+      "w": "al fondo de"
     },
     {
       "t": "me fío de",
       "ja": "〜を信用する（fiarse de）",
-      "key": true
+      "key": true,
+      "w": "fiarse de"
     },
     {
       "t": "se te dan bien",
       "ja": "君は〜が得意だ（dársele bien algo a alguien）",
       "key": true,
-      "note": "a ti se te dan bien estas cosas＝こういうのは君の得意分野"
-    },
-    {
-      "t": "llevamos dos horas metiendo",
-      "ja": "2時間〜し続けている（llevar ＋ 時間 ＋ 現在分詞）",
-      "key": true
+      "note": "a ti se te dan bien estas cosas＝こういうのは君の得意分野",
+      "w": "dársele bien"
     },
     {
       "t": "ni hablar",
@@ -91,14 +81,6 @@
     {
       "t": "antes de que",
       "ja": "〜する前に"
-    },
-    {
-      "t": "esta noche",
-      "ja": "今夜"
-    },
-    {
-      "t": "esta vez",
-      "ja": "今度・今回"
     }
   ],
   "words": {
@@ -899,6 +881,35 @@
       "w": "bueno",
       "pos": "interj",
       "ja": "まあ"
+    },
+    "la#13": {
+      "w": "la",
+      "pos": "pron",
+      "ja": "それ（女性の名詞をさす）",
+      "note": "aquí la tienes＝はい、どうぞ（la ＝ 渡すもの・箱）"
+    },
+    "lo#23": {
+      "w": "lo",
+      "pos": "pron",
+      "ja": "それを"
+    },
+    "juro#23": {
+      "w": "jurar",
+      "pos": "v",
+      "reg": true,
+      "ja": "誓う",
+      "form": "jurar の「私は」（現在）",
+      "note": "te lo juro＝誓って本当だよ",
+      "key": true
+    },
+    "llevamos#26": {
+      "w": "llevar",
+      "pos": "v",
+      "reg": true,
+      "ja": "（時間が）たつ・〜し続けている",
+      "form": "llevar の「私たちは」（現在）",
+      "note": "llevar ＋時間＋現在分詞＝〜し続けて（時間）になる",
+      "key": true
     }
   }
 }
