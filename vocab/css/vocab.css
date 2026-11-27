@@ -255,6 +255,21 @@ mark { background: var(--mark); color: inherit; padding: 0 3px; border-radius: 4
 .p-bud:nth-child(3n) .chara { animation-delay: -.7s; } .p-bud:nth-child(3n+1) .chara { animation-delay: -1.4s; }
 .p-st { position: absolute; right: -6px; top: -4px; font-size: 13px; }
 .p-bud.st-wild { opacity: .75; }
+/* 🤚 なでなで（相棒・卒業の子） */
+.p-bud.pet .chara { animation: pet-hop .55s ease-out; }
+@keyframes pet-hop { 0% { transform: none; } 35% { transform: translateY(-10px) scale(1.08, .94); } 70% { transform: translateY(0) scale(.96, 1.05); } 100% { transform: none; } }
+.pet-heart { position: absolute; left: 50%; top: -6px; margin-left: -9px; font-size: 18px; pointer-events: none; animation: pet-heart .9s ease-out forwards; }
+@keyframes pet-heart { from { transform: translateY(6px) scale(.5); opacity: 0; } 30% { opacity: 1; } to { transform: translateY(-26px) scale(1.1); opacity: 0; } }
+.pet-bub { position: absolute; z-index: 300; transform: translateX(-50%); max-width: 72%; padding: 8px 12px; border-radius: 16px; background: var(--card); border: 2px solid var(--accent2);
+  box-shadow: 0 6px 16px -8px rgba(0,0,0,.35); text-align: center; animation: pet-bub .25s ease-out; }
+@keyframes pet-bub { from { opacity: 0; transform: translateX(-50%) translateY(6px) scale(.9); } to { opacity: 1; transform: translateX(-50%); } }
+.pet-bub p { margin: 0; }
+.pet-q { display: block; padding: 0; border: 0; background: none; color: var(--ink); cursor: pointer; }
+.pet-q small { display: block; margin-top: 2px; font-size: 11px; color: var(--muted); }
+.pet-w { display: block; font-family: var(--f-es); font-weight: 800; font-size: 22px; line-height: 1.2; overflow-wrap: anywhere; }
+.pet-ja { margin-top: 2px !important; font-size: 15px; font-weight: 700; word-break: keep-all; overflow-wrap: anywhere; }
+.pet-more { margin-top: 4px; padding: 2px 10px; border: 0; background: none; color: var(--accent2); font-size: 12px; font-weight: 700; cursor: pointer; }
+@media (prefers-reduced-motion: reduce) { .p-bud.pet .chara, .pet-heart, .pet-bub { animation: none; } .pet-heart { display: none; } }
 .p-empty { position: absolute; left: 0; right: 0; top: 36%; margin: 0; text-align: center; color: var(--muted); font-size: 14px; padding: 0 16px; }
 .p-more { position: absolute; right: 10px; top: 8px; font-size: 11px; color: var(--muted); }
 .plaza-note { margin: 0 0 8px; font-size: 11px; color: var(--muted); text-align: center; }

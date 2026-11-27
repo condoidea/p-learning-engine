@@ -237,7 +237,38 @@
       });
     });
     var more = ids.length - shown;
+    PET = null;
     box.innerHTML = html + '<span class="p-me">' + Chara.me() + '</span>' + (more > 0 ? '<span class="p-more">ほか ' + more + '体</span>' : '');
+  }
+
+  /* ---- 広場の 🤚 なでなで：相棒（ホロ）・卒業の子だけ ----
+   *  いちばん親しい子は、野生戦にほとんど出てこない。広場でタップすると、その場で跳ねて、吹き出しに語が出る。
+   *  意味を思い浮かべてから吹き出しをタップ → 「語 ＝ 意味」と読み上げ（語だけ）。ちらっと確かめるだけ。
+   *  記録には何も残さない（親密度・記憶の計算に入れない。やらなくても何も失わない）。「くわしく」でいつものシート */
+  function petOk(id) { var c = V.card(id); return !!c && (c.lv === 3 || V.grad(id)); }
+  var PET = null;
+  function petClose() { var b = $('#plaza .pet-bub'); if (b) b.remove(); PET = null; }
+  function petStart(btn) {
+    var id = btn.dataset.id, w = V.word(id), box = $('#plaza');
+    petClose(); PET = { id: id };
+    btn.classList.remove('pet'); void btn.offsetWidth; btn.classList.add('pet');
+    var h = document.createElement('span'); h.className = 'pet-heart'; h.textContent = '💛'; btn.appendChild(h);
+    setTimeout(function () { h.remove(); }, 900);
+    if (window.Snd && Snd.tap) Snd.tap();
+    var bot = parseFloat(btn.style.bottom) || 0, left = parseFloat(btn.style.left) || 50, b = document.createElement('div');
+    b.className = 'pet-bub' + (bot > 45 ? ' below' : '');
+    b.style.left = Math.min(74, Math.max(26, left)) + '%';
+    if (bot > 45) b.style.top = 'calc(' + (100 - bot) + '% + 4px)';   /* 上のほうの子は、吹き出しを下に */
+    else b.style.bottom = 'calc(' + bot + '% + ' + (btn.offsetHeight + 4) + 'px)';
+    b.innerHTML = '<button type="button" class="pet-q"><span class="pet-w">' + headHtml(w) + '</span><small>タップで意味</small></button>';
+    box.appendChild(b);
+  }
+  function petReveal() {
+    var b = $('#plaza .pet-bub'); if (!b || !PET) return;
+    var w = V.word(PET.id);
+    b.classList.add('open');
+    b.innerHTML = '<p class="pet-w">' + headHtml(w) + '</p><p class="pet-ja">＝ ' + jaHtml(w.ja) + '</p><button type="button" class="pet-more">くわしく ›</button>';
+    Speech.say(V.head(w));
   }
 
   /* =========================================================
@@ -3077,7 +3108,13 @@
     $('#hWant').addEventListener('click', function () { var wl = wantsList(); if (wl.length) start([{ type: 'learn', verb: wl[0].w.id, tense: wl[0].t }]); });
     $('#plaza').addEventListener('click', function (e) {
       if (e.target.closest('.evt-bub')) { var t = evtToday(); if (t) startEvent(t); return; }
-      var m = e.target.closest('.p-bud'); if (m) openSheet(m.dataset.id);
+      if (e.target.closest('.pet-more')) { var pid = PET && PET.id; petClose(); if (pid) openSheet(pid); return; }
+      if (e.target.closest('.pet-q')) return petReveal();
+      if (e.target.closest('.pet-bub')) return;
+      var m = e.target.closest('.p-bud');
+      if (m && petOk(m.dataset.id)) return petStart(m);   /* 相棒・卒業の子：🤚 なでなで */
+      petClose();
+      if (m) openSheet(m.dataset.id);
     });
     $('#bngQuit').addEventListener('click', function () { bngEnd(); });
     $('#pshQuit').addEventListener('click', function () { pshEnd(); });
