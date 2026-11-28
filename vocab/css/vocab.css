@@ -788,3 +788,23 @@ body.hot-typing #stage, body.hot-typing .sh { padding-bottom: 42vh; }   /* キ�
 .mrv-ja { font-size: 16px; word-break: keep-all; overflow-wrap: anywhere; }
 .mrv-o { margin-top: 2px !important; font-size: 13px; opacity: .75; word-break: keep-all; overflow-wrap: anywhere; }
 #sheet .sh.miss-rv .next { width: 100%; }
+
+/* 🗺 ロードマップ（ホーム）。目線は「出会いが終わる日」の1つだけ */
+.road-btn { display: flex; align-items: baseline; gap: 6px; width: 100%; margin: 0 0 8px; padding: 8px 12px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); text-align: left; font-size: 14px; }
+.road-btn b { flex: 1; min-width: 0; }
+.road-btn small { color: var(--accent2); font-weight: 700; }
+.road-card { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; margin: 0 0 8px; padding: 10px 14px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); text-align: left; }
+.road-card .rd-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; font-size: 13px; font-weight: 700; }
+.road-card .rd-h small { color: var(--muted); font-weight: 400; }
+.road-card .rd-lbl { margin-top: 4px; font-size: 13px; color: var(--muted); }
+.road-card .rd-fin { font-size: 24px; font-weight: 900; line-height: 1.2; color: var(--accent2); }
+.road-card .rd-sub { font-size: 14px; line-height: 1.5; }
+.rd-note { text-align: left; margin: 8px 0; }
+.rd-form { display: flex; flex-direction: column; gap: 10px; margin: 6px 0; }
+.rd-form label { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 16px; font-weight: 700; }
+.rd-form input, .rd-form select { width: 11em; max-width: 60%; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: inherit; font-size: 16px; font-family: inherit; }
+.rd-prev { margin: 8px 0; font-size: 18px; text-align: center; }
+.rd-prev small { display: block; font-size: 14px; color: var(--muted); }
+.rd-fix { margin: 6px 0 4px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); }
+.rd-fix p { margin: 0 0 8px; font-size: 15px; line-height: 1.6; }
+.rd-up { color: var(--accent2); }

@@ -316,6 +316,7 @@
       sk.week.map(function (s) { return s === 'rest' ? '<i class="stk-d rest">💤</i>' : '<i class="stk-d ' + s + '"></i>'; }).join('') + '</span>';
     $('#hRange').hidden = D.sections.length < 2;
     $('#hRange').innerHTML = '📗 範囲：<b>' + esc(rangeText()) + '</b><small>変える ›</small>';
+    renderRoad();
     /* 久しぶりのときだけ、やさしく声をかける（急かす言葉や残りの数は出さない） */
     var away = V.awayDays >= 7 && !(S.day.chunks > 0) && wild;
     $('#hWild').hidden = !away;
@@ -369,6 +370,119 @@
     $('#sheet').hidden = false;
     tw($('#sheet .sh'), { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' });
   }
+  /* =========================================================
+   * 🗺 ロードマップ：目標の語数とゴールの日から、1日に出会う語数（ペース）を決める（2026-11-28）
+   *  ・語数はデッキの語数と関係なく決める（500語を何回かに分けて読み込むため）。
+   *  ・ペースは決めたときに1回だけ計算し、毎日の頑張りでは変えない。先にすすめた分は「出会いが終わる日」が早まる。
+   *    （翌日の数が減る見せ方は、翌日サボる理由になる＝依頼者。気合の入る最初の数日に先取りしてほしい）
+   *  ・遅れても勝手にペースを上げない。終わる日が後ろにずれたことだけ見せ、復習の日に食いこんだら、上げるかを本人がえらぶ。
+   *  ・最後の数日（rest）は復習だけ。新しい語は「出会いが終わる日」まで。
+   *  ・数えるのは、ロードマップを決めた日（0時）から図鑑に入った単語（活用カードは数えない）。
+   *  S.road = { goal, until: 'YYYY-MM-DD', rest, pace, from }
+   * ========================================================= */
+  var DAYMS = 864e5;
+  function dnum(d) { return Math.round(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / DAYMS); }
+  function dOf(s) { var m = /^(\d+)-(\d+)-(\d+)$/.exec(s || ''); return m ? new Date(+m[1], m[2] - 1, +m[3]) : null; }
+  function dIso(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function dFromNum(n) { var u = new Date(n * DAYMS); return new Date(u.getUTCFullYear(), u.getUTCMonth(), u.getUTCDate()); }
+  function dTxt(n) { var d = dFromNum(n); return (d.getMonth() + 1) + '月' + d.getDate() + '日（' + '日月火水木金土'.charAt(d.getDay()) + '）'; }
+  function midnight() { var d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime(); }
+  function roadMet(since) { return Object.keys(S.cards).filter(function (id) { return !V.isCj(id) && S.cards[id].cap >= since; }).length; }
+  /* ペース：残り（goal − before）を、今日から出会いの最後の日まで（今日も入れて）で割る。最後の日が過ぎていたらゴールの日まで */
+  function roadPace(goal, untilN, rest, before) {
+    var tN = dnum(new Date()), days = untilN - rest - tN + 1;
+    if (days < 1) days = untilN - tN + 1;
+    if (days < 1) return 0;
+    return Math.max(1, Math.ceil(Math.max(0, goal - before) / days));
+  }
+  function roadInfo() {
+    var R = S.road; if (!R || !dOf(R.until)) return null;
+    var tN = dnum(new Date()), uN = dnum(dOf(R.until)), total = roadMet(R.from), td = roadMet(Math.max(R.from, midnight()));
+    var left = Math.max(0, R.goal - total), tLeft = Math.max(0, R.pace - td);
+    var fin = !left ? null : left <= tLeft ? tN : tN + Math.ceil((left - tLeft) / R.pace);
+    var o = { goal: R.goal, pace: R.pace, rest: R.rest, total: total, today: td, left: left, tLeft: tLeft, fin: fin, until: uN, tN: tN,
+      restDays: fin === null ? Math.max(0, uN - tN) : Math.max(0, uN - fin),
+      state: !left ? 'done' : uN < tN ? 'over' : fin <= uN - R.rest ? 'ok' : fin <= uN ? 'tight' : 'late' };
+    if (left && !tLeft) o.step = ((left - 1) % R.pace) + 1;   /* 今日の分のあと：あと何語で、終わる日が1日早まるか */
+    if (o.state === 'tight' || o.state === 'late') o.need = roadPace(R.goal, uN, R.rest, total - td);
+    return o;
+  }
+  /* ホームの1枚。目線は「出会いが終わる日」の1つだけ */
+  function renderRoad() {
+    var el = $('#hRoad'), o = roadInfo();
+    if (!o) { el.className = 'road-btn anim'; el.innerHTML = '🗺 ロードマップ：<b>いつまでに何語？</b><small>決める ›</small>'; return; }
+    var big, sub = [];
+    if (o.state === 'done') { big = '✔ ひと通り出会った'; sub.push(o.restDays ? 'ゴールまで あと ' + o.restDays + '日。あとは復習' : 'あとは復習'); }
+    else if (o.state === 'over') { big = 'ゴールの日を過ぎた'; sub.push('残り ' + o.left + '語。タップして決め直そう'); }
+    else {
+      big = dTxt(o.fin);
+      sub.push(o.tLeft ? '今日の出会い ' + o.today + ' / ' + o.pace : '✔ 今日の分 ' + o.today + ' / ' + o.pace + '・あと ' + o.step + '語で1日早まる');
+      if (o.state === 'ok') sub.push('復習だけの日 ' + o.restDays + '日');
+      else if (o.state === 'tight') sub.push('⚠ 復習だけの日が ' + o.restDays + '日 に（予定 ' + o.rest + '日）');
+      else sub.push('⚠ このままだとゴールの日に間に合わない');
+    }
+    var noWords = o.left && !V.meetList().length;
+    el.className = 'road-card anim st-' + o.state;
+    el.innerHTML = '<span class="rd-h">🗺 ロードマップ<small>ゴール ' + dTxt(o.until) + '・' + o.goal + '語</small></span>' +
+      (o.state === 'done' || o.state === 'over' ? '' : '<span class="rd-lbl">出会いが終わる日</span>') +
+      '<b class="rd-fin">' + big + '</b>' +
+      '<span class="rd-sub">' + sub.map(esc).join('<br>') + '</span>' +
+      (noWords ? '<span class="rd-sub">📚 出会う単語がもうない。次の単語を読み込もう（残り ' + o.left + '語）</span>' : '');
+  }
+  /* 決める・決め直すシート */
+  function openRoad() {
+    var R = S.road, o = roadInfo(), box = $('#sheetBody');
+    var tN = dnum(new Date()), before = o ? o.total - o.today : 0;
+    var def = R ? R.until : dIso(dFromNum(tN + 14));
+    box.innerHTML = '<p class="u-title">🗺 ロードマップ</p>' +
+      (o && o.need ? '<div class="rd-fix"><p>' + (o.state === 'late' ? 'このままだと、ゴールの日に間に合わない計算です。' : '復習だけの日が ' + o.restDays + '日 に減りそうです（予定 ' + o.rest + '日）。') +
+        '<br>1日 <b>' + o.need + '語</b> にすると、予定どおりになります。</p><button class="next" id="rdNeed">1日 ' + o.need + '語にする</button></div>' : '') +
+      '<p class="note rd-note">いつまでに、何語と出会うかを決めると、1日に出会う語数が決まります。<br>先にすすめると、<b>出会いが終わる日</b>が早まります。<br>最後の数日は、新しい語なしで復習だけにします。</p>' +
+      '<div class="rd-form">' +
+      '<label>目標の語数<input type="number" id="rdGoal" inputmode="numeric" min="1" max="5000" placeholder="例：500" value="' + (R ? R.goal : '') + '"></label>' +
+      '<label>ゴールの日<input type="date" id="rdUntil" value="' + def + '" min="' + dIso(dFromNum(tN)) + '"></label>' +
+      '<label>復習だけの日<select id="rdRest">' + [0, 1, 2, 3, 4, 5].map(function (n) { return '<option value="' + n + '"' + (n === (R ? R.rest : 3) ? ' selected' : '') + '>' + n + '日</option>'; }).join('') + '</select></label>' +
+      '</div>' +
+      '<p class="note rd-note">数えるのは、' + (R ? '最初に決めた日' : '今日') + 'から図鑑に入った単語です。デッキに入っている語数とは関係なく決められます（何回かに分けて読み込んでも大丈夫）。</p>' +
+      '<p class="rd-prev" id="rdPrev"></p>' +
+      '<div class="d-btns"><button class="next" id="rdOk">このロードマップにする</button>' + (R ? '<button class="ghost" id="rdOff">ロードマップをやめる</button>' : '') + '</div>';
+    function val() {
+      var g = parseInt($('#rdGoal', box).value, 10), u = dOf($('#rdUntil', box).value), r = +$('#rdRest', box).value;
+      if (!(g > 0) || !u) return { err: '目標の語数とゴールの日を入れてね' };
+      var uN = dnum(u);
+      if (uN < tN) return { err: 'ゴールの日は、今日よりあとにしてね' };
+      if (uN - r < tN) return { err: '復習だけの日を入れると、出会う日がなくなります。ゴールの日をあとにするか、復習だけの日を減らしてね' };
+      return { goal: g, until: dIso(u), rest: r, pace: roadPace(g, uN, r, before), days: uN - r - tN + 1 };
+    }
+    function prev() {
+      var v = val(), el = $('#rdPrev', box);
+      $('#rdOk', box).disabled = !!v.err;
+      if (v.err) { el.innerHTML = esc(v.err); return; }
+      var left = Math.max(0, v.goal - before);
+      el.innerHTML = '1日 <b>' + v.pace + '語</b>（' + v.days + '日で ' + left + '語）' +
+        '<small>おまかせ10分・じっくりなら 1日 約' + Math.ceil(v.pace / 6) + '回</small>' +
+        (v.pace > 40 ? '<small>⚠ かなり多めです。ゴールの日をのばすのも手</small>' : '');
+    }
+    ['rdGoal', 'rdUntil', 'rdRest'].forEach(function (id) { $('#' + id, box).addEventListener('input', prev); $('#' + id, box).addEventListener('change', prev); });
+    prev();
+    $('#rdOk', box).addEventListener('click', function () {
+      var v = val(); if (v.err) return;
+      S.road = { goal: v.goal, until: v.until, rest: v.rest, pace: v.pace, from: R ? R.from : midnight() };
+      V.save(); closeSheet(); renderHome();
+    });
+    if ($('#rdOff', box)) $('#rdOff', box).addEventListener('click', function () { delete S.road; V.save(); closeSheet(); renderHome(); });
+    if ($('#rdNeed', box)) $('#rdNeed', box).addEventListener('click', function () { S.road.pace = o.need; V.save(); closeSheet(); renderHome(); });
+    $('#sheet').hidden = false;
+    tw($('#sheet .sh'), { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' });
+  }
+  /* 結果の画面の1行：終わる日が早まったら、その日付を（目線はここ）。まだなら今日の数 */
+  function roadLine(fin0) {
+    var o = roadInfo(); if (!o) return null;
+    if (o.state === 'done') return fin0 !== undefined && fin0 !== null ? '🗺 目標の <b>' + o.goal + '語</b> と、ひと通り出会った！ あとは復習' : null;
+    if (o.state === 'over') return null;
+    if (fin0 && o.fin < fin0) return '🗺 出会いが終わる日　' + dTxt(fin0) + ' → <b class="rd-up">' + dTxt(o.fin) + '</b>';
+    return '🗺 今日の出会い <b>' + o.today + ' / ' + o.pace + '</b>' + (o.tLeft ? '' : '　あと ' + o.step + '語で、終わる日が1日早まる');
+  }
   /* 次の野生まで（再会は翌日から。出会った当日は「あと○時間」と見せる） */
   function untilWild() {
     var t = V.nextWild(); if (t === null) return 'まだカードがない';
@@ -397,7 +511,7 @@
       add('wild', easy ? 10 : 8, wild);
       if (wild < 8) add('care', 8 - wild, careN);
       add('face', easy ? 12 : 8, face);
-      if (!easy) add('meet', 3, meet);
+      if (!easy) add('meet', 6, meet);   /* 10分・しっかりは6語（2026-11-28 3 → 6。500語を2週間で、の相談から） */
       if (!easy && wantN) addLearn(2); else if (!easy && CU) plan.push({ type: 'conj', unit: nextUnit().id, n: 3 });
       if (!plan.length) add('meet', 3, meet);
     }
@@ -414,6 +528,7 @@
     if (window.Sfx) Sfx.unlock();
     var w0 = CU ? wantsList().map(function (x) { return x.w.id + ':' + x.t; }) : [];
     ses = { grads: [], wants0: w0, plan: plan, bi: -1, label: label || '', caught: [], ups: [], exp: 0, ok: 0, ng: 0, combo: 0, backs: 0, backIds: [], met: [], fixed: 0, shiny: 0, hotNew: 0, hotGrad: 0, miss: {}, hotSeen: {}, saved: {}, rescueId: '' };
+    ses.road0 = (roadInfo() || {}).fin;
     go('play');
     renderSteps();
     nextBlock();
@@ -2197,6 +2312,7 @@
     if (ses.shiny) lines.push('✨ きらきらの子を <b>' + ses.shiny + '体</b> 思い出した（長持ち＋15%）');
     if (CU) wantsList().forEach(function (x) { if (ses.wants0.indexOf(x.w.id + ':' + x.t) < 0) lines.push('💬 <b>' + esc(x.w.w) + '</b> が ' + TN[x.t].name + ' を覚えたがっている（ホームから）'); });
     if (ses.met.length) lines.push('🌱 <b>' + ses.met.length + '語</b> と出会った');
+    if (ses.met.length || ses.caught.length) { var rdl = roadLine(ses.road0); if (rdl) lines.push(rdl); }
     lines.push('⭐ <b>+' + ses.exp + ' EXP</b>（今日 +' + S.day.exp + '）');
     var rc = V.rankCounts();
     if (cWords || rc[0] + rc[1] + rc[2] + rc[3]) lines.push('🤝 単語は いま　出会い <b>' + (rc[0] + rc[1]) + '</b>・定着 <b>' + (rc[2] + rc[3]) + '</b>（仲間・相棒）');
@@ -3091,6 +3207,7 @@
     $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { go(b.dataset.go); }); });
     $('#dMore').addEventListener('click', function () { if (ses && ses.bingo) return startBingo(true); if (ses && ses.push) return startPush(0); if (wildAll().length) start([{ type: 'wild', n: chunkSize() }], 'ひと区切り'); else start(makePlan(5), '5分'); });
     $('#hRange').addEventListener('click', openRange);
+    $('#hRoad').addEventListener('click', openRoad);
     $('#hBoss').addEventListener('click', function () { var b = todaysBoss(); if (b && !b.won) startBoss(); });
     $('#hDeck').addEventListener('click', function () { openDecks(); });
     $('#hMorningGo').addEventListener('click', startMorning);
