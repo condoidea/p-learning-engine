@@ -224,7 +224,7 @@
   try { au.preservesPitch = true; au.webkitPreservesPitch = true; au.mozPreservesPitch = true; } catch (e) { /* */ }
 
   /* 再生の状態
-   *  loop：'ab' セリフをくり返す／'all' 全体をくり返す（S.set.loop に覚える）
+   *  loop：'ab' セリフをくり返す／'all' 全体をくり返す／'off' くり返さない（S.set.loop に覚える）
    *  ab：{ a, b, i, j }（ms と、くり返すセリフ i）
    *  gapT：くり返しの前の短い無音のタイマー
    *  sh：シャドーイングの進行 { i：セリフ, n：何回目, phase：'play'|'gap'|'turn'|'model', timer } */
@@ -257,7 +257,7 @@
     loadDialog(id).then(function (c) {
       C = c;
       cancelGap();
-      P = { loop: S.set.loop === 'all' ? 'all' : 'ab', ab: null, cur: -1, sh: null, stopAt: null, raf: 0, reveal: {}, heard: {}, ptsOpen: !S.pts[id] };
+      P = { loop: S.set.loop === 'all' || S.set.loop === 'off' ? S.set.loop : 'ab', ab: null, cur: -1, sh: null, stopAt: null, raf: 0, reveal: {}, heard: {}, ptsOpen: !S.pts[id] };
       S.pts[id] = 1; save();   /* 聞き取りポイントは初めての1回だけ開いて出す */
       au.src = c.base + (c.D.audio || 'audio.mp3');
       au.load();
@@ -558,8 +558,8 @@
   $('#cPrev').addEventListener('click', function () { stepLine(-1); });
   $('#cNext').addEventListener('click', function () { stepLine(1); });
   $('#cLoop').addEventListener('click', function () {
-    /* セリフ ⇄ 全体。セリフにしたら、いま聞いているセリフをくり返す */
-    P.loop = P.loop === 'ab' ? 'all' : 'ab';
+    /* セリフ → 全体 → オフ。セリフにしたら、いま聞いているセリフをくり返す。オフ＝最後まで行ったら止まる */
+    P.loop = cycle(['ab', 'all', 'off'], P.loop);
     S.set.loop = P.loop; save();
     if (P.loop === 'ab' && P.cur >= 0) { var s = seg(P.cur); P.ab = { a: s.a, b: s.b, i: P.cur, j: P.cur }; }
     paintOpts(); paint();
@@ -639,8 +639,8 @@
     $('#oSpeed b').textContent = sp; $('#sSpeed b').textContent = sp; $('#dSpeed b').textContent = sp;
     $('#oText b').textContent = S.set.text === 'show' ? '見せる' : '隠す';
     $('#oJa b').textContent = S.set.ja ? 'あり' : 'なし';
-    $('#cLoopT').textContent = P.loop === 'all' ? '全体' : 'セリフ';
-    $('#cLoop').classList.add('on');
+    $('#cLoopT').textContent = P.loop === 'all' ? '全体' : P.loop === 'off' ? 'オフ' : 'セリフ';
+    $('#cLoop').classList.toggle('on', P.loop !== 'off');
     var k = speedIdx();
     $$('.chip.step').forEach(function (el) {
       $('[data-d="-1"]', el).disabled = k === 0;
