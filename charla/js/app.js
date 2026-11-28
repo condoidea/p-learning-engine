@@ -845,7 +845,8 @@
       if (g.pos !== 'art' && g.pos !== 'prep' && g.pos !== 'bad') rec = { kind: 'w', w: g.w, pos: g.pos, g: g.g || null, ja: g.ja, surf: surf, line: li, form: g.form || '', note: g.note || '', clue: g.clue || null, cj: g.cj || null, reg: g.reg || null };
     }
     if (rec) { record(rec); html += '<p class="bfoot">📒 調べた単語に記録しました</p>'; }
-    B.innerHTML = html;
+    /* 閉じるボタン（外をタップすると、そこの操作＝セリフの再生なども起きてしまうので） */
+    B.innerHTML = html.replace('</p>', '<button class="bclose" aria-label="閉じる">✕</button></p>');
     B.hidden = false;
     /* 語の下（下に入らなければ上）に出す */
     var r = el.getBoundingClientRect(), vw = document.documentElement.clientWidth, vh = window.innerHeight;
@@ -857,6 +858,7 @@
     B.style.left = x + 'px'; B.style.top = y + 'px';
   }
   B.addEventListener('click', function (e) {
+    if (e.target.closest('.bclose')) { e.stopPropagation(); closeBalloon(); return; }
     var s = e.target.closest('[data-say]');
     if (s) { e.stopPropagation(); say(s.dataset.say); }
   });

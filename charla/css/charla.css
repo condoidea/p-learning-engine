@@ -146,6 +146,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .balloon .bw b { font-family: var(--es); font-size: 21px; }
 .balloon .bw small { color: #6c6a64; font-size: 12.5px; }
 .balloon .say { margin-left: auto; width: 36px; height: 36px; border-radius: 50%; background: #e2ddd1; font-size: 16px; }
+.balloon .bclose { flex: none; width: 36px; height: 36px; margin-right: -6px; border-radius: 50%; background: transparent; color: #6c6a64; font-size: 17px; }
 .balloon .bja { font-size: 16px; font-weight: 700; margin-top: 2px; }
 .balloon .bform, .balloon .bnote, .balloon .bparts { font-size: 14px; color: #4b4a46; margin-top: 4px; }
 .balloon .bform span, .balloon .bparts span { font-family: var(--es); font-size: 16px; }
