@@ -523,9 +523,16 @@
     if (want) {
       if (P.loop === 'ab' && !P.ab) { var k = Math.max(0, P.cur); var s0 = seg(k); P.ab = { a: s0.a, b: s0.b, i: k, j: k }; P.cur = k; paint(true); }
       if (P.loop === 'ab' && P.ab && (nowMs() < P.ab.a || nowMs() >= P.ab.b)) seekMs(P.ab.a);
+      /* ⏸ で止めた所からの再開は、ほんの少し前から（語の途中で止まっても、語の頭から聞こえるように）。
+         戻しすぎない：等速で 0.3 秒（遅くしているときはその分短く）。AB のときは A より前へは戻さない */
+      else if (P.pausedAt != null && Math.abs(nowMs() - P.pausedAt) < 5) {
+        var back = Math.max(150, 300 * Math.min(1, S.set.speed));
+        seekMs(Math.max(P.loop === 'ab' && P.ab ? P.ab.a : 0, nowMs() - back));
+      }
+      P.pausedAt = null;
       play();
     }
-    else au.pause();
+    else { au.pause(); P.pausedAt = nowMs(); }
   }
   function back2() {
     if (!C) return;
