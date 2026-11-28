@@ -808,3 +808,4 @@ body.hot-typing #stage, body.hot-typing .sh { padding-bottom: 42vh; }   /* キ�
 .rd-fix { margin: 6px 0 4px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); }
 .rd-fix p { margin: 0 0 8px; font-size: 15px; line-height: 1.6; }
 .rd-up { color: var(--accent2); }
+#hRoad { margin-top: 10px; }   /* おまかせのボタンの下（ふだん使うのはおまかせなので、その近くに） */
