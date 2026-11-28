@@ -131,6 +131,57 @@
     {
       "t": "muchas gracias",
       "ja": "どうもありがとう"
+    },
+    {
+      "t": "hace una semana",
+      "ja": "1週間前に（hace ＋ 期間＝〜前に）",
+      "w": "hace ＋期間"
+    },
+    {
+      "t": "lleva cuarenta años",
+      "ja": "40年になる（llevar ＋ 期間＝〜になる）",
+      "w": "llevar ＋期間"
+    },
+    {
+      "t": "llevo veinte años",
+      "ja": "20年になる（llevar ＋ 期間 ＋ 現在分詞＝〜し続けて…になる）",
+      "w": "llevar ＋期間"
+    },
+    {
+      "t": "a mis años",
+      "ja": "この年になると"
+    },
+    {
+      "t": "tiene fama de",
+      "ja": "〜として知られている（tener fama de）",
+      "key": true,
+      "w": "tener fama de"
+    },
+    {
+      "t": "no tiene importancia",
+      "ja": "大したことではない"
+    },
+    {
+      "t": "se dice que",
+      "ja": "〜と言われている・〜という噂だ"
+    },
+    {
+      "t": "quiere decir",
+      "ja": "〜という意味だ（¿Qué quiere decir?＝どういう意味ですか）",
+      "w": "querer decir"
+    },
+    {
+      "t": "casi nunca",
+      "ja": "めったに〜ない・ほとんど〜ない"
+    },
+    {
+      "t": "lo mismo",
+      "ja": "同じこと"
+    },
+    {
+      "t": "a los treinta y dos años",
+      "ja": "32歳のとき",
+      "w": "a los ＋数＋años"
     }
   ],
   "words": {

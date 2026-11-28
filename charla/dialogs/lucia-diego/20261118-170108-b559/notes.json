@@ -81,6 +81,23 @@
     {
       "t": "antes de que",
       "ja": "〜する前に"
+    },
+    {
+      "t": "te lo juro",
+      "ja": "誓うよ、本当だって",
+      "key": true
+    },
+    {
+      "t": "aquí la tienes",
+      "ja": "はい、どうぞ",
+      "key": true,
+      "note": "la ＝ 渡すもの（caja）"
+    },
+    {
+      "t": "llevamos dos horas",
+      "ja": "2時間になる（llevar ＋ 期間 ＋ 現在分詞＝〜し続けて…になる。llevamos dos horas metiendo＝2時間詰め続けている）",
+      "key": true,
+      "w": "llevar ＋期間"
     }
   ],
   "words": {

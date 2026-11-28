@@ -21,6 +21,22 @@
     {
       "t": "parque güell",
       "ja": "（バルセロナの公園）グエル公園"
+    },
+    {
+      "t": "me alegro de",
+      "ja": "〜してうれしい（alegrarse de ＋ 不定詞。me alegro de verte＝会えてうれしい）",
+      "key": true,
+      "w": "alegrarse de"
+    },
+    {
+      "t": "cómo te fueron",
+      "ja": "…はどうだった？（¿Cómo te fue／fueron …?）",
+      "key": true
+    },
+    {
+      "t": "algún día",
+      "ja": "いつか",
+      "key": true
     }
   ],
   "words": {

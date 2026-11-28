@@ -67,6 +67,33 @@
     {
       "t": "por qué",
       "ja": "なぜ"
+    },
+    {
+      "t": "se me olvidaron",
+      "ja": "（うっかり）忘れてしまった（se＋me＋動詞＝無意図の表現）",
+      "key": true,
+      "w": "olvidársele"
+    },
+    {
+      "t": "se me han olvidado",
+      "ja": "（うっかり）忘れてしまった",
+      "key": true,
+      "w": "olvidársele"
+    },
+    {
+      "t": "se te olvida",
+      "ja": "君は（うっかり）忘れる",
+      "w": "olvidársele"
+    },
+    {
+      "t": "hace un mes",
+      "ja": "1か月前",
+      "w": "hace ＋期間"
+    },
+    {
+      "t": "tardé tres días en",
+      "ja": "〜するのに3日かかった",
+      "w": "tardar ＋期間＋en"
     }
   ],
   "words": {

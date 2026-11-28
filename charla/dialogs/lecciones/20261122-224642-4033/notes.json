@@ -12,6 +12,18 @@
       "w": "tener que",
       "ja": "〜しなければならない（tener que＋不定詞）",
       "key": true
+    },
+    {
+      "t": "me voy a la cama",
+      "ja": "寝にいく・寝る（irse a la cama）",
+      "key": true,
+      "w": "irse a la cama"
+    },
+    {
+      "t": "me cambio de ropa",
+      "ja": "着替える（cambiarse de ropa）",
+      "key": true,
+      "w": "cambiarse de ropa"
     }
   ],
   "words": {

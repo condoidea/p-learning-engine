@@ -173,6 +173,31 @@
     {
       "t": "lo siento",
       "ja": "ごめんなさい"
+    },
+    {
+      "t": "de joven",
+      "ja": "若いころ（は）",
+      "key": true
+    },
+    {
+      "t": "cómo lo llevas",
+      "ja": "どうやって乗り切ってる？（llevar＝こなす・耐える）",
+      "key": true
+    },
+    {
+      "t": "hablan mal de",
+      "ja": "〜の悪口を言う（hablar mal de）",
+      "key": true,
+      "w": "hablar mal de"
+    },
+    {
+      "t": "al día siguiente",
+      "ja": "翌日に"
+    },
+    {
+      "t": "se le ha olvidado",
+      "ja": "（うっかり）忘れてしまった（無意志の se）",
+      "w": "olvidársele"
     }
   ],
   "words": {

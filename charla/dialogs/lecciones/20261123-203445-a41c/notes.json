@@ -17,6 +17,17 @@
       "t": "por lo menos",
       "ja": "少なくとも",
       "key": true
+    },
+    {
+      "t": "a los diez años",
+      "ja": "10歳のとき（a ＋ los ＋ 年齢 ＋ años）",
+      "key": true,
+      "w": "a los ＋数＋años"
+    },
+    {
+      "t": "nunca más",
+      "ja": "二度と…ない",
+      "key": true
     }
   ],
   "words": {

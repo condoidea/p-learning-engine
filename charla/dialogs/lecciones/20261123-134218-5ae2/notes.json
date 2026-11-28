@@ -33,6 +33,12 @@
     {
       "t": "por favor",
       "ja": "お願いします"
+    },
+    {
+      "t": "se me olvidó",
+      "ja": "（うっかり）忘れた。主語は忘れたもの（olvidarse＋人）",
+      "key": true,
+      "w": "olvidársele"
     }
   ],
   "words": {

@@ -6,6 +6,12 @@
       "t": "de todos modos",
       "ja": "とにかく・それでも・結局",
       "key": true
+    },
+    {
+      "t": "hacía años que",
+      "ja": "何年も（〜していなかった）（hacía ＋ 期間 ＋ que＝そのときまでに〜して…になっていた）",
+      "key": true,
+      "w": "hace ＋期間＋que"
     }
   ],
   "words": {

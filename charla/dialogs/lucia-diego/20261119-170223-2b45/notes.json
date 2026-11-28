@@ -56,6 +56,27 @@
     {
       "t": "por qué",
       "ja": "なぜ・どうして"
+    },
+    {
+      "t": "dentro de quince años",
+      "ja": "（今から）15年後に（dentro de ＋ 期間）",
+      "key": true,
+      "w": "dentro de ＋期間"
+    },
+    {
+      "t": "hace quince años",
+      "ja": "15年前に（hace ＋ 期間）",
+      "key": true,
+      "w": "hace ＋期間"
+    },
+    {
+      "t": "de pequeña",
+      "ja": "小さいころ（女性が言う場合）",
+      "w": "de pequeño"
+    },
+    {
+      "t": "algún día",
+      "ja": "いつか"
     }
   ],
   "words": {

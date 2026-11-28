@@ -20,6 +20,23 @@
     {
       "t": "ciudad de méxico",
       "ja": "メキシコ市"
+    },
+    {
+      "t": "cómo le fue",
+      "ja": "〜はどうでしたか（usted に対して）",
+      "key": true
+    },
+    {
+      "t": "hace catorce años que",
+      "ja": "〜して14年になる（hace ＋ 期間 ＋ que ＋ 現在形）",
+      "key": true,
+      "w": "hace ＋期間＋que"
+    },
+    {
+      "t": "hace dos años",
+      "ja": "2年前に（点過去といっしょに使う）",
+      "key": true,
+      "w": "hace ＋期間"
     }
   ],
   "words": {

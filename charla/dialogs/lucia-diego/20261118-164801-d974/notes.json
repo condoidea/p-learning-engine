@@ -63,6 +63,18 @@
       "ja": "〜しなければならない",
       "note": "tener que ＋ 不定詞",
       "w": "tener que"
+    },
+    {
+      "t": "tardé tres horas en",
+      "ja": "〜するのに3時間かかった",
+      "key": true,
+      "note": "tardar ＋ 時間 ＋ en ＋ 不定詞",
+      "w": "tardar ＋期間＋en"
+    },
+    {
+      "t": "hacía mucho calor",
+      "w": "hacer calor",
+      "ja": "とても暑かった（hacer calor＝暑い。天気・気温の hacer）"
     }
   ],
   "words": {

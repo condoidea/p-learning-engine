@@ -45,6 +45,21 @@
     {
       "t": "por qué",
       "ja": "なぜ・どうして"
+    },
+    {
+      "t": "a que no sabes",
+      "ja": "〜って知らないでしょ？",
+      "key": true
+    },
+    {
+      "t": "sí que",
+      "ja": "本当に〜だ（強調）",
+      "key": true,
+      "note": "ella sí que viajará = 彼女こそ旅行するだろうね"
+    },
+    {
+      "t": "por la tarde",
+      "ja": "午後に"
     }
   ],
   "words": {

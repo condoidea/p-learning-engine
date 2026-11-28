@@ -12,6 +12,15 @@
       "ja": "週末（fin de semana の複数形）",
       "key": true,
       "w": "fin de semana"
+    },
+    {
+      "t": "en aquel tiempo",
+      "ja": "あのころ・当時",
+      "key": true
+    },
+    {
+      "t": "por la mañana",
+      "ja": "朝に・午前中に"
     }
   ],
   "words": {

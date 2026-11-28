@@ -55,6 +55,37 @@
     {
       "t": "por qué",
       "ja": "なぜ・どうして"
+    },
+    {
+      "t": "demos de comer",
+      "ja": "エサ（食事）をあげる（dar de comer a 〜）",
+      "key": true,
+      "note": "demos は dar の接続法。que le demos de comer＝エサをあげてほしい",
+      "w": "dar de comer"
+    },
+    {
+      "t": "hace daño",
+      "ja": "体に悪い・傷つける（hacer daño）",
+      "key": true,
+      "w": "hacer daño"
+    },
+    {
+      "t": "dar un paseo",
+      "ja": "散歩する",
+      "key": true
+    },
+    {
+      "t": "ahora mismo",
+      "ja": "今すぐ",
+      "key": true
+    },
+    {
+      "t": "por la mañana",
+      "ja": "朝に・午前中に"
+    },
+    {
+      "t": "por la noche",
+      "ja": "夜に"
     }
   ],
   "words": {

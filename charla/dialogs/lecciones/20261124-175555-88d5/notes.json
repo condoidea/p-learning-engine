@@ -16,6 +16,11 @@
       "t": "menos mal",
       "ja": "よかった・助かった",
       "key": true
+    },
+    {
+      "t": "por suerte",
+      "ja": "運よく",
+      "key": true
     }
   ],
   "words": {

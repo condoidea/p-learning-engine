@@ -14,6 +14,12 @@
     {
       "t": "de verdad",
       "ja": "本当に・本当？"
+    },
+    {
+      "t": "hace unos años",
+      "ja": "何年か前に",
+      "key": true,
+      "w": "hace ＋期間"
     }
   ],
   "words": {

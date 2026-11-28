@@ -139,6 +139,29 @@
     {
       "t": "visión periférica",
       "ja": "周辺視野（視線の外側のものが見える力）"
+    },
+    {
+      "t": "a los doce años",
+      "ja": "12歳のとき",
+      "w": "a los ＋数＋años"
+    },
+    {
+      "t": "debió de",
+      "ja": "〜に違いない（deber de ＋ 不定詞。debió de ser＝〜だったに違いない）",
+      "key": true,
+      "w": "deber de"
+    },
+    {
+      "t": "seguro que",
+      "ja": "きっと〜だ"
+    },
+    {
+      "t": "algún día",
+      "ja": "いつか"
+    },
+    {
+      "t": "ahora mismo",
+      "ja": "いま、まさに"
     }
   ],
   "words": {

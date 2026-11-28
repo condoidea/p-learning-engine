@@ -60,6 +60,27 @@
       "t": "tren bala",
       "ja": "新幹線（弾丸列車）",
       "key": true
+    },
+    {
+      "t": "a qué hora",
+      "ja": "何時に",
+      "key": true
+    },
+    {
+      "t": "por la mañana",
+      "ja": "朝に・午前中に",
+      "key": true
+    },
+    {
+      "t": "por la noche",
+      "ja": "夜に",
+      "key": true
+    },
+    {
+      "t": "hace fresco",
+      "ja": "肌寒い・涼しい（hacer fresco）",
+      "key": true,
+      "w": "hacer fresco"
     }
   ],
   "words": {
