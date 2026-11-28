@@ -966,12 +966,13 @@
   var SHINY = 0.08;
   function fight(w, tagText, cb, mode) {
     var care = mode === 'care', retry = mode === 'retry', exm = mode === 'ex', st0 = V.state(w.id), wasWild = st0 === 'wild';
+    var home = !care && !retry && !exm && V.home(w.id);   /* 🎓 里帰り */
     var shiny = !care && !retry && !exm && !V.grad(w.id) && Math.random() < SHINY;
     var hot0 = V.hot(w.id);
-    var badge = (retry ? '🔁 もう一度' : exm ? '📝 文で使う' : shiny ? '✨ きらきら' : care ? '⏳ もうすぐしおれる' : wasWild ? '🍂 野生に戻りかけ' : '🥀 しおれかけ') + (hot0 ? ' 🌶' : '');
+    var badge = (retry ? '🔁 もう一度' : exm ? '📝 文で使う' : home ? '🎓 里帰り' : shiny ? '✨ きらきら' : care ? '⏳ もうすぐしおれる' : wasWild ? '🍂 野生に戻りかけ' : '🥀 しおれかけ') + (hot0 ? ' 🌶' : '');
     var tag = '<span class="qtag">' + tagText + '</span><span class="wild-badge">' + badge + '</span>';
     var c0 = nowClose(w.id), m0 = Chara.moodOf(st0), mem0 = V.memory(w.id);
-    stage('<div class="appear"><p>' + (retry ? 'さっき にげた' : exm ? '例文の中の' : care ? 'もうすぐしおれそうな' : wasWild ? '野生に戻りかけの' : 'しおれかけの') + '</p><div class="ap-bud' + (shiny ? ' shiny' : '') + '">' + cs(w, { mood: m0 }) + '</div><p>' + (retry ? 'を 追いかけよう' : exm ? 'を 使ってみよう' : care ? 'に 会いに行こう' : 'が 遠くに いる！') + '</p>' +
+    stage('<div class="appear"><p>' + (retry ? 'さっき にげた' : exm ? '例文の中の' : home ? '卒業した' : care ? 'もうすぐしおれそうな' : wasWild ? '野生に戻りかけの' : 'しおれかけの') + '</p><div class="ap-bud' + (shiny ? ' shiny' : '') + '">' + cs(w, { mood: home ? 'happy' : m0 }) + '</div><p>' + (retry ? 'を 追いかけよう' : exm ? 'を 使ってみよう' : home ? 'が 里帰りしてきた！' : care ? 'に 会いに行こう' : 'が 遠くに いる！') + '</p>' +
       (shiny ? '<p class="ap-shiny">✨ きらきらの子だ！ 思い出せたら 長持ち＋15%</p>' : '') + '</div>');
     if (window.Snd) Snd.appear();
     setTimeout(function () {
@@ -982,7 +983,7 @@
         if (hot0 || r.hotNew) ses.hotSeen[w.id] = 1;
         if (ok && (r.back || r.relearn || ses.rescueId === w.id)) ses.saved[w.id] = 1;
         if (r.hotGrad) ses.hotGrad++;
-        if (ok) moveTrack(s, w, Chara.closeness(V.card(w.id).lv, 1), 'happy', r.relearn ? '取り返した！' : r.back ? 'おかえり！' : r.up ? V.RANKS[r.up].rel + 'に！' : T.hi);
+        if (ok) moveTrack(s, w, Chara.closeness(V.card(w.id).lv, 1), 'happy', r.relearn ? '取り返した！' : r.home ? 'また来るね！' : r.back ? 'おかえり！' : r.up ? V.RANKS[r.up].rel + 'に！' : T.hi);
         else moveTrack(s, w, Math.max(0.03, c0 - 0.12), 'sleep', '…');
         if (ok) {
           ses.exp += r.exp;
@@ -1032,7 +1033,7 @@
   /* 記憶がどれだけ長持ちになったか（しおれるまでの日数：前 → いま） */
   function memLine(m0, m1) {
     if (!m1) return '';
-    if (m1.grad) return '<p class="mem-line">🎓 卒業：もう野生には出ない</p>';
+    if (m1.grad) return '<p class="mem-line">🎓 卒業：ふだんの野生戦には出ない（数か月に一度、里帰り）</p>';
     if (!m0) return '<p class="mem-line">🌱 次にしおれるまで：<b>' + daysText(Math.max(0, m1.next)) + '</b></p>';
     return '<p class="mem-line">🌱 長持ち：' + daysText(m0.s * 0.415) + ' → <b>' + daysText(m1.next) + '</b></p>';
   }
@@ -2075,12 +2076,12 @@
   var BOND = {
     meet: { eye: ['身に付いた！', 'あなたの言葉になった', '覚えた！'], line: ['もう、知らない単語じゃない。', 'この単語は、もうあなたのもの。', '最初の一歩。次に会えたら、もっと仲良くなれる。'] },
     back: { eye: ['おかえり！', '取り戻した！', '思い出せた！'], line: ['忘れかけても、ちゃんと戻ってきた。', '思い出せた分だけ、前より強くなった。', '一度忘れかけた言葉ほど、深く残る。'] },
-    grad: { eye: ['卒業！', 'ずっと相棒'], line: ['もう忘れない。野生には戻らない。', '何度も会って、本当に身に付いた。'] }
+    grad: { eye: ['卒業！', 'ずっと相棒'], line: ['もう忘れない。ときどき里帰りするだけ。', '何度も会って、本当に身に付いた。'] }
   };
   function daysText(d) { return d < 1 ? '約' + Math.max(1, Math.round(d * 24)) + '時間' : '約' + (d < 10 ? Math.round(d * 10) / 10 : Math.round(d)) + '日'; }
   function bondMoment(o, done) {
     var w = o.w, k = BOND[o.kind], el = document.createElement('div');
-    var mem = o.kind === 'grad' ? '🎓 もう野生には出ない'
+    var mem = o.kind === 'grad' ? '🎓 次に会うのは 約4か月後の里帰り'
       : o.next != null ? '🌱 次に会うのは ' + daysText(o.next) + '後' + (o.prev != null ? '（前は ' + daysText(o.prev) + '）' : '') : '';
     el.id = 'bond'; el.className = 'bond k-' + o.kind;
     el.innerHTML = '<div class="bond-glow"></div><div class="bond-stage"><span class="bond-me">' + Chara.me({ mood: 'happy' }) + '</span><span class="bond-bud">' + cs(w, { mood: o.kind === 'back' ? 'sleep' : 'wow', holo: o.kind === 'grad' }) + '</span></div>' +
@@ -2304,7 +2305,7 @@
     if (cWords) lines.push('📖 図鑑に <b>' + cWords + '枚</b> 追加');
     if (cCj) lines.push('🔁 活用を <b>' + cCj + '形</b> 覚えた');
     if (ses.ups.length) lines.push('✨ <b>' + ses.ups.length + '枚</b> が進化');
-    if (ses.grads.length) lines.push('🎓 <b>' + ses.grads.length + '体</b> が卒業（もう野生に出ない）');
+    if (ses.grads.length) lines.push('🎓 <b>' + ses.grads.length + '体</b> が卒業（次は約4か月後に里帰り）');
     if (ses.backs) lines.push('🤝 野生から <b>' + ses.backs + '枚</b> 取り返した');
     if (ses.fixed) lines.push('🔁 にげた子を <b>' + ses.fixed + '体</b> 追いかけて取り返した');
     if (ses.hotNew) lines.push('🌶 手ごわい子が <b>' + ses.hotNew + '体</b>。次はちがう聞き方で会える');
@@ -2465,6 +2466,8 @@
       if (sp[k] || jj[j]) return;
       sp[k] = jj[j] = 1; out.push(w);
     }
+    /* 🎓 卒業した子：約1か月ぶりの子を、盤の2割まで（9語なら2・18語なら4）先に入れる */
+    V.peekList().slice(0, Math.max(1, Math.round(N * 0.2))).forEach(function (id) { add(V.word(id)); });
     var have = Object.keys(S.cards).filter(function (id) { var w = V.word(id); return w && V.inRange(w) && !V.grad(id); });
     var pri = {};
     V.soonList(72).forEach(function (id) { if (!V.isCj(id)) pri[id] = 1; });
@@ -2666,7 +2669,7 @@
     $('#dTitle').textContent = n ? T.bingo : T.titleB;
     if (n) lines.push('🎯 そろった列 <b>' + n + '</b>');
     if (ses.ups.length) lines.push('✨ <b>' + ses.ups.length + '枚</b> が進化');
-    if (ses.grads.length) lines.push('🎓 <b>' + ses.grads.length + '体</b> が卒業（もう野生に出ない）');
+    if (ses.grads.length) lines.push('🎓 <b>' + ses.grads.length + '体</b> が卒業（次は約4か月後に里帰り）');
     if (ses.backs) lines.push('🤝 野生から <b>' + ses.backs + '枚</b> 取り返した');
     if (ses.fixed) lines.push('🔁 まちがえた子を、もう一度で <b>' + ses.fixed + '体</b> 取り返した');
     if (ses.hotNew) lines.push('🌶 手ごわい子が <b>' + ses.hotNew + '体</b>。次はちがう聞き方で会える');
@@ -2955,7 +2958,7 @@
     $('#dTitle').textContent = n ? T.push : T.titleB;
     lines.push(n ? '🛡 おしかえした ステージ <b>' + n + '</b> / ' + PSH_ST.length : '🛡 またこんど、おしかえそう');
     if (ses.ups.length) lines.push('✨ <b>' + ses.ups.length + '枚</b> が進化');
-    if (ses.grads.length) lines.push('🎓 <b>' + ses.grads.length + '体</b> が卒業（もう野生に出ない）');
+    if (ses.grads.length) lines.push('🎓 <b>' + ses.grads.length + '体</b> が卒業（次は約4か月後に里帰り）');
     if (ses.backs) lines.push('🤝 野生から <b>' + ses.backs + '枚</b> 取り返した');
     if (ses.fixed) lines.push('🔁 まちがえた子を、もう一度で <b>' + ses.fixed + '体</b> 取り返した');
     if (ses.hotNew) lines.push('🌶 手ごわい子が <b>' + ses.hotNew + '体</b>。次はちがう聞き方で会える');
@@ -3121,7 +3124,7 @@
       L.push('はじめて会った日は ' + (cd.getMonth() + 1) + '月' + cd.getDate() + '日。' + ((c.miss || 0) >= 2 ? 'あのころは、よくにげたね。' : c.miss ? 'あのころは、ちょっとドキドキだったね。' : 'はじめから、なかよしだったね。'));
       if (c.miss) L.push('まちがえたのは ' + c.miss + '回。そのたびに、また会いに来てくれた。');
       if (c.rb) L.push('野生から ' + c.rb + '回、取り戻してくれた。');
-      if (mem) L.push(mem.grad ? 'いまは もう、野生には出ない。🎓' : 'いまの長持ちは ' + daysText(mem.s * 0.415) + (mem.s > 1.5 ? '（はじめは 約12時間）' : '') + '。');
+      if (mem) L.push(mem.grad ? 'いまは 卒業して、数か月に一度だけ里帰りする。🎓' : 'いまの長持ちは ' + daysText(mem.s * 0.415) + (mem.s > 1.5 ? '（はじめは 約12時間）' : '') + '。');
       put('<div class="evt-sc">' + evStage([w]) + '<p class="evt-eye">🎂 ' + T.fest + '</p><div class="evt-word">' + headHtml(w) + '</div><p class="evt-sub evt-days">出会って <b>' + days + '日</b></p>' +
         L.map(function (x) { return '<p class="evt-line evt-l">' + esc(x) + '</p>'; }).join('') + '<button class="next evt-go" type="button">最後に、思い出してみよう ▶</button></div>');
       if (G) G.fromTo($$('.evt-l', box), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.5, delay: 0.3 });

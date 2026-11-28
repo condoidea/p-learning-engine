@@ -28,7 +28,20 @@
   var FRESH = 0.75, WILD = 0.45;    // これ未満で「しおれ」、さらに未満で「野生に戻りかけ」
   var S0 = 1.2;                     // 出会ったばかりの s（約12時間でしおれ始める）
   var GROW = 2.5;                   // 思い出せたときの基本の倍率
-  var GRAD = 240;                   // これを超えたら卒業（もう野生に出ない）
+  var GRAD = 240;                   // これを超えたら卒業（ふだんの野生戦には出ない。数か月に一度だけ里帰り）
+  /* ランクは、経験値のほかに記憶の強さ s でも上がる（どちらか高いほう。下がらない）。
+   *  時期どおりに思い出せたとき、s は 3 → 7.5 → 19 → 47 → 117 → 293（卒業）と伸びる。
+   *  顔なじみ＝2回目の復習（約2日目）、仲間＝4回目（約1週間あけて思い出せた・約2週間目）、相棒＝5回目（約3週間あけて・約1か月目）。
+   *  経験値だけだと、相棒（160）に届く前に卒業していた（2026-11-28 依頼者「ホロまで到達するのが大変」） */
+  var RANK_S = [0, 6, 40, 100];
+  /* 🎓 里帰り：卒業した子は、HOME 日ごとに1回だけ野生戦にまざる（里帰りのたびに 1.5倍あく）。同時に出すのは HOME_MAX 体まで。
+   *  思い出せたら卒業のまま。まちがえたら卒業を取り消して、ふつうの復習に戻す（受験まで1〜2年あるような使い方のため。
+   *  間隔の目安：覚えていたい期間の1〜2割ごとに思い出すのがよい（Cepeda ら 2008）） */
+  var HOME = 120, HOME_MAX = 3;
+  /* 🎈 あそび場（ビンゴ・おしかえせ）では、卒業した子に PEEK 日ごとに会える（里帰りより短い間隔。ゲームは手っ取り早い復習なので）。
+   *  ゲームで思い出せても、記憶の計算・里帰りの予定は変えない。まちがえたら、PEEK_MISS 日後に里帰りを早める
+   *  （そこで野生戦として確かめ、またまちがえたら卒業取り消し。ゲームの1回だけで取り消さない＝出しすぎない） */
+  var PEEK = 30, PEEK_MISS = 3;
   var DUE = Math.log(1 / FRESH) / Math.LN2;   // s のうち、しおれ始めるまでの割合（約0.415）
   var RELEARN = 6;                  // まちがえてからこの時間（h）以内の正解は「覚え直し」（強さは伸ばさない）
   var HOT_MISS = 3, HOT_OK = 2;     // 🌶 手ごわい子：通算3回まちがえたらなる／そのあと2回続けて正解で卒業（単語のカードだけ）
@@ -42,6 +55,7 @@
     return fresh();
   }
   var S = load();
+  Object.keys(S.cards).forEach(function (k) { var c = S.cards[k], l = rankS(c); if (l > (c.lv || 0)) c.lv = l; });   /* 記憶の強さのランク（前からの記録にも） */
   /* 久しぶりに開いたか（最後に答えてから何日か）。開いた時点で決める */
   var AWAY = S.lastSeen ? (Date.now() - S.lastSeen) / (24 * 3600e3) : 0;
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* 保存できなくても学習は続ける */ } }
@@ -116,6 +130,13 @@
   }
   function card(id) { return S.cards[id] || null; }
   function rankOf(exp) { var r = 0; RANKS.forEach(function (R, i) { if (exp >= R.need) r = i; }); return r; }
+  function rankS(c) { var r = 0; RANK_S.forEach(function (n, i) { if ((c.s || 0) >= n) r = i; }); return r; }
+  /* 里帰りの時刻（卒業した子だけ） */
+  function homeAt(c) { var t = c.ok + HOME * Math.pow(1.5, c.rc || 0) * DAY; return c.hm ? Math.min(t, c.hm + PEEK_MISS * DAY) : t; }
+  function homeList(now) {
+    return Object.keys(S.cards).filter(function (id) { var c = S.cards[id]; return c.grad && W[id] && inRange(W[id]) && homeAt(c) <= now; })
+      .sort(function (a, b) { return homeAt(S.cards[a]) - homeAt(S.cards[b]); }).slice(0, HOME_MAX);
+  }
 
   /* 記憶の強さ（古い記録は、以前の長持ち日数から移す） */
   function strength(c) {
@@ -193,6 +214,13 @@
       var c = S.cards[id], now = Date.now(), r = { exp: 0, up: 0, back: false, grad: false };
       S.total.answered++;
       if (!c) { save(); return r; }
+      if (c.grad && homeAt(c) > now) {
+        /* 🎓 卒業した子に、あそび場で会った（里帰りの日ではない）：記憶の計算は変えない */
+        c.gp = now; c.last = now; S.lastSeen = now; came();
+        if (ok) { S.total.correct++; r = Object.assign(r, gain(id, 3)); }
+        else { c.miss = (c.miss || 0) + 1; if (!c.hm) c.hm = now; r.homeSoon = true; }
+        save(); return r;
+      }
       var st = strength(c), ratio = (now - c.ok) / (st * DUE * DAY);   // 1＝ちょうどしおれ始め。1未満は早め（なつかせる）
       if (ok) {
         S.total.correct++;
@@ -210,14 +238,18 @@
           var mult = ratio >= 1 ? GROW * (0.85 + 0.15 * Math.min(2, ratio)) : 1 + (GROW - 1) * Math.max(0, ratio);
           c.s = Math.max(S0, c.s * mult);
           c.ok = now;
-          if (c.s >= GRAD && !c.grad) { c.grad = now; r.grad = true; }
+          if (c.grad) { c.rc = (c.rc || 0) + 1; delete c.hm; r.home = true; c.j = 1; }   /* 🎓 里帰りで思い出せた：次の里帰りは、もっと先 */
+          else if (c.s >= GRAD) { c.grad = now; r.grad = true; }
           else balance(id, c);
         }
+        var ls = rankS(c); if (ls > c.lv) { c.lv = ls; r.up = ls; }
         delete c.lapse;
         if (r.back) c.rb = (c.rb || 0) + 1;   /* 野生から取り戻した回数（💬 きねん日で「取り戻した回数」に使う） */
         /* 🌶 手ごわい子：そのあと2回続けて正解したら卒業（印を外す。まちがえた回数は残す＝hb に基準を移す） */
         if (!isCj(id) && c.hot) { c.hs = (c.hs || 0) + 1; if (c.hs >= HOT_OK) { c.hot = 0; c.hs = 0; c.hb = c.miss || 0; r.hotGrad = true; } }
       } else {
+        /* 🎓 里帰りでまちがえた：卒業を取り消して、ふつうの復習に（約1週間の強さから積み直す。ランクは下げない） */
+        if (c.grad) { delete c.grad; delete c.hm; c.rc = 0; c.s = Math.min(c.s, 45); r.ungrad = true; }
         c.streak = 0; c.miss = (c.miss || 0) + 1;
         if (type) c.lt = type;                                           // 前回まちがえた問い方（手ごわい子は、次はちがう聞き方で出す）
         if (!isCj(id)) {
@@ -265,9 +297,10 @@
     wildList: function () {
       var now = Date.now();
       return Object.keys(S.cards).map(function (id) { return { w: W[id], r: condition(id, now) }; })
-        .filter(function (x) { return x.w && x.r < FRESH && inRange(x.w); })   /* 卒業した子は condition＝1 なので出ない */
+        .filter(function (x) { return x.w && x.r < FRESH && inRange(x.w); })   /* 卒業した子は condition＝1 なので、ここには出ない */
         .sort(function (a, b) { return a.r - b.r; })
-        .map(function (x) { return x.w; });
+        .map(function (x) { return x.w; })
+        .concat(homeList(now).map(function (id) { return W[id]; }));   /* 🎓 里帰りの子は最後に（多くても HOME_MAX 体） */
     },
     /* 次にしおれ始めるカードの時刻（なければ null） */
     nextWild: function () {
@@ -328,6 +361,13 @@
     /* ボス戦で勝ったおまけ：記憶の強さを少しだけ足す（卒業の手前まで） */
     bonus: function (id, f) { var c = card(id); if (!c || c.grad) return; c.s = Math.min(c.s * f, 239); save(); },
     grad: function (id) { var c = card(id); return !!(c && c.grad); },
+    /* あそび場に出してよい卒業した子（前に会ってから PEEK 日以上。久しぶりの順） */
+    peekList: function () {
+      var now = Date.now(), at = function (c) { return Math.max(c.ok, c.gp || 0); };
+      return Object.keys(S.cards).filter(function (id) { var c = S.cards[id]; return c.grad && W[id] && inRange(W[id]) && homeAt(c) > now && now - at(c) >= PEEK * DAY; })
+        .sort(function (a, b) { return at(S.cards[a]) - at(S.cards[b]); });
+    },
+    home: function (id) { var c = card(id); return !!(c && c.grad && homeAt(c) <= Date.now()); },   /* いま里帰り中か */
     gradCount: function () { return Object.keys(S.cards).filter(function (id) { return W[id] && S.cards[id].grad; }).length; },
     /* 記憶の強さ（日）と、次にしおれるまでの日数（表示用） */
     memory: function (id) { var c = card(id); if (!c) return null; return { s: strength(c), grad: !!c.grad, next: c.grad ? null : (wiltAt(c) - Date.now()) / DAY }; },
